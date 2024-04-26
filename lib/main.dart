@@ -31,7 +31,7 @@ class MainApp extends AsyncValueWidget<User?> {
     WidgetRef ref,
     AsyncData<User?> data,
   ) {
-    return switch (data.valueOrNull) {
+    return switch (data.value) {
       null => const LoginScreen(),
       _ => const PodcastScreen(),
     };

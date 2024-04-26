@@ -4,14 +4,17 @@ import 'package:podcast/providers/firebase/user_provider.dart';
 
 class ErrorScreen extends ConsumerWidget {
   final VoidCallback onRefresh;
+  final AsyncError state;
 
-  const ErrorScreen({
+  const ErrorScreen(
+    this.state, {
     super.key,
     required this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print(state);
     return SizedBox(
       width: double.infinity,
       child: Column(
