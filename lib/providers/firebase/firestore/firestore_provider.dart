@@ -20,7 +20,7 @@ class Firestore extends _$Firestore {
         persistenceEnabled: true,
       );
 
-    store.collection('users').doc(user.uid);
+    _userDocument = store.collection('users').doc(user.uid);
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> listen(String collectionPath) {
