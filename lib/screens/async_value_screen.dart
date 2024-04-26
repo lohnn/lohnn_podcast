@@ -14,8 +14,8 @@ abstract class AsyncValueWidget<T> extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       child: switch (ref.watch(provider)) {
-        AsyncData<T> data => buildWithData(context, ref, data),
-        AsyncError<T> state when !state.isLoading => ErrorScreen(
+        final AsyncData<T> data => buildWithData(context, ref, data),
+        final AsyncError<T> state when !state.isLoading => ErrorScreen(
             state,
             onRefresh: () => ref.invalidate(provider),
           ),

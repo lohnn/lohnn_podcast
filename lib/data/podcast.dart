@@ -6,7 +6,8 @@ part 'podcast.g.dart';
 @freezed
 class Podcast with _$Podcast {
   const factory Podcast({
-    required String id,
+    required String name,
+    required String rssUrl,
   }) = _Podcast;
 
   factory Podcast.fromJson(Map<String, dynamic> json) =>

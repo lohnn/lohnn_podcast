@@ -4,7 +4,7 @@ import 'package:podcast/providers/firebase/user_provider.dart';
 
 class ErrorScreen extends ConsumerWidget {
   final VoidCallback onRefresh;
-  final AsyncError state;
+  final AsyncError<dynamic> state;
 
   const ErrorScreen(
     this.state, {
@@ -14,12 +14,12 @@ class ErrorScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print(state);
+    debugPrint(state.toString());
+    debugPrintStack(stackTrace: state.stackTrace);
     return SizedBox(
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Text('Something went wrong.'),
           TextButton(
@@ -32,7 +32,7 @@ class ErrorScreen extends ConsumerWidget {
                 context: context,
                 builder: (context) => const _LogOutDialog(),
               );
-              if (shouldLogout == true) {
+              if (shouldLogout ?? false) {
                 ref.read(userPodProvider.notifier).logOut();
               }
             },
