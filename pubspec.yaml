@@ -27,12 +27,12 @@ dependencies:
   riverpod_annotation: ^2.3.5
 
 dev_dependencies:
+  custom_lint: ^0.6.4
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.2
+  lint: ^2.3.0
   riverpod_generator: ^2.4.0
   riverpod_lint: ^2.3.10
-  custom_lint: ^0.6.4
 
 flutter:
   uses-material-design: true

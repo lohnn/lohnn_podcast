@@ -15,15 +15,18 @@ class Firestore extends _$Firestore {
     if (user == null) throw Exception('User not available');
 
     final store = FirebaseFirestore.instanceFor(
-        app: await ref.watch(firebaseAppProvider.future), databaseId: 'podcast')
-      ..settings = const Settings(
+      app: await ref.watch(firebaseAppProvider.future),
+      databaseId: 'podcast',
+    )..settings = const Settings(
         persistenceEnabled: true,
       );
 
     _userDocument = store.collection('users').doc(user.uid);
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> listen(String collectionPath) {
-    return _userDocument.collection(collectionPath).snapshots();
+  CollectionReference<Map<String, dynamic>> userCollection(
+    String collectionPath,
+  ) {
+    return _userDocument.collection(collectionPath);
   }
 }
