@@ -12,7 +12,7 @@ class Podcast with _$Podcast {
     required String link,
     required String description,
     required String rssUrl,
-    required PodcastImage? image,
+    required String? image,
     required String? language,
     required String? lastBuildDate,
     required String? copyright,
@@ -31,7 +31,8 @@ class Podcast with _$Podcast {
     final description = channel.getElementContent('description')!;
 
     // Optional fields
-    final image = channel.getElement('image')?.let(PodcastImage.fromXml);
+    final image = channel.getElement('image')?.let(PodcastImage.fromXml).url ??
+        channel.getElement('itunes:image')?.getAttribute('href');
     final language = channel.getElementContent('language');
     final lastBuildDate = channel.getElementContent('lastBuildDate');
     final copyright = channel.getElementContent('copyright');
