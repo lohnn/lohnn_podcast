@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:podcast/extensions/nullability_extensions.dart';
+import 'package:podcast/extensions/xml_element_extension.dart';
 import 'package:xml/xml.dart';
 
 part 'podcast.freezed.dart';
@@ -70,8 +71,4 @@ class PodcastImage with _$PodcastImage {
 
     return PodcastImage(url: url, title: title, link: link);
   }
-}
-
-extension on XmlElement {
-  String? getElementContent(String name) => getElement(name)?.innerText;
 }
