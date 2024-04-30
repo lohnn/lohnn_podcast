@@ -16,11 +16,17 @@ class EpisodesPod extends _$EpisodesPod {
   @override
   Stream<List<Episode>> build(Podcast podcast) async* {
     ref.watch(podcastPodProvider);
-    _episodes = ref.watch(podcastPodProvider.notifier).collectionForPodcast(
+    _episodes = ref
+        .watch(podcastPodProvider.notifier)
+        .collectionForPodcast(
           'episodes',
           podcast,
-          Episode.fromJson,
+        )
+        .withConverter(
+          fromFirestore: (snapshot, _) => Episode.fromJson(snapshot.data()!),
+          toFirestore: (data, _) => data.toJson(),
         );
+    ;
 
     final episodesQuery = _episodes.orderBy('pubDate');
     // If we already have at least some data we yield (and set state) first
@@ -47,9 +53,14 @@ class EpisodesPod extends _$EpisodesPod {
                 ?.firstWhereOrNull((e) => e.guid == downloadedEpisode.guid)
             case final storedEpisode?) {
           // Episode already exists in list
-          _episodes
-              .doc(downloadedEpisode.guid)
-              .set(downloadedEpisode + storedEpisode);
+
+          // Does the episode contain any updates?
+          if (downloadedEpisode + storedEpisode case final episode
+              when episode != storedEpisode) {
+            _episodes
+                .doc(downloadedEpisode.guid)
+                .set(downloadedEpisode + storedEpisode);
+          }
         } else {
           // Episode does not exist
           _episodes.doc(downloadedEpisode.guid).set(downloadedEpisode);

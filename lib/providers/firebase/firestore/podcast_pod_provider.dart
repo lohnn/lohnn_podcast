@@ -18,6 +18,8 @@ class PodcastPod extends _$PodcastPod {
 
   @override
   Stream<Map<PodcastId, Podcast>> build() async* {
+    // @TODO: Migrate to let url be id?
+
     await ref.watch(firestoreProvider.future);
     final firestore = ref.watch(firestoreProvider.notifier);
     // @TODO: Check if this will continue watching after provider is disposed
@@ -63,27 +65,29 @@ class PodcastPod extends _$PodcastPod {
   }
 
   Future<void> addPodcastsToList(String rssUrl) async {
-    final podcast = await ref.read(fetchPodcastProvider(rssUrl).future);
-    // TODO: Download latest metadata
+    final downloadedPodcast =
+        await ref.read(fetchPodcastProvider(rssUrl).future);
 
     switch (state.requireValue.records.firstWhereOrNull(
       (element) => element.$2.rssUrl == rssUrl,
     )) {
       case (final id, final podcast):
-        // Update existing
-        debugPrint('Updating existing!');
-        _podcastList.doc(id.id).set(podcast);
+        if (podcast != downloadedPodcast) {
+          // Update existing
+          debugPrint('Updating existing!');
+          _podcastList.doc(id.id).set(podcast);
+        }
       case _:
         // Add new
         debugPrint('Adding new podcast!');
-        _podcastList.add(podcast);
+        _podcastList.add(downloadedPodcast);
     }
   }
 
-  CollectionReference<T> collectionForPodcast<T extends ToJson>(
+  CollectionReference<Map<String, dynamic>>
+      collectionForPodcast<T extends ToJson>(
     String collectionPath,
     Podcast podcast,
-    FromJson<T> fromJson,
   ) {
     final id = state.requireValue.records
         .firstWhere(
@@ -91,9 +95,6 @@ class PodcastPod extends _$PodcastPod {
         )
         .$1;
 
-    return _podcastList.doc(id.id).collection(collectionPath).withConverter(
-          fromFirestore: (snapshot, _) => fromJson(snapshot.data()!),
-          toFirestore: (data, _) => data.toJson(),
-        );
+    return _podcastList.doc(id.id).collection(collectionPath);
   }
 }
