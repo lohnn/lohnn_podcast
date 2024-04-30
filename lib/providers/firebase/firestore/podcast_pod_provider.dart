@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/map_extensions.dart';
+import 'package:podcast/extensions/response_extension.dart';
 import 'package:podcast/providers/firebase/firestore/firestore_provider.dart';
 import 'package:podcast/providers/repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,7 +12,7 @@ part 'podcast_pod_provider.g.dart';
 
 extension type PodcastId(String id) {}
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PodcastPod extends _$PodcastPod {
   late CollectionReference<Podcast> _podcastList;
 
@@ -40,7 +42,7 @@ class PodcastPod extends _$PodcastPod {
     //   }
     // }
 
-    await for (final snapshot in _podcastList.snapshots()) {
+    await for (final snapshot in _podcastList.orderBy('name').snapshots()) {
       yield {
         for (final doc in snapshot.docs) PodcastId(doc.id): doc.data(),
       };
@@ -50,16 +52,17 @@ class PodcastPod extends _$PodcastPod {
   Future<void> refreshAll() async {
     await Future.wait([
       for (final (id, podcast) in state.requireValue.records)
-        refreshPodcast(id, Uri.parse(podcast.rssUrl)),
+        _refreshPodcast(id, podcast.rssUrl),
     ]);
   }
 
-  Future<void> refreshPodcast(PodcastId id, Uri rssUrl) async {
+  Future<void> _refreshPodcast(PodcastId id, String rssUrl) async {
+    ref.invalidate(fetchPodcastProvider(rssUrl));
     final podcast = await ref.read(fetchPodcastProvider(rssUrl).future);
     _podcastList.doc(id.id).set(podcast);
   }
 
-  Future<void> addPodcastsToList(Uri rssUrl) async {
+  Future<void> addPodcastsToList(String rssUrl) async {
     final podcast = await ref.read(fetchPodcastProvider(rssUrl).future);
     // TODO: Download latest metadata
 
@@ -68,12 +71,29 @@ class PodcastPod extends _$PodcastPod {
     )) {
       case (final id, final podcast):
         // Update existing
-        print('Updating existing!');
+        debugPrint('Updating existing!');
         _podcastList.doc(id.id).set(podcast);
       case _:
         // Add new
-        print('Adding new podcast!');
+        debugPrint('Adding new podcast!');
         _podcastList.add(podcast);
     }
+  }
+
+  CollectionReference<T> collectionForPodcast<T extends ToJson>(
+    String collectionPath,
+    Podcast podcast,
+    FromJson<T> fromJson,
+  ) {
+    final id = state.requireValue.records
+        .firstWhere(
+          (element) => element.$2 == podcast,
+        )
+        .$1;
+
+    return _podcastList.doc(id.id).collection(collectionPath).withConverter(
+          fromFirestore: (snapshot, _) => fromJson(snapshot.data()!),
+          toFirestore: (data, _) => data.toJson(),
+        );
   }
 }

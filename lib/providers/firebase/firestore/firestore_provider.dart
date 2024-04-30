@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'firestore_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Firestore extends _$Firestore {
   late DocumentReference _userDocument;
 

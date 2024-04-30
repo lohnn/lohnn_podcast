@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'firebase_app_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<FirebaseApp> firebaseApp(FirebaseAppRef ref) {
   return Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
