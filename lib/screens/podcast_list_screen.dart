@@ -39,16 +39,23 @@ class PodcastListScreen extends AsyncValueWidget<List<PodcastListRow>> {
       ),
       body: RefreshIndicator(
         onRefresh: ref.read(podcastListPodProvider.notifier).refreshAll,
-        child: ListView(
-          children: [
-            for (final row in data.value)
-              PodcastListTile(
-                row.podcast,
-                hasNew: row.hasNew,
-                total: row.totalEpisodes,
-                unlistened: row.unlistenedEpisodes,
-              ),
-          ],
+        child: ListView.builder(
+          itemCount: data.value.length,
+          itemBuilder: (context, index) {
+            final PodcastListRow(
+              :podcast,
+              :hasNew,
+              :totalEpisodes,
+              :unlistenedEpisodes,
+            ) = data.value[index];
+
+            return PodcastListTile(
+              podcast,
+              hasNew: hasNew,
+              total: totalEpisodes,
+              unlistened: unlistenedEpisodes,
+            );
+          },
         ),
       ),
     );
