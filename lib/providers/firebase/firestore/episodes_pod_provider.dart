@@ -27,7 +27,7 @@ class EpisodesPod extends _$EpisodesPod {
           toFirestore: (data, _) => data.toJson(),
         );
 
-    final episodesQuery = _episodes.orderBy('pubDate');
+    final episodesQuery = _episodes.orderBy('pubDate', descending: true);
     // If we already have at least some data we yield (and set state) first
     if ((await _episodes.count().get()).count != null) {
       yield (await episodesQuery.get())
