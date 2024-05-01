@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/keep_alive_link_extensions.dart';
-import 'package:podcast/providers/firebase/firestore/podcast_pod_provider.dart';
+import 'package:podcast/providers/firebase/firestore/podcast_list_pod_provider.dart';
 import 'package:podcast/providers/repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,9 +15,9 @@ class EpisodesPod extends _$EpisodesPod {
 
   @override
   Stream<List<Episode>> build(Podcast podcast) async* {
-    ref.watch(podcastPodProvider);
+    ref.watch(podcastListPodProvider);
     _episodes = ref
-        .watch(podcastPodProvider.notifier)
+        .watch(podcastListPodProvider.notifier)
         .collectionForPodcast(
           'episodes',
           podcast,
@@ -26,7 +26,6 @@ class EpisodesPod extends _$EpisodesPod {
           fromFirestore: (snapshot, _) => Episode.fromJson(snapshot.data()!),
           toFirestore: (data, _) => data.toJson(),
         );
-    ;
 
     final episodesQuery = _episodes.orderBy('pubDate');
     // If we already have at least some data we yield (and set state) first
