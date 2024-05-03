@@ -23,6 +23,14 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
     AsyncData<Query<Podcast>> data,
   ) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: ref.read(podcastListPodProvider.notifier).refreshAll,
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final rssUrl = await showDialog<String>(
@@ -45,10 +53,7 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
         child: FirestoreListView<Podcast>(
           query: data.value,
           itemBuilder: (context, snapshot) {
-            return PodcastListTile(
-              PodcastId(snapshot),
-              snapshot.data(),
-            );
+            return PodcastListTile(snapshot);
           },
         ),
       ),

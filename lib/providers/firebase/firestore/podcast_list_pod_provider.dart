@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/response_extension.dart';
+import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/providers/firebase/firestore/firestore_provider.dart';
 import 'package:podcast/providers/repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,6 +18,7 @@ class PodcastListPod extends _$PodcastListPod {
     final firestore = ref.watch(firestoreProvider.notifier);
     // @TODO: Check if this will continue watching after provider is disposed
 
+    refreshAll();
     // @TODO: Maybe automatically check episodes and update here?
     // @TODO: Should we store an episode hash or something to use to check if we need to update maybe?
 
@@ -28,65 +30,61 @@ class PodcastListPod extends _$PodcastListPod {
         return podcast.toJson();
       },
     );
-
-    // Some kind of migrating code when changing the data structure
-    // await for (final snapshot in _podcastList.snapshots()) {
-    //   for (final doc in snapshot.docs) {
-    //     final data = doc.data();
-    //     try {
-    //       Podcast.fromJson(data);
-    //     } catch (e) {
-    //       migratePodcast(PodcastId(doc.id), data['rssUrl'] as String);
-    //     }
-    //   }
-    // }
-
-    // await for (final snapshot in _podcastList.orderBy('name').snapshots()) {
-    //   yield [
-    //     for (final doc in snapshot.docs)
-    //       PodcastListRow(
-    //         id: PodcastId(doc.id),
-    //         podcast: doc.data(),
-    //         hasNew: true,
-    //         totalEpisodes: (await _podcastList
-    //                     .doc(doc.id)
-    //                     .collection('episodes')
-    //                     .count()
-    //                     .get())
-    //                 .count ??
-    //             0,
-    //         unlistenedEpisodes: (await _podcastList
-    //                     .doc(doc.id)
-    //                     .collection('episodes')
-    //                     .where('listened', isEqualTo: true)
-    //                     .count()
-    //                     .get())
-    //                 .count ??
-    //             0,
-    //       ),
-    //   ];
-    // }
   }
 
   Future<void> refreshAll() async {
     await future;
     await Future.wait([
       for (final snapshot in (await state.requireValue.get()).docs)
-        _refreshPodcast(PodcastId(snapshot), snapshot.data().rssUrl),
+        _refreshPodcast(snapshot),
     ]);
   }
 
-  Future<void> _refreshPodcast(PodcastId id, String rssUrl) async {
-    ref.invalidate(fetchPodcastProvider(rssUrl));
-    final podcast = await ref.read(fetchPodcastProvider(rssUrl).future);
-    state.requireValue.doc(id.id).set(podcast);
+  Future<void> _refreshPodcast(
+    QueryDocumentSnapshot<Podcast> storedPodcastSnapshot,
+  ) async {
+    final storedPodcast = storedPodcastSnapshot.data();
+
+    // Invalidates both podcast and episode fetcher
+    ref.invalidate(fetchPodcastProvider(storedPodcast.rssUrl));
+    var fetchedPodcast = await ref.read(
+      fetchPodcastProvider(storedPodcast.rssUrl).future,
+    );
+
+    // region Update episodes list
+    // First: fetch/parse all episodes
+    final fetchedEpisodes = await ref.read(
+      fetchEpisodesProvider(storedPodcast).future,
+    );
+
+    final episodeHash = EpisodesHash.fromEpisodes(fetchedEpisodes);
+    // check if the new episode hash does not match the stored one
+    if (storedPodcast.episodesHash != episodeHash) {
+      // If it does NOT match, update the episode list
+      await ref.read(
+        episodeListPodProvider(storedPodcastSnapshot).future,
+      );
+    }
+    // Update the totalEpisodes with the new value
+    // set the episode hash of the "new" [fetchedPodcast] with the hash from the new list
+    fetchedPodcast = fetchedPodcast.copyWith(
+      episodesHash: episodeHash,
+      totalEpisodes: fetchedEpisodes.length,
+    );
+    // endregion Update episodes list
+
+    // If the data we downloaded from the RSS feed is identical,
+    // no need to update
+    if (storedPodcast != fetchedPodcast) {
+      state.requireValue.doc(storedPodcastSnapshot.id).set(fetchedPodcast);
+    }
   }
 
   Future<void> addPodcastsToList(String rssUrl) async {
-    final downloadedPodcast =
-        await ref.read(fetchPodcastProvider(rssUrl).future);
+    // final downloadedPodcast =
+    //     await ref.read(fetchPodcastProvider(rssUrl).future);
 
-    throw '';
+    throw UnimplementedError();
     // switch (state.requireValue.firstWhereOrNull(
     //   (element) => element.podcast.rssUrl == rssUrl,
     // )) {

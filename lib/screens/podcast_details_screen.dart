@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
-import 'package:podcast/providers/firebase/firestore/episodes_pod_provider.dart';
+import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class PodcastDetailsScreen extends AsyncValueWidget<Query<Episode>> {
-  final PodcastId podcastId;
-  final Podcast podcast;
+  final QueryDocumentSnapshot<Podcast> podcastSnapshot;
 
-  const PodcastDetailsScreen(this.podcastId, this.podcast, {super.key});
+  const PodcastDetailsScreen(this.podcastSnapshot, {super.key});
 
   @override
   ProviderBase<AsyncValue<Query<Episode>>> get provider =>
-      episodesPodProvider(podcastId);
+      episodeListPodProvider(podcastSnapshot);
 
   @override
   Widget buildWithData(
@@ -24,6 +23,7 @@ class PodcastDetailsScreen extends AsyncValueWidget<Query<Episode>> {
     WidgetRef ref,
     AsyncData<Query<Episode>> data,
   ) {
+    final podcast = podcastSnapshot.data();
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
       body: FirestoreListView(
