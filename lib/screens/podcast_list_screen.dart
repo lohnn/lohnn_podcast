@@ -46,7 +46,7 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
           query: data.value,
           itemBuilder: (context, snapshot) {
             return PodcastListTile(
-              PodcastId(snapshot.id),
+              PodcastId(snapshot),
               snapshot.data(),
             );
           },

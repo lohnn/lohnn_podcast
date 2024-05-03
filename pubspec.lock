@@ -525,6 +525,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  hashlib:
+    dependency: "direct main"
+    description:
+      name: hashlib
+      sha256: b9e2528c341c8e060f410bf049b18aea06218e77f857562bd18e8cc2e003e467
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.14.0"
+  hashlib_codecs:
+    dependency: transitive
+    description:
+      name: hashlib_codecs
+      sha256: "49e2a471f74b15f1854263e58c2ac11f2b631b5b12c836f9708a35397d36d626"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   hooks_riverpod:
     dependency: "direct main"
     description:

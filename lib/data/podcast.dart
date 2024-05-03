@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hashlib/hashlib.dart';
+import 'package:podcast/data/episode.dart';
 import 'package:podcast/extensions/nullability_extensions.dart';
 import 'package:podcast/extensions/xml_element_extension.dart';
 import 'package:xml/xml.dart';
@@ -6,7 +9,26 @@ import 'package:xml/xml.dart';
 part 'podcast.freezed.dart';
 part 'podcast.g.dart';
 
-extension type PodcastId(String id) {}
+extension type const PodcastId._(String id) {
+  factory PodcastId(QueryDocumentSnapshot<Podcast> snapshot) {
+    return PodcastId._(snapshot.id);
+  }
+}
+
+extension type const EpisodesHash(String hash) {
+  factory EpisodesHash.fromEpisodes(List<Episode> episodes) {
+    final sink = md5.createSink();
+    for (final episode in episodes) {
+      sink.add(episode.toString().codeUnits);
+    }
+    sink.close();
+    return EpisodesHash(sink.digest().toString());
+  }
+
+  factory EpisodesHash.fromJson(String hash) => EpisodesHash(hash);
+
+  String toJson() => hash;
+}
 
 @freezed
 class Podcast with _$Podcast {
@@ -20,9 +42,11 @@ class Podcast with _$Podcast {
     required String? lastBuildDate,
     required String? copyright,
     required String? generator,
+    // Below is fields used for state
     required int? totalEpisodes,
     required int? unlistenedEpisodes,
     required bool? showDot,
+    required EpisodesHash? episodesHash,
   }) = _Podcast;
 
   factory Podcast.fromJson(Map<String, dynamic> json) =>
@@ -57,6 +81,7 @@ class Podcast with _$Podcast {
       totalEpisodes: 0,
       unlistenedEpisodes: 0,
       showDot: false,
+      episodesHash: null,
     );
   }
 }
