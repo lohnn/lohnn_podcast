@@ -69,16 +69,17 @@ class PodcastListPod extends _$PodcastListPod {
   }
 
   Future<void> refreshAll() async {
-    // await Future.wait([
-    //   for (final PodcastListRow(:id, :podcast) in state.requireValue)
-    //     _refreshPodcast(id, podcast.rssUrl),
-    // ]);
+    await future;
+    await Future.wait([
+      for (final snapshot in (await state.requireValue.get()).docs)
+        _refreshPodcast(PodcastId(snapshot), snapshot.data().rssUrl),
+    ]);
   }
 
   Future<void> _refreshPodcast(PodcastId id, String rssUrl) async {
     ref.invalidate(fetchPodcastProvider(rssUrl));
     final podcast = await ref.read(fetchPodcastProvider(rssUrl).future);
-    // _podcastList.doc(id.id).set(podcast);
+    state.requireValue.doc(id.id).set(podcast);
   }
 
   Future<void> addPodcastsToList(String rssUrl) async {
