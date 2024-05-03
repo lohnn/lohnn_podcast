@@ -15,17 +15,17 @@ extension type const PodcastId._(String id) {
   }
 }
 
-extension type const EpisodesHash(String hash) {
+extension type const EpisodesHash._(String hash) {
   factory EpisodesHash.fromEpisodes(List<Episode> episodes) {
     final sink = md5.createSink();
     for (final episode in episodes) {
       sink.add(episode.toString().codeUnits);
     }
     sink.close();
-    return EpisodesHash(sink.digest().toString());
+    return EpisodesHash._(sink.digest().toString());
   }
 
-  factory EpisodesHash.fromJson(String hash) => EpisodesHash(hash);
+  factory EpisodesHash.fromJson(String hash) => EpisodesHash._(hash);
 
   String toJson() => hash;
 }
