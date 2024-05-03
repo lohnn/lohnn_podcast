@@ -1,35 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/screens/podcast_details_screen.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class PodcastListTile extends StatelessWidget {
-  final PodcastId podcastId;
-  final Podcast podcast;
+  final QueryDocumentSnapshot<Podcast> podcastSnapshot;
 
   const PodcastListTile(
-    this.podcastId,
-    this.podcast, {
+    this.podcastSnapshot, {
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final podcast = podcastSnapshot.data();
     return ListTile(
       onTap: () {
         // @TODO: Navigate named
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => PodcastDetailsScreen(podcastId, podcast),
+            builder: (context) => PodcastDetailsScreen(podcastSnapshot),
           ),
         );
       },
       leading: RoundedImage(
         imageUrl: podcast.image,
-        showDot: podcast.showDot ?? false,
+        showDot: podcast.showDot,
       ),
       title: Text(podcast.name),
-      trailing: Text('${podcast.unlistenedEpisodes}/${podcast.totalEpisodes}'),
+      trailing: Text('${podcast.listenedEpisodes}/${podcast.totalEpisodes}'),
     );
   }
 }

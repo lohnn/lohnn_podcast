@@ -16,7 +16,7 @@ extension type const PodcastId._(String id) {
 }
 
 extension type const EpisodesHash._(String hash) {
-  factory EpisodesHash.fromEpisodes(List<Episode> episodes) {
+  factory EpisodesHash.fromEpisodes(Iterable<Episode> episodes) {
     final sink = md5.createSink();
     for (final episode in episodes) {
       sink.add(episode.toString().codeUnits);
@@ -43,9 +43,9 @@ class Podcast with _$Podcast {
     required String? copyright,
     required String? generator,
     // Below is fields used for state
-    required int? totalEpisodes,
-    required int? unlistenedEpisodes,
-    required bool? showDot,
+    required int totalEpisodes,
+    required int listenedEpisodes,
+    required bool showDot,
     required EpisodesHash? episodesHash,
   }) = _Podcast;
 
@@ -79,7 +79,7 @@ class Podcast with _$Podcast {
       language: language,
       lastBuildDate: lastBuildDate,
       totalEpisodes: 0,
-      unlistenedEpisodes: 0,
+      listenedEpisodes: 0,
       showDot: false,
       episodesHash: null,
     );
