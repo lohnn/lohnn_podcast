@@ -62,9 +62,9 @@ class PodcastListPod extends _$PodcastListPod {
     if (storedPodcast.episodesHash != episodeHash ||
         storedPodcast.totalEpisodes != fetchedEpisodes.length) {
       // If it does NOT match, update the episode list
-      await ref.read(
-        episodeListPodProvider(storedPodcastSnapshot).future,
-      );
+      await ref
+          .read(episodeListPodProvider(storedPodcastSnapshot).notifier)
+          .updateList();
     }
     // Update the totalEpisodes with the new value
     // set the episode hash of the "new" [fetchedPodcast] with the hash from the new list
