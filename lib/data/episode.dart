@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
+import 'package:podcast/data/firebase_converters/date_time_converter.dart';
+import 'package:podcast/data/firebase_converters/duration_converter.dart';
 import 'package:podcast/extensions/response_extension.dart';
 import 'package:podcast/extensions/xml_element_extension.dart';
 import 'package:xml/xml.dart';
@@ -14,10 +17,13 @@ class Episode with _$Episode implements ToJson {
     required String guid,
     required String url,
     required String title,
-    required DateTime pubDate,
+    @DateTimeConverter() required DateTime? pubDate,
     required String? description,
     required String? imageUrl,
+    @DurationConverter() required Duration? duration,
+    // region Dynamic fields
     @Default(false) bool listened,
+    // endregion Dynamic fields
   }) = _Episode;
 
   const Episode._();
@@ -26,13 +32,15 @@ class Episode with _$Episode implements ToJson {
       _$EpisodeFromJson(json);
 
   /// Adds the fields from [other] that are set at runtime, such as [listened].
-  Episode operator +(Episode other) => copyWith(listened: other.listened);
+  Episode operator +(Episode other) => copyWith(
+        listened: other.listened,
+      );
 
   static final _rfc822Format = DateFormat('EEE, dd MMM yyyy HH:mm:ss');
 
   static Iterable<Episode> fromXml(XmlDocument document) sync* {
     for (final item in document.findAllElements('item')) {
-      // Required fields??
+      // region Required fields
       final guid = item.getElementContent('guid')!.replaceAll('/', '-');
       if (guid.contains('/')) {
         throw UnsupportedError(item.toString());
@@ -52,15 +60,34 @@ class Episode with _$Episode implements ToJson {
       if (title == null) {
         debugPrint('Title null for: $item');
       }
+      // endregion Required fields
 
-      // Optional fields
+      // region Optional fields
+      final durationString = item.getElementContent('itunes:duration');
+      final duration =
+          switch (durationString?.split(':').map(int.parse).toList()) {
+        null => null,
+        [final hours, final minutes, final seconds] => Duration(
+            hours: hours,
+            minutes: minutes,
+            seconds: seconds,
+          ),
+        [final minutes, final seconds] => Duration(
+            minutes: minutes,
+            seconds: seconds,
+          ),
+        [final seconds] => Duration(seconds: seconds),
+        _ => null,
+      };
       final imageUrl = item.getElement('itunes:image')?.getAttribute('href');
       final description = item.getElementContent('description');
+      // endregion Required fields
 
       yield Episode(
         guid: guid,
         url: link!,
         title: title!,
+        duration: duration,
         pubDate: pubDate,
         description: description,
         imageUrl: imageUrl,

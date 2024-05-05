@@ -28,7 +28,7 @@ class EpisodeListPod extends _$EpisodeListPod {
     return _reference.orderBy('pubDate', descending: true);
   }
 
-  Future<void> _updateList() async {
+  Future<void> updateList() async {
     await future;
     final episodeList = await ref.watch(
       fetchEpisodesProvider(podcastSnapshot.data()).future,
