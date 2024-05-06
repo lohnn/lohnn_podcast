@@ -1,21 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
+import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/screens/logged_in/episode_list_screen.dart';
 import 'package:podcast/screens/logged_in/podcast_list_screen.dart';
-import 'package:podcast/widgets/rounded_image.dart';
+import 'package:podcast/widgets/podcast_actions.dart';
 import 'package:podcast/widgets/small_media_player_controls.dart';
 
-class LoggedInScreen extends HookConsumerWidget {
+class LoggedInScreen extends HookWidget {
   const LoggedInScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final router = useMemoized(
       () => GoRouter(
         routes: [
@@ -33,15 +33,34 @@ class LoggedInScreen extends HookConsumerWidget {
       ),
     );
 
-    return Scaffold(
-      // bottomSheet: const MediaBottomSheet(),
-      bottomNavigationBar: const SmallMediaPlayerControls(),
-      body: Router<Object>(
-        restorationScopeId: 'router',
-        routeInformationProvider: router.routeInformationProvider,
-        routeInformationParser: router.routeInformationParser,
-        routerDelegate: router.routerDelegate,
-        backButtonDispatcher: router.backButtonDispatcher,
+    return PodcastActions(
+      child: Shortcuts(
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.mediaPlayPause):
+              ChangePlayStateIntent(
+            PlayState.toggle,
+          ),
+          SingleActivator(LogicalKeyboardKey.mediaPlay): ChangePlayStateIntent(
+            PlayState.play,
+          ),
+          SingleActivator(LogicalKeyboardKey.mediaPause): ChangePlayStateIntent(
+            PlayState.pause,
+          ),
+          SingleActivator(LogicalKeyboardKey.mediaStop): ChangePlayStateIntent(
+            PlayState.pause,
+          ),
+        },
+        child: Scaffold(
+          // bottomSheet: const MediaBottomSheet(),
+          bottomNavigationBar: const SmallMediaPlayerControls(),
+          body: Router<Object>(
+            restorationScopeId: 'router',
+            routeInformationProvider: router.routeInformationProvider,
+            routeInformationParser: router.routeInformationParser,
+            routerDelegate: router.routerDelegate,
+            backButtonDispatcher: router.backButtonDispatcher,
+          ),
+        ),
       ),
     );
     return const Navigator(
@@ -51,7 +70,6 @@ class LoggedInScreen extends HookConsumerWidget {
     );
   }
 }
-
 
 class MediaBottomSheet extends StatefulWidget {
   const MediaBottomSheet({super.key});
