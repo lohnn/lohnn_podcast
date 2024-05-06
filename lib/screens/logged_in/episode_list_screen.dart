@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
+import 'package:podcast/providers/firebase/audio_player_provider.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
-class PodcastDetailsScreen extends AsyncValueWidget<Query<Episode>> {
+class EpisodeListScreen extends AsyncValueWidget<Query<Episode>> {
   final QueryDocumentSnapshot<Podcast> podcastSnapshot;
 
-  const PodcastDetailsScreen(this.podcastSnapshot, {super.key});
+  const EpisodeListScreen(this.podcastSnapshot, {super.key});
 
   @override
   ProviderBase<AsyncValue<Query<Episode>>> get provider =>
@@ -31,6 +32,9 @@ class PodcastDetailsScreen extends AsyncValueWidget<Query<Episode>> {
         itemBuilder: (context, snapshot) {
           final episode = snapshot.data();
           return ListTile(
+            onTap: () {
+              ref.read(audioPlayerPodProvider.notifier).playEpisode(snapshot);
+            },
             leading: RoundedImage(
               imageUrl: episode.imageUrl ?? podcast.image,
               showDot: !episode.listened,

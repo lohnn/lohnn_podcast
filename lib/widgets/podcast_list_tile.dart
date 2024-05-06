@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:podcast/data/podcast.dart';
-import 'package:podcast/screens/podcast_details_screen.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class PodcastListTile extends StatelessWidget {
@@ -17,12 +17,7 @@ class PodcastListTile extends StatelessWidget {
     final podcast = podcastSnapshot.data();
     return ListTile(
       onTap: () {
-        // @TODO: Navigate named
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PodcastDetailsScreen(podcastSnapshot),
-          ),
-        );
+        context.push('/podcast', extra: podcastSnapshot);
       },
       leading: RoundedImage(
         imageUrl: podcast.image,
