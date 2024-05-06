@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
+import 'package:podcast/screens/logged_in_screen.dart';
 import 'package:podcast/screens/login_screen.dart';
-import 'package:podcast/screens/podcast_list_screen.dart';
+import 'package:podcast/screens/logged_in/podcast_list_screen.dart';
 
 Future<void> main() async {
   runApp(
@@ -33,7 +34,7 @@ class MainApp extends AsyncValueWidget<User?> {
   ) {
     return switch (data.value) {
       null => const LoginScreen(),
-      _ => const PodcastListScreen(),
+      _ => const LoggedInScreen(),
     };
   }
 }

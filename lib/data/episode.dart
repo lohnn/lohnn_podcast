@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
@@ -23,6 +22,7 @@ class Episode with _$Episode implements ToJson {
     @DurationConverter() required Duration? duration,
     // region Dynamic fields
     @Default(false) bool listened,
+    @DurationConverter() Duration? currentPosition,
     // endregion Dynamic fields
   }) = _Episode;
 
@@ -34,6 +34,7 @@ class Episode with _$Episode implements ToJson {
   /// Adds the fields from [other] that are set at runtime, such as [listened].
   Episode operator +(Episode other) => copyWith(
         listened: other.listened,
+        currentPosition: other.currentPosition,
       );
 
   static final _rfc822Format = DateFormat('EEE, dd MMM yyyy HH:mm:ss');
@@ -50,8 +51,7 @@ class Episode with _$Episode implements ToJson {
       final pubDate =
           _rfc822Format.tryParse(pubDateValue) ?? DateTime.parse(pubDateValue);
 
-      final link = item.getElementContent('link') ??
-          item.getElement('enclosure')?.getAttribute('url');
+      final link = item.getElement('enclosure')?.getAttribute('url');
       if (link == null) {
         debugPrint('Link null for: $item');
       }

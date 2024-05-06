@@ -4,14 +4,14 @@ import 'package:podcast/extensions/nullability_extensions.dart';
 class RoundedImage extends StatelessWidget {
   final String? imageUrl;
   final bool showDot;
+  final int imageSize;
 
   const RoundedImage({
     required this.imageUrl,
-    required this.showDot,
+    this.showDot = false,
+    this.imageSize = 40,
     super.key,
   });
-
-  static const _imageSize = 40;
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +20,17 @@ class RoundedImage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 3, bottom: 3),
           child: SizedBox(
-            height: _imageSize.toDouble(),
-            width: _imageSize.toDouble(),
+            height: imageSize.toDouble(),
+            width: imageSize.toDouble(),
             child: imageUrl?.let(
                   (url) => ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      width: _imageSize.toDouble(),
-                      height: _imageSize.toDouble(),
+                      width: imageSize.toDouble(),
+                      height: imageSize.toDouble(),
                       url,
-                      cacheHeight: _imageSize,
-                      cacheWidth: _imageSize,
+                      cacheHeight: imageSize,
+                      cacheWidth: imageSize,
                     ),
                   ),
                 ) ??
