@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:podcast/data/episode.dart';
+import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'audio_player_provider.g.dart';
@@ -33,9 +34,15 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     state = episodeSnapshot.data();
   }
 
-  void pause() => _player.pause();
-
-  void resume() => _player.play();
+  void changePlayState(PlayState state) => switch (state) {
+        PlayState.toggle => switch (_player.playing) {
+            true => _player.pause(),
+            false => _player.play(),
+          },
+        PlayState.play => _player.play(),
+        PlayState.pause => _player.pause(),
+        PlayState.stop => _player.stop(),
+      };
 }
 
 @riverpod

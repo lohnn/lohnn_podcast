@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
-import 'package:podcast/providers/firebase/audio_player_provider.dart';
+import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/rounded_image.dart';
