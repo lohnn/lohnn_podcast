@@ -25,6 +25,7 @@ dependencies:
   google_sign_in: ^6.2.1
   hashlib: ^1.14.0
   hooks_riverpod: ^2.5.1
+  integral_isolates: ^0.5.1
   intl: ^0.18.1
   json_serializable: ^6.8.0
   just_audio: ^0.9.37
