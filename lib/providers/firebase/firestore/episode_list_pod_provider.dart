@@ -8,15 +8,28 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'episode_list_pod_provider.g.dart';
 
 @riverpod
+Future<DocumentSnapshot<Episode>> episode(
+  EpisodeRef ref,
+  PodcastId podcastId,
+  String episodeId,
+) async {
+  final (_, episodeList) = await ref.watch(
+    episodeListPodProvider(podcastId).future,
+  );
+  return episodeList.doc(episodeId).get();
+}
+
+@riverpod
 class EpisodeListPod extends _$EpisodeListPod {
-  late CollectionReference<Episode> _reference;
   late Podcast _podcast;
 
   @override
-  Future<(Podcast, Query<Episode>)> build(
+  Future<(Podcast, CollectionReference<Episode>)> build(
     PodcastId podcastId,
   ) async {
-    _reference =
+    _podcast = (await ref.watch(podcastProvider(podcastId).future)).data()!;
+
+    final reference =
         (await ref.watch(podcastListPodProvider.notifier).collectionForPodcast(
                   'episodes',
                   podcastId,
@@ -26,19 +39,19 @@ class EpisodeListPod extends _$EpisodeListPod {
       toFirestore: (data, _) => data.toJson(),
     );
 
-    _podcast = (await ref.watch(podcastProvider(podcastId).future)).data()!;
-
-    return (_podcast, _reference.orderBy('pubDate', descending: true));
+    return (_podcast, reference);
   }
 
   Future<void> updateList() async {
     await future;
+    final (_, reference) = state.requireValue;
+
     final episodeList = await ref.watch(
       fetchEpisodesProvider(_podcast).future,
     );
 
     final storedDocuments = {
-      for (final episodeSnapshot in (await _reference.get()).docs)
+      for (final episodeSnapshot in (await reference.get()).docs)
         episodeSnapshot.data().guid: episodeSnapshot.data(),
     };
 
@@ -49,13 +62,13 @@ class EpisodeListPod extends _$EpisodeListPod {
         // Does the episode contain any updates?
         if (downloadedEpisode + storedEpisode case final episode
             when episode != storedEpisode) {
-          _reference
+          reference
               .doc(downloadedEpisode.guid)
               .set(downloadedEpisode + storedEpisode);
         }
       } else {
         // Episode does not exist
-        _reference.doc(downloadedEpisode.guid).set(downloadedEpisode);
+        reference.doc(downloadedEpisode.guid).set(downloadedEpisode);
       }
     }
   }
