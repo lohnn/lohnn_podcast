@@ -42,13 +42,16 @@ class AudioPlayerPod extends _$AudioPlayerPod {
         PlayState.pause => _player.pause(),
         PlayState.stop => _player.stop(),
       };
+
+  // ignore: avoid_public_notifier_properties
+  Duration? get currentEpisodeDuration => state?.duration;
 }
 
 @riverpod
 Stream<Duration?> currentPosition(CurrentPositionRef ref) async* {
   final audioPlayer = ref.watch(_audioPlayerProvider);
-  yield audioPlayer.duration;
-  yield* audioPlayer.durationStream;
+  yield audioPlayer.position;
+  yield* audioPlayer.positionStream;
 }
 
 @riverpod
