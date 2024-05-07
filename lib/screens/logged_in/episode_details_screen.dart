@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
+import 'package:podcast/widgets/pub_date_text.dart';
 import 'package:podcast/widgets/rounded_image.dart';
-import 'package:timeago_flutter/timeago_flutter.dart';
 
 class EpisodeDetailsScreen
     extends AsyncValueWidget<(Podcast, DocumentSnapshot<Episode>)> {
@@ -24,8 +23,6 @@ class EpisodeDetailsScreen
   @override
   ProviderBase<AsyncValue<(Podcast, DocumentSnapshot<Episode>)>> get provider =>
       episodeProvider(podcastId, episodeId);
-
-  static final _dateFormat = DateFormat.yMMMMd();
 
   @override
   Widget buildWithData(
@@ -61,23 +58,7 @@ class EpisodeDetailsScreen
                       ],
                     ),
                     if (episode.pubDate case final pubDate?)
-                      Timeago(
-                        date: pubDate,
-                        builder: (_, value) {
-                          return Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: value),
-                                if (DateTime.now().difference(pubDate).inDays >
-                                    1)
-                                  TextSpan(
-                                    text: ' (${_dateFormat.format(pubDate)})',
-                                  ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                      PubDateText(pubDate),
                     PlayEpisodeButton(episode),
                   ],
                 ),
