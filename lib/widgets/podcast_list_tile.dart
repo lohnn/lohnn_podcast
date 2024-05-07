@@ -22,6 +22,7 @@ class PodcastListTile extends StatelessWidget {
       leading: RoundedImage(
         imageUrl: podcast.image,
         showDot: podcast.showDot,
+        imageSize: 40,
       ),
       title: Text(podcast.name),
       trailing: Text('${podcast.listenedEpisodes}/${podcast.totalEpisodes}'),
