@@ -28,7 +28,10 @@ class PlayPauseButton extends ConsumerWidget {
               },
             ),
           ),
-        _ => const CircularProgressIndicator.adaptive(),
+        _ => const IconButton(
+            onPressed: null,
+            icon: CircularProgressIndicator.adaptive(),
+          ),
       },
     );
   }
