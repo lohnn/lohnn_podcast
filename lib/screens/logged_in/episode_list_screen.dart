@@ -30,7 +30,7 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
       body: FirestoreListView(
-        query: query,
+        query: query.orderBy('pubDate', descending: true),
         itemBuilder: (context, snapshot) {
           final episode = snapshot.data();
           return ListTile(

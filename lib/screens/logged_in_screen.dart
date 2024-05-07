@@ -32,9 +32,11 @@ class LoggedInScreen extends HookWidget {
               GoRoute(
                 path: ':episodeId',
                 builder: (context, state) => EpisodeDetailsScreen(
-                  state.pathParameters['podcastId']!,
+                  podcastId:
+                      PodcastId.fromString(state.pathParameters['podcastId']!),
+                  episodeId: state.pathParameters['podcastId']!,
                 ),
-              )
+              ),
             ],
           ),
         ],
@@ -70,11 +72,6 @@ class LoggedInScreen extends HookWidget {
           ),
         ),
       ),
-    );
-    return const Navigator(
-      pages: [
-        MaterialPage(child: PodcastListScreen()),
-      ],
     );
   }
 }
