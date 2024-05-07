@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:integral_isolates/integral_isolates.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/response_extension.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/providers/firebase/firestore/firestore_provider.dart';
+import 'package:podcast/providers/isolate_provider.dart';
 import 'package:podcast/providers/repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -34,6 +36,7 @@ class PodcastListPod extends _$PodcastListPod {
 
   Future<void> refreshAll() async {
     await future;
+    ref.invalidate(isolateProvider);
     await Future.wait([
       for (final snapshot in (await state.requireValue.get()).docs)
         _refreshPodcast(snapshot),
@@ -47,37 +50,44 @@ class PodcastListPod extends _$PodcastListPod {
 
     // Invalidates both podcast and episode fetcher
     ref.invalidate(fetchPodcastProvider(storedPodcast.rssUrl));
-    var fetchedPodcast = await ref.read(
-      fetchPodcastProvider(storedPodcast.rssUrl).future,
-    );
 
-    // region Update episodes list
-    // First: fetch/parse all episodes
-    final fetchedEpisodes = await ref.read(
-      fetchEpisodesProvider(storedPodcast).future,
-    );
+    try {
+      var fetchedPodcast = await ref.read(
+        fetchPodcastProvider(storedPodcast.rssUrl).future,
+      );
 
-    final episodeHash = EpisodesHash.fromEpisodes(fetchedEpisodes);
-    // check if the new episode hash does not match the stored one
-    if (storedPodcast.episodesHash != episodeHash ||
-        storedPodcast.totalEpisodes != fetchedEpisodes.length) {
-      // If it does NOT match, update the episode list
-      await ref
-          .read(episodeListPodProvider(storedPodcastSnapshot).notifier)
-          .updateList();
-    }
-    // Update the totalEpisodes with the new value
-    // set the episode hash of the "new" [fetchedPodcast] with the hash from the new list
-    fetchedPodcast = fetchedPodcast.copyWith(
-      episodesHash: episodeHash,
-      totalEpisodes: fetchedEpisodes.length,
-    );
-    // endregion Update episodes list
+      // region Update episodes list
+      // First: fetch/parse all episodes
+      final fetchedEpisodes = await ref.read(
+        fetchEpisodesProvider(storedPodcast).future,
+      );
 
-    // If the data we downloaded from the RSS feed is identical,
-    // no need to update
-    if (storedPodcast != fetchedPodcast) {
-      state.requireValue.doc(storedPodcastSnapshot.id).set(fetchedPodcast);
+      final episodeHash = EpisodesHash.fromEpisodes(fetchedEpisodes);
+      // check if the new episode hash does not match the stored one
+      if (storedPodcast.episodesHash != episodeHash ||
+          storedPodcast.totalEpisodes != fetchedEpisodes.length) {
+        // If it does NOT match, update the episode list
+        await ref
+            .read(episodeListPodProvider(storedPodcastSnapshot).notifier)
+            .updateList();
+      }
+      // Update the totalEpisodes with the new value
+      // set the episode hash of the "new" [fetchedPodcast] with the hash from the new list
+      fetchedPodcast = fetchedPodcast.copyWith(
+        episodesHash: episodeHash,
+        totalEpisodes: fetchedEpisodes.length,
+      );
+      // endregion Update episodes list
+
+      // If the data we downloaded from the RSS feed is identical,
+      // no need to update
+      if (storedPodcast != fetchedPodcast) {
+        state.requireValue.doc(storedPodcastSnapshot.id).set(fetchedPodcast);
+      }
+    } on BackpressureDropException catch (_) {
+      // noop
+    } catch (e) {
+      rethrow;
     }
   }
 

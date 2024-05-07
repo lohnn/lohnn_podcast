@@ -6,5 +6,7 @@ part 'isolate_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 StatefulIsolate isolate(IsolateRef ref, Key key) {
-  return StatefulIsolate();
+  final isolate = StatefulIsolate();
+  ref.onDispose(isolate.dispose);
+  return isolate;
 }
