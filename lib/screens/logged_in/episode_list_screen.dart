@@ -41,6 +41,7 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
             leading: RoundedImage(
               imageUrl: episode.imageUrl ?? podcast.image,
               showDot: !episode.listened,
+              imageSize: 40,
             ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

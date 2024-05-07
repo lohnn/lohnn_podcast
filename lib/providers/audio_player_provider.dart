@@ -43,6 +43,10 @@ class AudioPlayerPod extends _$AudioPlayerPod {
         PlayState.stop => _player.stop(),
       };
 
+  void setPosition(int positionInMillis) {
+    _player.seek(Duration(milliseconds: positionInMillis));
+  }
+
   // ignore: avoid_public_notifier_properties
   Duration? get currentEpisodeDuration => state?.duration;
 }
