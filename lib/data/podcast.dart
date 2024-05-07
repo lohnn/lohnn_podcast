@@ -13,6 +13,8 @@ extension type const PodcastId._(String id) {
   factory PodcastId(QueryDocumentSnapshot<Podcast> snapshot) {
     return PodcastId._(snapshot.id);
   }
+
+  factory PodcastId.fromString(String id) = PodcastId._;
 }
 
 extension type const EpisodesHash._(String hash) {

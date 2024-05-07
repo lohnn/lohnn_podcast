@@ -16,29 +16,32 @@ class ErrorScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     debugPrint(state.toString());
     debugPrintStack(stackTrace: state.stackTrace);
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('Something went wrong.'),
-          TextButton(
-            onPressed: onRefresh,
-            child: const Text('Try reloading the page'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final shouldLogout = await showDialog<bool>(
-                context: context,
-                builder: (context) => const _LogOutDialog(),
-              );
-              if (shouldLogout ?? false) {
-                ref.read(userPodProvider.notifier).logOut();
-              }
-            },
-            child: const Text('Log out?'),
-          ),
-        ],
+    return Scaffold(
+      appBar: AppBar(),
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Something went wrong.'),
+            TextButton(
+              onPressed: onRefresh,
+              child: const Text('Try reloading the page'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final shouldLogout = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => const _LogOutDialog(),
+                );
+                if (shouldLogout ?? false) {
+                  ref.read(userPodProvider.notifier).logOut();
+                }
+              },
+              child: const Text('Log out?'),
+            ),
+          ],
+        ),
       ),
     );
   }
