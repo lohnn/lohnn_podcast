@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
+import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
@@ -46,7 +47,7 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
               children: [
                 if (episode.description case final description?)
                   Text(
-                    description,
+                    description.removeHtmlTags(),
                     maxLines: 2,
                   ),
                 IconButton(
