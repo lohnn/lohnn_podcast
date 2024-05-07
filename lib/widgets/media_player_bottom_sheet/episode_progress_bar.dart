@@ -17,16 +17,58 @@ class EpisodeProgressBar extends ConsumerWidget {
     final currentPosition = ref.watch(currentPositionProvider);
     final bufferedPosition = ref.watch(bufferedPositionProvider);
 
-    final colorScheme = ref.watch(episodeColorSchemeProvider(episode));
+    final colorScheme =
+        ref.watch(episodeColorSchemeProvider(episode)).valueOrNull ??
+            Theme.of(context).colorScheme;
+
+    final episodeDuration = episode.duration ??
+        ref.watch(audioPlayerPodProvider.notifier).currentEpisodeDuration;
+
+    final bufferProgress =
+        switch ((bufferedPosition.valueOrNull, episodeDuration)) {
+      (final bufferPosition?, final episodeDuration?) =>
+        bufferPosition.inMicroseconds / episodeDuration.inMicroseconds,
+      _ => null,
+    };
+
+    final progress = switch ((currentPosition.valueOrNull, episodeDuration)) {
+      (final currentPosition?, final episodeDuration?) =>
+        currentPosition.inMicroseconds / episodeDuration.inMicroseconds,
+      _ => null,
+    };
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return AnimatedContainer(
-          key: const ValueKey('ProgressBar background'),
-          duration: const Duration(milliseconds: 750),
-          height: height,
-          width: constraints.maxWidth,
-          color: colorScheme.valueOrNull?.primary ?? Colors.grey,
+        return Stack(
+          children: [
+            AnimatedContainer(
+              key: const ValueKey('ProgressBar background'),
+              duration: const Duration(milliseconds: 750),
+              height: height,
+              width: constraints.maxWidth,
+              color: Colors.grey,
+            ),
+            if (bufferProgress case final bufferProgress?)
+              Positioned(
+                child: AnimatedContainer(
+                  key: const ValueKey('ProgressBar background'),
+                  duration: const Duration(milliseconds: 300),
+                  height: height,
+                  width: constraints.maxWidth * bufferProgress,
+                  color: colorScheme.primary,
+                ),
+              ),
+            if (progress case final progress?)
+              Positioned(
+                child: AnimatedContainer(
+                  key: const ValueKey('ProgressBar background'),
+                  duration: const Duration(milliseconds: 300),
+                  height: height,
+                  width: constraints.maxWidth * progress,
+                  color: colorScheme.primaryContainer,
+                ),
+              ),
+          ],
         );
       },
     );
