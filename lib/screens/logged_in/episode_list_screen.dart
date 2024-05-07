@@ -9,6 +9,7 @@ import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
+import 'package:podcast/widgets/pub_date_text.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
@@ -41,7 +42,20 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
               imageUrl: episode.imageUrl ?? podcast.image,
               showDot: !episode.listened,
             ),
-            title: Text(episode.title),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (episode.pubDate case final pubDate?)
+                  DefaultTextStyle(
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w200,
+                    ),
+                    child: PubDateText(pubDate),
+                  ),
+                Text(episode.title),
+              ],
+            ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
