@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
+import 'package:podcast/screens/logged_in/episode_details_screen.dart';
 import 'package:podcast/screens/logged_in/episode_list_screen.dart';
 import 'package:podcast/screens/logged_in/podcast_list_screen.dart';
 import 'package:podcast/widgets/podcast_actions.dart';
@@ -24,10 +24,18 @@ class LoggedInScreen extends HookWidget {
             builder: (context, state) => const PodcastListScreen(),
           ),
           GoRoute(
-            path: '/podcast',
+            path: '/:podcastId',
             builder: (context, state) => EpisodeListScreen(
-              state.extra! as QueryDocumentSnapshot<Podcast>,
+              PodcastId.fromString(state.pathParameters['podcastId']!),
             ),
+            routes: [
+              GoRoute(
+                path: ':episodeId',
+                builder: (context, state) => EpisodeDetailsScreen(
+                  state.pathParameters['podcastId']!,
+                ),
+              )
+            ],
           ),
         ],
       ),

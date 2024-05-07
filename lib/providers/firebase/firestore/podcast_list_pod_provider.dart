@@ -10,6 +10,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'podcast_list_pod_provider.g.dart';
 
+@riverpod
+Future<DocumentSnapshot<Podcast>> podcast(
+  PodcastRef ref,
+  PodcastId id,
+) async {
+  final podListPod = await ref.watch(podcastListPodProvider.future);
+  return podListPod.doc(id.id).get();
+}
+
 @Riverpod(keepAlive: true)
 class PodcastListPod extends _$PodcastListPod {
   @override
@@ -68,7 +77,9 @@ class PodcastListPod extends _$PodcastListPod {
           storedPodcast.totalEpisodes != fetchedEpisodes.length) {
         // If it does NOT match, update the episode list
         await ref
-            .read(episodeListPodProvider(storedPodcastSnapshot).notifier)
+            .read(
+              episodeListPodProvider(PodcastId(storedPodcastSnapshot)).notifier,
+            )
             .updateList();
       }
       // Update the totalEpisodes with the new value

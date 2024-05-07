@@ -7,31 +7,34 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'episode_list_pod_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class EpisodeListPod extends _$EpisodeListPod {
   late CollectionReference<Episode> _reference;
+  late Podcast _podcast;
 
   @override
-  Future<Query<Episode>> build(
-    QueryDocumentSnapshot<Podcast> podcastSnapshot,
+  Future<(Podcast, Query<Episode>)> build(
+    PodcastId podcastId,
   ) async {
-    ref.watch(podcastListPodProvider);
     _reference =
         (await ref.watch(podcastListPodProvider.notifier).collectionForPodcast(
                   'episodes',
-                  PodcastId(podcastSnapshot),
+                  podcastId,
                 ))
             .withConverter(
       fromFirestore: (snapshot, _) => Episode.fromJson(snapshot.data()!),
       toFirestore: (data, _) => data.toJson(),
     );
-    return _reference.orderBy('pubDate', descending: true);
+
+    _podcast = (await ref.watch(podcastProvider(podcastId).future)).data()!;
+
+    return (_podcast, _reference.orderBy('pubDate', descending: true));
   }
 
   Future<void> updateList() async {
     await future;
     final episodeList = await ref.watch(
-      fetchEpisodesProvider(podcastSnapshot.data()).future,
+      fetchEpisodesProvider(_podcast).future,
     );
 
     final storedDocuments = {

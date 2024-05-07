@@ -17,7 +17,7 @@ class PodcastListTile extends StatelessWidget {
     final podcast = podcastSnapshot.data();
     return ListTile(
       onTap: () {
-        context.push('/podcast', extra: podcastSnapshot);
+        context.push('/${podcastSnapshot.id}', extra: podcastSnapshot);
       },
       leading: RoundedImage(
         imageUrl: podcast.image,
