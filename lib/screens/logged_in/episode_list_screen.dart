@@ -6,9 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/string_extensions.dart';
-import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
+import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
@@ -35,7 +35,7 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
           final episode = snapshot.data();
           return ListTile(
             onTap: () {
-              context.go('/${podcastId.id}/${episode.guid}');
+              context.push('/${podcastId.id}/${episode.guid}');
             },
             leading: RoundedImage(
               imageUrl: episode.imageUrl ?? podcast.image,
@@ -50,14 +50,7 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
                     description.removeHtmlTags(),
                     maxLines: 2,
                   ),
-                IconButton(
-                  onPressed: () {
-                    ref
-                        .read(audioPlayerPodProvider.notifier)
-                        .playEpisode(snapshot);
-                  },
-                  icon: const Icon(Icons.play_arrow),
-                ),
+                PlayEpisodeButton(episode),
               ],
             ),
           );

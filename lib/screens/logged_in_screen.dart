@@ -9,7 +9,7 @@ import 'package:podcast/screens/logged_in/episode_details_screen.dart';
 import 'package:podcast/screens/logged_in/episode_list_screen.dart';
 import 'package:podcast/screens/logged_in/podcast_list_screen.dart';
 import 'package:podcast/widgets/podcast_actions.dart';
-import 'package:podcast/widgets/small_media_player_controls.dart';
+import 'package:podcast/widgets/media_player_bottom_sheet/small_media_player_controls.dart';
 
 class LoggedInScreen extends HookWidget {
   const LoggedInScreen({super.key});
@@ -34,7 +34,7 @@ class LoggedInScreen extends HookWidget {
                 builder: (context, state) => EpisodeDetailsScreen(
                   podcastId:
                       PodcastId.fromString(state.pathParameters['podcastId']!),
-                  episodeId: state.pathParameters['podcastId']!,
+                  episodeId: state.pathParameters['episodeId']!,
                 ),
               ),
             ],

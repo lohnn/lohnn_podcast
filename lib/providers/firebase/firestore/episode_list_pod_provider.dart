@@ -8,15 +8,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'episode_list_pod_provider.g.dart';
 
 @riverpod
-Future<DocumentSnapshot<Episode>> episode(
+Future<(Podcast, DocumentSnapshot<Episode>)> episode(
   EpisodeRef ref,
   PodcastId podcastId,
   String episodeId,
 ) async {
-  final (_, episodeList) = await ref.watch(
+  final (podcast, episodeList) = await ref.watch(
     episodeListPodProvider(podcastId).future,
   );
-  return episodeList.doc(episodeId).get();
+  return (podcast, await episodeList.doc(episodeId).get());
 }
 
 @riverpod

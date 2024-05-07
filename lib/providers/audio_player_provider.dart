@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
@@ -24,14 +23,14 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   }
 
   Future<void> playEpisode(
-    QueryDocumentSnapshot<Episode> episodeSnapshot,
+    Episode episodeSnapshot,
   ) async {
+    state = episodeSnapshot;
     await _player.setUrl(
-      episodeSnapshot.data().url,
-      initialPosition: episodeSnapshot.data().currentPosition,
+      episodeSnapshot.url,
+      initialPosition: episodeSnapshot.currentPosition,
     );
     _player.play();
-    state = episodeSnapshot.data();
   }
 
   void changePlayState(PlayState state) => switch (state) {
@@ -53,8 +52,15 @@ Stream<Duration?> currentPosition(CurrentPositionRef ref) async* {
 }
 
 @riverpod
-Stream<bool> audioPlaying(AudioPlayingRef ref) async* {
+Stream<Duration?> bufferedPosition(BufferedPositionRef ref) async* {
   final audioPlayer = ref.watch(_audioPlayerProvider);
-  audioPlayer.playing;
-  yield* audioPlayer.playingStream;
+  yield audioPlayer.bufferedPosition;
+  yield* audioPlayer.bufferedPositionStream;
+}
+
+@riverpod
+Stream<PlayerState> audioState(AudioStateRef ref) async* {
+  final audioPlayer = ref.watch(_audioPlayerProvider);
+  yield audioPlayer.playerState;
+  yield* audioPlayer.playerStateStream;
 }
