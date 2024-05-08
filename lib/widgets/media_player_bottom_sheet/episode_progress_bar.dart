@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
@@ -17,9 +18,7 @@ class EpisodeProgressBar extends ConsumerWidget {
     final currentPosition = ref.watch(currentPositionProvider);
     final bufferedPosition = ref.watch(bufferedPositionProvider);
 
-    final colorScheme =
-        ref.watch(episodeColorSchemeProvider(episode)).valueOrNull ??
-            Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     final episodeDuration = episode.duration ??
         ref.watch(audioPlayerPodProvider.notifier).currentEpisodeDuration;
@@ -83,7 +82,7 @@ Future<ColorScheme?> episodeColorScheme(
   // @TODO: Fallback to podcast image
   if (episode.imageUrl case final imageUrl?) {
     return ColorScheme.fromImageProvider(
-      provider: NetworkImage(imageUrl),
+      provider: CachedNetworkImageProvider(imageUrl),
     );
   }
   return null;

@@ -10,6 +10,8 @@ class PlayPauseButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isPlaying = ref.watch(audioStateProvider);
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(12),
       child: switch (isPlaying) {
@@ -26,11 +28,16 @@ class PlayPauseButton extends ConsumerWidget {
                 false => Icons.play_arrow,
                 true => Icons.pause,
               },
+              color: theme.colorScheme.primary,
             ),
           ),
-        _ => const IconButton(
+        _ => IconButton(
             onPressed: null,
-            icon: CircularProgressIndicator.adaptive(),
+            icon: SizedBox(
+              width: theme.iconTheme.size ?? kDefaultFontSize,
+              height: theme.iconTheme.size ?? kDefaultFontSize,
+              child: const CircularProgressIndicator.adaptive(),
+            ),
           ),
       },
     );
