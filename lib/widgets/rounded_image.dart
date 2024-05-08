@@ -19,7 +19,7 @@ class RoundedImage extends StatelessWidget {
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
     final scaledImageSize = switch (imageSize) {
       null => null,
-      final imageSize => (imageSize * pixelRatio).toInt(),
+      final imageSize => (imageSize * pixelRatio).round(),
     };
 
     return Stack(
