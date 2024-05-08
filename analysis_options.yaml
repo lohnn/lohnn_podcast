@@ -31,6 +31,7 @@ linter:
     - literal_only_boolean_expressions
     - omit_local_variable_types
     - prefer_adjacent_string_concatenation
+    - prefer_single_quotes
     - require_trailing_commas
     - unnecessary_lambdas
     - use_if_null_to_convert_nulls_to_bools

@@ -6,6 +6,8 @@ import 'package:xml/xml.dart';
 part 'podcast.freezed.dart';
 part 'podcast.g.dart';
 
+extension type PodcastId(String id) {}
+
 @freezed
 class Podcast with _$Podcast {
   const factory Podcast({
@@ -18,6 +20,9 @@ class Podcast with _$Podcast {
     required String? lastBuildDate,
     required String? copyright,
     required String? generator,
+    required int? totalEpisodes,
+    required int? unlistenedEpisodes,
+    required bool? showDot,
   }) = _Podcast;
 
   factory Podcast.fromJson(Map<String, dynamic> json) =>
@@ -49,6 +54,9 @@ class Podcast with _$Podcast {
       image: image,
       language: language,
       lastBuildDate: lastBuildDate,
+      totalEpisodes: 0,
+      unlistenedEpisodes: 0,
+      showDot: false,
     );
   }
 }
