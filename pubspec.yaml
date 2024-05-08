@@ -10,6 +10,7 @@ dependencies:
   audio_service: ^0.18.13
   audio_session: ^0.1.19
   build_runner: ^2.4.9
+  cached_network_image: ^3.3.1
   cloud_firestore: ^4.17.2
   collection: ^1.18.0
   dio: ^5.4.3+1

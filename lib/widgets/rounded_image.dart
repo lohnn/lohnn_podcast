@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:podcast/extensions/nullability_extensions.dart';
 
 class RoundedImage extends StatelessWidget {
   final String? imageUrl;
   final bool showDot;
-  final int? imageSize;
+  final double? imageSize;
 
   const RoundedImage({
     required this.imageUrl,
@@ -15,22 +16,28 @@ class RoundedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final scaledImageSize = switch (imageSize) {
+      null => null,
+      final imageSize => (imageSize * pixelRatio).toInt(),
+    };
+
     return Stack(
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 3, bottom: 3),
           child: SizedBox(
-            height: imageSize?.toDouble(),
-            width: imageSize?.toDouble(),
+            height: imageSize,
+            width: imageSize,
             child: imageUrl?.let(
                   (url) => ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      width: imageSize?.toDouble(),
-                      height: imageSize?.toDouble(),
-                      url,
-                      cacheHeight: imageSize,
-                      cacheWidth: imageSize,
+                    child: CachedNetworkImage(
+                      imageUrl: url,
+                      width: imageSize,
+                      height: imageSize,
+                      memCacheWidth: scaledImageSize,
+                      memCacheHeight: scaledImageSize,
                     ),
                   ),
                 ) ??

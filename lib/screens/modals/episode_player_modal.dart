@@ -26,34 +26,37 @@ class EpisodePlayerModal extends HookConsumerWidget {
     if (episode == null) return Container();
 
     final colorScheme =
-        ref.watch(episodeColorSchemeProvider(episode)).valueOrNull ??
-            Theme.of(context).colorScheme;
+        ref.watch(episodeColorSchemeProvider(episode)).valueOrNull;
 
     final episodeDuration = episode.duration ??
         ref.watch(audioPlayerPodProvider.notifier).currentEpisodeDuration;
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 40, right: 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RoundedImage(imageUrl: episode.imageUrl),
-            Text(episode.title),
-            if ((currentPosition.valueOrNull, episodeDuration) case (final currentPosition?, final episodeDuration?))
-              AnimatedTheme(
-                duration: const Duration(milliseconds: 750),
-                data: ThemeData(colorScheme: colorScheme),
-                child: Slider.adaptive(
+    return AnimatedTheme(
+      key: const ValueKey('EpisodePlayerModal.theme'),
+      duration: const Duration(milliseconds: 750),
+      data: ThemeData(colorScheme: colorScheme),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 40, right: 40),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RoundedImage(imageUrl: episode.imageUrl),
+              Text(episode.title),
+              if ((currentPosition.valueOrNull, episodeDuration)
+                  case (final currentPosition?, final episodeDuration?))
+                Slider.adaptive(
                   value: currentPosition.inMilliseconds.toDouble(),
                   max: episodeDuration.inMilliseconds.toDouble(),
                   onChanged: (value) {
-                    ref.read(audioPlayerPodProvider.notifier).setPosition(value.toInt());
+                    ref
+                        .read(audioPlayerPodProvider.notifier)
+                        .setPosition(value.toInt());
                   },
                 ),
-              ),
-            const PlayPauseButton(),
-          ],
+              const PlayPauseButton(),
+            ],
+          ),
         ),
       ),
     );
