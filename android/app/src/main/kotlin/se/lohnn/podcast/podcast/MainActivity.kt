@@ -1,4 +1,4 @@
-package se.lohnn.podcast.podcast
+package se.lohnn.podcast
 
 import io.flutter.embedding.android.FlutterActivity
 
