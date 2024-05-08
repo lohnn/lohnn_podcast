@@ -48,14 +48,11 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
         },
         child: const Icon(Icons.add),
       ),
-      body: RefreshIndicator(
-        onRefresh: ref.read(podcastListPodProvider.notifier).refreshAll,
-        child: FirestoreListView<Podcast>(
-          query: data.value,
-          itemBuilder: (context, snapshot) {
-            return PodcastListTile(snapshot);
-          },
-        ),
+      body: FirestoreListView<Podcast>(
+        query: data.value,
+        itemBuilder: (context, snapshot) {
+          return PodcastListTile(snapshot);
+        },
       ),
     );
   }
