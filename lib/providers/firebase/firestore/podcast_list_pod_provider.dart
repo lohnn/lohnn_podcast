@@ -3,7 +3,7 @@ import 'package:integral_isolates/integral_isolates.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/response_extension.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
-import 'package:podcast/providers/firebase/firestore/firestore_provider.dart';
+import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
 import 'package:podcast/providers/isolate_provider.dart';
 import 'package:podcast/providers/repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -25,8 +25,8 @@ class PodcastListPod extends _$PodcastListPod {
   Future<CollectionReference<Podcast>> build() async {
     // @TODO: Migrate to let url be id?
 
-    await ref.watch(firestoreProvider.future);
-    final firestore = ref.watch(firestoreProvider.notifier);
+    await ref.watch(podcastUserPodProvider.future);
+    final firestore = ref.watch(podcastUserPodProvider.notifier);
     // @TODO: Check if this will continue watching after provider is disposed
 
     refreshAll();

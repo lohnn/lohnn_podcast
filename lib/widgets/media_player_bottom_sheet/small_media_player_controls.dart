@@ -14,9 +14,9 @@ class SmallMediaPlayerControls extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final episode = ref.watch(audioPlayerPodProvider);
+    final episodeSnapshot = ref.watch(audioPlayerPodProvider);
 
-    final colorScheme = episode?.let(
+    final colorScheme = episodeSnapshot.valueOrNull?.let(
       (episode) => ref.watch(episodeColorSchemeProvider(episode)).valueOrNull,
     );
 
@@ -32,44 +32,52 @@ class SmallMediaPlayerControls extends ConsumerWidget {
         },
         child: SizedBox(
           height: 85,
-          child: switch (episode) {
-            null => const Center(child: Text('Nothing is playing')),
-            final episode => InkWell(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    enableDrag: true,
-                    isScrollControlled: true,
-                    useSafeArea: true,
-                    showDragHandle: true,
-                    builder: (context) => const EpisodePlayerModal(),
-                  );
-                },
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RoundedImage(
-                              // @TODO: Fallback to podcast image
-                              imageUrl: episode.imageUrl,
-                              imageSize: 60,
-                            ),
+          child: switch (episodeSnapshot) {
+            AsyncLoading() => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            AsyncError() => const Center(child: Text('Error loading episode')),
+            AsyncData(value: final episode) => switch (episode) {
+                null => const Center(
+                    child: Text('Nothing is playing right now'),
+                  ),
+                final episode => InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        enableDrag: true,
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        showDragHandle: true,
+                        builder: (context) => const EpisodePlayerModal(),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: RoundedImage(
+                                  // @TODO: Fallback to podcast image
+                                  imageUrl: episode.imageUrl,
+                                  imageSize: 60,
+                                ),
+                              ),
+                              Expanded(child: Text(episode.title)),
+                              const PlayPauseButton(),
+                            ],
                           ),
-                          Expanded(child: Text(episode.title)),
-                          const PlayPauseButton(),
-                        ],
-                      ),
+                        ),
+                        EpisodeProgressBar(
+                          episode,
+                          height: 4,
+                        ),
+                      ],
                     ),
-                    EpisodeProgressBar(
-                      episode,
-                      height: 4,
-                    ),
-                  ],
-                ),
-              )
+                  )
+              },
           },
         ),
       ),

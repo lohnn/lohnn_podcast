@@ -13,7 +13,7 @@ class PodcastActions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Actions(
       actions: {
-        ChangePlayStateIntent: PlayPauseAction(
+        ChangePlayStateIntent: ChangePlayStateAction(
           ref.watch(audioPlayerPodProvider.notifier),
         ),
       },

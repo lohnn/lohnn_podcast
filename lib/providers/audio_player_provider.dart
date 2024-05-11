@@ -1,6 +1,7 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
+import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'audio_player_provider.g.dart';
@@ -16,16 +17,28 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   late AudioPlayer _player;
 
   @override
-  Episode? build() {
+  Stream<Episode?> build() async* {
     _player = ref.watch(_audioPlayerProvider);
-    // TODO: Pick up the last played episode from the user
-    return null;
+
+    final user = ref.watch(podcastUserPodProvider).valueOrNull;
+    if (user?.playQueue case final episodeQueue? when episodeQueue.isNotEmpty) {
+      final episode = (await episodeQueue.first.get()).data();
+
+      yield episode;
+
+      if (episode case final episode?) {
+        await _player.setUrl(
+          episode.url,
+          initialPosition: episode.currentPosition,
+        );
+      }
+    }
   }
 
   Future<void> playEpisode(
     Episode episodeSnapshot,
   ) async {
-    state = episodeSnapshot;
+    state = AsyncData(episodeSnapshot);
     await _player.setUrl(
       episodeSnapshot.url,
       initialPosition: episodeSnapshot.currentPosition,
@@ -48,7 +61,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   }
 
   // ignore: avoid_public_notifier_properties
-  Duration? get currentEpisodeDuration => state?.duration;
+  Duration? get currentEpisodeDuration => state.valueOrNull?.duration;
 }
 
 @riverpod
