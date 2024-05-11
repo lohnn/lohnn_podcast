@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="1.1946237"
-     inkscape:cx="266.61115"
-     inkscape:cy="275.40053"
+     inkscape:zoom="1.689453"
+     inkscape:cx="156.55955"
+     inkscape:cy="274.64511"
      inkscape:window-width="2560"
      inkscape:window-height="1387"
      inkscape:window-x="2560"
@@ -202,7 +202,8 @@
        gradientUnits="userSpaceOnUse" /></defs><g
      inkscape:groupmode="layer"
      id="layer7"
-     inkscape:label="foreground"><g
+     inkscape:label="foreground"
+     style="display:inline;opacity:1"><g
        inkscape:groupmode="layer"
        id="layer4"
        inkscape:label="shadows"
@@ -241,7 +242,11 @@
          style="font-variation-settings:normal;display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke-width:1.0135;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none"
          d="m 142.94141,227.29102 c -10.21643,-5.4e-4 -18.49861,8.57984 -18.49805,19.16406 -4.57072,70.6953 32.79453,133.91316 109.17969,149.04687 v 31.59571 h -32.91016 c -10.21644,-2.3e-4 -18.49801,8.28355 -18.49805,18.5 -2.3e-4,10.21663 8.28141,18.49827 18.49805,18.49804 h 111.14844 c 10.21643,-5e-5 18.4983,-8.28161 18.49805,-18.49804 -3e-5,-10.21625 -8.28181,-18.49997 -18.49805,-18.5 h -32.73242 v -31.43164 c 73.03623,-13.51644 112.15374,-80.13157 109.33203,-137.89063 l 0.12695,-11.02344 c 5.6e-4,-10.58422 -8.28162,-19.1646 -18.49805,-19.16406 -10.21566,5.8e-4 -18.49665,8.58063 -18.49609,19.16406 3.78077,53.5589 -33.43659,111.9793 -94.69584,111.97938 -61.25924,9e-5 -98.60595,-50.74448 -95.46041,-112.27625 5.6e-4,-10.58343 -8.28043,-19.16348 -18.49609,-19.16406 z"
          sodipodi:nodetypes="sccccccccsccccsczcs"
-         inkscape:label="mic stand" /><g
+         inkscape:label="mic stand" /><path
+         id="path8"
+         style="font-variation-settings:normal;display:inline;opacity:1;vector-effect:none;fill:#e1f1ee;fill-opacity:1;stroke-width:1.0135;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none"
+         inkscape:label="mic stand_r"
+         d="M 256.5918,358.72266 V 464.0957 h 55.26953 c 10.21642,-5e-5 18.49829,-8.28162 18.49805,-18.49804 -3e-5,-10.21624 -8.28182,-18.49997 -18.49805,-18.5 h -32.73242 v -31.43164 c 73.03615,-13.51643 112.15373,-80.13163 109.33203,-137.89063 l 0.12695,-11.02344 c 5.6e-4,-10.58421 -8.28163,-19.1646 -18.49805,-19.16406 -10.21565,5.8e-4 -18.49665,8.58064 -18.49609,19.16406 3.78077,53.55885 -33.43612,111.97844 -94.69531,111.97852 -0.10346,0 -0.20332,-0.008 -0.30664,-0.008 z" /><g
          inkscape:groupmode="layer"
          id="layer5"
          inkscape:label="mic"><rect

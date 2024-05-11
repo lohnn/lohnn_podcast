@@ -122,6 +122,12 @@
         android:fillColor="#ffffff"
         android:strokeLineCap="butt"/>
     <path
+        android:pathData="M256.59,358.72V464.1h55.27c10.22,-0 18.5,-8.28 18.5,-18.5 -0,-10.22 -8.28,-18.5 -18.5,-18.5h-32.73v-31.43c73.04,-13.52 112.15,-80.13 109.33,-137.89l0.13,-11.02c0,-10.58 -8.28,-19.16 -18.5,-19.16 -10.22,0 -18.5,8.58 -18.5,19.16 3.78,53.56 -33.44,111.98 -94.7,111.98 -0.1,0 -0.2,-0.01 -0.31,-0.01z"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="1.0135"
+        android:fillColor="#e1f1ee"
+        android:strokeLineCap="butt"/>
+    <path
         android:pathData="M278.63,123.66h32.23v174.33h-32.23z"
         android:strokeLineJoin="miter"
         android:strokeWidth="1.09969"
