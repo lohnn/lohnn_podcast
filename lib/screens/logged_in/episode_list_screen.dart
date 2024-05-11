@@ -7,6 +7,7 @@ import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
+import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
@@ -65,7 +66,19 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
                     description.removeHtmlTags(),
                     maxLines: 2,
                   ),
-                PlayEpisodeButton(episode),
+                Row(
+                  children: [
+                    PlayEpisodeButton(episode),
+                    IconButton(
+                      onPressed: () {
+                        ref
+                            .read(podcastUserPodProvider.notifier)
+                            .addToQueue(snapshot.reference);
+                      },
+                      icon: const Icon(Icons.playlist_add),
+                    ),
+                  ],
+                ),
               ],
             ),
           );

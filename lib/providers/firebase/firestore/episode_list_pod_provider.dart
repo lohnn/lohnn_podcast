@@ -43,8 +43,7 @@ class EpisodeListPod extends _$EpisodeListPod {
   }
 
   Future<void> updateList() async {
-    await future;
-    final (_, reference) = state.requireValue;
+    final (_, reference) = await future;
 
     final episodeList = await ref.watch(
       fetchEpisodesProvider(_podcast).future,

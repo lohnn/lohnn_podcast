@@ -11,7 +11,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final episode = ref.watch(audioPlayerPodProvider);
+    final episode = ref.watch(audioPlayerPodProvider).valueOrNull;
 
     final currentPosition = ref.watch(currentPositionProvider);
 
