@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/extensions/nullability_extensions.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
+import 'package:podcast/providers/episode_color_scheme_provider.dart';
 import 'package:podcast/screens/modals/episode_player_modal.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/episode_progress_bar.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart';

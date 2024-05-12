@@ -1,4 +1,3 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -9,6 +8,7 @@ import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/nullability_extensions.dart';
 import 'package:podcast/extensions/response_extension.dart';
 import 'package:podcast/extensions/xml_element_extension.dart';
+import 'package:podcast/services/podcast_audio_handler.dart';
 import 'package:xml/xml.dart';
 
 part 'episode.freezed.dart';
@@ -35,14 +35,17 @@ class Episode with _$Episode implements ToJson {
   factory Episode.fromJson(Map<String, dynamic> json) =>
       _$EpisodeFromJson(json);
 
-  MediaItem get mediaItem => MediaItem(
+  PodcastMediaItem mediaItem(DocumentSnapshot<Episode> episodeSnapshot) =>
+      PodcastMediaItem(
+        episode: episodeSnapshot,
         id: url.toString(),
         title: title,
         artUri: imageUrl,
         duration: duration,
       );
 
-  /// Adds the fields from [other] that are set at runtime, such as [listened].
+  /// Adds the fields from [other] that are set at runtime, such as [listened]
+  /// and [currentPosition].
   Episode operator +(Episode other) => copyWith(
         listened: other.listened,
         currentPosition: other.currentPosition,
@@ -50,7 +53,8 @@ class Episode with _$Episode implements ToJson {
 
   static final _rfc822Format = DateFormat('EEE, dd MMM yyyy HH:mm:ss');
 
-  static Iterable<Episode> fromXml(XmlDocument document, {required Podcast podcast}) sync* {
+  static Iterable<Episode> fromXml(XmlDocument document,
+      {required Podcast podcast}) sync* {
     for (final item in document.findAllElements('item')) {
       // region Required fields
       final guid = item.getElementContent('guid')!.replaceAll('/', '-');

@@ -1,11 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'episode_progress_bar.g.dart';
 
 class EpisodeProgressBar extends ConsumerWidget {
   final Episode episode;
@@ -16,20 +12,20 @@ class EpisodeProgressBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final audioState = ref.watch(audioStateProvider).valueOrNull;
+    final position = ref.watch(currentPositionProvider).valueOrNull;
 
     final colorScheme = Theme.of(context).colorScheme;
 
     final episodeDuration = episode.duration ??
         ref.watch(audioPlayerPodProvider.notifier).currentEpisodeDuration;
 
-    final bufferProgress =
-        switch ((audioState?.bufferedPosition, episodeDuration)) {
+    final bufferProgress = switch ((position?.buffered, episodeDuration)) {
       (final bufferPosition?, final episodeDuration?) =>
         bufferPosition.inMicroseconds / episodeDuration.inMicroseconds,
       _ => null,
     };
 
-    final progress = switch ((audioState?.position, episodeDuration)) {
+    final progress = switch ((position?.position, episodeDuration)) {
       (final currentPosition?, final episodeDuration?) =>
         currentPosition.inMicroseconds / episodeDuration.inMicroseconds,
       _ => null,
@@ -71,18 +67,4 @@ class EpisodeProgressBar extends ConsumerWidget {
       },
     );
   }
-}
-
-@riverpod
-Future<ColorScheme?> episodeColorScheme(
-  EpisodeColorSchemeRef ref,
-  Episode episode,
-) async {
-  // @TODO: Fallback to podcast image
-  if (episode.imageUrl case final imageUrl?) {
-    return ColorScheme.fromImageProvider(
-      provider: CachedNetworkImageProvider(imageUrl.toString()),
-    );
-  }
-  return null;
 }
