@@ -5,6 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
 import 'package:podcast/data/firebase_converters/date_time_converter.dart';
 import 'package:podcast/data/firebase_converters/duration_converter.dart';
+import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/nullability_extensions.dart';
 import 'package:podcast/extensions/response_extension.dart';
 import 'package:podcast/extensions/xml_element_extension.dart';
@@ -21,7 +22,7 @@ class Episode with _$Episode implements ToJson {
     required String title,
     @DateTimeConverter() required DateTime? pubDate,
     required String? description,
-    required Uri? imageUrl,
+    required Uri imageUrl,
     @DurationConverter() required Duration? duration,
     // region Dynamic fields
     @Default(false) bool listened,
@@ -49,7 +50,7 @@ class Episode with _$Episode implements ToJson {
 
   static final _rfc822Format = DateFormat('EEE, dd MMM yyyy HH:mm:ss');
 
-  static Iterable<Episode> fromXml(XmlDocument document) sync* {
+  static Iterable<Episode> fromXml(XmlDocument document, {required Podcast podcast}) sync* {
     for (final item in document.findAllElements('item')) {
       // region Required fields
       final guid = item.getElementContent('guid')!.replaceAll('/', '-');
@@ -70,9 +71,6 @@ class Episode with _$Episode implements ToJson {
       if (title == null) {
         debugPrint('Title null for: $item');
       }
-      // endregion Required fields
-
-      // region Optional fields
       final durationString = item.getElementContent('itunes:duration');
       final duration =
           switch (durationString?.split(':').map(int.parse).toList()) {
@@ -89,6 +87,9 @@ class Episode with _$Episode implements ToJson {
         [final seconds] => Duration(seconds: seconds),
         _ => null,
       };
+      // endregion Required fields
+
+      // region Optional fields
       final imageUrl = item.getElement('itunes:image')?.getAttribute('href');
       final description = item.getElementContent('description');
       // endregion Required fields
@@ -100,7 +101,7 @@ class Episode with _$Episode implements ToJson {
         duration: duration,
         pubDate: pubDate,
         description: description,
-        imageUrl: imageUrl?.let(Uri.parse),
+        imageUrl: imageUrl?.let(Uri.parse) ?? podcast.image,
       );
     }
   }

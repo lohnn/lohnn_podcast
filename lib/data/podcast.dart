@@ -39,7 +39,7 @@ class Podcast with _$Podcast {
     required String link,
     required String description,
     required String rssUrl,
-    required Uri? image,
+    required Uri image,
     required String? language,
     required String? lastBuildDate,
     required String? copyright,
