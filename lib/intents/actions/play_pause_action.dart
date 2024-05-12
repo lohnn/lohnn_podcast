@@ -9,6 +9,6 @@ class ChangePlayStateAction extends Action<ChangePlayStateIntent> {
 
   @override
   void invoke(ChangePlayStateIntent intent) {
-    audioPlayer.changePlayState(intent.state);
+    audioPlayer.triggerMediaAction(intent.state);
   }
 }

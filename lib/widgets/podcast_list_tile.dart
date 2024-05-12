@@ -20,7 +20,7 @@ class PodcastListTile extends StatelessWidget {
         context.push('/${podcastSnapshot.id}', extra: podcastSnapshot);
       },
       leading: RoundedImage(
-        imageUrl: podcast.image,
+        imageUri: podcast.image,
         showDot: podcast.showDot,
         imageSize: 40,
       ),

@@ -15,8 +15,7 @@ class EpisodeProgressBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentPosition = ref.watch(currentPositionProvider);
-    final bufferedPosition = ref.watch(bufferedPositionProvider);
+    final audioState = ref.watch(audioStateProvider).valueOrNull;
 
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -24,13 +23,13 @@ class EpisodeProgressBar extends ConsumerWidget {
         ref.watch(audioPlayerPodProvider.notifier).currentEpisodeDuration;
 
     final bufferProgress =
-        switch ((bufferedPosition.valueOrNull, episodeDuration)) {
+        switch ((audioState?.bufferedPosition, episodeDuration)) {
       (final bufferPosition?, final episodeDuration?) =>
         bufferPosition.inMicroseconds / episodeDuration.inMicroseconds,
       _ => null,
     };
 
-    final progress = switch ((currentPosition.valueOrNull, episodeDuration)) {
+    final progress = switch ((audioState?.position, episodeDuration)) {
       (final currentPosition?, final episodeDuration?) =>
         currentPosition.inMicroseconds / episodeDuration.inMicroseconds,
       _ => null,
@@ -82,7 +81,7 @@ Future<ColorScheme?> episodeColorScheme(
   // @TODO: Fallback to podcast image
   if (episode.imageUrl case final imageUrl?) {
     return ColorScheme.fromImageProvider(
-      provider: CachedNetworkImageProvider(imageUrl),
+      provider: CachedNetworkImageProvider(imageUrl.toString()),
     );
   }
   return null;

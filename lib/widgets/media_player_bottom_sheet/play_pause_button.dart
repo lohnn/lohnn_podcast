@@ -1,7 +1,6 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 
 class PlayPauseButton extends ConsumerWidget {
@@ -9,19 +8,20 @@ class PlayPauseButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isPlaying = ref.watch(audioStateProvider);
+    final audioState = ref.watch(audioStateProvider);
     final theme = Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(12),
-      child: switch (isPlaying) {
-        AsyncData(value: PlayerState(:final playing, :final processingState))
-            when processingState == ProcessingState.ready =>
+      child: switch (audioState) {
+        AsyncData(value: PlaybackState(:final playing, :final processingState))
+            when processingState != AudioProcessingState.loading ||
+                processingState != AudioProcessingState.buffering =>
           IconButton(
             onPressed: () {
               ref
                   .read(audioPlayerPodProvider.notifier)
-                  .changePlayState(PlayState.toggle);
+                  .triggerMediaAction(MediaAction.playPause);
             },
             icon: Icon(
               switch (playing) {

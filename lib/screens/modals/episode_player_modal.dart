@@ -1,8 +1,10 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/episode_progress_bar.dart';
+import 'package:podcast/widgets/media_player_bottom_sheet/media_action_button.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
@@ -12,8 +14,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final episode = ref.watch(audioPlayerPodProvider).valueOrNull;
-
-    final currentPosition = ref.watch(currentPositionProvider);
+    final audioState = ref.watch(audioStateProvider).valueOrNull;
 
     useEffect(
       () {
@@ -41,9 +42,9 @@ class EpisodePlayerModal extends HookConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              RoundedImage(imageUrl: episode.imageUrl),
+              RoundedImage(imageUri: episode.imageUrl),
               Text(episode.title),
-              if ((currentPosition.valueOrNull, episodeDuration)
+              if ((audioState?.position, episodeDuration)
                   case (final currentPosition?, final episodeDuration?))
                 Slider.adaptive(
                   value: currentPosition.inMilliseconds.toDouble(),
@@ -54,7 +55,20 @@ class EpisodePlayerModal extends HookConsumerWidget {
                         .setPosition(value.toInt());
                   },
                 ),
-              const PlayPauseButton(),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MediaActionButton(
+                    action: MediaAction.rewind,
+                    icon: Icons.replay_10,
+                  ),
+                  PlayPauseButton(),
+                  MediaActionButton(
+                    action: MediaAction.fastForward,
+                    icon: Icons.forward_10,
+                  ),
+                ],
+              ),
             ],
           ),
         ),
