@@ -40,7 +40,7 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
               context.push('/${podcastId.id}/${episode.guid}');
             },
             leading: RoundedImage(
-              imageUri: episode.imageUrl ?? podcast.image,
+              imageUri: episode.imageUrl,
               showDot: !episode.listened,
               imageSize: 40,
             ),
@@ -68,7 +68,7 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
                   ),
                 Row(
                   children: [
-                    PlayEpisodeButton(episode),
+                    PlayEpisodeButton(snapshot),
                     IconButton(
                       onPressed: () {
                         ref

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
-import 'package:podcast/widgets/media_player_bottom_sheet/episode_progress_bar.dart';
+import 'package:podcast/providers/episode_color_scheme_provider.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/media_action_button.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
@@ -14,7 +14,8 @@ class EpisodePlayerModal extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final episode = ref.watch(audioPlayerPodProvider).valueOrNull;
-    final audioState = ref.watch(audioStateProvider).valueOrNull;
+    final currentPosition =
+        ref.watch(currentPositionProvider).valueOrNull?.position;
 
     useEffect(
       () {
@@ -44,7 +45,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
             children: [
               RoundedImage(imageUri: episode.imageUrl),
               Text(episode.title),
-              if ((audioState?.position, episodeDuration)
+              if ((currentPosition, episodeDuration)
                   case (final currentPosition?, final episodeDuration?))
                 Slider.adaptive(
                   value: currentPosition.inMilliseconds.toDouble(),

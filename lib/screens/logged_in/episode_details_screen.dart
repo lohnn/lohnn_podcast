@@ -59,7 +59,7 @@ class EpisodeDetailsScreen
                     ),
                     if (episode.pubDate case final pubDate?)
                       PubDateText(pubDate),
-                    PlayEpisodeButton(episode),
+                    PlayEpisodeButton(episodeSnapshot),
                   ],
                 ),
               ),

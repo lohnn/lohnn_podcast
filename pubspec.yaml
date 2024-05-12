@@ -33,6 +33,7 @@ dependencies:
   just_audio: ^0.9.37
   path_provider: ^2.1.3
   riverpod_annotation: ^3.0.0-dev.3
+  rxdart: ^0.27.7
   timeago_flutter: ^3.6.0
   xml: ^6.5.0
 

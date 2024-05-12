@@ -1,4 +1,6 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
 import 'package:podcast/services/podcast_audio_handler.dart';
@@ -15,8 +17,8 @@ Future<PodcastAudioHandler> _audioPlayer(_AudioPlayerRef ref) async {
       androidNotificationChannelName: 'Lohnn Podcast',
       // @TODO: These two settings can cause the operating system to kill the app
       androidNotificationOngoing: true,
-      androidNotificationIcon: 'drawable/podcast_icon_outline',
       // androidStopForegroundOnPause: true,
+      androidNotificationIcon: 'drawable/podcast_icon_outline',
     ),
   );
 }
@@ -27,24 +29,31 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
   @override
   Stream<Episode?> build() async* {
-    _player = await ref.watch(_audioPlayerProvider.future);
+    try {
+      _player = await ref.watch(_audioPlayerProvider.future);
 
-    final user = ref.watch(podcastUserPodProvider).valueOrNull;
-    if (user?.playQueue case final episodeQueue? when episodeQueue.isNotEmpty) {
-      final episode = (await episodeQueue.first.get()).data();
+      final user = ref.watch(podcastUserPodProvider).valueOrNull;
+      if (user?.playQueue case final episodeQueue?
+          when episodeQueue.isNotEmpty) {
+        final episode = await episodeQueue.first.get();
 
-      yield episode;
+        yield episode.data();
 
-      if (episode case final episode?) {
-        await _player.playEpisode(episode);
+        if (episode case final episode) {
+          await _player.playEpisode(episode);
+        }
       }
+    } catch (e, stackTrace) {
+      debugPrint(e.toString());
+      debugPrintStack(stackTrace: stackTrace);
+      rethrow;
     }
   }
 
   Future<void> playEpisode(
-    Episode episode,
+    DocumentSnapshot<Episode> episode,
   ) async {
-    state = AsyncData(episode);
+    state = AsyncData(episode.data());
     await _player.playEpisode(episode);
     _player.play();
   }
@@ -69,6 +78,12 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
   // ignore: avoid_public_notifier_properties
   Duration? get currentEpisodeDuration => state.valueOrNull?.duration;
+}
+
+@riverpod
+Stream<({Duration position, Duration buffered})> currentPosition(CurrentPositionRef ref) async* {
+  final audioPlayer = await ref.watch(_audioPlayerProvider.future);
+  yield* audioPlayer.positionStream;
 }
 
 @riverpod
