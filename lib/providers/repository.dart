@@ -52,5 +52,7 @@ Future<Iterable<Episode>> fetchEpisodes(
   final response = await ref.watch(
     _fetchPodcastXmlProvider(podcast.rssUrl).future,
   );
-  return response.xmlAsSingle(Episode.fromXml);
+  return response.xmlAsSingle(
+    (document) => Episode.fromXml(document, podcast: podcast),
+  );
 }
