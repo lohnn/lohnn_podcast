@@ -11,11 +11,11 @@ dependencies:
   audio_session: ^0.1.19
   build_runner: ^2.4.9
   cached_network_image: ^3.3.1
-  cloud_firestore: ^4.17.2
+  cloud_firestore: ^4.17.3
   collection: ^1.18.0
   dio: ^5.4.3+1
-  firebase_auth: ^4.19.4
-  firebase_core: ^2.30.1
+  firebase_auth: ^4.19.5
+  firebase_core: ^2.31.0
   firebase_ui_firestore: ^1.6.3
   flutter:
     sdk: flutter
@@ -23,12 +23,12 @@ dependencies:
   flutter_widget_from_html_core: ^0.14.12
   freezed: ^2.5.2
   freezed_annotation: ^2.4.1
-  go_router: ^14.0.2
+  go_router: ^14.1.0
   google_sign_in: ^6.2.1
-  hashlib: ^1.14.0
+  hashlib: ^1.15.0
   hooks_riverpod: ^3.0.0-dev.3
   integral_isolates: ^0.5.1
-  intl: ^0.18.1
+  intl: ^0.19.0
   json_serializable: ^6.8.0
   just_audio: ^0.9.37
   path_provider: ^2.1.3
