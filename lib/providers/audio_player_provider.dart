@@ -15,6 +15,7 @@ Future<PodcastAudioHandler> _audioPlayer(_AudioPlayerRef ref) async {
       androidNotificationChannelName: 'Lohnn Podcast',
       // @TODO: These two settings can cause the operating system to kill the app
       androidNotificationOngoing: true,
+      androidNotificationIcon: 'drawable/podcast_icon_outline',
       // androidStopForegroundOnPause: true,
     ),
   );
