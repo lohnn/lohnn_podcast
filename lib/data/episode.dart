@@ -1,9 +1,11 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
 import 'package:podcast/data/firebase_converters/date_time_converter.dart';
 import 'package:podcast/data/firebase_converters/duration_converter.dart';
+import 'package:podcast/extensions/nullability_extensions.dart';
 import 'package:podcast/extensions/response_extension.dart';
 import 'package:podcast/extensions/xml_element_extension.dart';
 import 'package:xml/xml.dart';
@@ -15,11 +17,11 @@ part 'episode.g.dart';
 class Episode with _$Episode implements ToJson {
   const factory Episode({
     required String guid,
-    required String url,
+    required Uri url,
     required String title,
     @DateTimeConverter() required DateTime? pubDate,
     required String? description,
-    required String? imageUrl,
+    required Uri? imageUrl,
     @DurationConverter() required Duration? duration,
     // region Dynamic fields
     @Default(false) bool listened,
@@ -31,6 +33,13 @@ class Episode with _$Episode implements ToJson {
 
   factory Episode.fromJson(Map<String, dynamic> json) =>
       _$EpisodeFromJson(json);
+
+  MediaItem get mediaItem => MediaItem(
+        id: url.toString(),
+        title: title,
+        artUri: imageUrl,
+        duration: duration,
+      );
 
   /// Adds the fields from [other] that are set at runtime, such as [listened].
   Episode operator +(Episode other) => copyWith(
@@ -86,12 +95,12 @@ class Episode with _$Episode implements ToJson {
 
       yield Episode(
         guid: guid,
-        url: link!,
+        url: Uri.parse(link!),
         title: title!,
         duration: duration,
         pubDate: pubDate,
         description: description,
-        imageUrl: imageUrl,
+        imageUrl: imageUrl?.let(Uri.parse),
       );
     }
   }

@@ -44,12 +44,14 @@ class PodcastUserPod extends _$PodcastUserPod {
 
   Future<void> addToQueue(DocumentReference<Episode> episode) async {
     final user = await future;
-    _userDocument.set(user.copyWith(
-      playQueue: [
-        ...user.playQueue,
-        episode,
-      ],
-    ));
+    _userDocument.set(
+      user.copyWith(
+        playQueue: [
+          ...user.playQueue,
+          episode,
+        ],
+      ),
+    );
   }
 
   CollectionReference<Map<String, dynamic>> userCollection(

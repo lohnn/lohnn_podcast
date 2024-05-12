@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -27,7 +28,7 @@ class SmallMediaPlayerControls extends ConsumerWidget {
       child: Shortcuts(
         shortcuts: const {
           SingleActivator(LogicalKeyboardKey.space): ChangePlayStateIntent(
-            PlayState.toggle,
+            MediaAction.playPause,
           ),
         },
         child: SizedBox(
@@ -61,7 +62,7 @@ class SmallMediaPlayerControls extends ConsumerWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: RoundedImage(
                                   // @TODO: Fallback to podcast image
-                                  imageUrl: episode.imageUrl,
+                                  imageUri: episode.imageUrl,
                                   imageSize: 60,
                                 ),
                               ),

@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,16 +49,16 @@ class LoggedInScreen extends HookWidget {
         shortcuts: const {
           SingleActivator(LogicalKeyboardKey.mediaPlayPause):
               ChangePlayStateIntent(
-            PlayState.toggle,
+            MediaAction.playPause,
           ),
           SingleActivator(LogicalKeyboardKey.mediaPlay): ChangePlayStateIntent(
-            PlayState.play,
+            MediaAction.play,
           ),
           SingleActivator(LogicalKeyboardKey.mediaPause): ChangePlayStateIntent(
-            PlayState.pause,
+            MediaAction.pause,
           ),
           SingleActivator(LogicalKeyboardKey.mediaStop): ChangePlayStateIntent(
-            PlayState.pause,
+            MediaAction.pause,
           ),
         },
         child: Scaffold(

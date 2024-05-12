@@ -39,7 +39,7 @@ class Podcast with _$Podcast {
     required String link,
     required String description,
     required String rssUrl,
-    required String? image,
+    required Uri? image,
     required String? language,
     required String? lastBuildDate,
     required String? copyright,
@@ -61,10 +61,10 @@ class Podcast with _$Podcast {
     final name = channel.getElementContent('title')!;
     final link = channel.getElementContent('link')!;
     final description = channel.getElementContent('description')!;
+    final image = channel.getElement('image')?.let(PodcastImage.fromXml).url ??
+        channel.getElement('itunes:image')!.getAttribute('href')!;
 
     // Optional fields
-    final image = channel.getElement('image')?.let(PodcastImage.fromXml).url ??
-        channel.getElement('itunes:image')?.getAttribute('href');
     final language = channel.getElementContent('language');
     final lastBuildDate = channel.getElementContent('lastBuildDate');
     final copyright = channel.getElementContent('copyright');
@@ -77,7 +77,7 @@ class Podcast with _$Podcast {
       rssUrl: rssUrl,
       copyright: copyright,
       generator: generator,
-      image: image,
+      image: image.let(Uri.parse),
       language: language,
       lastBuildDate: lastBuildDate,
       totalEpisodes: 0,

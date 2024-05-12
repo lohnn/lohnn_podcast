@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:podcast/extensions/nullability_extensions.dart';
 
 class RoundedImage extends StatelessWidget {
-  final String? imageUrl;
+  final Uri? imageUri;
   final bool showDot;
   final double? imageSize;
 
   const RoundedImage({
-    required this.imageUrl,
+    required this.imageUri,
     this.showDot = false,
     this.imageSize,
     super.key,
@@ -29,11 +29,11 @@ class RoundedImage extends StatelessWidget {
           child: SizedBox(
             height: imageSize,
             width: imageSize,
-            child: imageUrl?.let(
-                  (url) => ClipRRect(
+            child: imageUri?.let(
+                  (uri) => ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: CachedNetworkImage(
-                      imageUrl: url,
+                      imageUrl: uri.toString(),
                       width: imageSize,
                       height: imageSize,
                       memCacheWidth: scaledImageSize,

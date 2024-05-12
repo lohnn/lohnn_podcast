@@ -46,7 +46,7 @@ class EpisodeDetailsScreen
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        RoundedImage(imageUrl: episode.imageUrl, imageSize: 76),
+                        RoundedImage(imageUri: episode.imageUrl, imageSize: 76),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(

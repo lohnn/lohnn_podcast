@@ -1,24 +1,32 @@
-import 'package:just_audio/just_audio.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:podcast/data/episode.dart';
-import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
+import 'package:podcast/services/podcast_audio_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'audio_player_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-AudioPlayer _audioPlayer(_AudioPlayerRef ref) {
-  ref.onDispose(() => ref.state.dispose());
-  return AudioPlayer();
+Future<PodcastAudioHandler> _audioPlayer(_AudioPlayerRef ref) async {
+  return await AudioService.init(
+    builder: PodcastAudioHandler.new,
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'se.lohnn.podcast.audio',
+      androidNotificationChannelName: 'Lohnn Podcast',
+      // @TODO: These two settings can cause the operating system to kill the app
+      androidNotificationOngoing: true,
+      // androidStopForegroundOnPause: true,
+    ),
+  );
 }
 
 @Riverpod(keepAlive: true)
 class AudioPlayerPod extends _$AudioPlayerPod {
-  late AudioPlayer _player;
+  late PodcastAudioHandler _player;
 
   @override
   Stream<Episode?> build() async* {
-    _player = ref.watch(_audioPlayerProvider);
+    _player = await ref.watch(_audioPlayerProvider.future);
 
     final user = ref.watch(podcastUserPodProvider).valueOrNull;
     if (user?.playQueue case final episodeQueue? when episodeQueue.isNotEmpty) {
@@ -27,33 +35,31 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       yield episode;
 
       if (episode case final episode?) {
-        await _player.setUrl(
-          episode.url,
-          initialPosition: episode.currentPosition,
-        );
+        await _player.playEpisode(episode);
       }
     }
   }
 
   Future<void> playEpisode(
-    Episode episodeSnapshot,
+    Episode episode,
   ) async {
-    state = AsyncData(episodeSnapshot);
-    await _player.setUrl(
-      episodeSnapshot.url,
-      initialPosition: episodeSnapshot.currentPosition,
-    );
+    state = AsyncData(episode);
+    await _player.playEpisode(episode);
     _player.play();
   }
 
-  void changePlayState(PlayState state) => switch (state) {
-        PlayState.toggle => switch (_player.playing) {
+  void triggerMediaAction(MediaAction action) => switch (action) {
+        MediaAction.playPause => switch (
+              _player.playbackState.valueOrNull?.playing ?? false) {
             true => _player.pause(),
             false => _player.play(),
           },
-        PlayState.play => _player.play(),
-        PlayState.pause => _player.pause(),
-        PlayState.stop => _player.stop(),
+        MediaAction.play => _player.play(),
+        MediaAction.pause => _player.pause(),
+        MediaAction.stop => _player.stop(),
+        MediaAction.fastForward => _player.fastForward(),
+        MediaAction.rewind => _player.rewind(),
+        _ => throw UnsupportedError('Action $action not supported yet.')
       };
 
   void setPosition(int positionInMillis) {
@@ -65,22 +71,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 }
 
 @riverpod
-Stream<Duration?> currentPosition(CurrentPositionRef ref) async* {
-  final audioPlayer = ref.watch(_audioPlayerProvider);
-  yield audioPlayer.position;
-  yield* audioPlayer.positionStream;
-}
-
-@riverpod
-Stream<Duration?> bufferedPosition(BufferedPositionRef ref) async* {
-  final audioPlayer = ref.watch(_audioPlayerProvider);
-  yield audioPlayer.bufferedPosition;
-  yield* audioPlayer.bufferedPositionStream;
-}
-
-@riverpod
-Stream<PlayerState> audioState(AudioStateRef ref) async* {
-  final audioPlayer = ref.watch(_audioPlayerProvider);
-  yield audioPlayer.playerState;
-  yield* audioPlayer.playerStateStream;
+Stream<PlaybackState> audioState(AudioStateRef ref) async* {
+  final audioPlayer = await ref.watch(_audioPlayerProvider.future);
+  yield* audioPlayer.playbackState;
 }
