@@ -43,19 +43,16 @@ class PodcastAudioHandler extends BaseAudioHandler
   PlaybackState _transformEvent(PlaybackEvent event) {
     return PlaybackState(
       controls: [
-        if (_player.playing) MediaControl.pause else MediaControl.play,
-        MediaControl.stop,
-        MediaControl.rewind,
         const MediaControl(
-          androidIcon: 'drawable/baseline_forward_30_24',
-          label: 'Fast Forward',
+          androidIcon: 'drawable/baseline_replay_10_24',
+          label: 'Rewind',
           action: MediaAction.fastForward,
         ),
-        MediaControl.custom(
-          androidIcon: 'drawable/ic_baseline_favorite_24',
-          label: 'favorite',
-          name: 'favorite',
-          extras: <String, dynamic>{'level': 1},
+        if (_player.playing) MediaControl.pause else MediaControl.play,
+        const MediaControl(
+          androidIcon: 'drawable/baseline_forward_10_24',
+          label: 'Fast Forward',
+          action: MediaAction.fastForward,
         ),
       ],
       systemActions: const {
