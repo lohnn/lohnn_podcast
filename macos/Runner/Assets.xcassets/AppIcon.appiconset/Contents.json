@@ -1,61 +1,61 @@
 {
   "images" : [
     {
-      "filename" : "podcast_icon 9.png",
+      "filename" : "16-mac.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
-      "filename" : "podcast_icon 8.png",
+      "filename" : "32-mac 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
-      "filename" : "podcast_icon 7.png",
+      "filename" : "32-mac.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
-      "filename" : "podcast_icon 6.png",
+      "filename" : "64-mac.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
-      "filename" : "podcast_icon 5.png",
+      "filename" : "128-mac.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
-      "filename" : "podcast_icon 4.png",
+      "filename" : "256-mac 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
     },
     {
-      "filename" : "podcast_icon 3.png",
+      "filename" : "256-mac.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "256x256"
     },
     {
-      "filename" : "podcast_icon 2.png",
+      "filename" : "512-mac 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
-      "filename" : "podcast_icon.png",
+      "filename" : "512-mac.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
-      "filename" : "podcast_icon 1.png",
+      "filename" : "1024-mac.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
