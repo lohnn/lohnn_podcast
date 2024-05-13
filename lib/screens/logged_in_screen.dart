@@ -55,7 +55,7 @@ class LoggedInScreen extends HookConsumerWidget {
         .valueOrNull;
 
     return AnimatedTheme(
-      key: const ValueKey('Top level theme'),
+      key: const ValueKey('LoggedInScreen.theme'),
       data: Theme.of(context).copyWith(colorScheme: colorScheme),
       child: PodcastActions(
         child: Shortcuts(
