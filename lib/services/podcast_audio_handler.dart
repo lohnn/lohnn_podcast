@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:audio_session/audio_session.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:podcast/data/episode.dart';
@@ -20,6 +21,7 @@ class PodcastMediaItem extends MediaItem {
 class PodcastAudioHandler extends BaseAudioHandler
     with SeekHandler, QueueHandler {
   final _player = AudioPlayer();
+  final AudioSession audioSession;
 
   @override
   // ignore: overridden_fields
@@ -34,16 +36,14 @@ class PodcastAudioHandler extends BaseAudioHandler
       );
 
   /// Initialise our audio handler.
-  PodcastAudioHandler() {
+  PodcastAudioHandler({required this.audioSession}) {
     // So that our clients (the Flutter UI and the system notification) know
     // what state to display, here we set up our audio handler to broadcast all
     // playback state changes as they happen via playbackState...
     // @TODO: Can we send current position updates to [playbackState]
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
 
-    _player.positionStream
-        .throttleTime(const Duration(seconds: 10))
-        .forEach((
+    _player.positionStream.throttleTime(const Duration(seconds: 10)).forEach((
       position,
     ) {
       final currentEpisodeSnapshot = mediaItem.valueOrNull?.episode;
@@ -59,13 +59,22 @@ class PodcastAudioHandler extends BaseAudioHandler
   }
 
   @override
-  Future<void> play() => _player.play();
+  Future<void> play() async {
+    await audioSession.setActive(true);
+    return _player.play();
+  }
 
   @override
-  Future<void> pause() => _player.pause();
+  Future<void> pause() async {
+    await audioSession.setActive(false);
+    return _player.pause();
+  }
 
   @override
-  Future<void> stop() => _player.stop();
+  Future<void> stop() async {
+    await audioSession.setActive(false);
+    return _player.stop();
+  }
 
   @override
   Future<void> seek(Duration position) => _player.seek(position);

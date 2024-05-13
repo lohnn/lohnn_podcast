@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:audio_session/audio_session.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:podcast/data/episode.dart';
@@ -10,8 +11,11 @@ part 'audio_player_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 Future<PodcastAudioHandler> _audioPlayer(_AudioPlayerRef ref) async {
+  final audioSession = await AudioSession.instance;
+  await audioSession.configure(const AudioSessionConfiguration.speech());
+
   return await AudioService.init(
-    builder: PodcastAudioHandler.new,
+    builder:()=> PodcastAudioHandler(audioSession: audioSession),
     config: const AudioServiceConfig(
       androidNotificationChannelId: 'se.lohnn.podcast.audio',
       androidNotificationChannelName: 'Lohnn Podcast',
