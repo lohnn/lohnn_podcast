@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast_user.dart';
 import 'package:podcast/providers/firebase/firebase_app_provider.dart';
@@ -48,8 +49,24 @@ class PodcastUserPod extends _$PodcastUserPod {
       user.copyWith(
         playQueue: [
           ...user.playQueue,
-          episode,
+          // Don't add if already in queue
+          if (user.playQueue.firstWhereOrNull((e) => e.id == episode.id) ==
+              null)
+            episode,
         ],
+      ),
+    );
+  }
+
+  Future<void> addToTopOfQueue(DocumentReference<Episode> episode) async {
+    final user = await future;
+    _userDocument.set(
+      user.copyWith(
+        playQueue: [
+          episode,
+          for (final oldQueueItem in user.playQueue)
+            if (oldQueueItem.id != episode.id) oldQueueItem,
+        ].toList(),
       ),
     );
   }
