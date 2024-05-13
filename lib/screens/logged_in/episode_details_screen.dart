@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
+import 'package:podcast/providers/episode_color_scheme_provider.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
@@ -37,30 +38,44 @@ class EpisodeDetailsScreen
       appBar: AppBar(),
       body: episode == null
           ? Container()
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RoundedImage(imageUri: episode.imageUrl, imageSize: 76),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            podcast.name,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
+          : AnimatedTheme(
+              data: Theme.of(context).copyWith(
+                colorScheme: ref
+                    .watch(
+                      episodeColorSchemeProvider(
+                          episode, Theme.of(context).brightness),
+                    )
+                    .valueOrNull,
+              ),
+              key: const Key('EpisodeDetailsScreen.theme'),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RoundedImage(
+                            imageUri: episode.imageUrl,
+                            imageSize: 76,
                           ),
-                        ),
-                      ],
-                    ),
-                    if (episode.pubDate case final pubDate?)
-                      PubDateText(pubDate),
-                    PlayEpisodeButton(episodeSnapshot),
-                  ],
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              podcast.name,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (episode.pubDate case final pubDate?)
+                        PubDateText(pubDate),
+                      PlayEpisodeButton(episodeSnapshot),
+                    ],
+                  ),
                 ),
               ),
             ),
