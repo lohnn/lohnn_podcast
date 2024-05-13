@@ -58,7 +58,8 @@ class PodcastListPod extends _$PodcastListPod {
     final storedPodcast = storedPodcastSnapshot.data();
 
     // Invalidates both podcast and episode fetcher
-    ref.invalidate(fetchPodcastProvider(storedPodcast.rssUrl));
+    // TODO: Should we invalidate or not? (invalidate causes two API calls to each endpoint)
+    // ref.invalidate(fetchPodcastProvider(storedPodcast.rssUrl));
 
     try {
       var fetchedPodcast = await ref.read(
