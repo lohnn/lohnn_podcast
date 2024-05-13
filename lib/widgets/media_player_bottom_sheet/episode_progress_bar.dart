@@ -49,7 +49,7 @@ class EpisodeProgressBar extends ConsumerWidget {
                   duration: const Duration(milliseconds: 300),
                   height: height,
                   width: constraints.maxWidth * bufferProgress,
-                  color: colorScheme.primary,
+                  color: colorScheme.primaryContainer,
                 ),
               ),
             if (progress case final progress?)
@@ -59,7 +59,7 @@ class EpisodeProgressBar extends ConsumerWidget {
                   duration: const Duration(milliseconds: 300),
                   height: height,
                   width: constraints.maxWidth * progress,
-                  color: colorScheme.primaryContainer,
+                  color: colorScheme.primary,
                 ),
               ),
           ],

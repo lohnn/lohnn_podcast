@@ -7,11 +7,21 @@ import 'package:podcast/screens/logged_in_screen.dart';
 import 'package:podcast/screens/login_screen.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  const icon = AssetImage('assets/icons/app_icon.webp');
+  final lightColorScheme = await ColorScheme.fromImageProvider(
+    provider: icon,
+  );
+  final darkColorScheme = await ColorScheme.fromImageProvider(
+    provider: icon,
+    brightness: Brightness.dark,
+  );
+
   runApp(
     ProviderScope(
       child: MaterialApp(
-        theme: ThemeData(),
-        darkTheme: ThemeData.dark(),
+        theme: ThemeData.light().copyWith(colorScheme: lightColorScheme),
+        darkTheme: ThemeData.dark().copyWith(colorScheme: darkColorScheme),
         debugShowCheckedModeBanner: false,
         home: const MainApp(),
       ),

@@ -6,6 +6,7 @@ import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/providers/episode_color_scheme_provider.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/media_action_button.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart';
+import 'package:podcast/widgets/media_player_bottom_sheet/show_playlist_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class EpisodePlayerModal extends HookConsumerWidget {
@@ -27,8 +28,11 @@ class EpisodePlayerModal extends HookConsumerWidget {
 
     if (episode == null) return Container();
 
-    final colorScheme =
-        ref.watch(episodeColorSchemeProvider(episode)).valueOrNull;
+    final colorScheme = ref
+        .watch(
+          episodeColorSchemeProvider(episode, Theme.of(context).brightness),
+        )
+        .valueOrNull;
 
     final episodeDuration = episode.duration ??
         ref.watch(audioPlayerPodProvider.notifier).currentEpisodeDuration;
@@ -59,6 +63,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  ShowPlaylistButton(),
                   MediaActionButton(
                     action: MediaAction.rewind,
                     icon: Icons.replay_10,
