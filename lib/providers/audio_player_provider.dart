@@ -15,7 +15,7 @@ Future<PodcastAudioHandler> _audioPlayer(_AudioPlayerRef ref) async {
   await audioSession.configure(const AudioSessionConfiguration.speech());
 
   return await AudioService.init(
-    builder:()=> PodcastAudioHandler(audioSession: audioSession),
+    builder: () => PodcastAudioHandler(audioSession: audioSession),
     config: const AudioServiceConfig(
       androidNotificationChannelId: 'se.lohnn.podcast.audio',
       androidNotificationChannelName: 'Lohnn Podcast',
@@ -36,7 +36,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     try {
       _player = await ref.watch(_audioPlayerProvider.future);
 
-      final user = ref.watch(podcastUserPodProvider).valueOrNull;
+      final user = ref.read(podcastUserPodProvider).valueOrNull;
       if (user?.playQueue case final episodeQueue?
           when episodeQueue.isNotEmpty) {
         final episode = await episodeQueue.first.get();
@@ -44,7 +44,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
         yield episode.data();
 
         if (episode case final episode) {
-          await _player.playEpisode(episode);
+          await _player.loadEpisode(episode);
         }
       }
     } catch (e, stackTrace) {
@@ -55,10 +55,15 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   }
 
   Future<void> playEpisode(
-    DocumentSnapshot<Episode> episode,
+    DocumentSnapshot<Episode> episodeSnapshot,
   ) async {
-    state = AsyncData(episode.data());
-    await _player.playEpisode(episode);
+    state = AsyncData(episodeSnapshot.data());
+
+    ref
+        .read(podcastUserPodProvider.notifier)
+        .addToTopOfQueue(episodeSnapshot.reference);
+
+    await _player.loadEpisode(episodeSnapshot, autoPlay: true);
     _player.play();
   }
 
@@ -85,7 +90,8 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 }
 
 @riverpod
-Stream<({Duration position, Duration buffered})> currentPosition(CurrentPositionRef ref) async* {
+Stream<({Duration position, Duration buffered})> currentPosition(
+    CurrentPositionRef ref) async* {
   final audioPlayer = await ref.watch(_audioPlayerProvider.future);
   yield* audioPlayer.positionStream;
 }

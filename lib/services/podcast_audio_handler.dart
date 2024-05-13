@@ -79,15 +79,20 @@ class PodcastAudioHandler extends BaseAudioHandler
   @override
   Future<void> seek(Duration position) => _player.seek(position);
 
-  Future<Duration?> playEpisode(DocumentSnapshot<Episode> episodeSnapshot) {
+  Future<void> loadEpisode(
+    DocumentSnapshot<Episode> episodeSnapshot, {
+    bool autoPlay = false,
+  }) async {
     if (episodeSnapshot.data() case final episode?) {
       mediaItem.add(episode.mediaItem(episodeSnapshot));
-      return _player.setAudioSource(
+      await _player.setAudioSource(
         AudioSource.uri(episode.url),
         initialPosition: episode.currentPosition,
       );
+      if (autoPlay) await _player.play();
+     } else {
+      return Future.error(DocumentNotFoundException(episodeSnapshot));
     }
-    return Future.error(DocumentNotFoundException(episodeSnapshot));
   }
 
   /// Transform a just_audio event into an audio_service state.
