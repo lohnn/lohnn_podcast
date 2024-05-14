@@ -36,16 +36,12 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     try {
       _player = await ref.watch(_audioPlayerProvider.future);
 
-      final user = ref.read(podcastUserPodProvider).valueOrNull;
-      if (user?.playQueue case final episodeQueue?
+      final user = await ref.read(podcastUserPodProvider.future);
+      if (user.playQueue case final episodeQueue?
           when episodeQueue.isNotEmpty) {
-        final episode = await episodeQueue.first.get();
-
-        yield episode.data();
-
-        if (episode case final episode) {
-          await _player.loadEpisode(episode);
-        }
+        final episodeSnapshot = await episodeQueue.first.get();
+        yield episodeSnapshot.data();
+        await _player.loadEpisode(episodeSnapshot);
       }
     } catch (e, stackTrace) {
       debugPrint(e.toString());
