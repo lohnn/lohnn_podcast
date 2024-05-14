@@ -1,17 +1,22 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/src/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/screens/modals/episode_player_modal.dart';
-import 'package:podcast/screens/modals/player_modal_navigator.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/episode_progress_bar.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class SmallMediaPlayerControls extends ConsumerWidget {
-  const SmallMediaPlayerControls({super.key});
+  final GoRouter router;
+
+  const SmallMediaPlayerControls({
+    super.key,
+    required this.router,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,15 +40,23 @@ class SmallMediaPlayerControls extends ConsumerWidget {
                   child: Text('Nothing is playing right now'),
                 ),
               final episode => InkWell(
-                  onTap: () {
-                    showModalBottomSheet(
+                  onTap: () async {
+                    final action = await showModalBottomSheet<
+                        EpisodePlayerModalResultAction>(
                       context: context,
-                      enableDrag: true,
                       isScrollControlled: true,
                       useSafeArea: true,
                       showDragHandle: true,
-                      builder: (context) => const PlayerModalNavigator(),
+                      builder: (context) => const EpisodePlayerModal(),
                     );
+
+                    switch (action) {
+                      case EpisodePlayerModalResultAction.showPlaylist:
+                        if(context.mounted) {
+                          router.push('/playlist');
+                        }
+                      case null:
+                    }
                   },
                   child: Column(
                     children: [

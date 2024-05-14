@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/screens/playlist_screen.dart';
+import 'package:podcast/screens/modals/episode_player_modal.dart';
 
 class ShowPlaylistButton extends ConsumerWidget {
   const ShowPlaylistButton({super.key});
@@ -10,9 +10,7 @@ class ShowPlaylistButton extends ConsumerWidget {
     final theme = Theme.of(context);
     return IconButton(
       onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const PlaylistScreen()),
-        );
+        Navigator.of(context).pop(EpisodePlayerModalResultAction.showPlaylist);
       },
       icon: Icon(
         Icons.playlist_play,
