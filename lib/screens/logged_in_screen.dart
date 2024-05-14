@@ -42,7 +42,7 @@ class LoggedInScreen extends HookConsumerWidget {
                 builder: (context, state) => EpisodeDetailsScreen(
                   podcastId:
                       PodcastId.fromString(state.pathParameters['podcastId']!),
-                  episodeId: state.pathParameters['episodeId']!,
+                  episodeId: Uri.encodeComponent(state.pathParameters['episodeId']!),
                 ),
               ),
             ],
