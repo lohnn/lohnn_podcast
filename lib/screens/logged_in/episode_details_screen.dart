@@ -43,7 +43,9 @@ class EpisodeDetailsScreen
                 colorScheme: ref
                     .watch(
                       episodeColorSchemeProvider(
-                          episode, Theme.of(context).brightness),
+                        episode,
+                        Theme.of(context).brightness,
+                      ),
                     )
                     .valueOrNull,
               ),

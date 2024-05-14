@@ -53,11 +53,13 @@ class Episode with _$Episode implements ToJson {
 
   static final _rfc822Format = DateFormat('EEE, dd MMM yyyy HH:mm:ss');
 
-  static Iterable<Episode> fromXml(XmlDocument document,
-      {required Podcast podcast}) sync* {
+  static Iterable<Episode> fromXml(
+    XmlDocument document, {
+    required Podcast podcast,
+  }) sync* {
     for (final item in document.findAllElements('item')) {
       // region Required fields
-      final guid = item.getElementContent('guid')!.replaceAll('/', '-');
+      final guid = Uri.encodeComponent(item.getElementContent('guid')!);
       if (guid.contains('/')) {
         throw UnsupportedError(item.toString());
       }

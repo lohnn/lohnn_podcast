@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:integral_isolates/integral_isolates.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/response_extension.dart';
@@ -10,7 +11,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'podcast_list_pod_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<DocumentSnapshot<Podcast>> podcast(
   PodcastRef ref,
   PodcastId id,
@@ -27,11 +28,8 @@ class PodcastListPod extends _$PodcastListPod {
 
     await ref.watch(podcastUserPodProvider.future);
     final firestore = ref.watch(podcastUserPodProvider.notifier);
-    // @TODO: Check if this will continue watching after provider is disposed
 
     refreshAll();
-    // @TODO: Maybe automatically check episodes and update here?
-    // @TODO: Should we store an episode hash or something to use to check if we need to update maybe?
 
     return firestore.userCollection('podcastList').withConverter(
       fromFirestore: (snapshot, __) {
@@ -98,7 +96,9 @@ class PodcastListPod extends _$PodcastListPod {
       }
     } on BackpressureDropException catch (_) {
       // noop
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint(e.toString());
+      debugPrintStack(stackTrace: stackTrace);
       rethrow;
     }
   }
