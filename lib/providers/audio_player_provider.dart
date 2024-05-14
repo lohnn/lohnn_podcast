@@ -40,9 +40,8 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       ref.onDispose(subscription.cancel);
 
       final user = await ref.read(podcastUserPodProvider.future);
-      if (user.playQueue case final episodeQueue?
-          when episodeQueue.isNotEmpty) {
-        final episodeSnapshot = await episodeQueue.first.get();
+      if (user.playQueue.isNotEmpty) {
+        final episodeSnapshot = await user.playQueue.first.get();
         yield episodeSnapshot.data();
         await _player.loadEpisode(episodeSnapshot);
       }

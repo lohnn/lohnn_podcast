@@ -1,7 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/src/router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
@@ -52,7 +52,7 @@ class SmallMediaPlayerControls extends ConsumerWidget {
 
                     switch (action) {
                       case EpisodePlayerModalResultAction.showPlaylist:
-                        if(context.mounted) {
+                        if (context.mounted) {
                           router.push('/playlist');
                         }
                       case null:
