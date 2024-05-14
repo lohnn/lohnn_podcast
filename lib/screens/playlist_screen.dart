@@ -6,12 +6,11 @@ class PlaylistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: Get size from modal and height from child?
-    return SizedBox(
-      height: 500,
-      child: Scaffold(
-        appBar: AppBar(),
-        body: const Text('HELLO'),
-      ),
+    return ListView(
+      children: [
+        AppBar(),
+        const Text('HELLO'),
+      ],
     );
   }
 }

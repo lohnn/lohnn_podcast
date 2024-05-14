@@ -8,6 +8,11 @@ import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart
 import 'package:podcast/widgets/media_player_bottom_sheet/show_playlist_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
+enum EpisodePlayerModalResultAction {
+  showPlaylist,
+  ;
+}
+
 class EpisodePlayerModal extends HookConsumerWidget {
   const EpisodePlayerModal({super.key});
 
