@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/screens/modals/episode_player_modal.dart';
+import 'package:podcast/screens/modals/player_modal_navigator.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/episode_progress_bar.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
@@ -41,7 +42,7 @@ class SmallMediaPlayerControls extends ConsumerWidget {
                       isScrollControlled: true,
                       useSafeArea: true,
                       showDragHandle: true,
-                      builder: (context) => const EpisodePlayerModal(),
+                      builder: (context) => const PlayerModalNavigator(),
                     );
                   },
                   child: Column(
