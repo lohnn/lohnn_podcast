@@ -43,7 +43,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
           RoundedImage(imageUri: episode.imageUrl),
           Text(episode.title),
           if ((currentPosition, episodeDuration)
-              case (final currentPosition?, final episodeDuration?))
+              case (final currentPosition?, final episodeDuration?)) ...[
             Slider.adaptive(
               value: currentPosition.inMilliseconds.toDouble(),
               max: episodeDuration.inMilliseconds.toDouble(),
@@ -53,6 +53,14 @@ class EpisodePlayerModal extends HookConsumerWidget {
                     .setPosition(value.toInt());
               },
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(currentPosition.prettyPrint()),
+                Text((currentPosition - episodeDuration).prettyPrint()),
+              ],
+            ),
+          ],
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -71,5 +79,15 @@ class EpisodePlayerModal extends HookConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+extension on Duration {
+  String prettyPrint() {
+    // final negativeSign = isNegative ? '-' : '';
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final twoDigitMinutes = twoDigits(inMinutes.remainder(60).abs());
+    final twoDigitSeconds = twoDigits(inSeconds.remainder(60).abs());
+    return '${twoDigits(inHours)}:$twoDigitMinutes:$twoDigitSeconds';
   }
 }
