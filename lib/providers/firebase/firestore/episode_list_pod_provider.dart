@@ -19,7 +19,7 @@ Future<(Podcast, DocumentSnapshot<Episode>)> episode(
   return (podcast, await episodeList.doc(episodeId).get());
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class EpisodeListPod extends _$EpisodeListPod {
   late Podcast _podcast;
 
@@ -61,7 +61,7 @@ class EpisodeListPod extends _$EpisodeListPod {
         // Does the episode contain any updates?
         if (downloadedEpisode + storedEpisode case final episode
             when episode != storedEpisode) {
-          reference
+          await reference
               .doc(downloadedEpisode.guid)
               .set(downloadedEpisode + storedEpisode);
         }

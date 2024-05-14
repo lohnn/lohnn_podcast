@@ -91,7 +91,8 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
 @riverpod
 Stream<({Duration position, Duration buffered})> currentPosition(
-    CurrentPositionRef ref) async* {
+  CurrentPositionRef ref,
+) async* {
   final audioPlayer = await ref.watch(_audioPlayerProvider.future);
   yield* audioPlayer.positionStream;
 }
