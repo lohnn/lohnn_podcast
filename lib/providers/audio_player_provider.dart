@@ -36,6 +36,9 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     try {
       _player = await ref.watch(_audioPlayerProvider.future);
 
+      final subscription = _player.playbackState.listen(_onPlaybackStateChange);
+      ref.onDispose(subscription.cancel);
+
       final user = await ref.read(podcastUserPodProvider.future);
       if (user.playQueue case final episodeQueue?
           when episodeQueue.isNotEmpty) {
@@ -47,6 +50,14 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       debugPrint(e.toString());
       debugPrintStack(stackTrace: stackTrace);
       rethrow;
+    }
+  }
+
+  void _onPlaybackStateChange(PlaybackState state) {
+    if (state.processingState == AudioProcessingState.completed) {
+      // TODO: Set listened to true in episode
+      // TODO: Remove episode reference from user
+      // TODO: Start next episode from queue? (if not automatic)
     }
   }
 
