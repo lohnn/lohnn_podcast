@@ -25,60 +25,67 @@ class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
   ) {
     return Scaffold(
       appBar: AppBar(),
-      body: ListView.builder(
-          itemCount: data.value.length,
-          itemBuilder: (context, index) {
-            final snapshot = data.value[index];
-            final episode = snapshot.data()!;
+      body: ReorderableListView.builder(
+        onReorder: (oldIndex, newIndex) {
+          ref.read(playlistPodProvider.notifier).reorder(oldIndex, newIndex);
+        },
+        itemCount: data.value.length,
+        itemBuilder: (context, index) {
+          final snapshot = data.value[index];
+          final episode = snapshot.data()!;
 
-            return ListTile(
-              onTap: () {
-                // context.push('/${podcastId.id}/${episode.guid}');
-              },
-              leading: RoundedImage(
-                imageUri: episode.imageUrl,
-                showDot: !episode.listened,
-                imageSize: 40,
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (episode.pubDate case final pubDate?)
-                    DefaultTextStyle(
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w200,
-                      ),
-                      child: PubDateText(pubDate),
+          return ListTile(
+            key: ValueKey(episode),
+            onTap: () {
+              // context.push('/${podcastId.id}/${episode.guid}');
+            },
+            leading: RoundedImage(
+              imageUri: episode.imageUrl,
+              showDot: !episode.listened,
+              imageSize: 40,
+            ),
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (episode.pubDate case final pubDate?)
+                  DefaultTextStyle(
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w200,
                     ),
-                  Text(episode.title),
-                ],
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (episode.description case final description?)
-                    Text(
-                      description.removeHtmlTags(),
-                      maxLines: 2,
-                    ),
-                  Row(
-                    children: [
-                      PlayEpisodeButton(snapshot),
-                      IconButton(
-                        onPressed: () {
-                          ref
-                              .read(podcastUserPodProvider.notifier)
-                              .addToQueue(snapshot.reference);
-                        },
-                        icon: const Icon(Icons.playlist_add),
-                      ),
-                    ],
+                    child: PubDateText(pubDate),
                   ),
-                ],
-              ),
-            );
-          }),
+                Text(episode.title),
+              ],
+            ),
+            subtitle: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (episode.description case final description?)
+                  Text(
+                    description.removeHtmlTags(),
+                    maxLines: 2,
+                  ),
+                Row(
+                  children: [
+                    PlayEpisodeButton(snapshot),
+                    IconButton(
+                      onPressed: () {
+                        ref
+                            .read(podcastUserPodProvider.notifier)
+                            .addToQueue(snapshot.reference);
+                      },
+                      icon: const Icon(Icons.playlist_add),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
