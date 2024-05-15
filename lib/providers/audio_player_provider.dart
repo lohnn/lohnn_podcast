@@ -32,23 +32,28 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   late PodcastAudioHandler _player;
 
   @override
-  Stream<Episode?> build() async* {
+  Future<Episode?> build() async {
     try {
       _player = await ref.watch(_audioPlayerProvider.future);
 
       final subscription = _player.playbackState.listen(_onPlaybackStateChange);
       ref.onDispose(subscription.cancel);
 
-      final user = await ref.read(podcastUserPodProvider.future);
-      if (user.playQueue.isNotEmpty) {
-        final episodeSnapshot = await user.playQueue.first.get();
-        yield episodeSnapshot.data();
-        await _player.loadEpisode(episodeSnapshot);
-      }
+      reloadQueue();
+      return future;
     } catch (e, stackTrace) {
       debugPrint(e.toString());
       debugPrintStack(stackTrace: stackTrace);
       rethrow;
+    }
+  }
+
+  Future<void> reloadQueue() async {
+    final user = await ref.read(podcastUserPodProvider.future);
+    if (user.playQueue.isNotEmpty) {
+      final episodeSnapshot = await user.playQueue.first.get();
+      state = AsyncData(episodeSnapshot.data());
+      await _player.loadEpisode(episodeSnapshot);
     }
   }
 
@@ -61,8 +66,9 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   }
 
   Future<void> playEpisode(
-    DocumentSnapshot<Episode> episodeSnapshot,
-  ) async {
+    DocumentSnapshot<Episode> episodeSnapshot, {
+    bool autoPlay = true,
+  }) async {
     state = AsyncData(episodeSnapshot.data());
 
     ref
@@ -70,7 +76,8 @@ class AudioPlayerPod extends _$AudioPlayerPod {
         .addToTopOfQueue(episodeSnapshot.reference);
 
     await _player.loadEpisode(episodeSnapshot, autoPlay: true);
-    _player.play();
+
+    if (autoPlay) _player.play();
   }
 
   void triggerMediaAction(MediaAction action) => switch (action) {
