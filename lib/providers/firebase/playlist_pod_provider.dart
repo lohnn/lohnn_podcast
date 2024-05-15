@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/extensions/list_extension.dart';
-import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -19,12 +18,10 @@ class PlaylistPod extends _$PlaylistPod {
     ];
   }
 
-  Future<void> reorder(int oldIndex, int newIndex) async  {
+  Future<void> reorder(int oldIndex, int newIndex) async {
     final reordered = state.requireValue.reorder(oldIndex, newIndex);
     await ref.read(podcastUserPodProvider.notifier).setQueue(
           reordered.map((e) => e.reference).toList(),
         );
-
-    ref.read(audioPlayerPodProvider.notifier).reloadQueue();
   }
 }
