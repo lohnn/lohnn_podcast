@@ -3,6 +3,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:podcast/data/episode.dart';
+import 'package:podcast/data/podcast_user.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
 import 'package:podcast/services/podcast_audio_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -39,7 +40,16 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       final subscription = _player.playbackState.listen(_onPlaybackStateChange);
       ref.onDispose(subscription.cancel);
 
-      reloadQueue();
+      ref.listen(
+        podcastUserPodProvider,
+        fireImmediately: true,
+        (previous, next) {
+          if (next case AsyncData(:final value)) {
+            _reloadQueue(value);
+          }
+        },
+      );
+
       return future;
     } catch (e, stackTrace) {
       debugPrint(e.toString());
@@ -48,12 +58,21 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     }
   }
 
-  Future<void> reloadQueue() async {
-    final user = await ref.read(podcastUserPodProvider.future);
+  Future<void> _reloadQueue(PodcastUser user) async {
     if (user.playQueue.isNotEmpty) {
-      final episodeSnapshot = await user.playQueue.first.get();
-      state = AsyncData(episodeSnapshot.data());
-      await _player.loadEpisode(episodeSnapshot);
+      final docs = await Future.wait([
+        for (final episodeRef in user.playQueue) episodeRef.get(),
+      ]);
+
+      await _player.setQueue(
+        [
+          for (final snapshot in docs)
+            if (snapshot.data() case final episode?)
+              episode.mediaItem(snapshot),
+        ],
+      );
+
+      state = AsyncData(docs.first.data());
     }
   }
 

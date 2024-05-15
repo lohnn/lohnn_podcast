@@ -79,6 +79,11 @@ class PodcastAudioHandler extends BaseAudioHandler
   @override
   Future<void> seek(Duration position) => _player.seek(position);
 
+  Future<void> setQueue(List<PodcastMediaItem> newQueue) async {
+    await super.updateQueue(newQueue);
+    await loadEpisode(newQueue.first.episode);
+  }
+
   Future<void> loadEpisode(
     DocumentSnapshot<Episode> episodeSnapshot, {
     bool autoPlay = false,
@@ -90,7 +95,7 @@ class PodcastAudioHandler extends BaseAudioHandler
         initialPosition: episode.currentPosition,
       );
       if (autoPlay) await _player.play();
-     } else {
+    } else {
       return Future.error(DocumentNotFoundException(episodeSnapshot));
     }
   }
