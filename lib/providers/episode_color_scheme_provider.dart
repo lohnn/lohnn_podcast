@@ -12,7 +12,7 @@ Future<ColorScheme?> currentPlayingEpisodeColorScheme(
   Brightness brightness,
 ) async {
   final episode = ref.watch(audioPlayerPodProvider).valueOrNull;
-  if (episode case final episode?) {
+  if (episode?.data() case final episode?) {
     return ref
         .watch(
           episodeColorSchemeProvider(episode, brightness),

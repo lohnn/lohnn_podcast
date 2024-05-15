@@ -21,8 +21,8 @@ Future<PodcastAudioHandler> _audioPlayer(_AudioPlayerRef ref) async {
       androidNotificationChannelId: 'se.lohnn.podcast.audio',
       androidNotificationChannelName: 'Lohnn Podcast',
       // @TODO: These two settings can cause the operating system to kill the app
-      androidNotificationOngoing: true,
-      // androidStopForegroundOnPause: true,
+      // androidNotificationOngoing: false,
+      androidStopForegroundOnPause: false,
       androidNotificationIcon: 'drawable/podcast_icon_outline',
     ),
   );
@@ -33,7 +33,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   late PodcastAudioHandler _player;
 
   @override
-  Future<Episode?> build() async {
+  Future<DocumentSnapshot<Episode>> build() async {
     try {
       _player = await ref.watch(_audioPlayerProvider.future);
 
@@ -72,15 +72,29 @@ class AudioPlayerPod extends _$AudioPlayerPod {
         ],
       );
 
-      state = AsyncData(docs.first.data());
+      state = AsyncData(docs.first);
     }
   }
 
-  void _onPlaybackStateChange(PlaybackState state) {
-    if (state.processingState == AudioProcessingState.completed) {
-      // TODO: Set listened to true in episode
-      // TODO: Remove episode reference from user
-      // TODO: Start next episode from queue? (if not automatic)
+  Future<void> _onPlaybackStateChange(PlaybackState playbackState) async {
+    if (playbackState.processingState == AudioProcessingState.completed) {
+      final episodeSnapshot = await future;
+
+      // TODO: Validate following logic is valid
+
+      // Set listened to true in episode
+      if (episodeSnapshot.data() case final currentEpisode?) {
+        episodeSnapshot.reference.set(currentEpisode.copyWith(listened: true));
+      }
+      // Remove episode reference from user
+      final nextItem = await ref
+          .read(podcastUserPodProvider.notifier)
+          .removeFromQueue(episodeSnapshot.reference);
+
+      // Start next episode from queue? (if not automatic)
+      if (nextItem case final nextItem?) {
+        playEpisode(await nextItem.get());
+      }
     }
   }
 
@@ -88,7 +102,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     DocumentSnapshot<Episode> episodeSnapshot, {
     bool autoPlay = true,
   }) async {
-    state = AsyncData(episodeSnapshot.data());
+    state = AsyncData(episodeSnapshot);
 
     ref
         .read(podcastUserPodProvider.notifier)
@@ -109,7 +123,9 @@ class AudioPlayerPod extends _$AudioPlayerPod {
         MediaAction.pause => _player.pause(),
         MediaAction.stop => _player.stop(),
         MediaAction.fastForward => _player.fastForward(),
+        MediaAction.skipToNext => _player.fastForward(),
         MediaAction.rewind => _player.rewind(),
+        MediaAction.skipToPrevious => _player.rewind(),
         _ => throw UnsupportedError('Action $action not supported yet.')
       };
 
@@ -118,7 +134,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   }
 
   // ignore: avoid_public_notifier_properties
-  Duration? get currentEpisodeDuration => state.valueOrNull?.duration;
+  Duration? get currentEpisodeDuration => state.valueOrNull?.data()?.duration;
 }
 
 @riverpod
