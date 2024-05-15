@@ -48,6 +48,18 @@ class PodcastUserPod extends _$PodcastUserPod {
     return _userDocument.set(user.copyWith(playQueue: queue));
   }
 
+  /// Removes the episode from the queue and returns the next episode in the queue
+  Future<DocumentReference<Episode>?> removeFromQueue(
+      DocumentReference<Episode> episode) async {
+    final user = await future;
+    final queue = [
+      for (final ref in user.playQueue)
+        if (ref.id != episode.id) ref,
+    ];
+    await setQueue(queue);
+    return queue.firstOrNull;
+  }
+
   Future<void> addToQueue(DocumentReference<Episode> episode) async {
     final user = await future;
     return setQueue([
