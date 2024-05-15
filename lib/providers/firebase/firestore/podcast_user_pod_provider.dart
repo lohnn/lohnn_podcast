@@ -45,7 +45,7 @@ class PodcastUserPod extends _$PodcastUserPod {
 
   Future<void> setQueue(List<DocumentReference<Episode>> queue) async {
     final user = await future;
-    _userDocument.set(user.copyWith(playQueue: queue));
+    return _userDocument.set(user.copyWith(playQueue: queue));
   }
 
   Future<void> addToQueue(DocumentReference<Episode> episode) async {

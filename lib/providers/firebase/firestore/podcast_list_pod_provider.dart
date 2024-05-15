@@ -26,7 +26,7 @@ class PodcastListPod extends _$PodcastListPod {
   Future<CollectionReference<Podcast>> build() async {
     // @TODO: Migrate to let url be id?
 
-    await ref.watch(podcastUserPodProvider.future);
+    await ref.read(podcastUserPodProvider.future);
     final firestore = ref.watch(podcastUserPodProvider.notifier);
 
     refreshAll();
