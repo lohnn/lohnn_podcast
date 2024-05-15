@@ -50,7 +50,8 @@ class PodcastUserPod extends _$PodcastUserPod {
 
   /// Removes the episode from the queue and returns the next episode in the queue
   Future<DocumentReference<Episode>?> removeFromQueue(
-      DocumentReference<Episode> episode) async {
+    DocumentReference<Episode> episode,
+  ) async {
     final user = await future;
     final queue = [
       for (final ref in user.playQueue)
