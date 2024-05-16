@@ -43,7 +43,7 @@ class PodcastAudioHandler extends BaseAudioHandler
     // @TODO: Can we send current position updates to [playbackState]
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
 
-    _player.positionStream.throttleTime(const Duration(seconds: 10)).forEach((
+    _player.positionStream.throttleTime(const Duration(seconds: 10), trailing: true).forEach((
       position,
     ) {
       // @TODO: This is a bit of a hack, figure out if we can guard against this smarter
