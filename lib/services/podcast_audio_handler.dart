@@ -46,6 +46,11 @@ class PodcastAudioHandler extends BaseAudioHandler
     _player.positionStream.throttleTime(const Duration(seconds: 10)).forEach((
       position,
     ) {
+      // @TODO: This is a bit of a hack, figure out if we can guard against this smarter
+      // Sometimes on startup (when loading episode it seems) we get position
+      // stream update and hence update the episode with currentPosition = 0,
+      // resetting the episode for all devices.
+      if (position.inSeconds <= 0) return;
       final currentEpisodeSnapshot = mediaItem.valueOrNull?.episode;
       final currentEpisode = currentEpisodeSnapshot?.data();
 
