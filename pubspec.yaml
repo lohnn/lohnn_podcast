@@ -4,12 +4,12 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
   audio_service: ^0.18.13
   audio_session: ^0.1.19
-  build_runner: ^2.4.9
+  build_runner: ^2.4.10
   cached_network_image: ^3.3.1
   cloud_firestore: ^4.17.3
   collection: ^1.18.0
@@ -23,9 +23,9 @@ dependencies:
   flutter_widget_from_html_core: ^0.14.12
   freezed: ^2.5.2
   freezed_annotation: ^2.4.1
-  go_router: ^14.1.0
+  go_router: ^14.1.1
   google_sign_in: ^6.2.1
-  hashlib: ^1.15.0
+  hashlib: ^1.16.0
   hooks_riverpod: ^3.0.0-dev.3
   integral_isolates: ^0.5.1
   intl: ^0.19.0
