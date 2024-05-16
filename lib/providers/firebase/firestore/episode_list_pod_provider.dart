@@ -59,11 +59,9 @@ class EpisodeListPod extends _$EpisodeListPod {
         // Episode already exists in list
 
         // Does the episode contain any updates?
-        if (downloadedEpisode + storedEpisode case final episode
-            when episode != storedEpisode) {
-          await reference
-              .doc(downloadedEpisode.guid)
-              .set(downloadedEpisode + storedEpisode);
+        final mergedEpisode = downloadedEpisode + storedEpisode;
+        if (mergedEpisode != storedEpisode) {
+          await reference.doc(downloadedEpisode.guid).set(mergedEpisode);
         }
       } else {
         // Episode does not exist
