@@ -44,7 +44,7 @@ app.*.map.json
 /firebase.json
 /lib/firebase_options.dart
 /macos/Runner/GoogleService-Info.plist
-/ios/Runner/GoogleService-Info.plist
+**/GoogleService-Info.plist
 **.g.dart
 **.freezed.dart
 /android/app/google-services.json
