@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:podcast/providers/firebase/firebase_app_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_provider.g.dart';
@@ -13,8 +12,7 @@ class UserPod extends _$UserPod {
 
   @override
   Stream<User?> build() async* {
-    final app = await ref.watch(firebaseAppProvider.future);
-    _auth = FirebaseAuth.instanceFor(app: app);
+    _auth = FirebaseAuth.instance;
 
     if (kIsWeb) {
       _auth.setPersistence(Persistence.LOCAL);

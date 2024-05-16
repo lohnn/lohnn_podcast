@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast_user.dart';
-import 'package:podcast/providers/firebase/firebase_app_provider.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -18,7 +18,7 @@ class PodcastUserPod extends _$PodcastUserPod {
     if (user == null) throw Exception('User not available');
 
     final store = FirebaseFirestore.instanceFor(
-      app: await ref.watch(firebaseAppProvider.future),
+      app: Firebase.app(),
       databaseId: 'podcast',
     )..settings = const Settings(
         persistenceEnabled: true,

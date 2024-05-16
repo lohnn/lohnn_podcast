@@ -14,8 +14,10 @@ dependencies:
   cloud_firestore: ^4.17.3
   collection: ^1.18.0
   dio: ^5.4.3+1
+  firebase_analytics: ^10.10.5
   firebase_auth: ^4.19.5
   firebase_core: ^2.31.0
+  firebase_crashlytics: ^3.5.5
   firebase_ui_firestore: ^1.6.3
   flutter:
     sdk: flutter
