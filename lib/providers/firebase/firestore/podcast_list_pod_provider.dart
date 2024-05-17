@@ -72,6 +72,7 @@ class PodcastListPod extends _$PodcastListPod {
 
       final episodeHash = EpisodesHash.fromEpisodes(fetchedEpisodes);
       // check if the new episode hash does not match the stored one
+      // TODO: Check episodes in [listened] [allEpisodes] and [removedEpisodes] and update those lists
       if (storedPodcast.episodesHash != episodeHash ||
           storedPodcast.totalEpisodes != fetchedEpisodes.length) {
         // If it does NOT match, update the episode list
