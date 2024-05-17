@@ -9,9 +9,9 @@ part 'podcast_user.g.dart';
 @freezed
 class PodcastUser with _$PodcastUser {
   const factory PodcastUser({
-    @Default([])
-    @EpisodeReferenceListConverter()
-    List<DocumentReference<Episode>> playQueue,
+    @Default({})
+    @EpisodeReferenceSetConverter()
+    Set<DocumentReference<Episode>> playQueue,
   }) = _PodcastUser;
 
   const PodcastUser._();

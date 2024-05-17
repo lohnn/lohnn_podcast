@@ -15,32 +15,32 @@ class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
   Timestamp toJson(DateTime dateTime) => Timestamp.fromDate(dateTime);
 }
 
-abstract class DocumentReferenceListConverter<T extends ToJson>
-    implements JsonConverter<List<DocumentReference<T>>, List<dynamic>> {
+abstract class DocumentReferenceSetConverter<T extends ToJson>
+    implements JsonConverter<Set<DocumentReference<T>>, List<dynamic>> {
   T Function(Map<String, dynamic> json) get fromFirestore;
 
-  const DocumentReferenceListConverter();
+  const DocumentReferenceSetConverter();
 
   @override
-  List<DocumentReference<T>> fromJson(List<dynamic> json) {
-    return [
+  Set<DocumentReference<T>> fromJson(List<dynamic> json) {
+    return {
       for (final ref in json.cast<DocumentReference>())
         ref.withConverter(
           fromFirestore: (snapshot, _) => fromFirestore(snapshot.data()!),
           toFirestore: (data, _) => data.toJson(),
         ),
-    ];
+    };
   }
 
   @override
-  List<DocumentReference<dynamic>> toJson(List<DocumentReference<T>> object) {
-    return object;
+  List<DocumentReference<dynamic>> toJson(Set<DocumentReference<T>> object) {
+    return object.toList();
   }
 }
 
-class EpisodeReferenceListConverter
-    extends DocumentReferenceListConverter<Episode> {
-  const EpisodeReferenceListConverter();
+class EpisodeReferenceSetConverter
+    extends DocumentReferenceSetConverter<Episode> {
+  const EpisodeReferenceSetConverter();
 
   @override
   Episode Function(Map<String, dynamic> json) get fromFirestore =>
