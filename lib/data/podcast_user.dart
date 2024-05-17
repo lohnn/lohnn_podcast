@@ -1,33 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:podcast/data/episode.dart';
+import 'package:podcast/data/firebase_converters/date_time_converter.dart';
 
 part 'podcast_user.freezed.dart';
+part 'podcast_user.g.dart';
 
 @freezed
 class PodcastUser with _$PodcastUser {
   const factory PodcastUser({
-    @Default([]) List<DocumentReference<Episode>> playQueue,
+    @Default([])
+    @EpisodeReferenceListConverter()
+    List<DocumentReference<Episode>> playQueue,
   }) = _PodcastUser;
 
   const PodcastUser._();
 
-  factory PodcastUser.fromFirestore(Map<String, dynamic> json) {
-    return PodcastUser(
-      playQueue: [
-        for (final episodeSnapshot
-            in (json['playQueue'] as List<dynamic>).cast<DocumentReference>())
-          episodeSnapshot.withConverter(
-            fromFirestore: (snapshot, _) => Episode.fromJson(snapshot.data()!),
-            toFirestore: (data, _) => data.toJson(),
-          ),
-      ],
-    );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'playQueue': playQueue,
-    };
-  }
+  factory PodcastUser.fromJson(Map<String, dynamic> json) =>
+      _$PodcastUserFromJson(json);
 }

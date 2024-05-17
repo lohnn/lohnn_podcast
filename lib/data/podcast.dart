@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hashlib/hashlib.dart';
 import 'package:podcast/data/episode.dart';
+import 'package:podcast/data/firebase_converters/date_time_converter.dart';
 import 'package:podcast/extensions/nullability_extensions.dart';
 import 'package:podcast/extensions/xml_element_extension.dart';
 import 'package:xml/xml.dart';
@@ -46,9 +47,17 @@ class Podcast with _$Podcast {
     required String? generator,
     // Below is fields used for state
     required int totalEpisodes,
-    required int listenedEpisodes,
     required bool showDot,
     required EpisodesHash? episodesHash,
+    @Default([])
+    @EpisodeReferenceListConverter()
+    List<DocumentReference<Episode>> allEpisodesList,
+    @Default([])
+    @EpisodeReferenceListConverter()
+    List<DocumentReference<Episode>> listenedEpisodesList,
+    @Default([])
+    @EpisodeReferenceListConverter()
+    List<DocumentReference<Episode>> deletedEpisodesList,
   }) = _Podcast;
 
   factory Podcast.fromJson(Map<String, dynamic> json) =>
@@ -81,7 +90,6 @@ class Podcast with _$Podcast {
       language: language,
       lastBuildDate: lastBuildDate,
       totalEpisodes: 0,
-      listenedEpisodes: 0,
       showDot: false,
       episodesHash: null,
     );

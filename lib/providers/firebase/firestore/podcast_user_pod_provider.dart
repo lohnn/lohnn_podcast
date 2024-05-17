@@ -27,10 +27,10 @@ class PodcastUserPod extends _$PodcastUserPod {
     _userDocument =
         store.collection('users').doc(user.uid).withConverter<PodcastUser>(
       fromFirestore: (snapshot, __) {
-        return PodcastUser.fromFirestore(snapshot.data()!);
+        return PodcastUser.fromJson(snapshot.data()!);
       },
       toFirestore: (podcastUser, __) {
-        return podcastUser.toFirestore();
+        return podcastUser.toJson();
       },
     );
 
