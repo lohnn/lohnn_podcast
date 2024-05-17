@@ -32,13 +32,9 @@ class PodcastListPod extends _$PodcastListPod {
     refreshAll();
 
     return firestore.userCollection('podcastList').withConverter(
-      fromFirestore: (snapshot, __) {
-        return Podcast.fromJson(snapshot.data()!);
-      },
-      toFirestore: (podcast, __) {
-        return podcast.toJson();
-      },
-    );
+          fromFirestore: Podcast.fromFirestore,
+          toFirestore: Podcast.toFirestore,
+        );
   }
 
   Future<void> refreshAll() async {
@@ -87,6 +83,9 @@ class PodcastListPod extends _$PodcastListPod {
       fetchedPodcast = fetchedPodcast.copyWith(
         episodesHash: episodeHash,
         totalEpisodes: fetchedEpisodes.length,
+        listenedEpisodesList: storedPodcast.listenedEpisodesList,
+        allEpisodesList: storedPodcast.allEpisodesList,
+        deletedEpisodesList: storedPodcast.deletedEpisodesList,
       );
       // endregion Update episodes list
 

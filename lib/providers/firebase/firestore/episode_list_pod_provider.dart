@@ -34,9 +34,9 @@ class EpisodeListPod extends _$EpisodeListPod {
                   'episodes',
                   podcastId,
                 ))
-            .withConverter(
-      fromFirestore: (snapshot, _) => Episode.fromJson(snapshot.data()!),
-      toFirestore: (data, _) => data.toJson(),
+            .withConverter<Episode>(
+      fromFirestore: Episode.fromFirestore,
+      toFirestore: Episode.toFirestore,
     );
 
     return (_podcast, reference);

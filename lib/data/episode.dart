@@ -111,4 +111,18 @@ class Episode with _$Episode implements ToJson {
       );
     }
   }
+
+  factory Episode.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? _,
+  ) {
+    return Episode.fromJson(snapshot.data()!);
+  }
+
+  static Map<String, Object?> toFirestore(
+    Episode value,
+    SetOptions? _,
+  ) {
+    return value.toJson();
+  }
 }
