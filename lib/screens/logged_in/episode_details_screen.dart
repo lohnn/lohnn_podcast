@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
@@ -9,6 +10,7 @@ import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
 import 'package:podcast/widgets/rounded_image.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class EpisodeDetailsScreen
     extends AsyncValueWidget<(Podcast, DocumentSnapshot<Episode>)> {
@@ -76,6 +78,14 @@ class EpisodeDetailsScreen
                       if (episode.pubDate case final pubDate?)
                         PubDateText(pubDate),
                       PlayEpisodeButton(episodeSnapshot),
+                      if (episode.description case final description?)
+                        HtmlWidget(
+                          description,
+                          onTapUrl: (url) {
+                            launchUrlString(url);
+                            return true;
+                          },
+                        ),
                     ],
                   ),
                 ),
