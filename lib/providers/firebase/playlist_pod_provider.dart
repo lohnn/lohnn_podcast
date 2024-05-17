@@ -21,7 +21,7 @@ class PlaylistPod extends _$PlaylistPod {
   Future<void> reorder(int oldIndex, int newIndex) async {
     final reordered = state.requireValue.reorder(oldIndex, newIndex);
     await ref.read(podcastUserPodProvider.notifier).setQueue(
-          reordered.map((e) => e.reference).toList(),
+          reordered.map((e) => e.reference).toSet(),
         );
   }
 }

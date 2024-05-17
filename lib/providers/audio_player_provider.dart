@@ -93,6 +93,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
       // TODO: Add episode reference to the podcast's "listenedList"
 
+
       // Start next episode from queue? (if not automatic)
       if (nextItem case final nextItem?) {
         playEpisode(await nextItem.get());

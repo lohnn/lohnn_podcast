@@ -49,15 +49,15 @@ class Podcast with _$Podcast {
     required int totalEpisodes,
     required bool showDot,
     required EpisodesHash? episodesHash,
-    @Default([])
-    @EpisodeReferenceListConverter()
-    List<DocumentReference<Episode>> allEpisodesList,
-    @Default([])
-    @EpisodeReferenceListConverter()
-    List<DocumentReference<Episode>> listenedEpisodesList,
-    @Default([])
-    @EpisodeReferenceListConverter()
-    List<DocumentReference<Episode>> deletedEpisodesList,
+    @Default({})
+    @EpisodeReferenceSetConverter()
+    Set<DocumentReference<Episode>> allEpisodesList,
+    @Default({})
+    @EpisodeReferenceSetConverter()
+    Set<DocumentReference<Episode>> listenedEpisodesList,
+    @Default({})
+    @EpisodeReferenceSetConverter()
+    Set<DocumentReference<Episode>> deletedEpisodesList,
   }) = _Podcast;
 
   factory Podcast.fromJson(Map<String, dynamic> json) =>

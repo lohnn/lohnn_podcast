@@ -43,7 +43,7 @@ class PodcastUserPod extends _$PodcastUserPod {
     }
   }
 
-  Future<void> setQueue(List<DocumentReference<Episode>> queue) async {
+  Future<void> setQueue(Set<DocumentReference<Episode>> queue) async {
     final user = await future;
     return _userDocument.set(user.copyWith(playQueue: queue));
   }
@@ -53,31 +53,31 @@ class PodcastUserPod extends _$PodcastUserPod {
     DocumentReference<Episode> episode,
   ) async {
     final user = await future;
-    final queue = [
+    final queue = {
       for (final ref in user.playQueue)
         if (ref.id != episode.id) ref,
-    ];
+    };
     await setQueue(queue);
     return queue.firstOrNull;
   }
 
   Future<void> addToQueue(DocumentReference<Episode> episode) async {
     final user = await future;
-    return setQueue([
+    return setQueue({
       ...user.playQueue,
       // Don't add if already in queue
       if (user.playQueue.firstWhereOrNull((e) => e.id == episode.id) == null)
         episode,
-    ]);
+    });
   }
 
   Future<void> addToTopOfQueue(DocumentReference<Episode> episode) async {
     final user = await future;
-    return setQueue([
+    return setQueue({
       episode,
       for (final oldQueueItem in user.playQueue)
         if (oldQueueItem.id != episode.id) oldQueueItem,
-    ]);
+    });
   }
 
   CollectionReference<Map<String, dynamic>> userCollection(
