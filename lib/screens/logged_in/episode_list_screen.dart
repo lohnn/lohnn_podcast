@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
+import 'package:podcast/extensions/episode_snapshot_extension.dart';
 import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
@@ -33,8 +34,8 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
       appBar: AppBar(title: Text(podcast.name)),
       body: FirestoreListView(
         query: query.orderBy('pubDate', descending: true),
-        itemBuilder: (context, snapshot) {
-          final episode = snapshot.data();
+        itemBuilder: (context, episodeSnapshot) {
+          final episode = episodeSnapshot.data();
           return ListTile(
             onTap: () {
               context.push('/${podcastId.id}/${episode.guid}');
@@ -68,12 +69,12 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
                   ),
                 Row(
                   children: [
-                    PlayEpisodeButton(snapshot),
+                    PlayEpisodeButton(episodeSnapshot),
                     IconButton(
                       onPressed: () {
                         ref
                             .read(podcastUserPodProvider.notifier)
-                            .addToQueue(snapshot.reference);
+                            .addToQueue(episodeSnapshot.reference);
                       },
                       icon: const Icon(Icons.playlist_add),
                     ),
@@ -81,9 +82,38 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
                 ),
               ],
             ),
+            trailing: PopupMenuButton<_PopupActions>(
+              itemBuilder: (context) => [
+                if (!episode.listened)
+                  const PopupMenuItem(
+                    value: _PopupActions.markListened,
+                    child: Text('Mark listened'),
+                  )
+                else
+                  const PopupMenuItem(
+                    value: _PopupActions.markUnlistened,
+                    child: Text('Mark unlistened'),
+                  ),
+              ],
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) async {
+                switch (value) {
+                  case _PopupActions.markListened:
+                    await episodeSnapshot.markListened();
+                  case _PopupActions.markUnlistened:
+                    await episodeSnapshot.markUnlistened();
+                }
+              },
+            ),
           );
         },
       ),
     );
   }
+}
+
+enum _PopupActions {
+  markListened,
+  markUnlistened,
+  ;
 }

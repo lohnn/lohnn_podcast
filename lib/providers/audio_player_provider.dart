@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast_user.dart';
+import 'package:podcast/extensions/episode_snapshot_extension.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
 import 'package:podcast/services/podcast_audio_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -83,16 +84,12 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       // TODO: Validate following logic is valid
 
       // Set listened to true in episode
-      if (episodeSnapshot.data() case final currentEpisode?) {
-        episodeSnapshot.reference.set(currentEpisode.copyWith(listened: true));
-      }
+      await episodeSnapshot.markListened();
+
       // Remove episode reference from user
       final nextItem = await ref
           .read(podcastUserPodProvider.notifier)
           .removeFromQueue(episodeSnapshot.reference);
-
-      // TODO: Add episode reference to the podcast's "listenedList"
-
 
       // Start next episode from queue? (if not automatic)
       if (nextItem case final nextItem?) {

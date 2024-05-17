@@ -94,6 +94,20 @@ class Podcast with _$Podcast {
       episodesHash: null,
     );
   }
+
+  factory Podcast.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? _,
+  ) {
+    return Podcast.fromJson(snapshot.data()!);
+  }
+
+  static Map<String, Object?> toFirestore(
+    Podcast value,
+    SetOptions? _,
+  ) {
+    return value.toJson();
+  }
 }
 
 @freezed
