@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -42,15 +44,22 @@ class PodcastAudioHandler extends BaseAudioHandler
     // playback state changes as they happen via playbackState...
     // @TODO: Can we send current position updates to [playbackState]
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
+  }
 
-    _player.positionStream.throttleTime(const Duration(seconds: 10), trailing: true).forEach((
+  StreamSubscription<Duration>? _positionSubscription;
+
+  void _stopPositionStream() {
+    _positionSubscription?.cancel();
+    _positionSubscription = null;
+  }
+
+  void _startPositionStream() {
+    _stopPositionStream();
+    _positionSubscription = _player.positionStream
+        .throttleTime(const Duration(seconds: 10), trailing: true)
+        .listen((
       position,
     ) {
-      // @TODO: This is a bit of a hack, figure out if we can guard against this smarter
-      // Sometimes on startup (when loading episode it seems) we get position
-      // stream update and hence update the episode with currentPosition = 0,
-      // resetting the episode for all devices.
-      if (position.inSeconds <= 0) return;
       final currentEpisodeSnapshot = mediaItem.valueOrNull?.episode;
       final currentEpisode = currentEpisodeSnapshot?.data();
 
@@ -94,12 +103,14 @@ class PodcastAudioHandler extends BaseAudioHandler
     bool autoPlay = false,
   }) async {
     if (episodeSnapshot.data() case final episode?) {
+      _stopPositionStream();
       mediaItem.add(episode.mediaItem(episodeSnapshot));
       await _player.setAudioSource(
         AudioSource.uri(episode.url),
         initialPosition: episode.currentPosition,
       );
       if (autoPlay) await _player.play();
+      _startPositionStream();
     } else {
       return Future.error(DocumentNotFoundException(episodeSnapshot));
     }
