@@ -105,11 +105,14 @@ class PodcastAudioHandler extends BaseAudioHandler
   }) async {
     if (episodeSnapshot.data() case final episode?) {
       _stopPositionStream();
-      mediaItem.add(episode.mediaItem(episodeSnapshot));
-      await _player.setAudioSource(
+      final duration = await _player.setAudioSource(
         AudioSource.uri(episode.url),
         initialPosition: episode.currentPosition,
       );
+      mediaItem.add(
+        episode.mediaItem(episodeSnapshot, actualDuration: duration),
+      );
+
       if (autoPlay) await _player.play();
       _startPositionStream();
     } else {
