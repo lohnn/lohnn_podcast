@@ -11,20 +11,19 @@ class EpisodeProgressBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final position = ref.watch(currentPositionProvider).valueOrNull;
+    final durations = ref.watch(currentPositionProvider).valueOrNull;
 
     final colorScheme = Theme.of(context).colorScheme;
 
-    final episodeDuration = episode.duration ??
-        ref.watch(audioPlayerPodProvider.notifier).currentEpisodeDuration;
+    final episodeDuration = durations?.duration ?? episode.duration;
 
-    final bufferProgress = switch ((position?.buffered, episodeDuration)) {
+    final bufferProgress = switch ((durations?.buffered, episodeDuration)) {
       (final bufferPosition?, final episodeDuration?) =>
         bufferPosition.inMicroseconds / episodeDuration.inMicroseconds,
       _ => null,
     };
 
-    final progress = switch ((position?.position, episodeDuration)) {
+    final progress = switch ((durations?.position, episodeDuration)) {
       (final currentPosition?, final episodeDuration?) =>
         currentPosition.inMicroseconds / episodeDuration.inMicroseconds,
       _ => null,
