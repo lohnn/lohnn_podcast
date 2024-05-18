@@ -75,9 +75,9 @@ class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
                       onPressed: () {
                         ref
                             .read(podcastUserPodProvider.notifier)
-                            .addToQueue(snapshot.reference);
+                            .removeFromQueue(snapshot.reference);
                       },
-                      icon: const Icon(Icons.playlist_add),
+                      icon: const Icon(Icons.playlist_remove),
                     ),
                   ],
                 ),
