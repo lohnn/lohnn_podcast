@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
-import 'package:podcast/extensions/map_extensions.dart';
 
 extension EpisodeSnapshotExtension on DocumentSnapshot<Episode> {
   Future<void> markUnlistened() async {
@@ -15,8 +14,8 @@ extension EpisodeSnapshotExtension on DocumentSnapshot<Episode> {
     await podcastReference.set(
       podcast.copyWith(
         listenedEpisodes: {
-          for (final (episode, episodeHash) in podcast.listenedEpisodes.records)
-            if (episode.id != reference.id) episode: episodeHash,
+          for (final episode in podcast.listenedEpisodes)
+            if (episode.id != reference.id) episode,
         },
       ),
     );
@@ -33,10 +32,9 @@ extension EpisodeSnapshotExtension on DocumentSnapshot<Episode> {
         podcast.copyWith(
           listenedEpisodes: {
             // Just make damn sure we don't add an episode more than once
-            for (final (episode, episodeHash)
-                in podcast.listenedEpisodes.records)
-              if (episode.id != reference.id) episode: episodeHash,
-            reference: EpisodeHash.fromEpisode(currentEpisode),
+            for (final (episode) in podcast.listenedEpisodes)
+              if (episode.id != reference.id) episode,
+            reference,
           },
         ),
       );
