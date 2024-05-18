@@ -35,7 +35,7 @@ class SmallMediaPlayerControls extends ConsumerWidget {
               child: CircularProgressIndicator.adaptive(),
             ),
           AsyncError() => const Center(child: Text('Error loading episode')),
-          AsyncData(value: final episode) => switch (episode.data()) {
+          AsyncData(value: final episode) => switch (episode?.data()) {
               null => const Center(
                   child: Text('Nothing is playing right now'),
                 ),

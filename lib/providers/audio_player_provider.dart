@@ -34,7 +34,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   late PodcastAudioHandler _player;
 
   @override
-  Future<DocumentSnapshot<Episode>> build() async {
+  Future<DocumentSnapshot<Episode>?> build() async {
     try {
       _player = await ref.watch(_audioPlayerProvider.future);
 
@@ -74,17 +74,20 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       );
 
       state = AsyncData(docs.first);
+    } else {
+      state = const AsyncData(null);
     }
   }
 
   Future<void> _onPlaybackStateChange(PlaybackState playbackState) async {
     if (playbackState.processingState == AudioProcessingState.completed) {
       final episodeSnapshot = await future;
+      await _player.stop();
 
       // TODO: Validate following logic is valid
 
       // Set listened to true in episode
-      await episodeSnapshot.markListened();
+      await episodeSnapshot!.markListened();
 
       // Remove episode reference from user
       final nextItem = await ref
@@ -94,6 +97,8 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       // Start next episode from queue? (if not automatic)
       if (nextItem case final nextItem?) {
         playEpisode(await nextItem.get());
+      } else {
+        _player.clearPlaying();
       }
     }
   }
