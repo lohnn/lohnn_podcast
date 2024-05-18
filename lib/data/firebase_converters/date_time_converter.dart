@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
@@ -59,7 +60,10 @@ class EpisodeReferenceMapConverter
   Map<DocumentReference<Episode>, EpisodeHash> fromJson(
     Map<String, dynamic> json,
   ) {
-    final firestore = FirebaseFirestore.instance;
+    final firestore = FirebaseFirestore.instanceFor(
+      app: Firebase.app(),
+      databaseId: 'podcast',
+    );
     return {
       for (final (refPath, hash) in json.cast<String, String>().records)
         firestore.doc(refPath).withConverter(

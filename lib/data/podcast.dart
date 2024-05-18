@@ -62,11 +62,11 @@ class Podcast with _$Podcast {
     @EpisodeReferenceMapConverter()
     Map<DocumentReference<Episode>, EpisodeHash> allEpisodes,
     @Default({})
-    @EpisodeReferenceMapConverter()
-    Map<DocumentReference<Episode>, EpisodeHash> listenedEpisodes,
+    @EpisodeReferenceSetConverter()
+    Set<DocumentReference<Episode>> listenedEpisodes,
     @Default({})
-    @EpisodeReferenceMapConverter()
-    Map<DocumentReference<Episode>, EpisodeHash> deletedEpisodes,
+    @EpisodeReferenceSetConverter()
+    Set<DocumentReference<Episode>> deletedEpisodes,
   }) = _Podcast;
 
   const Podcast._();

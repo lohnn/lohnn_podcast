@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:integral_isolates/integral_isolates.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
+import 'package:podcast/extensions/map_extensions.dart';
 import 'package:podcast/extensions/response_extension.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
@@ -76,8 +78,10 @@ class PodcastListPod extends _$PodcastListPod {
               EpisodeHash.fromEpisode(episode),
       };
 
+      // TODO: Check episode hash per episode and update only the changed ones
       if (storedPodcast.episodesHash != episodeHash ||
-          storedPodcast.totalEpisodes != fetchedEpisodes.length) {
+          storedPodcast.totalEpisodes != fetchedEpisodes.length ||
+          true) {
         // If it does NOT match, update the episode list
         await ref
             .read(
@@ -91,8 +95,13 @@ class PodcastListPod extends _$PodcastListPod {
         episodesHash: episodeHash,
         allEpisodes: allFetchedEpisodes,
         listenedEpisodes: storedPodcast.listenedEpisodes,
-        // TODO: Shuffle episodes here if deleted and stuff
-        deletedEpisodes: storedPodcast.deletedEpisodes,
+        deletedEpisodes: {
+          ...storedPodcast.deletedEpisodes,
+          for (final (storedEpisodeRef, _) in storedPodcast.allEpisodes.records)
+            if (allFetchedEpisodes.keys
+                .none((fetchedRef) => storedEpisodeRef.id == fetchedRef.id))
+              storedEpisodeRef,
+        },
       );
       // endregion Update episodes list
 
