@@ -132,13 +132,11 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   void setPosition(int positionInMillis) {
     _player.seek(Duration(milliseconds: positionInMillis));
   }
-
-  // ignore: avoid_public_notifier_properties
-  Duration? get currentEpisodeDuration => state.valueOrNull?.data()?.duration;
 }
 
 @riverpod
-Stream<({Duration position, Duration buffered})> currentPosition(
+Stream<({Duration position, Duration buffered, Duration? duration})>
+    currentPosition(
   CurrentPositionRef ref,
 ) async* {
   final audioPlayer = await ref.watch(_audioPlayerProvider.future);

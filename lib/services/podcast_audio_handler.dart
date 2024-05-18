@@ -30,12 +30,13 @@ class PodcastAudioHandler extends BaseAudioHandler
   final BehaviorSubject<PodcastMediaItem?> mediaItem =
       BehaviorSubject.seeded(null);
 
-  Stream<({Duration position, Duration buffered})> get positionStream =>
-      Rx.combineLatest2(
-        _player.positionStream,
-        _player.bufferedPositionStream,
-        (a, b) => (position: a, buffered: b),
-      );
+  Stream<({Duration position, Duration buffered, Duration? duration})>
+      get positionStream => Rx.combineLatest3(
+            _player.positionStream,
+            _player.bufferedPositionStream,
+            _player.durationStream,
+            (a, b, c) => (position: a, buffered: b, duration: c),
+          );
 
   /// Initialise our audio handler.
   PodcastAudioHandler({required this.audioSession}) {
