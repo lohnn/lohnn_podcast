@@ -35,13 +35,16 @@ class Episode with _$Episode implements ToJson {
   factory Episode.fromJson(Map<String, dynamic> json) =>
       _$EpisodeFromJson(json);
 
-  PodcastMediaItem mediaItem(DocumentSnapshot<Episode> episodeSnapshot) =>
+  PodcastMediaItem mediaItem(
+    DocumentSnapshot<Episode> episodeSnapshot, {
+    Duration? actualDuration,
+  }) =>
       PodcastMediaItem(
         episode: episodeSnapshot,
         id: url.toString(),
         title: title,
         artUri: imageUrl,
-        duration: duration,
+        duration: actualDuration ?? duration,
       );
 
   /// Adds the fields from [other] that are set at runtime, such as [listened]
