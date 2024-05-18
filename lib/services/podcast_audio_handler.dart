@@ -120,6 +120,10 @@ class PodcastAudioHandler extends BaseAudioHandler
     }
   }
 
+  void clearPlaying() {
+    mediaItem.add(null);
+  }
+
   /// Transform a just_audio event into an audio_service state.
   ///
   /// This method is used from the constructor. Every event received from the
