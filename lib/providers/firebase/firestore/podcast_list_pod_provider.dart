@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:integral_isolates/integral_isolates.dart';
+import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/response_extension.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
@@ -69,6 +70,12 @@ class PodcastListPod extends _$PodcastListPod {
       final episodeHash = EpisodesHash.fromEpisodes(fetchedEpisodes);
       // check if the new episode hash does not match the stored one
       // TODO: Check episodes in [listened] [allEpisodes] and [removedEpisodes] and update those lists
+      final allFetchedEpisodes = {
+        for (final episode in fetchedEpisodes)
+          storedPodcastSnapshot.episodeRef(episode):
+              EpisodeHash.fromEpisode(episode),
+      };
+
       if (storedPodcast.episodesHash != episodeHash ||
           storedPodcast.totalEpisodes != fetchedEpisodes.length) {
         // If it does NOT match, update the episode list
@@ -82,10 +89,10 @@ class PodcastListPod extends _$PodcastListPod {
       // set the episode hash of the "new" [fetchedPodcast] with the hash from the new list
       fetchedPodcast = fetchedPodcast.copyWith(
         episodesHash: episodeHash,
-        totalEpisodes: fetchedEpisodes.length,
-        listenedEpisodesList: storedPodcast.listenedEpisodesList,
-        allEpisodesList: storedPodcast.allEpisodesList,
-        deletedEpisodesList: storedPodcast.deletedEpisodesList,
+        allEpisodes: allFetchedEpisodes,
+        listenedEpisodes: storedPodcast.listenedEpisodes,
+        // TODO: Shuffle episodes here if deleted and stuff
+        deletedEpisodes: storedPodcast.deletedEpisodes,
       );
       // endregion Update episodes list
 
@@ -131,5 +138,17 @@ class PodcastListPod extends _$PodcastListPod {
   ) async {
     await future;
     return state.requireValue.doc(podcast.id).collection(collectionPath);
+  }
+}
+
+extension on DocumentSnapshot<Podcast> {
+  DocumentReference<Episode> episodeRef(Episode episode) {
+    return reference
+        .collection('episodes')
+        .doc(episode.guid)
+        .withConverter<Episode>(
+          fromFirestore: Episode.fromFirestore,
+          toFirestore: Episode.toFirestore,
+        );
   }
 }

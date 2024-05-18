@@ -18,6 +18,16 @@ extension type const PodcastId._(String id) {
   factory PodcastId.fromString(String id) = PodcastId._;
 }
 
+extension type const EpisodeHash._(String hash) {
+  factory EpisodeHash.fromEpisode(Episode episode) {
+    return EpisodeHash._(md5.string(episode.toString()).toString());
+  }
+
+  factory EpisodeHash.fromJson(String hash) => EpisodeHash._(hash);
+
+  String toJson() => hash;
+}
+
 extension type const EpisodesHash._(String hash) {
   factory EpisodesHash.fromEpisodes(Iterable<Episode> episodes) {
     final sink = md5.createSink();
@@ -46,19 +56,20 @@ class Podcast with _$Podcast {
     required String? copyright,
     required String? generator,
     // Below is fields used for state
-    required int totalEpisodes,
     required bool showDot,
     required EpisodesHash? episodesHash,
     @Default({})
-    @EpisodeReferenceSetConverter()
-    Set<DocumentReference<Episode>> allEpisodesList,
+    @EpisodeReferenceMapConverter()
+    Map<DocumentReference<Episode>, EpisodeHash> allEpisodes,
     @Default({})
-    @EpisodeReferenceSetConverter()
-    Set<DocumentReference<Episode>> listenedEpisodesList,
+    @EpisodeReferenceMapConverter()
+    Map<DocumentReference<Episode>, EpisodeHash> listenedEpisodes,
     @Default({})
-    @EpisodeReferenceSetConverter()
-    Set<DocumentReference<Episode>> deletedEpisodesList,
+    @EpisodeReferenceMapConverter()
+    Map<DocumentReference<Episode>, EpisodeHash> deletedEpisodes,
   }) = _Podcast;
+
+  const Podcast._();
 
   factory Podcast.fromJson(Map<String, dynamic> json) =>
       _$PodcastFromJson(json);
@@ -89,11 +100,12 @@ class Podcast with _$Podcast {
       image: image.let(Uri.parse),
       language: language,
       lastBuildDate: lastBuildDate,
-      totalEpisodes: 0,
       showDot: false,
       episodesHash: null,
     );
   }
+
+  int get totalEpisodes => allEpisodes.length;
 
   factory Podcast.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,

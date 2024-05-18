@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:podcast/data/episode.dart';
+import 'package:podcast/data/podcast.dart';
+import 'package:podcast/extensions/map_extensions.dart';
 import 'package:podcast/extensions/response_extension.dart';
 
 class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
@@ -45,4 +47,35 @@ class EpisodeReferenceSetConverter
   @override
   Episode Function(Map<String, dynamic> json) get fromFirestore =>
       Episode.fromJson;
+}
+
+class EpisodeReferenceMapConverter
+    implements
+        JsonConverter<Map<DocumentReference<Episode>, EpisodeHash>,
+            Map<String, dynamic>> {
+  const EpisodeReferenceMapConverter();
+
+  @override
+  Map<DocumentReference<Episode>, EpisodeHash> fromJson(
+    Map<String, dynamic> json,
+  ) {
+    final firestore = FirebaseFirestore.instance;
+    return {
+      for (final (refPath, hash) in json.cast<String, String>().records)
+        firestore.doc(refPath).withConverter(
+              fromFirestore: (snapshot, _) =>
+                  Episode.fromJson(snapshot.data()!),
+              toFirestore: (data, _) => data.toJson(),
+            ): EpisodeHash.fromJson(hash),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJson(
+    Map<DocumentReference<Episode>, EpisodeHash> object,
+  ) {
+    return {
+      for (final (ref, hash) in object.records) ref.path: hash,
+    };
+  }
 }
