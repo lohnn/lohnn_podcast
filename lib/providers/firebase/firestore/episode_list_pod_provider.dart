@@ -27,7 +27,9 @@ class EpisodeListPod extends _$EpisodeListPod {
   Future<(Podcast, CollectionReference<Episode>)> build(
     PodcastId podcastId,
   ) async {
-    _podcast = (await ref.watch(podcastProvider(podcastId).future)).data()!;
+    _podcast = await ref.watch(
+      podcastProvider(podcastId).selectAsync((e) => e.data()!),
+    );
 
     final reference =
         (await ref.watch(podcastListPodProvider.notifier).collectionForPodcast(
