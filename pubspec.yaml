@@ -25,14 +25,14 @@ dependencies:
   flutter_widget_from_html_core: ^0.14.12
   freezed: ^2.5.2
   freezed_annotation: ^2.4.1
-  go_router: ^14.1.1
+  go_router: ^14.1.3
   google_sign_in: ^6.2.1
   hashlib: ^1.16.0
   hooks_riverpod: ^3.0.0-dev.3
   integral_isolates: ^0.5.1
   intl: ^0.19.0
   json_serializable: ^6.8.0
-  just_audio: ^0.9.37
+  just_audio: ^0.9.38
   path_provider: ^2.1.3
   riverpod_annotation: ^3.0.0-dev.3
   rxdart: ^0.27.7

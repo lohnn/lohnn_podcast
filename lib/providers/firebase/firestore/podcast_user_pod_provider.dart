@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast_user.dart';
+import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -45,6 +46,7 @@ class PodcastUserPod extends _$PodcastUserPod {
 
   Future<void> setQueue(Set<DocumentReference<Episode>> queue) async {
     final user = await future;
+    ref.read(audioPlayerPodProvider.notifier).updateQueue(queue);
     return _userDocument.set(user.copyWith(playQueue: queue));
   }
 
