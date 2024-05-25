@@ -3,7 +3,6 @@ import 'package:audio_session/audio_session.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:podcast/data/episode.dart';
-import 'package:podcast/data/podcast_user.dart';
 import 'package:podcast/extensions/episode_snapshot_extension.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
 import 'package:podcast/services/podcast_audio_handler.dart';
@@ -22,8 +21,8 @@ Future<PodcastAudioHandler> _audioPlayer(_AudioPlayerRef ref) async {
       androidNotificationChannelId: 'se.lohnn.podcast.audio',
       androidNotificationChannelName: 'Lohnn Podcast',
       // @TODO: These two settings can cause the operating system to kill the app
-      androidNotificationOngoing: true,
-      // androidStopForegroundOnPause: false,
+      // androidNotificationOngoing: true,
+      androidStopForegroundOnPause: false,
       androidNotificationIcon: 'drawable/podcast_icon_outline',
     ),
   );
@@ -41,15 +40,10 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       final subscription = _player.playbackState.listen(_onPlaybackStateChange);
       ref.onDispose(subscription.cancel);
 
-      ref.listen(
-        podcastUserPodProvider,
-        fireImmediately: true,
-        (previous, next) {
-          if (next case AsyncData(:final value)) {
-            _reloadQueue(value);
-          }
-        },
-      );
+      // Initial setup of the queue
+      ref
+          .read(podcastUserPodProvider.selectAsync((e) => e.playQueue))
+          .then(updateQueue);
 
       return future;
     } catch (e, stackTrace) {
@@ -59,10 +53,10 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     }
   }
 
-  Future<void> _reloadQueue(PodcastUser user) async {
-    if (user.playQueue.isNotEmpty) {
+  Future<void> updateQueue(Set<DocumentReference<Episode>> queue) async {
+    if (queue.isNotEmpty) {
       final docs = await Future.wait([
-        for (final episodeRef in user.playQueue) episodeRef.get(),
+        for (final episodeRef in queue) episodeRef.get(),
       ]);
 
       await _player.setQueue(
