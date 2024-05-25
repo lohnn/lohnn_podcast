@@ -3,13 +3,14 @@ import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast_user.dart';
+import 'package:podcast/firebase_options.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'podcast_user_pod_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class PodcastUserPod extends _$PodcastUserPod {
   late DocumentReference<PodcastUser> _userDocument;
 
@@ -19,7 +20,9 @@ class PodcastUserPod extends _$PodcastUserPod {
     if (user == null) throw Exception('User not available');
 
     final store = FirebaseFirestore.instanceFor(
-      app: Firebase.app(),
+      app: await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      ),
       databaseId: 'podcast',
     )..settings = const Settings(
         persistenceEnabled: true,

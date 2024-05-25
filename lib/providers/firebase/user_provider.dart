@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class UserPod extends _$UserPod {
   late FirebaseAuth _auth;
   final _googleSignIn = GoogleSignIn();

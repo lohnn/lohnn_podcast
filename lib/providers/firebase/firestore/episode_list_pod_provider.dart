@@ -19,7 +19,7 @@ Future<(Podcast, DocumentSnapshot<Episode>)> episode(
   return (podcast, await episodeList.doc(episodeId).get());
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class EpisodeListPod extends _$EpisodeListPod {
   late Podcast _podcast;
 

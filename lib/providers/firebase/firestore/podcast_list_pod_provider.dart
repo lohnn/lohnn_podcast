@@ -14,16 +14,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'podcast_list_pod_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<DocumentSnapshot<Podcast>> podcast(
   PodcastRef ref,
   PodcastId id,
 ) async {
-  final podListPod = await ref.watch(podcastListPodProvider.future);
-  return podListPod.doc(id.id).get();
+  return (await ref.watch(
+    podcastListPodProvider.selectAsync((e) => e.doc(id.id)),
+  ))
+      .get();
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class PodcastListPod extends _$PodcastListPod {
   @override
   Future<CollectionReference<Podcast>> build() async {
