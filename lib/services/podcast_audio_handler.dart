@@ -135,7 +135,7 @@ class PodcastAudioHandler extends BaseAudioHandler
         const MediaControl(
           androidIcon: 'drawable/baseline_replay_10_24',
           label: 'Rewind',
-          action: MediaAction.fastForward,
+          action: MediaAction.rewind,
         ),
         if (_player.playing) MediaControl.pause else MediaControl.play,
         const MediaControl(
