@@ -85,9 +85,10 @@ class PodcastUserPod extends _$PodcastUserPod {
     });
   }
 
-  CollectionReference<Map<String, dynamic>> userCollection(
+  Future<CollectionReference<Map<String, dynamic>>> userCollection(
     String collectionPath,
-  ) {
+  ) async {
+    await future;
     return _userDocument.collection(collectionPath);
   }
 }
