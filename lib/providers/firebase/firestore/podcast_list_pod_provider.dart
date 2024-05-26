@@ -36,7 +36,7 @@ class PodcastListPod extends _$PodcastListPod {
 
     refreshAll();
 
-    return firestore.userCollection('podcastList').withConverter(
+    return (await firestore.userCollection('podcastList')).withConverter(
           fromFirestore: Podcast.fromFirestore,
           toFirestore: Podcast.toFirestore,
         );
