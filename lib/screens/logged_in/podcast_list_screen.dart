@@ -25,9 +25,66 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-            onPressed: ref.read(podcastListPodProvider.notifier).refreshAll,
-            icon: const Icon(Icons.refresh),
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem(
+                onTap: () {
+                  ref.read(podcastListPodProvider.notifier).refreshAll();
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.refresh),
+                    SizedBox(width: 12),
+                    Text('Refresh all'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                onTap: () async {
+                  final url = await showDialog<String>(
+                    context: context,
+                    builder: (context) =>
+                        GetTextDialog.importListenedEpisodesDialog(),
+                  );
+                  if (url == null || !context.mounted) return;
+
+                  await LoadingScreen.showLoading(
+                    context: context,
+                    job: ref
+                        .read(podcastListPodProvider.notifier)
+                        .importListenedEpisodes(
+                          url,
+                        ),
+                  );
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.download),
+                    SizedBox(width: 12),
+                    Text('Import listened episodes'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                onTap: () async {
+                  await LoadingScreen.showLoading(
+                    context: context,
+                    job: ref
+                        .read(podcastListPodProvider.notifier)
+                        .exportListenedEpisodes(),
+                  );
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.upload),
+                    SizedBox(width: 12),
+                    Text('Export listened episodes'),
+                  ],
+                ),
+              ),
+              // ...more options
+            ],
           ),
         ],
       ),
@@ -35,13 +92,13 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
         onPressed: () async {
           final rssUrl = await showDialog<String>(
             context: context,
-            builder: (context) => const AddPodcastDialog(),
+            builder: (context) => GetTextDialog.addPodcastDialog(),
           );
           if (rssUrl == null || !context.mounted) return;
 
           await LoadingScreen.showLoading(
             context: context,
-            job: ref.read(podcastListPodProvider.notifier).addPodcastsToList(
+            job: ref.read(podcastListPodProvider.notifier).addPodcastToList(
                   rssUrl,
                 ),
           );
