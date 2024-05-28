@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:file/local.dart';
 import 'package:flutter/foundation.dart';
 import 'package:integral_isolates/integral_isolates.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/extensions/map_extensions.dart';
@@ -37,9 +41,9 @@ class PodcastListPod extends _$PodcastListPod {
     refreshAll();
 
     return (await firestore.userCollection('podcastList')).withConverter(
-          fromFirestore: Podcast.fromFirestore,
-          toFirestore: Podcast.toFirestore,
-        );
+      fromFirestore: Podcast.fromFirestore,
+      toFirestore: Podcast.toFirestore,
+    );
   }
 
   Future<void> refreshAll() async {
@@ -121,25 +125,66 @@ class PodcastListPod extends _$PodcastListPod {
     }
   }
 
-  Future<void> addPodcastsToList(String rssUrl) async {
-    // final downloadedPodcast =
-    //     await ref.read(fetchPodcastProvider(rssUrl).future);
+  Future<void> exportListenedEpisodes() async {
+    final collection = await future;
 
-    throw UnimplementedError();
-    // switch (state.requireValue.firstWhereOrNull(
-    //   (element) => element.podcast.rssUrl == rssUrl,
-    // )) {
-    //   case PodcastListRow(:final id, :final podcast):
-    //     if (podcast != downloadedPodcast) {
-    //       // Update existing
-    //       debugPrint('Updating existing!');
-    //       _podcastList.doc(id.id).set(podcast);
-    //     }
-    //   case _:
-    //     // Add new
-    //     debugPrint('Adding new podcast!');
-    //     _podcastList.add(downloadedPodcast);
-    // }
+    final documentDirectory = const LocalFileSystem()
+        .directory((await getApplicationDocumentsDirectory()).path);
+    final file = documentDirectory.childFile('listened-episodes.json');
+
+    final snapshot = await collection.get();
+    final json = {
+      for (final podcastSnapshot in snapshot.docs)
+        // TODO: Store more than name maybe?
+        podcastSnapshot.data().name: [
+          // TODO: Implement fetching all episodes
+        ],
+    };
+
+    await file.writeAsString(jsonEncode(json));
+    print(file.path);
+  }
+
+  Future<void> importListenedEpisodes(String jsonUrl) async {
+    final collection = await future;
+
+    final podcastSnapshots = await collection.get().then((e) => e.docs);
+
+    final listenedEpisodes =
+        await ref.read(fetchListenedEpisodesProvider(jsonUrl).future);
+
+    for (final (podcastName, episodeNames) in listenedEpisodes.records) {
+      // This breaks for the user if podcast was not found
+      // TODO: Do we want to continue anyway and just update user which podcasts were not found?
+      final snapshot =
+          podcastSnapshots.firstWhere((e) => e.data().name == podcastName);
+      await ref
+          .read(episodeListPodProvider(PodcastId(snapshot)).notifier)
+          .setListenedFromNames(episodeNames);
+      // TODO: Notify user what episodes didn't update
+    }
+  }
+
+  Future<void> addPodcastToList(String rssUrl) async {
+    final collection = await future;
+
+    final downloadedPodcast =
+        await ref.read(fetchPodcastProvider(rssUrl).future);
+
+    switch ((await collection.get()).docs.firstWhereOrNull(
+          (element) => element.data().rssUrl == rssUrl,
+        )) {
+      case final snapsot?:
+        if (snapsot.data() != downloadedPodcast) {
+          // Update existing
+          debugPrint('Updating existing!');
+          snapsot.reference.set(downloadedPodcast);
+        }
+      case _:
+        // Add new
+        debugPrint('Adding new podcast!');
+        collection.add(downloadedPodcast);
+    }
   }
 
   Future<CollectionReference<Map<String, dynamic>>>

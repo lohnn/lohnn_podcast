@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class AddPodcastDialog extends HookWidget {
-  const AddPodcastDialog({super.key});
+class GetTextDialog extends HookWidget {
+  final String title;
+  final String textFieldHint;
+
+  const GetTextDialog({
+    super.key,
+    required this.title,
+    required this.textFieldHint,
+  });
+
+  factory GetTextDialog.addPodcastDialog() {
+    return const GetTextDialog(title: 'Add podcast', textFieldHint: 'Rss url');
+  }
+
+  factory GetTextDialog.importListenedEpisodesDialog() {
+    return const GetTextDialog(
+      title: 'Import listened episodes',
+      textFieldHint: 'Listened episodes JSON url',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +32,11 @@ class AddPodcastDialog extends HookWidget {
     }
 
     return AlertDialog(
-      title: const Text('Add podcast'),
+      title: Text(title),
       content: TextField(
         autofocus: true,
         controller: textController,
-        decoration: const InputDecoration(hintText: 'Rss url'),
+        decoration: InputDecoration(hintText: textFieldHint),
         onSubmitted: finish,
       ),
       actions: [

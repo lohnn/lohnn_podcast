@@ -71,4 +71,12 @@ class EpisodeListPod extends _$EpisodeListPod {
       }
     }
   }
+
+  Future<List<String>> setListenedFromNames(List<String> listenedEpisodeNames) async {
+    // TODO: Loop through episode names
+    // TODO: If name matches a stored episode -> set listened
+    // TODO: return unsuccessful matches
+
+    return [];
+  }
 }
