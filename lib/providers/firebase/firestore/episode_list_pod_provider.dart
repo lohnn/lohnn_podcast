@@ -72,11 +72,26 @@ class EpisodeListPod extends _$EpisodeListPod {
     }
   }
 
-  Future<List<String>> setListenedFromNames(List<String> listenedEpisodeNames) async {
-    // TODO: Loop through episode names
-    // TODO: If name matches a stored episode -> set listened
-    // TODO: return unsuccessful matches
+  Future<List<String>> setListenedFromNames(
+    List<String> listenedEpisodeNames,
+  ) async {
+    final (_, reference) = await future;
 
-    return [];
+    final episodesSnapshot = await reference.get();
+
+    for (final storedEpisodeSnapshot in episodesSnapshot.docs) {
+      if (listenedEpisodeNames.isEmpty) return const [];
+
+      final storedEpisode = storedEpisodeSnapshot.data();
+
+      // Removing episodes as we find them matching
+      if (listenedEpisodeNames.remove(storedEpisode.title) &&
+          !storedEpisode.listened) {
+        await storedEpisodeSnapshot.reference
+            .set(storedEpisode.copyWith(listened: true));
+      }
+    }
+
+    return listenedEpisodeNames;
   }
 }

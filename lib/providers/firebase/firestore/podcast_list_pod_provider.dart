@@ -77,7 +77,6 @@ class PodcastListPod extends _$PodcastListPod {
 
       final episodeHash = EpisodesHash.fromEpisodes(fetchedEpisodes);
       // check if the new episode hash does not match the stored one
-      // TODO: Check episodes in [listened] [allEpisodes] and [removedEpisodes] and update those lists
       final allFetchedEpisodes = {
         for (final episode in fetchedEpisodes)
           storedPodcastSnapshot.episodeRef(episode):
@@ -142,27 +141,39 @@ class PodcastListPod extends _$PodcastListPod {
     };
 
     await file.writeAsString(jsonEncode(json));
-    print(file.path);
+    debugPrint(file.path);
   }
 
-  Future<void> importListenedEpisodes(String jsonUrl) async {
+  Future<Map<String, List<String>>> importListenedEpisodes(
+    String jsonUrl,
+  ) async {
     final collection = await future;
-
-    final podcastSnapshots = await collection.get().then((e) => e.docs);
 
     final listenedEpisodes =
         await ref.read(fetchListenedEpisodesProvider(jsonUrl).future);
 
+    final podcastSnapshots = await collection.get().then((e) => e.docs);
+
+    final failed = <String, List<String>>{};
+
     for (final (podcastName, episodeNames) in listenedEpisodes.records) {
-      // This breaks for the user if podcast was not found
-      // TODO: Do we want to continue anyway and just update user which podcasts were not found?
-      final snapshot =
-          podcastSnapshots.firstWhere((e) => e.data().name == podcastName);
-      await ref
-          .read(episodeListPodProvider(PodcastId(snapshot)).notifier)
+      final snapshot = podcastSnapshots
+          .firstWhereOrNull((e) => e.data().name == podcastName);
+
+      if (snapshot == null) {
+        failed[podcastName] = episodeNames;
+        continue;
+      }
+
+      final failedEpisodes = await ref
+          .watch(episodeListPodProvider(PodcastId(snapshot)).notifier)
           .setListenedFromNames(episodeNames);
-      // TODO: Notify user what episodes didn't update
+
+      if (failedEpisodes.isNotEmpty) {
+        failed[podcastName] = failedEpisodes;
+      }
     }
+    return failed;
   }
 
   Future<void> addPodcastToList(String rssUrl) async {
