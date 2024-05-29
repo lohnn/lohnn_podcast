@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +51,7 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
                   );
                   if (url == null || !context.mounted) return;
 
-                  await LoadingScreen.showLoading(
+                  final failedEpisodes = await LoadingScreen.showLoading(
                     context: context,
                     job: ref
                         .read(podcastListPodProvider.notifier)
@@ -57,6 +59,29 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
                           url,
                         ),
                   );
+
+                  if (failedEpisodes.isNotEmpty && context.mounted) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Some episodes failed'),
+                          content: SingleChildScrollView(
+                            child: Text(
+                              'Some episodes failed to download:\n'
+                              '${const JsonEncoder.withIndent('  ').convert(failedEpisodes)}',
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Ok'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 child: const Row(
                   children: [
