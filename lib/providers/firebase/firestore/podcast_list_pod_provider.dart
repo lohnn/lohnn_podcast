@@ -38,7 +38,7 @@ class PodcastListPod extends _$PodcastListPod {
     await ref.read(podcastUserPodProvider.future);
     final firestore = ref.watch(podcastUserPodProvider.notifier);
 
-    refreshAll();
+    // refreshAll();
 
     return (await firestore.userCollection('podcastList')).withConverter(
       fromFirestore: Podcast.fromFirestore,
