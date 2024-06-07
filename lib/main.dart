@@ -6,15 +6,12 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/extensions/nullability_extensions.dart';
 import 'package:podcast/firebase_options.dart';
-import 'package:podcast/hooks/use_rive_controller.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/logged_in_screen.dart';
 import 'package:podcast/screens/login_screen.dart';
 import 'package:rive/rive.dart';
-import 'package:vector_graphics/vector_graphics_compat.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,46 +58,45 @@ class EntryAnimationScreen extends HookWidget {
   Widget build(BuildContext context) {
     final hasShownAnimation = useState(false);
 
-    return AnimatedSwitcher(
-      key: const ValueKey('EntryAnimationScreen.animatedSwitcher'),
-      duration: const Duration(milliseconds: 300),
-      child: hasShownAnimation.value
-          ? const MainApp(key: ValueKey('EntryAnimationScreen.mainApp'))
-          : Stack(
-              key: const ValueKey('EntryAnimationScreen.entryAnimation'),
-              children: [
-                Positioned.fill(
-                  child: createCompatVectorGraphic(
-                    fit: BoxFit.cover,
-                    colorFilter:
-                        (Theme.of(context).brightness == Brightness.dark)
-                            .thenOrNull(
-                      () => ColorFilter.mode(
-                        Colors.black.withOpacity(0.4),
-                        BlendMode.darken,
-                      ),
-                    ),
-                    loader: const AssetBytesLoader(
-                      'assets/vectors/background.svg',
-                    ),
-                  ),
-                ),
-                Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 300),
-                    child: RiveAnimation.asset(
-                      'assets/animations/podcast_icon.riv',
-                      animations: const ['Enter'],
-                      controllers: [
-                        useRiveController(
-                          onDone: () => hasShownAnimation.value = true,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+    return Stack(
+      key: const ValueKey('EntryAnimationScreen.entryAnimation'),
+      children: [
+        const MainApp(key: ValueKey('EntryAnimationScreen.mainApp')),
+        if (!hasShownAnimation.value) ...[
+          const Positioned.fill(
+            child: RiveAnimation.asset(
+              fit: BoxFit.cover,
+              'assets/animations/podcast_icon_background.riv',
+              animations: ['Enter'],
             ),
+          ),
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 300),
+              child: RiveAnimation.asset(
+                'assets/animations/podcast_icon_foreground.riv',
+                animations: const ['Enter'],
+                onInit: (artboard) {
+                  final controller = StateMachineController.fromArtboard(
+                    artboard,
+                    'State Machine 1',
+                  );
+                  controller!.addEventListener(
+                    (event) {
+                      Future.microtask(() {
+                        if (event.name == 'Done') {
+                          hasShownAnimation.value = true;
+                        }
+                      });
+                    },
+                  );
+                  artboard.addController(controller);
+                },
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
