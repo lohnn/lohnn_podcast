@@ -11,21 +11,38 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'audio_player_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-Future<PodcastAudioHandler> _audioPlayer(_AudioPlayerRef ref) async {
+Future<PodcastAudioHandler> _podcastAudioHandler(
+  _PodcastAudioHandlerRef ref,
+) async {
   final audioSession = await AudioSession.instance;
   await audioSession.configure(const AudioSessionConfiguration.speech());
+  return PodcastAudioHandler(audioSession: audioSession);
+}
 
-  return await AudioService.init(
-    builder: () => PodcastAudioHandler(audioSession: audioSession),
-    config: const AudioServiceConfig(
-      androidNotificationChannelId: 'se.lohnn.podcast.audio',
-      androidNotificationChannelName: 'Lohnn Podcast',
-      // @TODO: These two settings can cause the operating system to kill the app
-      // androidNotificationOngoing: true,
-      androidStopForegroundOnPause: false,
-      androidNotificationIcon: 'drawable/podcast_icon_outline',
-    ),
-  );
+@Riverpod(keepAlive: true)
+class _AudioServicePod extends _$AudioServicePod {
+  @override
+  Future<PodcastAudioHandler> build() async {
+    return _initService();
+  }
+
+  Future<PodcastAudioHandler> _initService() async {
+    final podcastAudioHandler = await ref.watch(
+      _podcastAudioHandlerProvider.future,
+    );
+
+    return AudioService.init(
+      builder: () => podcastAudioHandler,
+      config: const AudioServiceConfig(
+        androidNotificationChannelId: 'se.lohnn.podcast.audio',
+        androidNotificationChannelName: 'Lohnn Podcast',
+        // @TODO: These two settings can cause the operating system to kill the app
+        // androidNotificationOngoing: true,
+        androidStopForegroundOnPause: false,
+        androidNotificationIcon: 'drawable/podcast_icon_outline',
+      ),
+    );
+  }
 }
 
 @Riverpod(keepAlive: true)
@@ -35,7 +52,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   @override
   Future<DocumentSnapshot<Episode>?> build() async {
     try {
-      _player = await ref.watch(_audioPlayerProvider.future);
+      _player = await ref.watch(_audioServicePodProvider.future);
 
       final subscription = _player.playbackState.listen(_onPlaybackStateChange);
       ref.onDispose(subscription.cancel);
@@ -138,12 +155,12 @@ Stream<({Duration position, Duration buffered, Duration? duration})>
     currentPosition(
   CurrentPositionRef ref,
 ) async* {
-  final audioPlayer = await ref.watch(_audioPlayerProvider.future);
+  final audioPlayer = await ref.watch(_audioServicePodProvider.future);
   yield* audioPlayer.positionStream;
 }
 
 @riverpod
 Stream<PlaybackState> audioState(AudioStateRef ref) async* {
-  final audioPlayer = await ref.watch(_audioPlayerProvider.future);
+  final audioPlayer = await ref.watch(_audioServicePodProvider.future);
   yield* audioPlayer.playbackState;
 }
