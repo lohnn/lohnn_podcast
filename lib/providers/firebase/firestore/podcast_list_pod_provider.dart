@@ -81,8 +81,7 @@ class PodcastListPod extends _$PodcastListPod {
 
       // TODO: Check episode hash per episode and update only the changed ones
       if (storedPodcast.episodesHash != episodeHash ||
-          storedPodcast.totalEpisodes != fetchedEpisodes.length ||
-          true) {
+          storedPodcast.totalEpisodes != fetchedEpisodes.length) {
         // If it does NOT match, update the episode list
         await ref
             .read(
