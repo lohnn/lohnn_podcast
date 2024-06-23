@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/podcast.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_list_pod_provider.dart';
+import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
 import 'package:podcast/screens/loading_screen.dart';
@@ -108,7 +109,18 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
                   ],
                 ),
               ),
-              // ...more options
+              PopupMenuItem(
+                onTap: () {
+                  ref.read(userPodProvider.notifier).logOut();
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.logout),
+                    SizedBox(width: 12),
+                    Text('Log out'),
+                  ],
+                ),
+              ),
             ],
           ),
         ],
