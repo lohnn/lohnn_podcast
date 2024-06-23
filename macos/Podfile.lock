@@ -962,7 +962,7 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.32):
     - BoringSSL-GRPC/Interface (= 0.0.32)
   - BoringSSL-GRPC/Interface (0.0.32)
-  - cloud_firestore (5.0.0):
+  - cloud_firestore (5.0.1):
     - Firebase/CoreOnly (~> 10.27.0)
     - Firebase/Firestore (~> 10.27.0)
     - firebase_core
@@ -983,19 +983,19 @@ PODS:
   - Firebase/Firestore (10.27.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 10.27.0)
-  - firebase_analytics (11.0.0):
+  - firebase_analytics (11.0.1):
     - Firebase/Analytics (= 10.27.0)
     - firebase_core
     - FlutterMacOS
-  - firebase_auth (5.0.0):
+  - firebase_auth (5.1.0):
     - Firebase/Auth (~> 10.27.0)
     - Firebase/CoreOnly (~> 10.27.0)
     - firebase_core
     - FlutterMacOS
-  - firebase_core (3.0.0):
+  - firebase_core (3.1.0):
     - Firebase/CoreOnly (~> 10.27.0)
     - FlutterMacOS
-  - firebase_crashlytics (4.0.0):
+  - firebase_crashlytics (4.0.1):
     - Firebase/CoreOnly (~> 10.27.0)
     - Firebase/Crashlytics (~> 10.27.0)
     - firebase_core
@@ -1334,12 +1334,12 @@ SPEC CHECKSUMS:
   audio_service: b88ff778e0e3915efd4cd1a5ad6f0beef0c950a9
   audio_session: dea1f41890dbf1718f04a56f1d6150fd50039b72
   BoringSSL-GRPC: 1e2348957acdbcad360b80a264a90799984b2ba6
-  cloud_firestore: 66e4fdde53950750b7e64d3bc2d438dde81fe36f
+  cloud_firestore: f38b338965a7a0dfe2ba367180f383fd67116d7b
   Firebase: 26b040b20866a55f55eb3611b9fcf3ae64816b86
-  firebase_analytics: 79645347d6b5d49a08bee45c7975477e93dff383
-  firebase_auth: e5aa229f58913e922c26e9d3b37a4664adeb40f3
-  firebase_core: 0b3b9c6c93f774c7392f1f9a6712f0d9ce9b1771
-  firebase_crashlytics: 4166bdf21c68fedb8794cd730f132d59b3dc9a6f
+  firebase_analytics: 2370857414db883542ff3cc0cf4634d1de55b37b
+  firebase_auth: 4a2a30c21caf945540f5d0f377c071795fe718d2
+  firebase_core: 3cf30a8be4c850f7192bf9597f5939d0c3af706b
+  firebase_crashlytics: e1cab8da891bf7000cdf8e09fd7b14f348d92b6e
   FirebaseAnalytics: f9211b719db260cc91aebee8bb539cb367d0dfd1
   FirebaseAppCheckInterop: 0dd062c9926a76332ca5711dbed6f1a9ac540b54
   FirebaseAuth: 77a012b7e08042bf44d0db835ca2e86e6ca7bbd3
