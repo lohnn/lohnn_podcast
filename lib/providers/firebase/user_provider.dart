@@ -39,5 +39,8 @@ class UserPod extends _$UserPod {
     return;
   }
 
-  void logOut() => _auth.signOut();
+  void logOut() {
+    _googleSignIn.signOut();
+    _auth.signOut();
+  }
 }
