@@ -20,8 +20,7 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
   const EpisodeListScreen(this.podcastId, {super.key});
 
   @override
-  ProviderBase<AsyncValue<(Podcast, Query<Episode>)>> get provider =>
-      episodeListPodProvider(podcastId);
+  EpisodeListPodProvider get provider => episodeListPodProvider(podcastId);
 
   @override
   Widget buildWithData(
@@ -32,81 +31,84 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
     final (podcast, query) = data.value;
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
-      body: FirestoreListView(
-        query: query.orderBy('pubDate', descending: true),
-        itemBuilder: (context, episodeSnapshot) {
-          final episode = episodeSnapshot.data();
-          return ListTile(
-            onTap: () {
-              context.push('/${podcastId.id}/${episode.guid}');
-            },
-            leading: RoundedImage(
-              imageUri: episode.imageUrl,
-              showDot: !episode.listened,
-              imageSize: 40,
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (episode.pubDate case final pubDate?)
-                  DefaultTextStyle(
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w200,
-                    ),
-                    child: PubDateText(pubDate),
-                  ),
-                Text(episode.title),
-              ],
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (episode.description case final description?)
-                  Text(
-                    description.removeHtmlTags(),
-                    maxLines: 2,
-                  ),
-                Row(
-                  children: [
-                    PlayEpisodeButton(episodeSnapshot),
-                    IconButton(
-                      onPressed: () {
-                        ref
-                            .read(podcastUserPodProvider.notifier)
-                            .addToQueue(episodeSnapshot.reference);
-                      },
-                      icon: const Icon(Icons.playlist_add),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            trailing: PopupMenuButton<_PopupActions>(
-              itemBuilder: (context) => [
-                if (!episode.listened)
-                  const PopupMenuItem(
-                    value: _PopupActions.markListened,
-                    child: Text('Mark listened'),
-                  )
-                else
-                  const PopupMenuItem(
-                    value: _PopupActions.markUnlistened,
-                    child: Text('Mark unlistened'),
-                  ),
-              ],
-              icon: const Icon(Icons.more_vert),
-              onSelected: (value) async {
-                switch (value) {
-                  case _PopupActions.markListened:
-                    await episodeSnapshot.markListened();
-                  case _PopupActions.markUnlistened:
-                    await episodeSnapshot.markUnlistened();
-                }
+      body: RefreshIndicator(
+        onRefresh: () => ref.read(provider.notifier).updateList(),
+        child: FirestoreListView(
+          query: query.orderBy('pubDate', descending: true),
+          itemBuilder: (context, episodeSnapshot) {
+            final episode = episodeSnapshot.data();
+            return ListTile(
+              onTap: () {
+                context.push('/${podcastId.id}/${episode.guid}');
               },
-            ),
-          );
-        },
+              leading: RoundedImage(
+                imageUri: episode.imageUrl,
+                showDot: !episode.listened,
+                imageSize: 40,
+              ),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (episode.pubDate case final pubDate?)
+                    DefaultTextStyle(
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w200,
+                      ),
+                      child: PubDateText(pubDate),
+                    ),
+                  Text(episode.title),
+                ],
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (episode.description case final description?)
+                    Text(
+                      description.removeHtmlTags(),
+                      maxLines: 2,
+                    ),
+                  Row(
+                    children: [
+                      PlayEpisodeButton(episodeSnapshot),
+                      IconButton(
+                        onPressed: () {
+                          ref
+                              .read(podcastUserPodProvider.notifier)
+                              .addToQueue(episodeSnapshot.reference);
+                        },
+                        icon: const Icon(Icons.playlist_add),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              trailing: PopupMenuButton<_PopupActions>(
+                itemBuilder: (context) => [
+                  if (!episode.listened)
+                    const PopupMenuItem(
+                      value: _PopupActions.markListened,
+                      child: Text('Mark listened'),
+                    )
+                  else
+                    const PopupMenuItem(
+                      value: _PopupActions.markUnlistened,
+                      child: Text('Mark unlistened'),
+                    ),
+                ],
+                icon: const Icon(Icons.more_vert),
+                onSelected: (value) async {
+                  switch (value) {
+                    case _PopupActions.markListened:
+                      await episodeSnapshot.markListened();
+                    case _PopupActions.markUnlistened:
+                      await episodeSnapshot.markUnlistened();
+                  }
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
