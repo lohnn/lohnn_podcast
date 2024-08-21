@@ -31,9 +31,7 @@ Future<void> main() async {
   };
 
   const icon = AssetImage('assets/icons/app_icon.webp');
-  final lightColorScheme = await ColorScheme.fromImageProvider(
-    provider: icon,
-  );
+  final lightColorScheme = await ColorScheme.fromImageProvider(provider: icon);
   final darkColorScheme = await ColorScheme.fromImageProvider(
     provider: icon,
     brightness: Brightness.dark,
