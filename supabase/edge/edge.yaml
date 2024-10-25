@@ -1,0 +1,5 @@
+supabase:
+  project_path: '../'
+  functions:
+    add_podcast: 'lib/add_podcast.dart'
+#    webhook_handler: 'lib/webhooks.dart'

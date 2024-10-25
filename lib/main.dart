@@ -6,15 +6,20 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:podcast/brick/repository.dart';
 import 'package:podcast/firebase_options.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/logged_in_screen.dart';
 import 'package:podcast/screens/login_screen.dart';
 import 'package:rive/rive.dart';
+import 'package:sqflite/sqflite.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Repository.configure(databaseFactory);
+  await Repository().initialize();
 
   // Set up crash tracking
   await Firebase.initializeApp(

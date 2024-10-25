@@ -9,10 +9,15 @@ environment:
 dependencies:
   audio_service: ^0.18.15
   audio_session: ^0.1.21
+  brick_offline_first: ^3.2.1
+  brick_offline_first_with_supabase: ^1.0.0
+  brick_sqlite: ^3.1.1+1
+  brick_supabase: ^1.0.5
   build_runner: ^2.4.13
   cached_network_image: ^3.4.1
   cloud_firestore: ^5.4.4
   collection: ^1.18.0
+  dart_mappable: ^4.3.0
   dio: ^5.7.0
   file: ^7.0.1
   firebase_analytics: ^11.3.3
@@ -37,20 +42,27 @@ dependencies:
   hooks_riverpod: ^3.0.0-dev.3
   integral_isolates: ^0.5.1
   intl: ^0.19.0
+  json_annotation: ^4.9.0
   json_serializable: ^6.8.0
   just_audio: ^0.9.41
   path_provider: ^2.1.4
-  rive: ^0.13.14
+  rive: ^0.13.15
   riverpod_annotation: ^3.0.0-dev.3
   rxdart: ^0.28.0
+  sqflite: ^2.4.0
+  sqflite_common: ^2.5.4+5
   supabase_flutter: ^2.8.0
   timeago_flutter: ^3.7.0
   url_launcher: ^6.3.1
+  uuid: ^4.5.1
   vector_graphics: ^1.1.11+1
   xml: ^6.5.0
 
 dev_dependencies:
+  brick_offline_first_build: ^3.2.1
+  brick_offline_first_with_supabase_build: ^1.0.0
   custom_lint: any
+  dart_mappable_builder: ^4.3.0
   flutter_test:
     sdk: flutter
   lint: ^2.3.0
@@ -61,6 +73,38 @@ dev_dependencies:
 dependency_overrides:
   rxdart: ^0.28.0
   web: ^1.1.0
+#  brick_build:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_build
+#  brick_core:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_core
+#  brick_json_generators:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_json_generators
+#  brick_offline_first:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_offline_first
+#  brick_offline_first_build:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_offline_first_build
+#  brick_offline_first_with_rest:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_offline_first_with_rest
+#  brick_offline_first_with_supabase:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_offline_first_with_supabase
+#  brick_offline_first_with_supabase_build:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_offline_first_with_supabase_build
+#  brick_rest:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_rest
+#  brick_sqlite:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_sqlite
+#  brick_sqlite_generators:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_sqlite_generators
+#  brick_supabase:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_supabase
+#  brick_supabase_generators:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_supabase_generators
+  
+dev_dependency_overrides:
+#  brick_offline_first_build:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_offline_first_build
+#  brick_offline_first_with_supabase_build:
+#    path: /Users/lohnn/Programming/open_source/brick/packages/brick_offline_first_with_supabase_build
 
 flutter:
   uses-material-design: true
