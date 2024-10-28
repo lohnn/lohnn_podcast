@@ -32,19 +32,19 @@ mixin SubscribeWithChannels on OfflineFirstWithSupabaseRepository {
             final record = payload.newRecord;
 
             switch (event) {
-              case PostgresChangeEvent.insert:
-              case PostgresChangeEvent.update:
-                final instance = await adapter.fromSupabase(record,
-                    provider: remoteProvider);
+              case PostgresChangeEvent.insert || PostgresChangeEvent.update:
+                final instance = await adapter.fromSupabase(
+                  record,
+                  provider: remoteProvider,
+                );
+                // TODO: This tries to upsert remote too, meaning we get an infinite loop
                 await upsert<TModel>(
                   instance as TModel,
                 );
-                break;
               case PostgresChangeEvent.delete:
                 final instance = await adapter.fromSupabase(record,
                     provider: remoteProvider);
                 await delete<TModel>(instance as TModel);
-                break;
               default:
             }
           },

@@ -7,15 +7,16 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_supabase/brick_supabase.dart' hide Supabase;
 import 'package:podcast/brick/brick.g.dart';
 import 'package:podcast/brick/db/schema.g.dart';
+import 'package:podcast/brick/subscribe_with_channels.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Repository
-    extends OfflineFirstWithSupabaseRepository // with SubscribeWithChannels
+    extends OfflineFirstWithSupabaseRepository with SubscribeWithChannels
 {
   static late Repository? _instance;
 
-  factory Repository() => _instance!;
+  factory Repository() => _instance!; 
 
   Repository._({
     required super.supabaseProvider,
