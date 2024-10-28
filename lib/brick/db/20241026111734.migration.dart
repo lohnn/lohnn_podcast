@@ -9,7 +9,7 @@ part of 'schema.g.dart';
 
 // The migration version must **always** mirror the file name
 
-const List<MigrationCommand> _migration_20241023085600_up = [
+const List<MigrationCommand> _migration_20241026111734_up = [
   InsertTable('EpisodeSupabase'),
   InsertColumn('id', Column.varchar, onTable: 'EpisodeSupabase', unique: true),
   InsertColumn('url', Column.varchar, onTable: 'EpisodeSupabase'),
@@ -21,7 +21,7 @@ const List<MigrationCommand> _migration_20241023085600_up = [
   CreateIndex(columns: ['id'], onTable: 'EpisodeSupabase', unique: true)
 ];
 
-const List<MigrationCommand> _migration_20241023085600_down = [
+const List<MigrationCommand> _migration_20241026111734_down = [
   DropTable('EpisodeSupabase'),
   DropColumn('id', onTable: 'EpisodeSupabase'),
   DropColumn('url', onTable: 'EpisodeSupabase'),
@@ -38,15 +38,15 @@ const List<MigrationCommand> _migration_20241023085600_down = [
 //
 
 @Migratable(
-  version: '20241023085600',
-  up: _migration_20241023085600_up,
-  down: _migration_20241023085600_down,
+  version: '20241026111734',
+  up: _migration_20241026111734_up,
+  down: _migration_20241026111734_down,
 )
-class Migration20241023085600 extends Migration {
-  const Migration20241023085600()
+class Migration20241026111734 extends Migration {
+  const Migration20241026111734()
     : super(
-        version: 20241023085600,
-        up: _migration_20241023085600_up,
-        down: _migration_20241023085600_down,
+        version: 20241026111734,
+        up: _migration_20241026111734_up,
+        down: _migration_20241026111734_down,
       );
 }
