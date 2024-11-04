@@ -13,6 +13,8 @@ class EpisodeSupabaseMapper extends ClassMapperBase<EpisodeSupabase> {
   static EpisodeSupabaseMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = EpisodeSupabaseMapper._());
+      UriModelMapper.ensureInitialized();
+      DurationModelMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -36,9 +38,12 @@ class EpisodeSupabaseMapper extends ClassMapperBase<EpisodeSupabase> {
   static UriModel _$imageUrl(EpisodeSupabase v) => v.imageUrl;
   static const Field<EpisodeSupabase, UriModel> _f$imageUrl =
       Field('imageUrl', _$imageUrl);
-  static EpisodeDuration? _$duration(EpisodeSupabase v) => v.duration;
-  static const Field<EpisodeSupabase, EpisodeDuration> _f$duration =
+  static DurationModel? _$duration(EpisodeSupabase v) => v.duration;
+  static const Field<EpisodeSupabase, DurationModel> _f$duration =
       Field('duration', _$duration, opt: true);
+  static String _$podcastId(EpisodeSupabase v) => v.podcastId;
+  static const Field<EpisodeSupabase, String> _f$podcastId =
+      Field('podcastId', _$podcastId);
 
   @override
   final MappableFields<EpisodeSupabase> fields = const {
@@ -49,6 +54,7 @@ class EpisodeSupabaseMapper extends ClassMapperBase<EpisodeSupabase> {
     #description: _f$description,
     #imageUrl: _f$imageUrl,
     #duration: _f$duration,
+    #podcastId: _f$podcastId,
   };
 
   static EpisodeSupabase _instantiate(DecodingData data) {
@@ -59,7 +65,8 @@ class EpisodeSupabaseMapper extends ClassMapperBase<EpisodeSupabase> {
         pubDate: data.dec(_f$pubDate),
         description: data.dec(_f$description),
         imageUrl: data.dec(_f$imageUrl),
-        duration: data.dec(_f$duration));
+        duration: data.dec(_f$duration),
+        podcastId: data.dec(_f$podcastId));
   }
 
   @override
@@ -115,6 +122,9 @@ extension EpisodeSupabaseValueCopy<$R, $Out>
 
 abstract class EpisodeSupabaseCopyWith<$R, $In extends EpisodeSupabase, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
+  UriModelCopyWith<$R, UriModel, UriModel> get url;
+  UriModelCopyWith<$R, UriModel, UriModel> get imageUrl;
+  DurationModelCopyWith<$R, DurationModel, DurationModel>? get duration;
   $R call(
       {String? id,
       UriModel? url,
@@ -122,7 +132,8 @@ abstract class EpisodeSupabaseCopyWith<$R, $In extends EpisodeSupabase, $Out>
       DateTime? pubDate,
       String? description,
       UriModel? imageUrl,
-      EpisodeDuration? duration});
+      DurationModel? duration,
+      String? podcastId});
   EpisodeSupabaseCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -136,6 +147,15 @@ class _EpisodeSupabaseCopyWithImpl<$R, $Out>
   late final ClassMapperBase<EpisodeSupabase> $mapper =
       EpisodeSupabaseMapper.ensureInitialized();
   @override
+  UriModelCopyWith<$R, UriModel, UriModel> get url =>
+      $value.url.copyWith.$chain((v) => call(url: v));
+  @override
+  UriModelCopyWith<$R, UriModel, UriModel> get imageUrl =>
+      $value.imageUrl.copyWith.$chain((v) => call(imageUrl: v));
+  @override
+  DurationModelCopyWith<$R, DurationModel, DurationModel>? get duration =>
+      $value.duration?.copyWith.$chain((v) => call(duration: v));
+  @override
   $R call(
           {String? id,
           UriModel? url,
@@ -143,7 +163,8 @@ class _EpisodeSupabaseCopyWithImpl<$R, $Out>
           Object? pubDate = $none,
           Object? description = $none,
           UriModel? imageUrl,
-          Object? duration = $none}) =>
+          Object? duration = $none,
+          String? podcastId}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (url != null) #url: url,
@@ -151,7 +172,8 @@ class _EpisodeSupabaseCopyWithImpl<$R, $Out>
         if (pubDate != $none) #pubDate: pubDate,
         if (description != $none) #description: description,
         if (imageUrl != null) #imageUrl: imageUrl,
-        if (duration != $none) #duration: duration
+        if (duration != $none) #duration: duration,
+        if (podcastId != null) #podcastId: podcastId
       }));
   @override
   EpisodeSupabase $make(CopyWithData data) => EpisodeSupabase(
@@ -161,7 +183,8 @@ class _EpisodeSupabaseCopyWithImpl<$R, $Out>
       pubDate: data.get(#pubDate, or: $value.pubDate),
       description: data.get(#description, or: $value.description),
       imageUrl: data.get(#imageUrl, or: $value.imageUrl),
-      duration: data.get(#duration, or: $value.duration));
+      duration: data.get(#duration, or: $value.duration),
+      podcastId: data.get(#podcastId, or: $value.podcastId));
 
   @override
   EpisodeSupabaseCopyWith<$R2, EpisodeSupabase, $Out2> $chain<$R2, $Out2>(

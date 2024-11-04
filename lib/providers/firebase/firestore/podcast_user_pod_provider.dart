@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:podcast/data/episode.dart';
 import 'package:podcast/data/podcast_user.dart';
 import 'package:podcast/firebase_options.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
-import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'podcast_user_pod_provider.g.dart';
@@ -16,8 +16,9 @@ class PodcastUserPod extends _$PodcastUserPod {
 
   @override
   Stream<PodcastUser> build() async* {
-    final user = await ref.watch(userPodProvider.future);
-    if (user == null) throw Exception('User not available');
+    if (FirebaseAuth.instance.currentUser == null) {
+      throw Exception('User not available');
+    }
 
     final store = FirebaseFirestore.instanceFor(
       app: await Firebase.initializeApp(
@@ -28,8 +29,10 @@ class PodcastUserPod extends _$PodcastUserPod {
         persistenceEnabled: true,
       );
 
-    _userDocument =
-        store.collection('users').doc(user.uid).withConverter<PodcastUser>(
+    _userDocument = store
+        .collection('users')
+        .doc(const String.fromEnvironment('FIREBASE_USER'))
+        .withConverter<PodcastUser>(
       fromFirestore: (snapshot, __) {
         return PodcastUser.fromJson(snapshot.data()!);
       },

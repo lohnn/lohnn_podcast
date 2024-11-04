@@ -5,40 +5,39 @@ import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supab
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:podcast/data/serdes/duration_model.dart';
 import 'package:podcast/data/serdes/uri_model.dart';
 
-part 'episode_supabase.model.mapper.dart';
+part 'podcast_supabase.model.mapper.dart';
 
 @ConnectOfflineFirstWithSupabase(
   supabaseConfig: SupabaseSerializable(
-    tableName: 'episodes',
+    tableName: 'podcasts',
   ),
 )
 @MappableClass()
-class EpisodeSupabase extends OfflineFirstWithSupabaseModel
-    with EpisodeSupabaseMappable {
-  @Supabase(unique: true)
+class PodcastSupabase extends OfflineFirstWithSupabaseModel
+    with PodcastSupabaseMappable {
+  @Supabase(unique: true, name: 'rss_url')
   @Sqlite(index: true, unique: true)
   final String id;
-  final UriModel url;
-  final String title;
-  final DateTime? pubDate;
-  final String? description;
+  final String name;
+  final String link;
+  final String description;
   final UriModel imageUrl;
-  @Supabase(nullable: true)
-  final DurationModel? duration;
-  @Supabase(foreignKey: 'podcast_id')
-  final String podcastId;
+  final String? language;
+  final String? lastBuildDate;
+  final String? copyright;
+  final String? generator;
 
-  EpisodeSupabase({
+  PodcastSupabase({
     required this.id,
-    required this.url,
-    required this.title,
-    this.pubDate,
-    this.description,
+    required this.name,
+    required this.link,
+    required this.description,
     required this.imageUrl,
-    this.duration,
-    required this.podcastId,
+    this.language,
+    this.lastBuildDate,
+    this.copyright,
+    this.generator,
   });
 }
