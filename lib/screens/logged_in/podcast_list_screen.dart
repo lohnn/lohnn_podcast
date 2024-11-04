@@ -5,6 +5,7 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/podcast.dart';
+import 'package:podcast/providers/episodes_provider.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_list_pod_provider.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
@@ -25,9 +26,12 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
     WidgetRef ref,
     AsyncData<Query<Podcast>> data,
   ) {
+    final episodes = ref.watch(episodesProvider);
+
     return Scaffold(
       appBar: AppBar(
         actions: [
+          Text(episodes.valueOrNull?.length.toString() ?? 'Loading Supabase'),
           PopupMenuButton(
             icon: const Icon(Icons.more_vert),
             itemBuilder: (BuildContext context) => [

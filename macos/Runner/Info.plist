@@ -25,7 +25,17 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.946425922760-t0nj5ud20e100pqr3kn4926kkv7mcd8v</string>
+				<string>com.googleusercontent.apps.293924069782-cvv0qqqn7aoc993f9c6flb8ejliar4kj</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>se.lohnn.podcast</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lohnnpodcast</string>
 			</array>
 		</dict>
 	</array>

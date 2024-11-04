@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/providers/episodes_provider.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
 
 class LoginScreen extends HookConsumerWidget {
-  const LoginScreen({super.key});
+  final Widget? error;
+
+  const LoginScreen({super.key, this.error});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final episodes = ref.watch(episodesProvider);
-    print(episodes);
-    
     return SizedBox(
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          if (error case final error?) error,
           TextButton(
             onPressed: () {
               ref.read(userPodProvider.notifier).logIn();
             },
             child: const Text('Log in'),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(userPodProvider.notifier).logOut();
+            },
+            child: const Text('Log out'),
           ),
         ],
       ),
