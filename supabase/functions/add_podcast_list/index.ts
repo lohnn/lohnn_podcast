@@ -21,8 +21,12 @@ Deno.serve(async (req) => {
         return new Response("Unauthorized", { status: 401 });
     }
 
-    const rssUrl = await req.text();
-    await upsertPodcastAndEpisodes({ rssUrl, supabase });
+    const rssUrls = await req.json();
+    console.log("Adding podcasts:", rssUrls);
+
+    await Promise.all(rssUrls.map((rssUrl: string) => {
+        return upsertPodcastAndEpisodes({ rssUrl, supabase });
+    }));
 
     return new Response();
 });

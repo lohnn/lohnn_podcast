@@ -30,10 +30,32 @@ export class Episode {
     }
 }
 
-function parseDuration(duration: string): number | undefined {
-    if (duration === undefined) {
+function parseDuration(durationString: string): number | undefined {
+    if (durationString === undefined) {
         return undefined;
     }
-    const [hours, minutes, seconds] = duration.split(":").map(Number);
-    return (hours * 60 * 60 + minutes * 60 + seconds) * 1000;
+
+    // Try converting to number
+    if (!isNaN(Number(durationString))) {
+        return Number(durationString) * 1000;
+    }
+
+    const parts = durationString.split(":").map(Number);
+
+    switch (parts.length) {
+        case 3:
+            // deno-lint-ignore no-var
+            var [hours, minutes, seconds] = parts;
+            return (hours * 3600 + minutes * 60 + seconds) * 1000;
+        case 2:
+            // deno-lint-ignore no-var
+            var [minutes, seconds] = parts;
+            return (minutes * 60 + seconds) * 1000;
+        case 1:
+            // deno-lint-ignore no-var
+            var [seconds] = parts;
+            return seconds * 1000;
+        default:
+            return undefined; // Invalid format
+    }
 }

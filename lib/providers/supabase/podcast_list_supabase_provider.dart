@@ -15,7 +15,16 @@ class PodcastListSupabase extends _$PodcastListSupabase {
     );
     print(response.data);
 
-    // TODO: Call remote to add podcast and episodes
+    // TODO: Push update to episode_user_status for episodes that have status
+  }
+
+  Future<void> migrateListFromFirebase(List<String> rssUrls) async {
+    final response = await Supabase.instance.client.functions.invoke(
+      'add_podcast_list',
+      body: rssUrls,
+    );
+    print(response.data);
+
     // TODO: Push update to episode_user_status for episodes that have status
   }
 }

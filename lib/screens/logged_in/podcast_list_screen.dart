@@ -8,6 +8,8 @@ import 'package:podcast/data/podcast.dart';
 import 'package:podcast/providers/episodes_provider.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_list_pod_provider.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
+import 'package:podcast/providers/podcasts_provider.dart';
+import 'package:podcast/providers/supabase/podcast_list_supabase_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
 import 'package:podcast/screens/loading_screen.dart';
@@ -26,12 +28,33 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
     WidgetRef ref,
     AsyncData<Query<Podcast>> data,
   ) {
+    final podcasts = ref.watch(podcastsProvider);
     final episodes = ref.watch(episodesProvider);
 
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Text(episodes.valueOrNull?.length.toString() ?? 'Loading Supabase'),
+          TextButton(
+            onPressed: () async {
+              final snapshot = await data.value.get();
+              final urls = snapshot.docs.map((e) => e.data().rssUrl).toList();
+
+              ref
+                  .read(podcastListSupabaseProvider.notifier)
+                  .migrateListFromFirebase(urls);
+            },
+            child: Row(
+              children: [
+                Text(
+                  podcasts.valueOrNull?.length.toString() ?? 'Loading Supabase',
+                ),
+                const Text(':'),
+                Text(
+                  episodes.valueOrNull?.length.toString() ?? 'Loading Supabase',
+                ),
+              ],
+            ),
+          ),
           PopupMenuButton(
             icon: const Icon(Icons.more_vert),
             itemBuilder: (BuildContext context) => [
