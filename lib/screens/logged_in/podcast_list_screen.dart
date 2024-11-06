@@ -14,6 +14,7 @@ import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
 import 'package:podcast/screens/loading_screen.dart';
 import 'package:podcast/widgets/podcast_list_tile.dart';
+import 'package:podcast/widgets/podcast_supabase_list_tile.dart';
 
 class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
   const PodcastListScreen({super.key});
@@ -169,12 +170,21 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
         },
         child: const Icon(Icons.add),
       ),
-      body: FirestoreListView<Podcast>(
-        query: data.value,
-        itemBuilder: (context, snapshot) {
-          return PodcastListTile(snapshot);
-        },
-      ),
+      body: switch (true) {
+        false => ListView.builder(
+            itemCount: podcasts.valueOrNull?.length ?? 0,
+            itemBuilder: (context, index) {
+              final snapshot = podcasts.requireValue[index];
+              return PodcastSupabaseListTile(snapshot);
+            },
+          ),
+        true => FirestoreListView<Podcast>(
+            query: data.value,
+            itemBuilder: (context, snapshot) {
+              return PodcastListTile(snapshot);
+            },
+          ),
+      },
     );
   }
 }
