@@ -42,18 +42,16 @@ function parseDuration(durationString: string): number | undefined {
 
     const parts = durationString.split(":").map(Number);
 
+    let hours: number, minutes: number, seconds: number;
     switch (parts.length) {
         case 3:
-            // deno-lint-ignore no-var
-            var [hours, minutes, seconds] = parts;
+            [hours, minutes, seconds] = parts;
             return (hours * 3600 + minutes * 60 + seconds) * 1000;
         case 2:
-            // deno-lint-ignore no-var
-            var [minutes, seconds] = parts;
+            [minutes, seconds] = parts;
             return (minutes * 60 + seconds) * 1000;
         case 1:
-            // deno-lint-ignore no-var
-            var [seconds] = parts;
+            [seconds] = parts;
             return seconds * 1000;
         default:
             return undefined; // Invalid format

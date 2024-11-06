@@ -12,7 +12,10 @@ export async function upsertPodcastAndEpisodes(options: {
     const xmlPage = await fetch(options.rssUrl);
     const xmlPageContent = await xmlPage.text();
 
-    const parser = new XMLParser({ ignoreAttributes: false });
+    const parser = new XMLParser({
+        ignoreAttributes: false,
+        htmlEntities: true,
+    });
     const rssJson = parser.parse(xmlPageContent);
 
     const channel = rssJson.rss.channel;
