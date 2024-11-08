@@ -12,6 +12,7 @@ import 'package:podcast/screens/logged_in/episode_list_screen.dart';
 import 'package:podcast/screens/logged_in/episode_list_supabase_screen.dart';
 import 'package:podcast/screens/logged_in/podcast_list_screen.dart';
 import 'package:podcast/screens/playlist_screen.dart';
+import 'package:podcast/screens/podcast_search_screen.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/small_media_player_controls.dart';
 import 'package:podcast/widgets/podcast_actions.dart';
 
@@ -26,6 +27,10 @@ class LoggedInScreen extends HookConsumerWidget {
           GoRoute(
             path: '/',
             builder: (context, state) => const PodcastListScreen(),
+          ),
+          GoRoute(
+            path: '/search',
+            builder: (context, state) => const PodcastSearchScreen(),
           ),
           GoRoute(
             path: '/playlist',

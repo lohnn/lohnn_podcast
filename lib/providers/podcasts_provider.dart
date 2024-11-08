@@ -7,7 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 part 'podcasts_provider.g.dart';
 
 @riverpod
-Future<PodcastSupabase> podcast(PodcastRef ref, [String? podcastId]) async {
+Future<PodcastSupabase> podcast(PodcastRef ref, String podcastId) async {
   return ref.watch(
     podcastsProvider.selectAsync(
       (podcasts) => podcasts.firstWhere((podcast) => podcast.id == podcastId),

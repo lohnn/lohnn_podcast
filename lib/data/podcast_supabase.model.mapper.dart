@@ -22,7 +22,8 @@ class PodcastSupabaseMapper extends ClassMapperBase<PodcastSupabase> {
   final String id = 'PodcastSupabase';
 
   static String _$id(PodcastSupabase v) => v.id;
-  static const Field<PodcastSupabase, String> _f$id = Field('id', _$id);
+  static const Field<PodcastSupabase, String> _f$id =
+      Field('id', _$id, key: 'rss_url');
   static String _$name(PodcastSupabase v) => v.name;
   static const Field<PodcastSupabase, String> _f$name = Field('name', _$name);
   static String _$link(PodcastSupabase v) => v.link;
@@ -32,13 +33,14 @@ class PodcastSupabaseMapper extends ClassMapperBase<PodcastSupabase> {
       Field('description', _$description);
   static UriModel _$imageUrl(PodcastSupabase v) => v.imageUrl;
   static const Field<PodcastSupabase, UriModel> _f$imageUrl =
-      Field('imageUrl', _$imageUrl);
+      Field('imageUrl', _$imageUrl, key: 'image_url');
   static String? _$language(PodcastSupabase v) => v.language;
   static const Field<PodcastSupabase, String> _f$language =
       Field('language', _$language, opt: true);
   static String? _$lastBuildDate(PodcastSupabase v) => v.lastBuildDate;
-  static const Field<PodcastSupabase, String> _f$lastBuildDate =
-      Field('lastBuildDate', _$lastBuildDate, opt: true);
+  static const Field<PodcastSupabase, String> _f$lastBuildDate = Field(
+      'lastBuildDate', _$lastBuildDate,
+      key: 'last_build_date', opt: true);
   static String? _$copyright(PodcastSupabase v) => v.copyright;
   static const Field<PodcastSupabase, String> _f$copyright =
       Field('copyright', _$copyright, opt: true);

@@ -11,4 +11,5 @@ export async function fetchUser(options: {
     if (user === null) {
         return new Response("Unauthorized", { status: 401 });
     }
+    return user;
 }
