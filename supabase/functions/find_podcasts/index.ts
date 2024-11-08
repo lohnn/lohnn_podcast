@@ -18,7 +18,9 @@ Deno.serve(async (req) => {
         return userResponse;
     }
 
-    const { data, error } = await supabase.from("podcasts").select();
+    const { data } = await supabase.from("podcasts").select().order(
+        "name",
+    );
 
     return new Response(
         JSON.stringify(data),
