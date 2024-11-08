@@ -14,15 +14,17 @@ part 'podcast_supabase.model.mapper.dart';
     tableName: 'podcasts',
   ),
 )
-@MappableClass()
+@MappableClass(caseStyle: CaseStyle.snakeCase)
 class PodcastSupabase extends OfflineFirstWithSupabaseModel
     with PodcastSupabaseMappable {
   @Supabase(unique: true, name: 'rss_url')
   @Sqlite(index: true, unique: true)
+  @MappableField(key: 'rss_url')
   final String id;
   final String name;
   final String link;
   final String description;
+  @MappableField()
   final UriModel imageUrl;
   final String? language;
   final String? lastBuildDate;

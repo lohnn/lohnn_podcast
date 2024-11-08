@@ -3,7 +3,21 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 part 'uri_model.mapper.dart';
 
-@MappableClass()
+class UriModelHook extends MappingHook {
+  const UriModelHook();
+
+  @override
+  Object? beforeDecode(Object? value) {
+    if (value is String) {
+      return {
+        'url': value,
+      };
+    }
+    return value;
+  }
+}
+
+@MappableClass(hook: UriModelHook())
 class UriModel extends OfflineFirstSerdes<String, String>
     with UriModelMappable {
   final Uri uri;

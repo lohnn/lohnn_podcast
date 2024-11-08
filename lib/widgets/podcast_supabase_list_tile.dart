@@ -5,9 +5,11 @@ import 'package:podcast/widgets/rounded_image.dart';
 
 class PodcastSupabaseListTile extends StatelessWidget {
   final PodcastSupabase podcast;
+  final Widget? trailing;
 
   const PodcastSupabaseListTile(
     this.podcast, {
+    this.trailing,
     super.key,
   });
 
@@ -23,10 +25,11 @@ class PodcastSupabaseListTile extends StatelessWidget {
         imageSize: 40,
       ),
       title: Text(podcast.name),
-      trailing: const Text(
-        '${2}/${8}',
-        // '${podcast.listenedEpisodes.length}/${podcast.totalEpisodes}',
-      ),
+      trailing: trailing ??
+          const Text(
+            '${2}/${8}',
+            // '${podcast.listenedEpisodes.length}/${podcast.totalEpisodes}',
+          ),
     );
   }
 }

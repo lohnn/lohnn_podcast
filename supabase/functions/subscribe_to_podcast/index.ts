@@ -4,8 +4,7 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "npm:@supabase/supabase-js";
-import { upsertPodcastAndEpisodes } from "../_shared/functionality/upsert_podcast_and_episodes.ts";
+import { createClient, User } from "npm:@supabase/supabase-js";
 import { fetchUser } from "../_shared/functionality/fetch_user.ts";
 
 const supabase = createClient(
@@ -19,12 +18,12 @@ Deno.serve(async (req) => {
         return userResponse;
     }
 
-    const rssUrls = await req.json();
-    console.log("Adding podcasts:", rssUrls);
+    const user = userResponse as User;
 
-    await Promise.all(rssUrls.map((rssUrl: string) => {
-        return upsertPodcastAndEpisodes({ rssUrl, supabase });
-    }));
+    await supabase.from("user_podcast_subscriptions").upsert({
+        user_id: user.id,
+        podcast_id: await req.text(),
+    });
 
     return new Response();
 });

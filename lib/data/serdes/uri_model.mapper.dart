@@ -32,6 +32,8 @@ class UriModelMapper extends ClassMapperBase<UriModel> {
     #uri: _f$uri,
   };
 
+  @override
+  final MappingHook hook = const UriModelHook();
   static UriModel _instantiate(DecodingData data) {
     return UriModel(data.dec(_f$url));
   }

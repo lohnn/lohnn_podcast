@@ -6,7 +6,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js";
 import { upsertPodcastAndEpisodes } from "../_shared/functionality/upsert_podcast_and_episodes.ts";
-import {fetchUser} from "../_shared/functionality/fetch_user.ts";
+import { fetchUser } from "../_shared/functionality/fetch_user.ts";
 
 const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -15,7 +15,7 @@ const supabase = createClient(
 
 Deno.serve(async (req) => {
     const userResponse = await fetchUser({ supabase, req });
-    if(userResponse !== undefined) {
+    if (userResponse instanceof Response) {
         return userResponse;
     }
 
