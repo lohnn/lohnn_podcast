@@ -31,12 +31,9 @@ Stream<List<EpisodeSupabase>> _episodesImpl(
     where: [Where('podcastId', value: podcastId)],
     providerArgs: {
       'orderBy': 'pubDate DESC',
+      // @TODO: Look into adding pagination
     },
   );
 
-  Repository().get<EpisodeSupabase>(
-    forceLocalSyncFromRemote: true,
-    query: query,
-  );
   return Repository().subscribeToRealtime<EpisodeSupabase>(query: query);
 }
