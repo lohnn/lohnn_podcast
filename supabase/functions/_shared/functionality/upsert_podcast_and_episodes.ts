@@ -24,7 +24,7 @@ export async function upsertPodcastAndEpisodes(options: {
         {
             rssUrl: options.rssUrl,
             name: channel.title,
-            link: channel.link,
+            link: channel.link["@_href"] ?? channel.link,
             description: channel.description,
             imageUrl: channel.image?.url ?? channel["itunes:image"]["@_href"],
             language: channel.language,
@@ -34,11 +34,13 @@ export async function upsertPodcastAndEpisodes(options: {
         },
     );
 
+    console.log("Upserting podcast:", podcast);
+
     await options.supabase.from("podcasts").upsert(podcast);
 
     const episodes = channel.item.map((item: any) =>
         new Episode({
-            id: item.guid["#text"],
+            id: item.guid["#text"] ?? item.guid,
             url: item.enclosure["@_url"],
             title: item.title,
             pubDate: item.pubDate,
@@ -47,6 +49,10 @@ export async function upsertPodcastAndEpisodes(options: {
             duration: item["itunes:duration"],
             podcast_id: options.rssUrl,
         })
+    );
+    console.log(
+        "Upserting episodes:",
+        episodes.map((episode: any) => episode.id),
     );
 
     // TODO: Remove episodes not existing?

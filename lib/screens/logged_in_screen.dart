@@ -9,6 +9,7 @@ import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/episode_color_scheme_provider.dart';
 import 'package:podcast/screens/logged_in/episode_details_screen.dart';
 import 'package:podcast/screens/logged_in/episode_list_screen.dart';
+import 'package:podcast/screens/logged_in/episode_list_supabase_screen.dart';
 import 'package:podcast/screens/logged_in/podcast_list_screen.dart';
 import 'package:podcast/screens/playlist_screen.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/small_media_player_controls.dart';
@@ -31,7 +32,24 @@ class LoggedInScreen extends HookConsumerWidget {
             builder: (context, state) => const PlaylistScreen(),
           ),
           GoRoute(
-            path: '/:podcastId',
+            path: '/new/:podcastId',
+            builder: (context, state) => EpisodeListSupabaseScreen(
+              state.pathParameters['podcastId']!,
+            ),
+            routes: [
+              GoRoute(
+                path: ':episodeId',
+                builder: (context, state) => EpisodeDetailsScreen(
+                  podcastId:
+                      PodcastId.fromString(state.pathParameters['podcastId']!),
+                  episodeId:
+                      Uri.encodeComponent(state.pathParameters['episodeId']!),
+                ),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/old/:podcastId',
             builder: (context, state) => EpisodeListScreen(
               PodcastId.fromString(state.pathParameters['podcastId']!),
             ),

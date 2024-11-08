@@ -1,43 +1,42 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/episode_supabase.model.dart';
-import 'package:podcast/data/serdes/uri_model.dart';
+import 'package:podcast/data/podcast_supabase.model.dart';
+import 'package:podcast/extensions/async_value_extensions.dart';
+import 'package:podcast/helpers/equatable_list.dart';
+import 'package:podcast/providers/podcasts_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:uuid/uuid.dart';
 
 part 'episodes_provider.g.dart';
 
 @riverpod
 class Episodes extends _$Episodes {
   @override
-  Stream<List<EpisodeSupabase>> build() {
-    syncWithRemote();
-    return Repository().subscribeToRealtime<EpisodeSupabase>();
+  AsyncValue<(PodcastSupabase, List<EpisodeSupabase>)> build({
+    required String podcastId,
+  }) {
+    final podcast = ref.watch(podcastProvider(podcastId));
+    final episodes =
+        ref.watch(_episodesImplProvider(podcastId)).whenData(EquatableList.new);
+    return (podcast, episodes).pack();
   }
+}
 
-  Future<void> syncWithRemote() {
-    return Repository().get<EpisodeSupabase>(forceLocalSyncFromRemote: true);
-  }
+@riverpod
+Stream<List<EpisodeSupabase>> _episodesImpl(
+  _EpisodesImplRef ref,
+  String podcastId,
+) {
+  final query = Query(
+    where: [Where('podcastId', value: podcastId)],
+    providerArgs: {
+      'orderBy': 'pubDate DESC',
+    },
+  );
 
-  Future<void> delete(EpisodeSupabase episode) {
-    return Repository().delete<EpisodeSupabase>(episode);
-  }
-
-  Future<void> createNew() {
-    return Repository().upsert<EpisodeSupabase>(
-      policy: OfflineFirstUpsertPolicy.requireRemote,
-      EpisodeSupabase(
-        id: const Uuid().v1(),
-        podcastId: 'https://rss.art19.com/sitcom-dnd',
-        url: UriModel('https://lohnn.se/'),
-        title: 'Lohnn podcast',
-        imageUrl: UriModel('https://lohnn.se/'),
-      ),
-    );
-  }
-
-  Future<void> updateEpisode(EpisodeSupabase episode) {
-    return Repository()
-        .upsert<EpisodeSupabase>(episode.copyWith(title: '${episode.title}1'));
-  }
+  Repository().get<EpisodeSupabase>(
+    forceLocalSyncFromRemote: true,
+    query: query,
+  );
+  return Repository().subscribeToRealtime<EpisodeSupabase>(query: query);
 }
