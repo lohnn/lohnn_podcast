@@ -15,7 +15,7 @@ class PodcastSupabaseListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        context.push('/${podcast.id}', extra: podcast);
+        context.push('/new/${podcast.safeId}', extra: podcast);
       },
       leading: RoundedImage(
         imageUri: podcast.imageUrl.uri,

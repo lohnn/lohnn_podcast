@@ -29,6 +29,13 @@ class PodcastSupabase extends OfflineFirstWithSupabaseModel
   final String? copyright;
   final String? generator;
 
+  @Supabase(ignore: true)
+  String get rssUrl => id;
+
+  /// A safe ID that can be used as path and query parameters
+  @Supabase(ignore: true)
+  String get safeId => Uri.encodeComponent(id);
+
   PodcastSupabase({
     required this.id,
     required this.name,

@@ -37,7 +37,7 @@ function parseDuration(durationString: string): number | undefined {
 
     // Try converting to number
     if (!isNaN(Number(durationString))) {
-        return Number(durationString) * 1000;
+        return Number(durationString);
     }
 
     const parts = durationString.split(":").map(Number);
@@ -46,13 +46,13 @@ function parseDuration(durationString: string): number | undefined {
     switch (parts.length) {
         case 3:
             [hours, minutes, seconds] = parts;
-            return (hours * 3600 + minutes * 60 + seconds) * 1000;
+            return (hours * 3600 + minutes * 60 + seconds);
         case 2:
             [minutes, seconds] = parts;
-            return (minutes * 60 + seconds) * 1000;
+            return (minutes * 60 + seconds);
         case 1:
             [seconds] = parts;
-            return seconds * 1000;
+            return seconds;
         default:
             return undefined; // Invalid format
     }

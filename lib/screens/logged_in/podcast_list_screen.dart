@@ -30,7 +30,6 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
     AsyncData<Query<Podcast>> data,
   ) {
     final podcasts = ref.watch(podcastsProvider);
-    final episodes = ref.watch(episodesProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -48,10 +47,6 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
               children: [
                 Text(
                   podcasts.valueOrNull?.length.toString() ?? 'Loading Supabase',
-                ),
-                const Text(':'),
-                Text(
-                  episodes.valueOrNull?.length.toString() ?? 'Loading Supabase',
                 ),
               ],
             ),
@@ -170,7 +165,7 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
         },
         child: const Icon(Icons.add),
       ),
-      body: switch (true) {
+      body: switch (false) {
         false => ListView.builder(
             itemCount: podcasts.valueOrNull?.length ?? 0,
             itemBuilder: (context, index) {
