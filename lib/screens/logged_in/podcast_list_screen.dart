@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -10,7 +9,6 @@ import 'package:podcast/data/podcast.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_list_pod_provider.dart';
 import 'package:podcast/providers/firebase/user_provider.dart';
 import 'package:podcast/providers/podcasts_provider.dart';
-import 'package:podcast/providers/supabase/podcast_list_supabase_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
 import 'package:podcast/screens/loading_screen.dart';
@@ -35,25 +33,6 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          if (kDebugMode)
-            TextButton(
-              onPressed: () async {
-                final snapshot = await data.value.get();
-                final urls = snapshot.docs.map((e) => e.data().rssUrl).toList();
-
-                ref
-                    .read(podcastListSupabaseProvider.notifier)
-                    .migrateListFromFirebase(urls);
-              },
-              child: Row(
-                children: [
-                  Text(
-                    podcasts.valueOrNull?.length.toString() ??
-                        'Loading Supabase',
-                  ),
-                ],
-              ),
-            ),
           IconButton(
             onPressed: () => context.push('/search'),
             icon: const Icon(Icons.search),

@@ -13,10 +13,8 @@ class UserPod extends _$UserPod {
 
   // final _googleSignIn = GoogleSignIn();
   final _supabaseGoogleSignIn = GoogleSignIn(
-    clientId:
-        const String.fromEnvironment('CLIENT_ID'),
-    serverClientId:
-        const String.fromEnvironment('SERVER_CLIENT_ID'),
+    clientId: const String.fromEnvironment('CLIENT_ID'),
+    serverClientId: const String.fromEnvironment('SERVER_CLIENT_ID'),
   );
 
   @override
