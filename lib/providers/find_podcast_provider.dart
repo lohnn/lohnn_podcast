@@ -39,7 +39,8 @@ class FindPodcast extends _$FindPodcast {
 
 @riverpod
 Future<Iterable<PodcastSupabase>> _findPodcastImpl(
-    _FindPodcastImplRef ref) async {
+  _FindPodcastImplRef ref,
+) async {
   final podcastsResponse = await Repository()
       .remoteProvider
       .client

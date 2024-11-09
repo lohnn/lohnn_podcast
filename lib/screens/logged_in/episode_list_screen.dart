@@ -9,7 +9,6 @@ import 'package:podcast/extensions/episode_snapshot_extension.dart';
 import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/firebase/firestore/episode_list_pod_provider.dart';
 import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
-import 'package:podcast/providers/supabase/podcast_list_supabase_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
@@ -31,19 +30,7 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
   ) {
     final (podcast, query) = data.value;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(podcast.name),
-        actions: [
-          TextButton(
-            onPressed: () {
-              ref
-                  .read(podcastListSupabaseProvider.notifier)
-                  .migrateFromFirebase(podcast.rssUrl);
-            },
-            child: const Text('Migrate to Supabase'),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(podcast.name)),
       body: RefreshIndicator(
         onRefresh: () => ref.read(provider.notifier).updateList(),
         child: FirestoreListView(
