@@ -17,16 +17,16 @@ class PodcastSearchScreen extends AsyncValueWidget<
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    AsyncData<List<({PodcastSupabase podcast, bool isSubscribed})>> data,
+    List<({PodcastSupabase podcast, bool isSubscribed})> data,
   ) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Podcasts'),
       ),
       body: ListView.builder(
-        itemCount: data.value.length,
+        itemCount: data.length,
         itemBuilder: (context, index) {
-          final (:podcast, :isSubscribed) = data.value[index];
+          final (:podcast, :isSubscribed) = data[index];
           return PodcastSupabaseListTile(
             key: ValueKey(podcast),
             podcast,

@@ -26,7 +26,7 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    AsyncData<Query<Podcast>> data,
+    Query<Podcast> data,
   ) {
     final podcasts = ref.watch(podcastsProvider);
 
@@ -160,7 +160,7 @@ class PodcastListScreen extends AsyncValueWidget<Query<Podcast>> {
             },
           ),
         true => FirestoreListView<Podcast>(
-            query: data.value,
+            query: data,
             itemBuilder: (context, snapshot) {
               return PodcastListTile(snapshot);
             },

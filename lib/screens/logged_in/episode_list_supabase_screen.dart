@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/episode_supabase.model.dart';
+import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/data/podcast_supabase.model.dart';
 import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/episodes_provider.dart';
@@ -10,7 +10,7 @@ import 'package:podcast/widgets/pub_date_text.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class EpisodeListSupabaseScreen
-    extends AsyncValueWidget<(PodcastSupabase, List<EpisodeSupabase>)> {
+    extends AsyncValueWidget<(PodcastSupabase, List<EpisodeWithStatus>)> {
   final String podcastId;
 
   const EpisodeListSupabaseScreen(this.podcastId, {super.key});
@@ -22,10 +22,10 @@ class EpisodeListSupabaseScreen
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    AsyncData<(PodcastSupabase, List<EpisodeSupabase>)> data,
+    (PodcastSupabase, List<EpisodeWithStatus>) data,
   ) {
     // TODO: Verify why provider is rebuilding multiple times
-    final (podcast, episodes) = data.value;
+    final (podcast, episodes) = data;
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
       body: RefreshIndicator(
@@ -35,19 +35,19 @@ class EpisodeListSupabaseScreen
           itemBuilder: (context, index) {
             final episode = episodes[index];
             return ListTile(
+              key: ValueKey(episode.episode.id),
               onTap: () {
-                context.push('/new/$podcastId/${episode.id}');
+                context.push('/new/$podcastId/${episode.episode.id}');
               },
               leading: RoundedImage(
-                imageUri: episode.imageUrl.uri,
-                // showDot: !episode.listened,
-                showDot: true,
+                imageUri: episode.episode.imageUrl.uri,
+                showDot: !(episode.status?.isPlayed ?? false),
                 imageSize: 40,
               ),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (episode.pubDate case final pubDate?)
+                  if (episode.episode.pubDate case final pubDate?)
                     DefaultTextStyle(
                       style: const TextStyle(
                         fontSize: 11,
@@ -55,13 +55,13 @@ class EpisodeListSupabaseScreen
                       ),
                       child: PubDateText(pubDate),
                     ),
-                  Text(episode.title),
+                  Text(episode.episode.title),
                 ],
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (episode.description case final description?)
+                  if (episode.episode.description case final description?)
                     Text(
                       description.removeHtmlTags(),
                       maxLines: 2,

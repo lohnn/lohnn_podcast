@@ -26,9 +26,9 @@ class EpisodeListScreen extends AsyncValueWidget<(Podcast, Query<Episode>)> {
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    AsyncData<(Podcast, Query<Episode>)> data,
+    (Podcast, Query<Episode>) data,
   ) {
-    final (podcast, query) = data.value;
+    final (podcast, query) = data;
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
       body: RefreshIndicator(

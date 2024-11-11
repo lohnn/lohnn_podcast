@@ -30,9 +30,9 @@ class EpisodeDetailsScreen
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    AsyncData<(Podcast, DocumentSnapshot<Episode>)> data,
+    (Podcast, DocumentSnapshot<Episode>) data,
   ) {
-    final (podcast, episodeSnapshot) = data.value;
+    final (podcast, episodeSnapshot) = data;
     final episode = episodeSnapshot.data();
 
     return Scaffold(
