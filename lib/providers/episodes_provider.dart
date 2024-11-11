@@ -20,6 +20,14 @@ class Episodes extends _$Episodes {
         ref.watch(_episodesImplProvider(podcastId)).whenData(EquatableList.new);
     return (podcast, episodes).pack();
   }
+
+  Future<void> updateList() async {
+    final (podcast, _) = state.requireValue;
+    await Repository().remoteProvider.client.functions.invoke(
+          'add_podcast',
+          body: podcast.rssUrl,
+        );
+  }
 }
 
 @riverpod

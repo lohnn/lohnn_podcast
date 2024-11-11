@@ -24,8 +24,7 @@ class EpisodeDetailsScreen
   });
 
   @override
-  ProviderBase<AsyncValue<(Podcast, DocumentSnapshot<Episode>)>> get provider =>
-      episodeProvider(podcastId, episodeId);
+  EpisodeProvider get provider => episodeProvider(podcastId, episodeId);
 
   @override
   Widget buildWithData(
