@@ -29,8 +29,7 @@ class EpisodeListSupabaseScreen
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
       body: RefreshIndicator(
-        // onRefresh: () => ref.read(provider.notifier).updateList(),
-        onRefresh: () async {},
+        onRefresh: ref.read(provider.notifier).updateList,
         child: ListView.builder(
           itemCount: episodes.length,
           itemBuilder: (context, index) {
