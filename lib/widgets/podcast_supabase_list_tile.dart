@@ -21,13 +21,13 @@ class PodcastSupabaseListTile extends StatelessWidget {
       },
       leading: RoundedImage(
         imageUri: podcast.imageUrl.uri,
-        showDot: false, //podcast.showDot,
+        // showDot:  podcast.showDot,
         imageSize: 40,
       ),
       title: Text(podcast.name),
       trailing: trailing ??
           const Text(
-            '${2}/${8}',
+            '?/?',
             // '${podcast.listenedEpisodes.length}/${podcast.totalEpisodes}',
           ),
     );
