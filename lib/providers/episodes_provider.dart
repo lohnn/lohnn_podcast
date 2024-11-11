@@ -1,10 +1,12 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/episode_supabase.model.dart';
+import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/data/podcast_supabase.model.dart';
 import 'package:podcast/extensions/async_value_extensions.dart';
 import 'package:podcast/helpers/equatable_list.dart';
 import 'package:podcast/providers/podcasts_provider.dart';
+import 'package:podcast/providers/user_episode_status_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'episodes_provider.g.dart';
@@ -12,12 +14,22 @@ part 'episodes_provider.g.dart';
 @riverpod
 class Episodes extends _$Episodes {
   @override
-  AsyncValue<(PodcastSupabase, List<EpisodeSupabase>)> build({
+  AsyncValue<(PodcastSupabase, List<EpisodeWithStatus>)> build({
     required String podcastId,
   }) {
     final podcast = ref.watch(podcastProvider(podcastId));
+    final userEpisodeStatusList =
+        ref.watch(userEpisodeStatusProvider).unwrapPrevious().valueOrNull ?? {};
     final episodes =
-        ref.watch(_episodesImplProvider(podcastId)).whenData(EquatableList.new);
+        ref.watch(_episodesImplProvider(podcastId)).whenData((episodes) {
+      return [
+        for (final episode in episodes)
+          EpisodeWithStatus(
+            episode: episode,
+            status: userEpisodeStatusList[episode.id],
+          ),
+      ];
+    }).whenData(EquatableList.new);
     return (podcast, episodes).pack();
   }
 

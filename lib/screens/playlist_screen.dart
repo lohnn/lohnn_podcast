@@ -21,7 +21,7 @@ class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    AsyncData<List<DocumentSnapshot<Episode>>> data,
+    List<DocumentSnapshot<Episode>> data,
   ) {
     return Scaffold(
       appBar: AppBar(),
@@ -29,9 +29,9 @@ class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
         onReorder: (oldIndex, newIndex) {
           ref.read(playlistPodProvider.notifier).reorder(oldIndex, newIndex);
         },
-        itemCount: data.value.length,
+        itemCount: data.length,
         itemBuilder: (context, index) {
-          final snapshot = data.value[index];
+          final snapshot = data[index];
           final episode = snapshot.data()!;
 
           return ListTile(

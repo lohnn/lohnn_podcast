@@ -114,9 +114,9 @@ class MainApp extends AsyncValueWidget<User?> {
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    AsyncData<User?> data,
+    User? data,
   ) {
-    return switch (data.value) {
+    return switch (data) {
       null => const LoginScreen(),
       _ => const LoggedInScreen(),
     };
