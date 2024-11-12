@@ -4,12 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/podcast.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/episode_color_scheme_provider.dart';
 import 'package:podcast/screens/logged_in/episode_details_screen.dart';
 import 'package:podcast/screens/logged_in/episode_list_screen.dart';
-import 'package:podcast/screens/logged_in/episode_list_supabase_screen.dart';
 import 'package:podcast/screens/logged_in/podcast_list_screen.dart';
 import 'package:podcast/screens/playlist_screen.dart';
 import 'package:podcast/screens/podcast_search_screen.dart';
@@ -37,33 +35,15 @@ class LoggedInScreen extends HookConsumerWidget {
             builder: (context, state) => const PlaylistScreen(),
           ),
           GoRoute(
-            path: '/new/:podcastId',
-            builder: (context, state) => EpisodeListSupabaseScreen(
+            path: '/:podcastId',
+            builder: (context, state) => EpisodeListScreen(
               state.pathParameters['podcastId']!,
             ),
             routes: [
               GoRoute(
                 path: ':episodeId',
                 builder: (context, state) => EpisodeDetailsScreen(
-                  podcastId:
-                      PodcastId.fromString(state.pathParameters['podcastId']!),
-                  episodeId:
-                      Uri.encodeComponent(state.pathParameters['episodeId']!),
-                ),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: '/old/:podcastId',
-            builder: (context, state) => EpisodeListScreen(
-              PodcastId.fromString(state.pathParameters['podcastId']!),
-            ),
-            routes: [
-              GoRoute(
-                path: ':episodeId',
-                builder: (context, state) => EpisodeDetailsScreen(
-                  podcastId:
-                      PodcastId.fromString(state.pathParameters['podcastId']!),
+                  podcastId: state.pathParameters['podcastId']!,
                   episodeId:
                       Uri.encodeComponent(state.pathParameters['episodeId']!),
                 ),

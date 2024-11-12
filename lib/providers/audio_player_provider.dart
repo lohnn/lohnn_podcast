@@ -1,10 +1,14 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:flutter/foundation.dart';
-import 'package:podcast/data/episode.dart';
-import 'package:podcast/extensions/episode_snapshot_extension.dart';
-import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
+import 'package:podcast/brick/repository.dart';
+import 'package:podcast/data/episode.model.dart';
+import 'package:podcast/data/episode_with_status.dart';
+import 'package:podcast/data/serdes/duration_model.dart';
+import 'package:podcast/data/user_episode_status.model.dart';
+import 'package:podcast/extensions/future_extensions.dart';
+import 'package:podcast/providers/playlist_pod_provider.dart';
 import 'package:podcast/services/podcast_audio_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -50,7 +54,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   late PodcastAudioHandler _player;
 
   @override
-  Future<DocumentSnapshot<Episode>?> build() async {
+  Future<EpisodeWithStatus?> build() async {
     try {
       _player = await ref.watch(_audioServicePodProvider.future);
 
@@ -58,9 +62,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       ref.onDispose(subscription.cancel);
 
       // Initial setup of the queue
-      ref
-          .read(podcastUserPodProvider.selectAsync((e) => e.playQueue))
-          .then(updateQueue);
+      ref.read(playlistPodProvider.future).then(updateQueue);
 
       return future;
     } catch (e, stackTrace) {
@@ -70,44 +72,51 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     }
   }
 
-  Future<void> updateQueue(Set<DocumentReference<Episode>> queue) async {
+  Future<void> updateQueue(List<Episode> queue) async {
     if (queue.isNotEmpty) {
-      final docs = await Future.wait([
-        for (final episodeRef in queue) episodeRef.get(),
-      ]);
-
-      await _player.setQueue(
-        [
-          for (final snapshot in docs)
-            if (snapshot.data() case final episode?)
-              episode.mediaItem(snapshot),
-        ],
-      );
-
-      state = AsyncData(docs.first);
+      final statuses =
+          await [for (final episode in queue) _getForEpisode(episode)].wait;
+      await _player.setQueue([for (final status in statuses) status]);
+      state = AsyncData(statuses.first);
     } else {
       state = const AsyncData(null);
     }
   }
 
+  Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
+    final status = await Repository()
+        .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
+        .firstOrNull;
+    return EpisodeWithStatus(episode: episode, status: status);
+  }
+
   Future<void> _onPlaybackStateChange(PlaybackState playbackState) async {
     if (playbackState.processingState == AudioProcessingState.completed) {
-      final episodeSnapshot = await future;
+      final episodeWithStatus = await future;
       await _player.stop();
 
       // TODO: Validate following logic is valid
 
       // Set listened to true in episode
-      await episodeSnapshot!.markListened();
+      final status = switch (episodeWithStatus!.status) {
+        // Just in case we never created a status (shouldn't happen)
+        null => UserEpisodeStatus(
+            episodeId: episodeWithStatus.episode.id,
+            isPlayed: true,
+            currentPosition: DurationModel(Duration.zero),
+          ),
+        final status => status.copyWith(isPlayed: true),
+      };
+      await Repository().upsert<UserEpisodeStatus>(status);
 
       // Remove episode reference from user
       final nextItem = await ref
-          .read(podcastUserPodProvider.notifier)
-          .removeFromQueue(episodeSnapshot.reference);
+          .read(playlistPodProvider.notifier)
+          .removeFromQueue(episodeWithStatus.episode);
 
       // Start next episode from queue? (if not automatic)
       if (nextItem case final nextItem?) {
-        playEpisode(await nextItem.get());
+        playEpisode(nextItem);
       } else {
         _player.clearPlaying();
       }
@@ -115,16 +124,15 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   }
 
   Future<void> playEpisode(
-    DocumentSnapshot<Episode> episodeSnapshot, {
+    Episode episode, {
     bool autoPlay = true,
   }) async {
-    state = AsyncData(episodeSnapshot);
+    final status = await _getForEpisode(episode);
+    state = AsyncData(status);
 
-    ref
-        .read(podcastUserPodProvider.notifier)
-        .addToTopOfQueue(episodeSnapshot.reference);
+    ref.read(playlistPodProvider.notifier).addToTopOfQueue(episode);
 
-    await _player.loadEpisode(episodeSnapshot, autoPlay: true);
+    await _player.loadEpisode(status, autoPlay: true);
 
     if (autoPlay) _player.play();
   }

@@ -18,7 +18,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final episode = ref.watch(audioPlayerPodProvider).valueOrNull?.data();
+    final episode = ref.watch(audioPlayerPodProvider).valueOrNull?.episode;
     final durations = ref.watch(currentPositionProvider).valueOrNull;
 
     useEffect(
@@ -31,7 +31,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
 
     if (episode == null) return Container();
 
-    final episodeDuration = durations?.duration ?? episode.duration;
+    final episodeDuration = durations?.duration ?? episode.duration?.duration;
 
     return SingleChildScrollView(
       child: Padding(
@@ -39,7 +39,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            RoundedImage(imageUri: episode.imageUrl),
+            RoundedImage(imageUri: episode.imageUrl.uri),
             Text(episode.title),
             if ((durations?.position, episodeDuration)
                 case (final currentPosition?, final episodeDuration?)) ...[

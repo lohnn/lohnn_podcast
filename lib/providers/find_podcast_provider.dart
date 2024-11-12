@@ -1,5 +1,5 @@
 import 'package:podcast/brick/repository.dart';
-import 'package:podcast/data/podcast_supabase.model.dart';
+import 'package:podcast/data/podcast.model.dart';
 import 'package:podcast/extensions/async_value_extensions.dart';
 import 'package:podcast/providers/podcasts_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -9,7 +9,7 @@ part 'find_podcast_provider.g.dart';
 @riverpod
 class FindPodcast extends _$FindPodcast {
   @override
-  AsyncValue<List<({PodcastSupabase podcast, bool isSubscribed})>> build() {
+  AsyncValue<List<({Podcast podcast, bool isSubscribed})>> build() {
     return (
       ref.watch(podcastsProvider),
       ref.watch(_findPodcastImplProvider),
@@ -22,14 +22,14 @@ class FindPodcast extends _$FindPodcast {
     });
   }
 
-  void subscribe(PodcastSupabase podcast) {
+  void subscribe(Podcast podcast) {
     Repository().remoteProvider.client.functions.invoke(
           'subscribe_to_podcast',
           body: podcast.id,
         );
   }
 
-  void unsubscribe(PodcastSupabase podcast) {
+  void unsubscribe(Podcast podcast) {
     Repository().remoteProvider.client.functions.invoke(
           'unsubscribe_from_podcast',
           body: podcast.id,
@@ -38,7 +38,7 @@ class FindPodcast extends _$FindPodcast {
 }
 
 @riverpod
-Future<Iterable<PodcastSupabase>> _findPodcastImpl(
+Future<Iterable<Podcast>> _findPodcastImpl(
   _FindPodcastImplRef ref,
 ) async {
   final podcastsResponse = await Repository()
@@ -49,5 +49,5 @@ Future<Iterable<PodcastSupabase>> _findPodcastImpl(
 
   final data =
       (podcastsResponse.data as List<dynamic>).cast<Map<String, dynamic>>();
-  return data.map(PodcastSupabaseMapper.fromMap);
+  return data.map(PodcastMapper.fromMap);
 }
