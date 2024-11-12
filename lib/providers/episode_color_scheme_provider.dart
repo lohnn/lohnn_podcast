@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:podcast/data/episode.dart';
+import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -12,10 +12,10 @@ Future<ColorScheme?> currentPlayingEpisodeColorScheme(
   Brightness brightness,
 ) async {
   final episode = ref.watch(audioPlayerPodProvider).valueOrNull;
-  if (episode?.data() case final episode?) {
+  if (episode case final episode?) {
     return ref
         .watch(
-          episodeColorSchemeProvider(episode, brightness),
+          episodeColorSchemeProvider(episode.episode, brightness),
         )
         .valueOrNull;
   }
@@ -29,7 +29,7 @@ Future<ColorScheme?> episodeColorScheme(
   Brightness brightness,
 ) {
   return ColorScheme.fromImageProvider(
-    provider: CachedNetworkImageProvider(episode.imageUrl.toString()),
+    provider: CachedNetworkImageProvider(episode.imageUrl.uri.toString()),
     brightness: brightness,
   );
 }

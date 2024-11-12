@@ -13,7 +13,7 @@ class EpisodeWithStatusMapper extends ClassMapperBase<EpisodeWithStatus> {
   static EpisodeWithStatusMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = EpisodeWithStatusMapper._());
-      EpisodeSupabaseMapper.ensureInitialized();
+      EpisodeMapper.ensureInitialized();
       UserEpisodeStatusMapper.ensureInitialized();
     }
     return _instance!;
@@ -22,8 +22,8 @@ class EpisodeWithStatusMapper extends ClassMapperBase<EpisodeWithStatus> {
   @override
   final String id = 'EpisodeWithStatus';
 
-  static EpisodeSupabase _$episode(EpisodeWithStatus v) => v.episode;
-  static const Field<EpisodeWithStatus, EpisodeSupabase> _f$episode =
+  static Episode _$episode(EpisodeWithStatus v) => v.episode;
+  static const Field<EpisodeWithStatus, Episode> _f$episode =
       Field('episode', _$episode);
   static UserEpisodeStatus? _$status(EpisodeWithStatus v) => v.status;
   static const Field<EpisodeWithStatus, UserEpisodeStatus> _f$status =
@@ -95,10 +95,10 @@ extension EpisodeWithStatusValueCopy<$R, $Out>
 
 abstract class EpisodeWithStatusCopyWith<$R, $In extends EpisodeWithStatus,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
-  EpisodeSupabaseCopyWith<$R, EpisodeSupabase, EpisodeSupabase> get episode;
+  EpisodeCopyWith<$R, Episode, Episode> get episode;
   UserEpisodeStatusCopyWith<$R, UserEpisodeStatus, UserEpisodeStatus>?
       get status;
-  $R call({EpisodeSupabase? episode, UserEpisodeStatus? status});
+  $R call({Episode? episode, UserEpisodeStatus? status});
   EpisodeWithStatusCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -112,13 +112,13 @@ class _EpisodeWithStatusCopyWithImpl<$R, $Out>
   late final ClassMapperBase<EpisodeWithStatus> $mapper =
       EpisodeWithStatusMapper.ensureInitialized();
   @override
-  EpisodeSupabaseCopyWith<$R, EpisodeSupabase, EpisodeSupabase> get episode =>
+  EpisodeCopyWith<$R, Episode, Episode> get episode =>
       $value.episode.copyWith.$chain((v) => call(episode: v));
   @override
   UserEpisodeStatusCopyWith<$R, UserEpisodeStatus, UserEpisodeStatus>?
       get status => $value.status?.copyWith.$chain((v) => call(status: v));
   @override
-  $R call({EpisodeSupabase? episode, Object? status = $none}) =>
+  $R call({Episode? episode, Object? status = $none}) =>
       $apply(FieldCopyWithData({
         if (episode != null) #episode: episode,
         if (status != $none) #status: status

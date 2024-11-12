@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/providers/firebase/user_provider.dart';
+import 'package:podcast/providers/user_provider.dart';
 
 class LoginScreen extends HookConsumerWidget {
   final Widget? error;

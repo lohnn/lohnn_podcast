@@ -1,27 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/episode.dart';
+import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/extensions/string_extensions.dart';
-import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
-import 'package:podcast/providers/firebase/playlist_pod_provider.dart';
+import 'package:podcast/providers/playlist_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
-class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
+class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
   const PlaylistScreen({super.key});
 
   @override
-  ProviderBase<AsyncValue<List<DocumentSnapshot<Episode>>>> get provider =>
-      playlistPodProvider;
+  ProviderBase<AsyncValue<List<Episode>>> get provider => playlistPodProvider;
 
   @override
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    List<DocumentSnapshot<Episode>> data,
+    List<Episode> data,
   ) {
     return Scaffold(
       appBar: AppBar(),
@@ -31,8 +28,7 @@ class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
         },
         itemCount: data.length,
         itemBuilder: (context, index) {
-          final snapshot = data[index];
-          final episode = snapshot.data()!;
+          final episode = data[index];
 
           return ListTile(
             key: ValueKey(episode),
@@ -40,8 +36,9 @@ class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
               // context.push('/${podcastId.id}/${episode.guid}');
             },
             leading: RoundedImage(
-              imageUri: episode.imageUrl,
-              showDot: !episode.listened,
+              imageUri: episode.imageUrl.uri,
+              // TODO: Read in if listened
+              showDot: true, // !episode.listened,
               imageSize: 40,
             ),
             title: Column(
@@ -70,12 +67,12 @@ class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
                   ),
                 Row(
                   children: [
-                    PlayEpisodeButton(snapshot),
+                    PlayEpisodeButton(episode),
                     IconButton(
                       onPressed: () {
                         ref
-                            .read(podcastUserPodProvider.notifier)
-                            .removeFromQueue(snapshot.reference);
+                            .read(playlistPodProvider.notifier)
+                            .removeFromQueue(episode);
                       },
                       icon: const Icon(Icons.playlist_remove),
                     ),

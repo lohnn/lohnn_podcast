@@ -1,13 +1,13 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:podcast/brick/repository.dart';
-import 'package:podcast/data/podcast_supabase.model.dart';
+import 'package:podcast/data/podcast.model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'podcasts_provider.g.dart';
 
 @riverpod
-Future<PodcastSupabase> podcast(PodcastRef ref, String podcastId) async {
+Future<Podcast> podcast(PodcastRef ref, String podcastId) async {
   return ref.watch(
     podcastsProvider.selectAsync(
       (podcasts) => podcasts.firstWhere((podcast) => podcast.id == podcastId),
@@ -20,12 +20,12 @@ class Podcasts extends _$Podcasts {
   final _query = Query(providerArgs: {'orderBy': 'name ASC'});
 
   @override
-  Stream<List<PodcastSupabase>> build() {
+  Stream<List<Podcast>> build() {
     keepUpToDateWithSubscriptions();
     // Force a clean refresh on startup to clear out any stored rows that may
     // have been deleted
     _syncWithRemote();
-    return Repository().subscribeToRealtime<PodcastSupabase>(
+    return Repository().subscribeToRealtime<Podcast>(
       policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
       query: _query,
     );
@@ -52,10 +52,29 @@ class Podcasts extends _$Podcasts {
 
   /// Syncs the local database with the remote database, using force local sync,
   /// that clears the local database of rows that have been deleted remotely.
-  Future<void> _syncWithRemote() {
-    return Repository().get<PodcastSupabase>(
-      forceLocalSyncFromRemote: true,
-      query: _query,
-    );
+  Future<void> _syncWithRemote() async {
+    // return Repository().get<Podcast>(
+    //   forceLocalSyncFromRemote: true,
+    //   query: _query,
+    // );
+  }
+
+  Future<void> refresh(Podcast podcast) {
+    return addPodcastToList(podcast.rssUrl);
+  }
+
+  Future<void> refreshAll() async {
+    final podcasts = await future;
+    await Repository().remoteProvider.client.functions.invoke(
+          'add_podcasts',
+          body: podcasts.map((e) => e.rssUrl),
+        );
+  }
+
+  Future<void> addPodcastToList(String rssUrl) {
+    return Repository().remoteProvider.client.functions.invoke(
+          'add_podcast',
+          body: rssUrl,
+        );
   }
 }

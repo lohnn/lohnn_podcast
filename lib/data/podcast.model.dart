@@ -7,7 +7,7 @@ import 'package:brick_supabase/brick_supabase.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:podcast/data/serdes/uri_model.dart';
 
-part 'podcast_supabase.model.mapper.dart';
+part 'podcast.model.mapper.dart';
 
 @ConnectOfflineFirstWithSupabase(
   supabaseConfig: SupabaseSerializable(
@@ -15,8 +15,8 @@ part 'podcast_supabase.model.mapper.dart';
   ),
 )
 @MappableClass(caseStyle: CaseStyle.snakeCase)
-class PodcastSupabase extends OfflineFirstWithSupabaseModel
-    with PodcastSupabaseMappable {
+class Podcast extends OfflineFirstWithSupabaseModel
+    with PodcastMappable {
   @Supabase(unique: true, name: 'rss_url')
   @Sqlite(index: true, unique: true)
   @MappableField(key: 'rss_url')
@@ -38,7 +38,7 @@ class PodcastSupabase extends OfflineFirstWithSupabaseModel
   @Supabase(ignore: true)
   String get safeId => Uri.encodeComponent(id);
 
-  PodcastSupabase({
+  Podcast({
     required this.id,
     required this.name,
     required this.link,

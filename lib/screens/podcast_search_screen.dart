@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/podcast_supabase.model.dart';
+import 'package:podcast/data/podcast.model.dart';
 import 'package:podcast/providers/find_podcast_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
-import 'package:podcast/widgets/podcast_supabase_list_tile.dart';
+import 'package:podcast/widgets/podcast_list_tile.dart';
 
-class PodcastSearchScreen extends AsyncValueWidget<
-    List<({PodcastSupabase podcast, bool isSubscribed})>> {
+class PodcastSearchScreen
+    extends AsyncValueWidget<List<({Podcast podcast, bool isSubscribed})>> {
   const PodcastSearchScreen({super.key});
 
   @override
-  ProviderBase<AsyncValue<List<({PodcastSupabase podcast, bool isSubscribed})>>>
+  ProviderBase<AsyncValue<List<({Podcast podcast, bool isSubscribed})>>>
       get provider => findPodcastProvider;
 
   @override
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    List<({PodcastSupabase podcast, bool isSubscribed})> data,
+    List<({Podcast podcast, bool isSubscribed})> data,
   ) {
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +27,7 @@ class PodcastSearchScreen extends AsyncValueWidget<
         itemCount: data.length,
         itemBuilder: (context, index) {
           final (:podcast, :isSubscribed) = data[index];
-          return PodcastSupabaseListTile(
+          return PodcastListTile(
             key: ValueKey(podcast),
             podcast,
             trailing: isSubscribed

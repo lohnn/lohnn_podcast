@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/episode.dart';
+import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 
 class EpisodeProgressBar extends ConsumerWidget {
@@ -15,7 +15,7 @@ class EpisodeProgressBar extends ConsumerWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
 
-    final episodeDuration = durations?.duration ?? episode.duration;
+    final episodeDuration = durations?.duration ?? episode.duration?.duration;
 
     final bufferProgress = switch ((durations?.buffered, episodeDuration)) {
       (final bufferPosition?, final episodeDuration?) =>

@@ -4,7 +4,7 @@ import 'package:brick_supabase/brick_supabase.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:podcast/data/serdes/duration_model.dart';
 
-part 'episode_user_status_supabase.model.mapper.dart';
+part 'episode_user_status.model.mapper.dart';
 
 @ConnectOfflineFirstWithSupabase(
   supabaseConfig: SupabaseSerializable(
@@ -12,8 +12,8 @@ part 'episode_user_status_supabase.model.mapper.dart';
   ),
 )
 @MappableClass()
-class EpisodeUserStatusSupabase extends OfflineFirstWithSupabaseModel
-    with EpisodeUserStatusSupabaseMappable {
+class EpisodeUserStatus extends OfflineFirstWithSupabaseModel
+    with EpisodeUserStatusMappable {
   @Supabase(unique: true)
   @Sqlite(index: true, unique: true)
   final String userId;
@@ -22,7 +22,7 @@ class EpisodeUserStatusSupabase extends OfflineFirstWithSupabaseModel
   final bool listened;
   final DurationModel currentPosition;
 
-  EpisodeUserStatusSupabase({
+  EpisodeUserStatus({
     required this.userId,
     required this.episodeId,
     required this.listened,

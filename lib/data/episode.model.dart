@@ -8,7 +8,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:podcast/data/serdes/duration_model.dart';
 import 'package:podcast/data/serdes/uri_model.dart';
 
-part 'episode_supabase.model.mapper.dart';
+part 'episode.model.mapper.dart';
 
 @ConnectOfflineFirstWithSupabase(
   supabaseConfig: SupabaseSerializable(
@@ -16,8 +16,7 @@ part 'episode_supabase.model.mapper.dart';
   ),
 )
 @MappableClass()
-class EpisodeSupabase extends OfflineFirstWithSupabaseModel
-    with EpisodeSupabaseMappable {
+class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
   @Supabase(unique: true)
   @Sqlite(index: true, unique: true)
   final String id;
@@ -31,7 +30,7 @@ class EpisodeSupabase extends OfflineFirstWithSupabaseModel
   @Supabase(foreignKey: 'podcast_id')
   final String podcastId;
 
-  EpisodeSupabase({
+  Episode({
     required this.id,
     required this.url,
     required this.title,
