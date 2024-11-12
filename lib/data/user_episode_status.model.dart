@@ -17,15 +17,11 @@ class UserEpisodeStatus extends OfflineFirstWithSupabaseModel
   @Supabase(unique: true)
   @Sqlite(unique: true)
   final String episodeId;
-  @Supabase(unique: true)
-  @Sqlite(unique: true)
-  final String userId;
   final bool isPlayed;
   final DurationModel currentPosition;
 
   UserEpisodeStatus({
     required this.episodeId,
-    required this.userId,
     required this.isPlayed,
     required this.currentPosition,
   });

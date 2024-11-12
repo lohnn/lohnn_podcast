@@ -2,7 +2,7 @@ export class Episode {
     id!: string;
     url!: URL;
     title!: string;
-    pub_date?: string;
+    pub_date?: Date;
     description?: string;
     image_url!: URL;
     duration?: number;
@@ -19,14 +19,27 @@ export class Episode {
             podcast_id: string;
         },
     ) {
-        this.id = options.podcast_id + ":" + options.id;
-        this.url = options.url;
-        this.title = options.title;
-        this.pub_date = options.pubDate;
+        this.id = (options.podcast_id + ":" + options.id)!;
+        this.url = options.url!;
+        this.title = options.title!;
+        this.pub_date = new Date(options.pubDate);
         this.description = options.description;
-        this.image_url = options.imageUrl;
+        this.image_url = options.imageUrl!;
         this.duration = parseDuration(options.duration);
-        this.podcast_id = options.podcast_id;
+        this.podcast_id = options.podcast_id!;
+
+        // Fail if required fields are missing
+        if (this.id === undefined) {
+            throw new Error("Episode ID is required");
+        } else if (this.url === undefined) {
+            throw new Error("Episode URL is required");
+        } else if (this.title === undefined) {
+            throw new Error("Episode title is required");
+        } else if (this.image_url === undefined) {
+            throw new Error("Episode image URL is required");
+        } else if (this.podcast_id === undefined) {
+            throw new Error("Episode podcast ID is required");
+        }
     }
 }
 

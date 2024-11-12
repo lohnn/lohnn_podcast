@@ -38,18 +38,24 @@ export async function upsertPodcastAndEpisodes(options: {
 
     await options.supabase.from("podcasts").upsert(podcast);
 
-    const episodes = channel.item.map((item: any) =>
-        new Episode({
-            id: item.guid["#text"] ?? item.guid,
-            url: item.enclosure["@_url"],
-            title: item.title,
-            pubDate: item.pubDate,
-            description: item.description,
-            imageUrl: item["itunes:image"]?.["@_href"] ?? podcast.image_url,
-            duration: item["itunes:duration"],
-            podcast_id: options.rssUrl,
-        })
-    );
+    // Map if episodes that does not throw exception
+    const episodes = channel.item.map((item: any) => {
+        try {
+            return new Episode({
+                id: item.guid["#text"] ?? item.guid,
+                url: item.enclosure["@_url"],
+                title: item.title!,
+                pubDate: item.pubDate,
+                description: item.description,
+                imageUrl: item["itunes:image"]?.["@_href"] ?? podcast.image_url,
+                duration: item["itunes:duration"],
+                podcast_id: options.rssUrl,
+            });
+        } catch (e) {
+            console.error("Error parsing episode:", e);
+            return null;
+        }
+    }).filter((episode: Episode | null) => episode !== null);
     console.log(
         "Upserting episodes:",
         episodes.map((episode: any) => episode.id),
@@ -57,5 +63,8 @@ export async function upsertPodcastAndEpisodes(options: {
 
     // TODO: Remove episodes not existing?
     // TODO: Alternatively mark removed
-    await options.supabase.from("episodes").upsert(episodes);
+    const { error } = await options.supabase.from("episodes").upsert(episodes);
+    if (error !== null) {
+        console.error("Error upserting episodes:", error);
+    }
 }
