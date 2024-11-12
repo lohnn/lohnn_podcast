@@ -19,7 +19,7 @@ class Episodes extends _$Episodes {
   }) {
     final podcast = ref.watch(podcastProvider(podcastId));
     final userEpisodeStatusList =
-        ref.watch(userEpisodeStatusProvider).unwrapPrevious().valueOrNull ?? {};
+        ref.watch(userEpisodeStatusPodProvider).valueOrNull ?? {};
     final episodes =
         ref.watch(_episodesImplProvider(podcastId)).whenData((episodes) {
       return [
