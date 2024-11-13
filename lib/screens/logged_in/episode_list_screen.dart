@@ -7,6 +7,7 @@ import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/episodes_provider.dart';
 import 'package:podcast/providers/playlist_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
+import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
@@ -70,7 +71,7 @@ class EpisodeListScreen
                     ),
                   Row(
                     children: [
-                      // PlayEpisodeButton(episodeSnapshot),
+                      PlayEpisodeButton(episodeWithStatus.episode),
                       IconButton(
                         onPressed: () {
                           ref
