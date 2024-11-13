@@ -54,7 +54,9 @@ class PlaylistPod extends _$PlaylistPod {
   }
 
   Future<void> addToTopOfQueue(Episode episode) async {
-    final queue = await future;
+    final queue = (await future).toList();
+    // Make sure to put the episode at the top of the queue if it's already in the queue
+    queue.remove(episode);
     state = AsyncData([episode, ...queue]);
     return _recalculateOrder();
   }
