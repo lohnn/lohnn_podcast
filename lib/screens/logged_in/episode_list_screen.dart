@@ -25,6 +25,7 @@ class EpisodeListScreen
     (Podcast, List<EpisodeWithStatus>) data,
   ) {
     // TODO: Verify why provider is rebuilding multiple times
+
     final (podcast, episodes) = data;
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
@@ -33,21 +34,21 @@ class EpisodeListScreen
         child: ListView.builder(
           itemCount: episodes.length,
           itemBuilder: (context, index) {
-            final episode = episodes[index];
+            final episodeWithStatus = episodes[index];
             return ListTile(
-              key: ValueKey(episode.episode.id),
+              key: ValueKey(episodeWithStatus.episode.id),
               onTap: () {
-                context.push('/new/$podcastId/${episode.episode.id}');
+                context.push('/new/$podcastId/${episodeWithStatus.episode.id}');
               },
               leading: RoundedImage(
-                imageUri: episode.episode.imageUrl.uri,
-                showDot: !(episode.status?.isPlayed ?? false),
+                imageUri: episodeWithStatus.episode.imageUrl.uri,
+                showDot: !episodeWithStatus.status.isPlayed,
                 imageSize: 40,
               ),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (episode.episode.pubDate case final pubDate?)
+                  if (episodeWithStatus.episode.pubDate case final pubDate?)
                     DefaultTextStyle(
                       style: const TextStyle(
                         fontSize: 11,
@@ -55,13 +56,14 @@ class EpisodeListScreen
                       ),
                       child: PubDateText(pubDate),
                     ),
-                  Text(episode.episode.title),
+                  Text(episodeWithStatus.episode.title),
                 ],
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (episode.episode.description case final description?)
+                  if (episodeWithStatus.episode.description
+                      case final description?)
                     Text(
                       description.removeHtmlTags(),
                       maxLines: 2,
@@ -83,26 +85,29 @@ class EpisodeListScreen
               ),
               trailing: PopupMenuButton<_PopupActions>(
                 itemBuilder: (context) => [
-                  // if (!episode.listened)
-                  if (!false)
-                    const PopupMenuItem(
-                      value: _PopupActions.markListened,
-                      child: Text('Mark listened'),
-                    )
-                  else
+                  if (episodeWithStatus.status.isPlayed)
                     const PopupMenuItem(
                       value: _PopupActions.markUnlistened,
                       child: Text('Mark unlistened'),
+                    )
+                  else
+                    const PopupMenuItem(
+                      value: _PopupActions.markListened,
+                      child: Text('Mark listened'),
                     ),
                 ],
                 icon: const Icon(Icons.more_vert),
                 onSelected: (value) async {
-                  // switch (value) {
-                  //   case _PopupActions.markListened:
-                  //     await episodeSnapshot.markListened();
-                  //   case _PopupActions.markUnlistened:
-                  //     await episodeSnapshot.markUnlistened();
-                  // }
+                  switch (value) {
+                    case _PopupActions.markListened:
+                      await ref
+                          .read(provider.notifier)
+                          .markListened(episodeWithStatus);
+                    case _PopupActions.markUnlistened:
+                      await ref
+                          .read(provider.notifier)
+                          .markUnlistened(episodeWithStatus);
+                  }
                 },
               ),
             );
