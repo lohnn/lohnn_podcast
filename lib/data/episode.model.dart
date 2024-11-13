@@ -7,6 +7,7 @@ import 'package:brick_supabase/brick_supabase.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:podcast/data/serdes/duration_model.dart';
 import 'package:podcast/data/serdes/uri_model.dart';
+import 'package:podcast/services/podcast_audio_handler.dart';
 
 part 'episode.model.mapper.dart';
 
@@ -40,4 +41,15 @@ class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
     this.duration,
     required this.podcastId,
   });
+
+  PodcastMediaItem mediaItem({
+    Duration? actualDuration,
+  }) =>
+      PodcastMediaItem(
+        episode: this,
+        id: url.uri.toString(),
+        title: title,
+        artUri: imageUrl.uri,
+        duration: actualDuration ?? duration?.duration,
+      );
 }

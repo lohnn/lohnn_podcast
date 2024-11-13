@@ -13,7 +13,7 @@ import 'package:podcast/extensions/future_extensions.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PodcastMediaItem extends MediaItem {
-  final EpisodeWithStatus episode;
+  final Episode episode;
 
   PodcastMediaItem({
     required this.episode,
@@ -64,20 +64,23 @@ class PodcastAudioHandler extends BaseAudioHandler
         .throttleTime(const Duration(seconds: 10), trailing: true)
         .listen((
       position,
-    ) {
-      final currentEpisodeStatus = mediaItem.valueOrNull?.episode;
+    ) async {
+      final currentEpisode = mediaItem.valueOrNull?.episode;
 
-      if (currentEpisodeStatus case final currentEpisodeStatus?) {
-        final status = switch (currentEpisodeStatus.status) {
+      if (currentEpisode case final currentEpisode?) {
+        final status = await _getForEpisode(currentEpisode);
+        final newPosition = DurationModel(position);
+
+        final newStatus = switch (status.status) {
           // Just in case we never created a status (shouldn't happen)
           null => UserEpisodeStatus(
-              episodeId: currentEpisodeStatus.episode.id,
+              episodeId: status.episode.id,
               isPlayed: false,
-              currentPosition: DurationModel(position),
+              currentPosition: newPosition,
             ),
-          final status => status.copyWith(isPlayed: true),
+          final status => status.copyWith(currentPosition: newPosition),
         };
-        Repository().upsert<UserEpisodeStatus>(status);
+        Repository().upsert<UserEpisodeStatus>(newStatus);
       }
     });
   }
@@ -105,7 +108,7 @@ class PodcastAudioHandler extends BaseAudioHandler
 
   Future<void> setQueue(List<EpisodeWithStatus> newQueue) async {
     await super.updateQueue([
-      for (final status in newQueue) status.mediaItem(),
+      for (final status in newQueue) status.episode.mediaItem(),
     ]);
     await loadEpisode(newQueue.first);
   }
@@ -121,7 +124,7 @@ class PodcastAudioHandler extends BaseAudioHandler
       initialPosition: status.status?.currentPosition.duration,
     );
 
-    mediaItem.add(status.mediaItem(actualDuration: duration));
+    mediaItem.add(status.episode.mediaItem(actualDuration: duration));
 
     if (autoPlay) await _player.play();
     _startPositionStream();
