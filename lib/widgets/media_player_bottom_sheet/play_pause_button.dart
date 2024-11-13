@@ -19,6 +19,7 @@ class PlayPauseButton extends ConsumerWidget {
                 processingState != AudioProcessingState.buffering =>
           IconButton(
             onPressed: () {
+              // TODO: Fix a tiny bug where play/pause button doesn't work first time
               ref
                   .read(audioPlayerPodProvider.notifier)
                   .triggerMediaAction(MediaAction.playPause);
