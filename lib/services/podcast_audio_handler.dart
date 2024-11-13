@@ -71,15 +71,7 @@ class PodcastAudioHandler extends BaseAudioHandler
         final status = await _getForEpisode(currentEpisode);
         final newPosition = DurationModel(position);
 
-        final newStatus = switch (status.status) {
-          // Just in case we never created a status (shouldn't happen)
-          null => UserEpisodeStatus(
-              episodeId: status.episode.id,
-              isPlayed: false,
-              currentPosition: newPosition,
-            ),
-          final status => status.copyWith(currentPosition: newPosition),
-        };
+        final newStatus = status.status.copyWith(currentPosition: newPosition);
         Repository().upsert<UserEpisodeStatus>(newStatus);
       }
     });
@@ -121,7 +113,7 @@ class PodcastAudioHandler extends BaseAudioHandler
 
     final duration = await _player.setAudioSource(
       AudioSource.uri(status.episode.url.uri),
-      initialPosition: status.status?.currentPosition.duration,
+      initialPosition: status.status.currentPosition.duration,
     );
 
     mediaItem.add(status.episode.mediaItem(actualDuration: duration));

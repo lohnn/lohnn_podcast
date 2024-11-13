@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/data/episode_with_status.dart';
-import 'package:podcast/data/serdes/duration_model.dart';
 import 'package:podcast/data/user_episode_status.model.dart';
 import 'package:podcast/extensions/future_extensions.dart';
 import 'package:podcast/providers/playlist_pod_provider.dart';
@@ -98,15 +97,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       // TODO: Validate following logic is valid
 
       // Set listened to true in episode
-      final status = switch (episodeWithStatus!.status) {
-        // Just in case we never created a status (shouldn't happen)
-        null => UserEpisodeStatus(
-            episodeId: episodeWithStatus.episode.id,
-            isPlayed: true,
-            currentPosition: DurationModel(Duration.zero),
-          ),
-        final status => status.copyWith(isPlayed: true),
-      };
+      final status = episodeWithStatus!.status.copyWith(isPlayed: true);
       await Repository().upsert<UserEpisodeStatus>(status);
 
       // Remove episode reference from user

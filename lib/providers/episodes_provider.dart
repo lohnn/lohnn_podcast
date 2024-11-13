@@ -57,6 +57,18 @@ class Episodes extends _$Episodes {
     final (podcast, _) = state.requireValue;
     return ref.read(podcastsProvider.notifier).refresh(podcast);
   }
+
+  Future<void> markListened(EpisodeWithStatus episodeWithStatus) {
+    return ref
+        .read(userEpisodeStatusPodProvider.notifier)
+        .markListened(episodeWithStatus);
+  }
+
+  Future<void> markUnlistened(EpisodeWithStatus episodeWithStatus) {
+    return ref
+        .read(userEpisodeStatusPodProvider.notifier)
+        .markUnlistened(episodeWithStatus);
+  }
 }
 
 @riverpod

@@ -25,7 +25,7 @@ class EpisodeWithStatusMapper extends ClassMapperBase<EpisodeWithStatus> {
   static Episode _$episode(EpisodeWithStatus v) => v.episode;
   static const Field<EpisodeWithStatus, Episode> _f$episode =
       Field('episode', _$episode);
-  static UserEpisodeStatus? _$status(EpisodeWithStatus v) => v.status;
+  static UserEpisodeStatus _$status(EpisodeWithStatus v) => v.status;
   static const Field<EpisodeWithStatus, UserEpisodeStatus> _f$status =
       Field('status', _$status, opt: true);
 
@@ -96,7 +96,7 @@ extension EpisodeWithStatusValueCopy<$R, $Out>
 abstract class EpisodeWithStatusCopyWith<$R, $In extends EpisodeWithStatus,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
   EpisodeCopyWith<$R, Episode, Episode> get episode;
-  UserEpisodeStatusCopyWith<$R, UserEpisodeStatus, UserEpisodeStatus>?
+  UserEpisodeStatusCopyWith<$R, UserEpisodeStatus, UserEpisodeStatus>
       get status;
   $R call({Episode? episode, UserEpisodeStatus? status});
   EpisodeWithStatusCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
@@ -115,8 +115,10 @@ class _EpisodeWithStatusCopyWithImpl<$R, $Out>
   EpisodeCopyWith<$R, Episode, Episode> get episode =>
       $value.episode.copyWith.$chain((v) => call(episode: v));
   @override
-  UserEpisodeStatusCopyWith<$R, UserEpisodeStatus, UserEpisodeStatus>?
-      get status => $value.status?.copyWith.$chain((v) => call(status: v));
+  UserEpisodeStatusCopyWith<$R, UserEpisodeStatus, UserEpisodeStatus>
+      get status => ($value.status as UserEpisodeStatus)
+          .copyWith
+          .$chain((v) => call(status: v));
   @override
   $R call({Episode? episode, Object? status = $none}) =>
       $apply(FieldCopyWithData({
