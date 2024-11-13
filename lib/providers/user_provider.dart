@@ -18,6 +18,7 @@ class UserPod extends _$UserPod {
   Stream<User?> build() async* {
     _supabaseAuth = Supabase.instance.client.auth;
 
+    yield _supabaseAuth.currentUser;
     await for (final _ in _supabaseAuth.onAuthStateChange) {
       yield _supabaseAuth.currentUser;
     }
@@ -36,7 +37,7 @@ class UserPod extends _$UserPod {
     final supabaseAuth = await switch (
         await _googleSignIn.signInSilently(reAuthenticate: true)) {
       final user? => user.authentication,
-      _ => (await _googleSignIn.signIn())?.authentication,
+      _ => (await _googleSignIn.signIn())?.authentication, 
     };
     await _supabaseAuth.signInWithIdToken(
       provider: OAuthProvider.google,
