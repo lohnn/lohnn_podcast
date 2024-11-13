@@ -119,6 +119,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
         playEpisode(nextItem);
       } else {
         _player.clearPlaying();
+        state = const AsyncData(null);
       }
     }
   }

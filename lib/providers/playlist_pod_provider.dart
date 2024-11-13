@@ -9,7 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'playlist_pod_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PlaylistPod extends _$PlaylistPod {
   @override
   Stream<List<Episode>> build() async* {
@@ -40,12 +40,17 @@ class PlaylistPod extends _$PlaylistPod {
 
   /// Removes the episode from the queue and returns the next episode in the queue
   Future<Episode?> removeFromQueue(Episode episode) async {
+    final queue = (await future).toList();
+    queue.remove(episode);
+    state = AsyncData(queue);
+
     final queueItem = await Repository()
         .get<PlayQueueItem>(query: Query.where('episodeId', episode.id))
         .first;
     await Repository().delete<PlayQueueItem>(queueItem);
+
     await _recalculateOrder();
-    return await future.firstOrNull;
+    return queue.firstOrNull;
   }
 
   Future<void> addToTopOfQueue(Episode episode) async {
