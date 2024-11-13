@@ -5,6 +5,7 @@ import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/data/podcast.model.dart';
 import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/episodes_provider.dart';
+import 'package:podcast/providers/playlist_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
 import 'package:podcast/widgets/rounded_image.dart';
@@ -25,7 +26,6 @@ class EpisodeListScreen
     (Podcast, List<EpisodeWithStatus>) data,
   ) {
     // TODO: Verify why provider is rebuilding multiple times
-
     final (podcast, episodes) = data;
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
@@ -73,9 +73,9 @@ class EpisodeListScreen
                       // PlayEpisodeButton(episodeSnapshot),
                       IconButton(
                         onPressed: () {
-                          // ref
-                          //     .read(podcastUserPodProvider.notifier)
-                          //     .addToQueue(episodeSnapshot.reference);
+                          ref
+                              .read(playlistPodProvider.notifier)
+                              .addToBottomOfQueue(episodeWithStatus.episode);
                         },
                         icon: const Icon(Icons.playlist_add),
                       ),

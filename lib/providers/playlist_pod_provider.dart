@@ -58,4 +58,10 @@ class PlaylistPod extends _$PlaylistPod {
     state = AsyncData([episode, ...queue]);
     return _recalculateOrder();
   }
+
+  Future<void> addToBottomOfQueue(Episode episode) async {
+    final queue = await future;
+    state = AsyncData([...queue, episode]);
+    return _recalculateOrder();
+  }
 }
