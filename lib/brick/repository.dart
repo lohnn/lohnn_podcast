@@ -41,10 +41,13 @@ class Repository extends OfflineFirstWithSupabaseRepository
       modelDictionary: supabaseModelDictionary,
     );
 
+    // This is used to separate the SQLite database file between local and remote
+    const sqlSuffix = String.fromEnvironment('SQL_SUFFIX');
+
     _instance = Repository._(
       supabaseProvider: provider,
       sqliteProvider: SqliteProvider(
-        'podcast.sqlite',
+        'podcast$sqlSuffix.sqlite',
         databaseFactory: databaseFactory,
         modelDictionary: sqliteModelDictionary,
       ),

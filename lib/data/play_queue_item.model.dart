@@ -17,11 +17,15 @@ part 'play_queue_item.model.mapper.dart';
 @MappableClass()
 class PlayQueueItem extends OfflineFirstWithSupabaseModel
     with PlayQueueItemMappable {
-  @Supabase(unique: true, name: 'episode_id')
+  @Supabase(
+    unique: true,
+    foreignKey: 'episode_id',
+    ignoreTo: true,
+  )
   final Episode episode;
   final int queueOrder;
 
-  @Supabase(ignore: true)
+  @Supabase(unique: true, ignoreFrom: true)
   @Sqlite(unique: true, index: true)
   String get episodeId => episode.id;
 
