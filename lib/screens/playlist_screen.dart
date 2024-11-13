@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/playlist_pod_provider.dart';
+import 'package:podcast/providers/user_episode_status_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
@@ -30,6 +31,8 @@ class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
         itemBuilder: (context, index) {
           final episode = data[index];
 
+          final valueOrNull2 =
+              ref.read(userEpisodeStatusPodProvider).valueOrNull;
           return ListTile(
             key: ValueKey(episode),
             onTap: () {
@@ -37,8 +40,8 @@ class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
             },
             leading: RoundedImage(
               imageUri: episode.imageUrl.uri,
-              // TODO: Read in if listened
-              showDot: true, // !episode.listened,
+              // TODO: Do this more prettier
+              showDot: !(valueOrNull2?[episode.id]?.isPlayed ?? false),
               imageSize: 40,
             ),
             title: Column(
