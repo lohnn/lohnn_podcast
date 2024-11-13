@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/extensions/string_extensions.dart';
@@ -36,7 +37,7 @@ class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
           return ListTile(
             key: ValueKey(episode),
             onTap: () {
-              // context.push('/${podcastId.id}/${episode.guid}');
+              context.push('/${episode.podcastId}/${episode.id}');
             },
             leading: RoundedImage(
               imageUri: episode.imageUrl.uri,
