@@ -40,6 +40,7 @@ class PlaylistPod extends _$PlaylistPod {
 
   /// Removes the episode from the queue and returns the next episode in the queue
   Future<Episode?> removeFromQueue(Episode episode) async {
+    // TODO: If the episode is currently playing, we should start playing the next episode
     final queue = (await future).toList();
     queue.remove(episode);
     state = AsyncData(queue);

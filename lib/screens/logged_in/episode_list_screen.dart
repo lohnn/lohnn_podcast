@@ -27,6 +27,7 @@ class EpisodeListScreen
     (Podcast, List<EpisodeWithStatus>) data,
   ) {
     // TODO: Verify why provider is rebuilding multiple times
+    final queue = ref.watch(playlistPodProvider).valueOrNull ?? [];
     final (podcast, episodes) = data;
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
@@ -72,14 +73,24 @@ class EpisodeListScreen
                   Row(
                     children: [
                       PlayEpisodeButton(episodeWithStatus.episode),
-                      IconButton(
-                        onPressed: () {
-                          ref
-                              .read(playlistPodProvider.notifier)
-                              .addToBottomOfQueue(episodeWithStatus.episode);
-                        },
-                        icon: const Icon(Icons.playlist_add),
-                      ),
+                      if (queue.contains(episodeWithStatus.episode))
+                        IconButton(
+                          onPressed: () {
+                            ref
+                                .read(playlistPodProvider.notifier)
+                                .removeFromQueue(episodeWithStatus.episode);
+                          },
+                          icon: const Icon(Icons.playlist_remove),
+                        )
+                      else
+                        IconButton(
+                          onPressed: () {
+                            ref
+                                .read(playlistPodProvider.notifier)
+                                .addToBottomOfQueue(episodeWithStatus.episode);
+                          },
+                          icon: const Icon(Icons.playlist_add),
+                        ),
                     ],
                   ),
                 ],
