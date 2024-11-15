@@ -148,6 +148,8 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   void setPosition(int positionInMillis) {
     _player.seek(Duration(milliseconds: positionInMillis));
   }
+
+  Future<void> dispose() => _player.dispose();
 }
 
 @riverpod
