@@ -149,6 +149,11 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     _player.seek(Duration(milliseconds: positionInMillis));
   }
 
+  void timeStopPlaying() {
+    if(_player.playbackState.valueOrNull?.playing ?? false) _player.timeStop();
+    _player.timeStop();
+  }
+
   Future<void> dispose() => _player.dispose();
 }
 
