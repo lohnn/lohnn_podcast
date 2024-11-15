@@ -113,42 +113,9 @@ class MainApp extends AsyncValueWidget<User?> {
         }
       },
     );
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (_, __) async {
-        final shouldClose = await showDialog<bool>(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Are you sure you want to exit?'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('No'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child: const Text('Yes'),
-                ),
-              ],
-            );
-          },
-        );
-
-        if (!(shouldClose ?? false)) return;
-
-        // Kill the app if the user tries to pop the main screen
-        // Stopping the audio player
-        await ref.read(audioPlayerPodProvider.notifier).dispose();
-        // Stopping all sockets
-        ref.read(socketPodProvider.notifier).close();
-        // Closing the app
-        SystemNavigator.pop();
-      },
-      child: switch (data) {
-        null => const LoginScreen(),
-        _ => const LoggedInScreen(),
-      },
-    );
+    return switch (data) {
+      null => const LoginScreen(),
+      _ => const LoggedInScreen(),
+    };
   }
 }
