@@ -108,6 +108,7 @@ class MainApp extends AsyncValueWidget<User?> {
             ref.read(socketPodProvider.notifier).open();
           case AppLifecycleState.paused:
             ref.read(socketPodProvider.notifier).close();
+            ref.read(audioPlayerPodProvider.notifier).timeStopPlaying();
           case _:
         }
       },

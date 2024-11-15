@@ -81,23 +81,46 @@ class PodcastAudioHandler extends BaseAudioHandler
   @override
   Future<void> play() async {
     await audioSession.setActive(true);
+    _clearStopTimer();
     return _player.play();
+  }
+
+  Timer? _stopTimer;
+
+  void _clearStopTimer() {
+    _stopTimer?.cancel();
+    _stopTimer = null;
   }
 
   @override
   Future<void> pause() async {
     await audioSession.setActive(false);
+
+    // Stop the player after 5 minutes of inactivity to clear resources and
+    // save battery
+    _clearStopTimer();
+    timeStop();
+
     return _player.pause();
+  }
+
+  void timeStop() {
+    _clearStopTimer();
+    _stopTimer = Timer(const Duration(minutes: 5), () async {
+      stop();
+    });
   }
 
   @override
   Future<void> stop() async {
     await audioSession.setActive(false);
+    _clearStopTimer();
     return _player.stop();
   }
 
   Future<void> dispose() async {
     await audioSession.setActive(false);
+    _clearStopTimer();
     return _player.dispose();
   }
 
@@ -124,7 +147,7 @@ class PodcastAudioHandler extends BaseAudioHandler
 
     mediaItem.add(status.episode.mediaItem(actualDuration: duration));
 
-    if (autoPlay) await _player.play();
+    if (autoPlay) await play();
     _startPositionStream();
   }
 
