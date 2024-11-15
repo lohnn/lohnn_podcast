@@ -1,6 +1,7 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/podcast.model.dart';
+import 'package:podcast/providers/socket_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -20,12 +21,15 @@ class Podcasts extends _$Podcasts {
   final _query = Query(providerArgs: {'orderBy': 'name ASC'});
 
   @override
-  Stream<List<Podcast>> build() {
+  Stream<List<Podcast>> build() async* {
+    final socketOpen = ref.watch(socketPodProvider);
+    if (!socketOpen) return;
+
     keepUpToDateWithSubscriptions();
     // Force a clean refresh on startup to clear out any stored rows that may
     // have been deleted
     _syncWithRemote();
-    return Repository().subscribeToRealtime<Podcast>(
+    yield* Repository().subscribeToRealtime<Podcast>(
       policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
       query: _query,
     );
@@ -52,11 +56,11 @@ class Podcasts extends _$Podcasts {
 
   /// Syncs the local database with the remote database, using force local sync,
   /// that clears the local database of rows that have been deleted remotely.
-  Future<void> _syncWithRemote() async {
-    // return Repository().get<Podcast>(
-    //   forceLocalSyncFromRemote: true,
-    //   query: _query,
-    // );
+  Future<void> _syncWithRemote() {
+    return Repository().get<Podcast>(
+      forceLocalSyncFromRemote: true,
+      query: _query,
+    );
   }
 
   Future<void> refresh(Podcast podcast) {

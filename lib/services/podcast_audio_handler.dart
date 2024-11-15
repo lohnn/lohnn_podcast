@@ -72,6 +72,7 @@ class PodcastAudioHandler extends BaseAudioHandler
         final newPosition = DurationModel(position);
 
         final newStatus = status.status.copyWith(currentPosition: newPosition);
+        // TODO: Look into why this is called twice every time
         Repository().upsert<UserEpisodeStatus>(newStatus);
       }
     });
@@ -93,6 +94,11 @@ class PodcastAudioHandler extends BaseAudioHandler
   Future<void> stop() async {
     await audioSession.setActive(false);
     return _player.stop();
+  }
+
+  Future<void> dispose() async {
+    await audioSession.setActive(false);
+    return _player.dispose();
   }
 
   @override
