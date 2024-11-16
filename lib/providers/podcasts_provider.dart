@@ -1,7 +1,7 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/podcast.model.dart';
-import 'package:podcast/providers/socket_provider.dart';
+import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -22,8 +22,8 @@ class Podcasts extends _$Podcasts {
 
   @override
   Stream<List<Podcast>> build() async* {
-    final socketOpen = ref.watch(socketPodProvider);
-    if (!socketOpen) return;
+    final lifecycleState = ref.watch(appLifecycleStatePodProvider);
+    if (lifecycleState != AppLifecycleState.resumed) return;
 
     keepUpToDateWithSubscriptions();
     // Force a clean refresh on startup to clear out any stored rows that may
