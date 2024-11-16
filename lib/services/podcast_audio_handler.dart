@@ -116,7 +116,7 @@ class PodcastAudioHandler extends BaseAudioHandler
   /// save battery.
   void timeDispose() {
     _clearStopTimer();
-    _stopTimer = Timer(const Duration(minutes: 5), () async {
+    _stopTimer = Timer(const Duration(minutes: 15), () async {
       dispose();
     });
   }
