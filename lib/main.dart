@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/brick/repository.dart';
-import 'package:podcast/providers/audio_player_provider.dart';
-import 'package:podcast/providers/socket_provider.dart';
+import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast/providers/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/logged_in_screen.dart';
@@ -103,14 +101,8 @@ class MainApp extends AsyncValueWidget<User?> {
     useOnAppLifecycleStateChange(
       (previous, current) {
         // Open and close the socket connection based on the app lifecycle state
-        switch (current) {
-          case AppLifecycleState.resumed:
-            ref.read(socketPodProvider.notifier).open();
-          case AppLifecycleState.paused:
-            ref.read(socketPodProvider.notifier).close();
-            ref.read(audioPlayerPodProvider.notifier).timeStopPlaying();
-          case _:
-        }
+        ref.read(appLifecycleStatePodProvider.notifier).lifecycleState =
+            current;
       },
     );
     return switch (data) {

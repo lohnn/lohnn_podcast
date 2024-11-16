@@ -99,23 +99,26 @@ class PodcastAudioHandler extends BaseAudioHandler
     // Stop the player after 5 minutes of inactivity to clear resources and
     // save battery
     _clearStopTimer();
-    timeStop();
+    timeDispose();
 
     return _player.pause();
-  }
-
-  void timeStop() {
-    _clearStopTimer();
-    _stopTimer = Timer(const Duration(minutes: 5), () async {
-      stop();
-    });
   }
 
   @override
   Future<void> stop() async {
     await audioSession.setActive(false);
     _clearStopTimer();
+    timeDispose();
     return _player.stop();
+  }
+
+  /// Stop the player after 5 minutes of inactivity to clear resources and
+  /// save battery.
+  void timeDispose() {
+    _clearStopTimer();
+    _stopTimer = Timer(const Duration(minutes: 5), () async {
+      dispose();
+    });
   }
 
   Future<void> dispose() async {

@@ -7,6 +7,7 @@ import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/data/user_episode_status.model.dart';
 import 'package:podcast/extensions/future_extensions.dart';
+import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast/providers/playlist_pod_provider.dart';
 import 'package:podcast/services/podcast_audio_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -62,6 +63,12 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
       // Initial setup of the queue
       ref.read(playlistPodProvider.future).then(updateQueue);
+
+      ref.listen(appLifecycleStatePodProvider, (_, state) {
+        if (state == AppLifecycleState.paused) {
+          timeStopPlaying();
+        }
+      });
 
       return future;
     } catch (e, stackTrace) {
@@ -149,9 +156,11 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     _player.seek(Duration(milliseconds: positionInMillis));
   }
 
+  /// Stops the player and disposes stream after delay if the player is not
+  /// playing.
   void timeStopPlaying() {
-    if(_player.playbackState.valueOrNull?.playing ?? false) _player.timeStop();
-    _player.timeStop();
+    if (_player.playbackState.valueOrNull?.playing ?? false) return;
+    _player.timeDispose();
   }
 
   Future<void> dispose() => _player.dispose();
