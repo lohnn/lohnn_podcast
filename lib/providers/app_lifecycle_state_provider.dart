@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,7 +14,12 @@ class AppLifecycleStatePod extends _$AppLifecycleStatePod {
     return ui.AppLifecycleState.resumed;
   }
 
-  set lifecycleState(ui.AppLifecycleState newState) => state = newState;
+  set lifecycleState(ui.AppLifecycleState newState) {
+    // Only update if on mobile
+    if (Platform.isAndroid || Platform.isIOS) {
+      state = newState;
+    }
+  }
 
   void close() {
     state = ui.AppLifecycleState.paused;
