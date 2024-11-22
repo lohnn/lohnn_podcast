@@ -1,4 +1,5 @@
 // Saved in my_app/lib/src/brick/repository.dart
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:brick_offline_first/mixins.dart';
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
@@ -56,5 +57,44 @@ class Repository extends OfflineFirstWithSupabaseRepository
       // Specify class types that should be cached in memory
       memoryCacheProvider: MemoryCacheProvider(),
     );
+  }
+
+  Future<void>
+      upsertLocalIterable<TModel extends OfflineFirstWithSupabaseModel>(
+    Iterable<TModel> instances, {
+    Query? query,
+  }) {
+    return instances.map(upsertLocal).wait;
+  }
+
+  Future<void> upsertLocal<TModel extends OfflineFirstWithSupabaseModel>(
+    TModel instance, {
+    Query? query,
+  }) async {
+    final modelId = await sqliteProvider.upsert<TModel>(
+      instance,
+      query: query,
+      repository: this,
+    );
+    instance.primaryKey = modelId;
+    memoryCacheProvider.upsert<TModel>(instance, query: query);
+    await notifySubscriptionsWithLocalData<TModel>();
+  }
+
+  RealtimeChannel watchTable(
+    String table,
+    void Function(PostgresChangePayload payload) callback, {
+    PostgresChangeFilter? filter,
+  }) {
+    return remoteProvider.client
+        .channel(table)
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: table,
+          filter: filter,
+          callback: callback,
+        )
+        .subscribe();
   }
 }

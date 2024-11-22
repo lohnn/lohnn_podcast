@@ -26,9 +26,9 @@ class PodcastListTile extends StatelessWidget {
       ),
       title: Text(podcast.name),
       trailing: trailing ??
-          const Text(
+          Text(
             '?/?',
-            // '${podcast.listenedEpisodes.length}/${podcast.totalEpisodes}',
+            // '${podcast.playedEpisodeCount}/${podcast.episodeCount}',
           ),
     );
   }
