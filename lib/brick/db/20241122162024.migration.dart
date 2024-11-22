@@ -9,12 +9,16 @@ part of 'schema.g.dart';
 
 // The migration version must **always** mirror the file name
 
-const List<MigrationCommand> _migration_20241113135544_up = [
+const List<MigrationCommand> _migration_20241122162024_up = [
+  InsertTable('EpisodeUserStatus'),
   InsertTable('PlayQueueItem'),
   InsertTable('Podcast'),
   InsertTable('UserEpisodeStatus'),
   InsertTable('Episode'),
-  InsertTable('EpisodeUserStatus'),
+  InsertColumn('user_id', Column.varchar, onTable: 'EpisodeUserStatus', unique: true),
+  InsertColumn('episode_id', Column.varchar, onTable: 'EpisodeUserStatus'),
+  InsertColumn('listened', Column.boolean, onTable: 'EpisodeUserStatus'),
+  InsertColumn('current_position', Column.integer, onTable: 'EpisodeUserStatus'),
   InsertForeignKey('PlayQueueItem', 'Episode', foreignKeyColumn: 'episode_Episode_brick_id', onDeleteCascade: false, onDeleteSetDefault: false),
   InsertColumn('queue_order', Column.integer, onTable: 'PlayQueueItem'),
   InsertColumn('episode_id', Column.varchar, onTable: 'PlayQueueItem', unique: true),
@@ -40,22 +44,22 @@ const List<MigrationCommand> _migration_20241113135544_up = [
   InsertColumn('image_url', Column.varchar, onTable: 'Episode'),
   InsertColumn('duration', Column.integer, onTable: 'Episode'),
   InsertColumn('podcast_id', Column.varchar, onTable: 'Episode'),
-  InsertColumn('user_id', Column.varchar, onTable: 'EpisodeUserStatus', unique: true),
-  InsertColumn('episode_id', Column.varchar, onTable: 'EpisodeUserStatus'),
-  InsertColumn('listened', Column.boolean, onTable: 'EpisodeUserStatus'),
-  InsertColumn('current_position', Column.integer, onTable: 'EpisodeUserStatus'),
+  CreateIndex(columns: ['user_id'], onTable: 'EpisodeUserStatus', unique: true),
   CreateIndex(columns: ['episode_id'], onTable: 'PlayQueueItem', unique: true),
   CreateIndex(columns: ['id'], onTable: 'Podcast', unique: true),
-  CreateIndex(columns: ['id'], onTable: 'Episode', unique: true),
-  CreateIndex(columns: ['user_id'], onTable: 'EpisodeUserStatus', unique: true)
+  CreateIndex(columns: ['id'], onTable: 'Episode', unique: true)
 ];
 
-const List<MigrationCommand> _migration_20241113135544_down = [
+const List<MigrationCommand> _migration_20241122162024_down = [
+  DropTable('EpisodeUserStatus'),
   DropTable('PlayQueueItem'),
   DropTable('Podcast'),
   DropTable('UserEpisodeStatus'),
   DropTable('Episode'),
-  DropTable('EpisodeUserStatus'),
+  DropColumn('user_id', onTable: 'EpisodeUserStatus'),
+  DropColumn('episode_id', onTable: 'EpisodeUserStatus'),
+  DropColumn('listened', onTable: 'EpisodeUserStatus'),
+  DropColumn('current_position', onTable: 'EpisodeUserStatus'),
   DropColumn('episode_Episode_brick_id', onTable: 'PlayQueueItem'),
   DropColumn('queue_order', onTable: 'PlayQueueItem'),
   DropColumn('episode_id', onTable: 'PlayQueueItem'),
@@ -81,14 +85,10 @@ const List<MigrationCommand> _migration_20241113135544_down = [
   DropColumn('image_url', onTable: 'Episode'),
   DropColumn('duration', onTable: 'Episode'),
   DropColumn('podcast_id', onTable: 'Episode'),
-  DropColumn('user_id', onTable: 'EpisodeUserStatus'),
-  DropColumn('episode_id', onTable: 'EpisodeUserStatus'),
-  DropColumn('listened', onTable: 'EpisodeUserStatus'),
-  DropColumn('current_position', onTable: 'EpisodeUserStatus'),
+  DropIndex('index_EpisodeUserStatus_on_user_id'),
   DropIndex('index_PlayQueueItem_on_episode_id'),
   DropIndex('index_Podcast_on_id'),
-  DropIndex('index_Episode_on_id'),
-  DropIndex('index_EpisodeUserStatus_on_user_id')
+  DropIndex('index_Episode_on_id')
 ];
 
 //
@@ -96,15 +96,15 @@ const List<MigrationCommand> _migration_20241113135544_down = [
 //
 
 @Migratable(
-  version: '20241113135544',
-  up: _migration_20241113135544_up,
-  down: _migration_20241113135544_down,
+  version: '20241122162024',
+  up: _migration_20241122162024_up,
+  down: _migration_20241122162024_down,
 )
-class Migration20241113135544 extends Migration {
-  const Migration20241113135544()
+class Migration20241122162024 extends Migration {
+  const Migration20241122162024()
     : super(
-        version: 20241113135544,
-        up: _migration_20241113135544_up,
-        down: _migration_20241113135544_down,
+        version: 20241122162024,
+        up: _migration_20241122162024_up,
+        down: _migration_20241122162024_down,
       );
 }

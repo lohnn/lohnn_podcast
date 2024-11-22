@@ -59,23 +59,6 @@ class PodcastListScreen extends AsyncValueWidget<List<Podcast>> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final rssUrl = await showDialog<String>(
-            context: context,
-            builder: (context) => GetTextDialog.addPodcastDialog(),
-          );
-          if (rssUrl == null || !context.mounted) return;
-
-          await LoadingScreen.showLoading(
-            context: context,
-            job: ref.read(podcastsProvider.notifier).addPodcastToList(
-                  rssUrl,
-                ),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
       body: ListView.builder(
         itemCount: podcasts.length,
         itemBuilder: (context, index) {
