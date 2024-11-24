@@ -1,9 +1,9 @@
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/podcast.model.dart';
+import 'package:podcast/helpers/equatable_list.dart';
 import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'podcasts_provider.g.dart';
 
@@ -21,7 +21,7 @@ class Podcasts extends _$Podcasts {
   final _query = Query(providerArgs: {'orderBy': 'name ASC'});
 
   @override
-  Stream<List<Podcast>> build() async* {
+  Stream<EquatableList<Podcast>> build() async* {
     final lifecycleState = ref.watch(appLifecycleStatePodProvider);
     if (lifecycleState != AppLifecycleState.resumed) return;
 
@@ -29,29 +29,25 @@ class Podcasts extends _$Podcasts {
     // Force a clean refresh on startup to clear out any stored rows that may
     // have been deleted
     _syncWithRemote();
-    yield* Repository().subscribeToRealtime<Podcast>(
-      policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
-      query: _query,
-    );
+    yield* Repository()
+        .subscribeToRealtime<Podcast>(
+          policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
+          query: _query,
+        )
+        .map(EquatableList.new);
   }
 
   /// Listens to the `user_podcast_subscriptions` table, that is used to store
   /// the user's subscriptions to podcasts. When the table is updated, the
   /// podcast list is updated.
   void keepUpToDateWithSubscriptions() {
-    final channel = Repository()
-        .remoteProvider
-        .client
-        .channel('user_podcast_subscriptions')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: 'user_podcast_subscriptions',
-          callback: (_) => _syncWithRemote(),
-        )
-        .subscribe();
-
-    ref.onDispose(channel.unsubscribe);
+    ref.listen(
+      watchTableProvider('user_podcast_subscriptions'),
+      (oldValue, newValue) {
+        if (newValue == null) return;
+        _syncWithRemote();
+      },
+    );
   }
 
   /// Syncs the local database with the remote database, using force local sync,

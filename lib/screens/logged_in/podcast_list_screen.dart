@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/podcast.model.dart';
+import 'package:podcast/data/podcast_with_status.dart';
 import 'package:podcast/providers/podcasts_provider.dart';
+import 'package:podcast/providers/podcasts_with_status_provider.dart';
 import 'package:podcast/providers/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
-import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
-import 'package:podcast/screens/loading_screen.dart';
 import 'package:podcast/widgets/podcast_list_tile.dart';
 
-class PodcastListScreen extends AsyncValueWidget<List<Podcast>> {
+class PodcastListScreen extends AsyncValueWidget<List<PodcastWithStatus>> {
   const PodcastListScreen({super.key});
 
   @override
-  ProviderBase<AsyncValue<List<Podcast>>> get provider => podcastsProvider;
+  ProviderBase<AsyncValue<List<PodcastWithStatus>>> get provider =>
+      podcastsWithStatusProvider;
 
   @override
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    List<Podcast> podcasts,
+    List<PodcastWithStatus> podcasts,
   ) {
     return Scaffold(
       appBar: AppBar(
@@ -62,8 +62,18 @@ class PodcastListScreen extends AsyncValueWidget<List<Podcast>> {
       body: ListView.builder(
         itemCount: podcasts.length,
         itemBuilder: (context, index) {
-          final podcast = podcasts[index];
-          return PodcastListTile(podcast);
+          final PodcastWithStatus(
+            :podcast,
+            :listenedEpisodes,
+            :totalEpisodes,
+          ) = podcasts[index];
+
+          return PodcastListTile(
+            podcast,
+            trailing: Text(
+              '${listenedEpisodes ?? '?'}/${totalEpisodes ?? '?'}',
+            ),
+          );
         },
       ),
     );

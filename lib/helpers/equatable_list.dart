@@ -4,6 +4,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+extension EquatableListExtension<E> on List<E> {
+  EquatableList<E> get equatable => EquatableList(this);
+}
+
 /// A helper class to wrap an iterable with support for [==] and [hashCode].
 ///
 /// Currently this only supports ordered checks, meaning that if a List or
@@ -317,8 +321,4 @@ class EquatableList<E> implements List<E> {
   set length(int newLength) {
     _data.length = newLength;
   }
-}
-
-extension EquatableListExtension<E> on List<E> {
-  EquatableList<E> get equatable => EquatableList(this);
 }

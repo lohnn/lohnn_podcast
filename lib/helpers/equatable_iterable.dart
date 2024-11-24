@@ -1,6 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
+extension EquatableIterableExtension<E> on Iterable<E> {
+  EquatableIterable<E> get equatable => EquatableIterable(this);
+}
+
 /// A helper class to wrap an iterable with support for [==] and [hashCode].
 ///
 /// Currently this only supports ordered checks, meaning that if a List or
