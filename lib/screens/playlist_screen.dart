@@ -37,7 +37,7 @@ class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
           return ListTile(
             key: ValueKey(episode),
             onTap: () {
-              context.push('/${episode.podcastId}/${episode.id}');
+              context.push('/${episode.safePodcastId}/${episode.safeId}');
             },
             leading: RoundedImage(
               imageUri: episode.imageUrl.uri,
