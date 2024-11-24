@@ -5,6 +5,7 @@ import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/data/podcast.model.dart';
 import 'package:podcast/extensions/async_value_extensions.dart';
 import 'package:podcast/helpers/equatable_list.dart';
+import 'package:podcast/helpers/equatable_map.dart';
 import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast/providers/podcasts_provider.dart';
 import 'package:podcast/providers/user_episode_status_provider.dart';
@@ -39,7 +40,8 @@ class Episodes extends _$Episodes {
     final podcast = ref.watch(podcastProvider(podcastId));
 
     final userEpisodeStatusList =
-        ref.watch(userEpisodeStatusPodProvider).valueOrNull ?? {};
+        ref.watch(userEpisodeStatusPodProvider).valueOrNull ??
+            const EquatableMap.empty();
 
     final episodes =
         ref.watch(_episodesImplProvider(podcastId)).whenData((episodes) {

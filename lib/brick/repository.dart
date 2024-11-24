@@ -9,8 +9,12 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_supabase/brick_supabase.dart' hide Supabase;
 import 'package:podcast/brick/brick.g.dart';
 import 'package:podcast/brick/db/schema.g.dart';
+import 'package:podcast/providers/app_lifecycle_state_provider.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+part 'repository.g.dart';
 
 class Repository extends OfflineFirstWithSupabaseRepository
     with DestructiveLocalSyncFromRemoteMixin {
@@ -84,12 +88,13 @@ class Repository extends OfflineFirstWithSupabaseRepository
   RealtimeChannel watchTable(
     String table,
     void Function(PostgresChangePayload payload) callback, {
+    PostgresChangeEvent? event,
     PostgresChangeFilter? filter,
   }) {
     return remoteProvider.client
         .channel(table)
         .onPostgresChanges(
-          event: PostgresChangeEvent.all,
+          event: event ?? PostgresChangeEvent.all,
           schema: 'public',
           table: table,
           filter: filter,
@@ -97,4 +102,23 @@ class Repository extends OfflineFirstWithSupabaseRepository
         )
         .subscribe();
   }
+}
+
+@riverpod
+PostgresChangePayload? watchTable(
+  WatchTableRef ref,
+  String table, {
+  PostgresChangeEvent? event,
+}) {
+  final lifecycleState = ref.watch(appLifecycleStatePodProvider);
+  if (lifecycleState != AppLifecycleState.resumed) return null;
+
+  final channel = Repository().watchTable(
+    table,
+    event: event,
+    (payload) => ref.state = payload,
+  );
+  ref.onDispose(channel.unsubscribe);
+
+  return null;
 }
