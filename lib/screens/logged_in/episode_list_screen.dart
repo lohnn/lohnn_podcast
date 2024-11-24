@@ -40,7 +40,7 @@ class EpisodeListScreen
             return ListTile(
               key: ValueKey(episodeWithStatus.episode.id),
               onTap: () {
-                context.push('/new/$podcastId/${episodeWithStatus.episode.id}');
+                context.push('/${podcast.safeId}/${episodeWithStatus.episode.safeId}');
               },
               leading: RoundedImage(
                 imageUri: episodeWithStatus.episode.imageUrl.uri,
