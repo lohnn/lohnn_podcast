@@ -41,8 +41,8 @@ class _AudioServicePod extends _$AudioServicePod {
         androidNotificationChannelId: 'se.lohnn.podcast.audio',
         androidNotificationChannelName: 'Lohnn Podcast',
         // @TODO: These two settings can cause the operating system to kill the app
-        // androidNotificationOngoing: true,
-        androidStopForegroundOnPause: false,
+        androidNotificationOngoing: true,
+        // androidStopForegroundOnPause: false,
         androidNotificationIcon: 'drawable/podcast_icon_outline',
       ),
     );
@@ -160,7 +160,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   /// playing.
   void timeStopPlaying() {
     if (_player.playbackState.valueOrNull?.playing ?? false) return;
-    _player.timeDispose();
+    _player.timeStop();
   }
 
   Future<void> dispose() => _player.dispose();
