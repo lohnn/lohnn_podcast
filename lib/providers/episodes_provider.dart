@@ -37,7 +37,10 @@ class Episodes extends _$Episodes {
   AsyncValue<(Podcast, List<EpisodeWithStatus>)> build({
     required String podcastId,
   }) {
-    final podcast = ref.watch(podcastProvider(podcastId));
+    final podcast = ref.watch(podcastPodProvider(podcastId));
+
+    // Opened the podcast screen, update the last seen timestamp
+    updateLastSeen();
 
     final userEpisodeStatusList =
         ref.watch(userEpisodeStatusPodProvider).valueOrNull ??
@@ -54,6 +57,11 @@ class Episodes extends _$Episodes {
       ];
     }).whenData(EquatableList.new);
     return (podcast, episodes).pack();
+  }
+
+  /// Update the last seen timestamp for the podcast
+  Future<void> updateLastSeen() {
+    return ref.read(podcastPodProvider(podcastId).notifier).updateLastSeen();
   }
 
   Future<void> updateList() {

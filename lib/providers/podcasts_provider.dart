@@ -8,12 +8,23 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'podcasts_provider.g.dart';
 
 @riverpod
-Future<Podcast> podcast(PodcastRef ref, String podcastId) async {
-  return ref.watch(
-    podcastsProvider.selectAsync(
-      (podcasts) => podcasts.firstWhere((podcast) => podcast.id == podcastId),
-    ),
-  );
+class PodcastPod extends _$PodcastPod {
+  @override
+  Future<Podcast> build(String podcastId) async {
+    return ref.watch(
+      podcastsProvider.selectAsync(
+        (podcasts) => podcasts.firstWhere((podcast) => podcast.id == podcastId),
+      ),
+    );
+  }
+
+  Future<void> updateLastSeen() async {
+    final podcast = await future;
+    return Repository().remoteProvider.client.rpc(
+      'update_last_seen',
+      params: {'podcast_id': podcast.id},
+    );
+  }
 }
 
 @riverpod

@@ -6,10 +6,12 @@ import 'package:podcast/widgets/rounded_image.dart';
 class PodcastListTile extends StatelessWidget {
   final Podcast podcast;
   final Widget? trailing;
+  final bool? showDot;
 
   const PodcastListTile(
     this.podcast, {
     this.trailing,
+    this.showDot,
     super.key,
   });
 
@@ -21,7 +23,7 @@ class PodcastListTile extends StatelessWidget {
       },
       leading: RoundedImage(
         imageUri: podcast.imageUrl.uri,
-        // showDot:  podcast.showDot,
+        showDot: showDot ?? false,
         imageSize: 40,
       ),
       title: Text(podcast.name),
