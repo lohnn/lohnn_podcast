@@ -77,8 +77,8 @@ class Podcasts extends _$Podcasts {
   Future<void> refreshAll() async {
     final podcasts = await future;
     await Repository().remoteProvider.client.functions.invoke(
-          'add_podcasts',
-          body: podcasts.map((e) => e.rssUrl),
+          'add_podcast_list',
+          body: podcasts.map((e) => e.rssUrl).toList(),
         );
   }
 
