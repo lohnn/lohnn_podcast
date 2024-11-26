@@ -66,10 +66,12 @@ class PodcastListScreen extends AsyncValueWidget<List<PodcastWithStatus>> {
             :podcast,
             :listenedEpisodes,
             :totalEpisodes,
+            :hasUnseenEpisodes,
           ) = podcasts[index];
 
           return PodcastListTile(
             podcast,
+            showDot: hasUnseenEpisodes,
             trailing: Text(
               '${listenedEpisodes ?? '?'}/${totalEpisodes ?? '?'}',
             ),

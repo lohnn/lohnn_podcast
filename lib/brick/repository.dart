@@ -108,7 +108,7 @@ class Repository extends OfflineFirstWithSupabaseRepository
 PostgresChangePayload? watchTable(
   WatchTableRef ref,
   String table, {
-  PostgresChangeEvent? event,
+  PostgresChangeEvent event = PostgresChangeEvent.all,
 }) {
   final lifecycleState = ref.watch(appLifecycleStatePodProvider);
   if (lifecycleState != AppLifecycleState.resumed) return null;

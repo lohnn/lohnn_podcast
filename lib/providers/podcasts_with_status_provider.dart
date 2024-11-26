@@ -1,4 +1,3 @@
-import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/podcast_with_status.dart';
 import 'package:podcast/helpers/equatable_iterable.dart';
@@ -12,8 +11,6 @@ part 'podcasts_with_status_provider.g.dart';
 
 @riverpod
 class PodcastsWithStatus extends _$PodcastsWithStatus {
-  final _query = Query(providerArgs: {'orderBy': 'name ASC'});
-
   @override
   Future<EquatableList<PodcastWithStatus>> build() {
     // @TODO: Maybe find a way to store the value locally as well for offline first
@@ -27,6 +24,16 @@ class PodcastsWithStatus extends _$PodcastsWithStatus {
   }
 
   void _listenToTableChanges() {
+    // Update on user podcast subscriptions change, such as when last_seen is updated
+    // @TODO: Trigger reload only on the podcast to which the episode belongs
+    ref.listen(
+      watchTableProvider('user_podcast_subscriptions'),
+      (oldValue, newValue) {
+        if (newValue == null) return;
+        ref.invalidateSelf();
+      },
+    );
+
     // New episodes should trigger a reload
     // @TODO: Trigger reload only on the podcast to which the episode belongs
     ref.listen(
@@ -97,12 +104,14 @@ class PodcastsWithStatus extends _$PodcastsWithStatus {
                     'podcast_id': final String podcastId,
                     'episode_count': final int episodeCount,
                     'played_episode_count': final int playedEpisodeCount,
+                    'has_unseen_episodes': final bool hasUnseenEpisodes,
                   })
                 PodcastWithStatus(
                   podcast: newPodcasts
                       .firstWhere((podcast) => podcast.id == podcastId),
                   listenedEpisodes: playedEpisodeCount,
                   totalEpisodes: episodeCount,
+                  hasUnseenEpisodes: hasUnseenEpisodes,
                 ),
           ].equatable,
         );
