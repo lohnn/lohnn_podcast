@@ -1,27 +1,26 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/episode.dart';
+import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/extensions/string_extensions.dart';
-import 'package:podcast/providers/firebase/firestore/podcast_user_pod_provider.dart';
-import 'package:podcast/providers/firebase/playlist_pod_provider.dart';
+import 'package:podcast/providers/playlist_pod_provider.dart';
+import 'package:podcast/providers/user_episode_status_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
-class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
+class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
   const PlaylistScreen({super.key});
 
   @override
-  ProviderBase<AsyncValue<List<DocumentSnapshot<Episode>>>> get provider =>
-      playlistPodProvider;
+  ProviderBase<AsyncValue<List<Episode>>> get provider => playlistPodProvider;
 
   @override
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    AsyncData<List<DocumentSnapshot<Episode>>> data,
+    List<Episode> data,
   ) {
     return Scaffold(
       appBar: AppBar(),
@@ -29,19 +28,21 @@ class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
         onReorder: (oldIndex, newIndex) {
           ref.read(playlistPodProvider.notifier).reorder(oldIndex, newIndex);
         },
-        itemCount: data.value.length,
+        itemCount: data.length,
         itemBuilder: (context, index) {
-          final snapshot = data.value[index];
-          final episode = snapshot.data()!;
+          final episode = data[index];
 
+          final valueOrNull2 =
+              ref.read(userEpisodeStatusPodProvider).valueOrNull;
           return ListTile(
             key: ValueKey(episode),
             onTap: () {
-              // context.push('/${podcastId.id}/${episode.guid}');
+              context.push('/${episode.safePodcastId}/${episode.safeId}');
             },
             leading: RoundedImage(
-              imageUri: episode.imageUrl,
-              showDot: !episode.listened,
+              imageUri: episode.imageUrl.uri,
+              // TODO: Do this more prettier
+              showDot: !(valueOrNull2?[episode.id]?.isPlayed ?? false),
               imageSize: 40,
             ),
             title: Column(
@@ -70,12 +71,12 @@ class PlaylistScreen extends AsyncValueWidget<List<DocumentSnapshot<Episode>>> {
                   ),
                 Row(
                   children: [
-                    PlayEpisodeButton(snapshot),
+                    PlayEpisodeButton(episode),
                     IconButton(
                       onPressed: () {
                         ref
-                            .read(podcastUserPodProvider.notifier)
-                            .removeFromQueue(snapshot.reference);
+                            .read(playlistPodProvider.notifier)
+                            .removeFromQueue(episode);
                       },
                       icon: const Icon(Icons.playlist_remove),
                     ),

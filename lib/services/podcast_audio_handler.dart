@@ -2,14 +2,18 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:podcast/data/episode.dart';
-import 'package:podcast/exceptions/document_not_found_exception.dart';
+import 'package:podcast/brick/repository.dart';
+import 'package:podcast/data/episode.model.dart';
+import 'package:podcast/data/episode_with_status.dart';
+import 'package:podcast/data/serdes/duration_model.dart';
+import 'package:podcast/data/user_episode_status.model.dart';
+import 'package:podcast/extensions/future_extensions.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PodcastMediaItem extends MediaItem {
-  final DocumentSnapshot<Episode> episode;
+  final Episode episode;
 
   PodcastMediaItem({
     required this.episode,
@@ -60,15 +64,16 @@ class PodcastAudioHandler extends BaseAudioHandler
         .throttleTime(const Duration(seconds: 10), trailing: true)
         .listen((
       position,
-    ) {
-      final currentEpisodeSnapshot = mediaItem.valueOrNull?.episode;
-      final currentEpisode = currentEpisodeSnapshot?.data();
+    ) async {
+      final currentEpisode = mediaItem.valueOrNull?.episode;
 
-      if ((currentEpisodeSnapshot, currentEpisode)
-          case (final snapshot?, final episode?)) {
-        snapshot.reference.set(
-          episode.copyWith(currentPosition: position),
-        );
+      if (currentEpisode case final currentEpisode?) {
+        final status = await _getForEpisode(currentEpisode);
+        final newPosition = DurationModel(position);
+
+        final newStatus = status.status.copyWith(currentPosition: newPosition);
+        // TODO: Look into why this is called twice every time
+        Repository().upsert<UserEpisodeStatus>(newStatus);
       }
     });
   }
@@ -76,48 +81,82 @@ class PodcastAudioHandler extends BaseAudioHandler
   @override
   Future<void> play() async {
     await audioSession.setActive(true);
+    _clearStopTimer();
     return _player.play();
+  }
+
+  Timer? _stopTimer;
+
+  void _clearStopTimer() {
+    _stopTimer?.cancel();
+    _stopTimer = null;
   }
 
   @override
   Future<void> pause() async {
     await audioSession.setActive(false);
+
+    // Stop the player after 5 minutes of inactivity to clear resources and
+    // save battery
+    _clearStopTimer();
+    timeStop();
+
     return _player.pause();
   }
 
   @override
   Future<void> stop() async {
     await audioSession.setActive(false);
+    _clearStopTimer();
+    timeStop();
     return _player.stop();
+  }
+
+  /// Stop the player after 5 minutes of inactivity to clear resources and
+  /// save battery.
+  void timeStop() {
+    _clearStopTimer();
+    _stopTimer = Timer(const Duration(minutes: 15), stop);
+  }
+
+  Future<void> dispose() async {
+    await audioSession.setActive(false);
+    _clearStopTimer();
+    return _player.dispose();
   }
 
   @override
   Future<void> seek(Duration position) => _player.seek(position);
 
-  Future<void> setQueue(List<PodcastMediaItem> newQueue) async {
-    await super.updateQueue(newQueue);
-    await loadEpisode(newQueue.first.episode);
+  Future<void> setQueue(List<EpisodeWithStatus> newQueue) async {
+    await super.updateQueue([
+      for (final status in newQueue) status.episode.mediaItem(),
+    ]);
+    await loadEpisode(newQueue.first);
   }
 
   Future<void> loadEpisode(
-    DocumentSnapshot<Episode> episodeSnapshot, {
+    EpisodeWithStatus status, {
     bool autoPlay = false,
   }) async {
-    if (episodeSnapshot.data() case final episode?) {
-      _stopPositionStream();
-      final duration = await _player.setAudioSource(
-        AudioSource.uri(episode.url),
-        initialPosition: episode.currentPosition,
-      );
-      mediaItem.add(
-        episode.mediaItem(episodeSnapshot, actualDuration: duration),
-      );
+    _stopPositionStream();
 
-      if (autoPlay) await _player.play();
-      _startPositionStream();
-    } else {
-      return Future.error(DocumentNotFoundException(episodeSnapshot));
-    }
+    final duration = await _player.setAudioSource(
+      AudioSource.uri(status.episode.url.uri),
+      initialPosition: status.status.currentPosition.duration,
+    );
+
+    mediaItem.add(status.episode.mediaItem(actualDuration: duration));
+
+    if (autoPlay) await play();
+    _startPositionStream();
+  }
+
+  Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
+    final status = await Repository()
+        .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
+        .firstOrNull;
+    return EpisodeWithStatus(episode: episode, status: status);
   }
 
   void clearPlaying() {

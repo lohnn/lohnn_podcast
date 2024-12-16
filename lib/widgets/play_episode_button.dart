@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/episode.dart';
+import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 
 class PlayEpisodeButton extends ConsumerWidget {
-  final DocumentSnapshot<Episode> episode;
+  final Episode episode;
 
   const PlayEpisodeButton(this.episode, {super.key});
 

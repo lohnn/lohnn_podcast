@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/screens/modals/episode_player_modal.dart';
@@ -35,11 +36,11 @@ class SmallMediaPlayerControls extends ConsumerWidget {
               child: CircularProgressIndicator.adaptive(),
             ),
           AsyncError() => const Center(child: Text('Error loading episode')),
-          AsyncData(value: final episode) => switch (episode?.data()) {
+          AsyncData(value: final episode) => switch (episode) {
               null => const Center(
                   child: Text('Nothing is playing right now'),
                 ),
-              final episode => InkWell(
+              EpisodeWithStatus(:final episode) => InkWell(
                   onTap: () async {
                     final action = await showModalBottomSheet<
                         EpisodePlayerModalResultAction>(
@@ -66,8 +67,7 @@ class SmallMediaPlayerControls extends ConsumerWidget {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: RoundedImage(
-                                // @TODO: Fallback to podcast image
-                                imageUri: episode.imageUrl,
+                                imageUri: episode.imageUrl.uri,
                                 imageSize: 60,
                               ),
                             ),

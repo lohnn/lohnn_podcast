@@ -1,34 +1,21 @@
-import 'dart:ui';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/firebase_options.dart';
-import 'package:podcast/providers/firebase/user_provider.dart';
+import 'package:podcast/brick/repository.dart';
+import 'package:podcast/providers/app_lifecycle_state_provider.dart';
+import 'package:podcast/providers/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/logged_in_screen.dart';
 import 'package:podcast/screens/login_screen.dart';
 import 'package:rive/rive.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Set up crash tracking
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  };
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+  await Repository.configure(databaseFactory);
+  await Repository().initialize();
 
   const icon = AssetImage('assets/icons/app_icon.webp');
   final lightColorScheme = await ColorScheme.fromImageProvider(provider: icon);
@@ -109,9 +96,16 @@ class MainApp extends AsyncValueWidget<User?> {
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    AsyncData<User?> data,
+    User? data,
   ) {
-    return switch (data.value) {
+    useOnAppLifecycleStateChange(
+      (previous, current) {
+        // Open and close the socket connection based on the app lifecycle state
+        ref.read(appLifecycleStatePodProvider.notifier).lifecycleState =
+            current;
+      },
+    );
+    return switch (data) {
       null => const LoginScreen(),
       _ => const LoggedInScreen(),
     };
