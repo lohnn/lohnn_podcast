@@ -12,9 +12,7 @@ import 'package:podcast/services/podcast_audio_handler.dart';
 part 'episode.model.mapper.dart';
 
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(
-    tableName: 'episodes',
-  ),
+  supabaseConfig: SupabaseSerializable(tableName: 'episodes'),
 )
 @MappableClass()
 class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
@@ -48,14 +46,11 @@ class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
   @Supabase(ignore: true)
   String get safePodcastId => Uri.encodeComponent(podcastId);
 
-  PodcastMediaItem mediaItem({
-    Duration? actualDuration,
-  }) =>
-      PodcastMediaItem(
-        episode: this,
-        id: url.uri.toString(),
-        title: title,
-        artUri: imageUrl.uri,
-        duration: actualDuration ?? duration?.duration,
-      );
+  PodcastMediaItem mediaItem({Duration? actualDuration}) => PodcastMediaItem(
+    episode: this,
+    id: url.uri.toString(),
+    title: title,
+    artUri: imageUrl.uri,
+    duration: actualDuration ?? duration?.duration,
+  );
 }
