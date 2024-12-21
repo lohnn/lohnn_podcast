@@ -84,6 +84,9 @@ class SmallMediaPlayerControls extends ConsumerWidget {
                   ),
                 )
             },
+          AsyncValue<EpisodeWithStatus?>() => throw UnimplementedError(
+              'This should not be a case, AsyncValue is just not sealed',
+            ),
         },
       ),
     );
