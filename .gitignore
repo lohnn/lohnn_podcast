@@ -52,3 +52,5 @@ app.*.map.json
 /android/app/google-services.json
 /bin/podcast-history/
 /bin/listened-episodes.json
+/macos/Runner/PodcastSecrets.plist
+/ios/Runner/PodcastSecrets.plist
