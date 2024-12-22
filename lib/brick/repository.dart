@@ -10,6 +10,7 @@ import 'package:brick_supabase/brick_supabase.dart' hide Supabase;
 import 'package:podcast/brick/brick.g.dart';
 import 'package:podcast/brick/db/schema.g.dart';
 import 'package:podcast/providers/app_lifecycle_state_provider.dart';
+import 'package:podcast/secrets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -36,8 +37,8 @@ class Repository extends OfflineFirstWithSupabaseRepository
     );
 
     await Supabase.initialize(
-      url: const String.fromEnvironment('SUPABASE_URL'),
-      anonKey: const String.fromEnvironment('ANON_KEY'),
+      url: Secrets.supabaseUrl,
+      anonKey: Secrets.supabaseAnonKey,
       httpClient: client,
     );
 

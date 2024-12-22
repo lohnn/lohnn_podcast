@@ -1,4 +1,5 @@
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:podcast/secrets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -10,8 +11,8 @@ class UserPod extends _$UserPod {
 
   // final _googleSignIn = GoogleSignIn();
   final _googleSignIn = GoogleSignIn(
-    clientId: const String.fromEnvironment('CLIENT_ID'),
-    serverClientId: const String.fromEnvironment('SERVER_CLIENT_ID'),
+    clientId: Secrets.googleClientId,
+    serverClientId: Secrets.googleServerClientId,
   );
 
   @override
