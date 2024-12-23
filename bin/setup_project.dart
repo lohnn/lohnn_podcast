@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print
 import 'dart:io';
 
 void main() {
@@ -18,21 +19,21 @@ void main() {
     'Please enter the server client id: (e.g. 123456789-asdf4321.apps.googleusercontent.com)',
   );
   final serverClientId = stdin.readLineSync();
-  
+
+  print("Now let's set up your Supabase backend.");
   print('Enter your Supabase url: (e.g. https://abc123.supabase.co)');
   final backendUrl = stdin.readLineSync();
-  
+
   print('Enter your Supabase anon key: (e.g. abc123)');
   final supabaseAnonKey = stdin.readLineSync();
-  
-  
+
   File('macos/Runner/PodcastSecrets.plist').writeAsStringSync(
     secretsPlistContent(reversedClientId),
   );
   File('ios/Runner/PodcastSecrets.plist').writeAsStringSync(
     secretsPlistContent(reversedClientId),
   );
-  
+
   File('lib/secrets.dart').writeAsStringSync(
     secretsContent(
       backendUrl: backendUrl!,
@@ -41,7 +42,7 @@ void main() {
       googleServerClientId: serverClientId!,
     ),
   );
-  print('Google auth URL set up successfully!');
+  print('Config is now set up and ready to go!');
 }
 
 String secretsPlistContent(String reversedClientId) => '''
