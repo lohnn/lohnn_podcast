@@ -21,12 +21,6 @@ class LoginScreen extends HookConsumerWidget {
             },
             child: const Text('Log in'),
           ),
-          TextButton(
-            onPressed: () {
-              ref.read(userPodProvider.notifier).logOut();
-            },
-            child: const Text('Log out'),
-          ),
         ],
       ),
     );
