@@ -33,12 +33,15 @@ class UserPod extends _$UserPod {
     // );
     // print('hello');
     // return;
+    // Just making sure we are properly logged out before trying to log in.
+    await logOut();
 
     // Supabase
-    final supabaseAuth = await switch (
-        await _googleSignIn.signInSilently(reAuthenticate: true)) {
+    final supabaseAuth = await switch (await _googleSignIn.signInSilently(
+      reAuthenticate: true,
+    )) {
       final user? => user.authentication,
-      _ => (await _googleSignIn.signIn())?.authentication, 
+      _ => (await _googleSignIn.signIn())?.authentication,
     };
     await _supabaseAuth.signInWithIdToken(
       provider: OAuthProvider.google,
@@ -48,8 +51,7 @@ class UserPod extends _$UserPod {
     return;
   }
 
-  void logOut() {
-    _googleSignIn.signOut();
-    _supabaseAuth.signOut();
+  Future<void> logOut() async {
+    await [_googleSignIn.signOut(), _supabaseAuth.signOut()].wait;
   }
 }
