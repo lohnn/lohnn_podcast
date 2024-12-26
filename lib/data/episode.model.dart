@@ -46,11 +46,17 @@ class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
   @Supabase(ignore: true)
   String get safePodcastId => Uri.encodeComponent(podcastId);
 
-  PodcastMediaItem mediaItem({Duration? actualDuration}) => PodcastMediaItem(
-    episode: this,
-    id: url.uri.toString(),
-    title: title,
-    artUri: imageUrl.uri,
-    duration: actualDuration ?? duration?.duration,
-  );
+  PodcastMediaItem mediaItem({
+    Duration? actualDuration,
+    bool? isPlayingFromDownloaded,
+  }) {
+    return PodcastMediaItem(
+      episode: this,
+      isPlayingFromDownloaded: isPlayingFromDownloaded,
+      id: url.uri.toString(),
+      title: title,
+      artUri: imageUrl.uri,
+      duration: actualDuration ?? duration?.duration,
+    );
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/episode.model.dart';
@@ -12,11 +13,50 @@ import 'package:podcast/data/user_episode_status.model.dart';
 import 'package:podcast/extensions/future_extensions.dart';
 import 'package:rxdart/rxdart.dart';
 
+class EpisodeLoader {
+  const EpisodeLoader();
+
+  static final _cacheManager = CacheManager(
+    Config(
+      'episodes',
+      maxNrOfCacheObjects: 2,
+    ),
+  );
+
+  /// Downloads the episode and returns the URI to the file.
+  ///
+  /// During download, the uri will report the original URL of the episode.
+  Stream<FileResponse> load(Episode episode) {
+    return _cacheManager.getFileStream(
+      episode.url.uri.toString(),
+      withProgress: true,
+    );
+    // final file = await getEpisodeFile(episode);
+
+    // if (await file.exists()) {
+    //   yield file.uri;
+    //   return;
+    // }
+
+    // yield episode.url.uri;
+
+    // try {
+    //   await download(episode);
+    //   yield file.uri;
+    // } catch (e, stackTrace) {
+    //   debugPrint(e.toString());
+    //   debugPrintStack(stackTrace: stackTrace);
+    // }
+  }
+}
+
 class PodcastMediaItem extends MediaItem {
   final Episode episode;
+  final bool? isPlayingFromDownloaded;
 
   PodcastMediaItem({
     required this.episode,
+    required this.isPlayingFromDownloaded,
     required super.id,
     required super.title,
     required super.artUri,
@@ -28,6 +68,7 @@ class PodcastAudioHandler extends BaseAudioHandler
     with SeekHandler, QueueHandler {
   final _player = AudioPlayer();
   final AudioSession audioSession;
+  final EpisodeLoader episodeLoader = const EpisodeLoader();
 
   @override
   // ignore: overridden_fields
@@ -140,23 +181,39 @@ class PodcastAudioHandler extends BaseAudioHandler
     bool autoPlay = false,
   }) async {
     _stopPositionStream();
+    await for (final fileResponse in episodeLoader.load(status.episode)) {
+      final fileUri = switch (fileResponse) {
+        FileInfo(:final file) => file.uri,
+        FileResponse(:final originalUrl) => Uri.parse(originalUrl),
+      };
 
-    final duration = await _player.setAudioSource(
-      AudioSource.uri(status.episode.url.uri),
-      initialPosition: status.status.currentPosition.duration,
-    );
+      final duration = await _player.setAudioSource(
+        AudioSource.uri(fileUri),
+        initialPosition: status.status.currentPosition.duration,
+      );
 
-    mediaItem.add(status.episode.mediaItem(actualDuration: duration));
+      mediaItem.add(
+        status.episode.mediaItem(
+          actualDuration: duration,
+          isPlayingFromDownloaded: fileResponse is FileInfo,
+        ),
+      );
 
-    if (autoPlay) await play();
-    _startPositionStream();
+      if (autoPlay) await play();
+      _startPositionStream();
+    }
   }
 
   Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
     final status = await Repository()
         .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
         .firstOrNull;
-    return EpisodeWithStatus(episode: episode, status: status);
+    return EpisodeWithStatus(
+      episode: episode,
+      // TODO: Implement
+      playingFromDownloaded: false,
+      status: status,
+    );
   }
 
   void clearPlaying() {

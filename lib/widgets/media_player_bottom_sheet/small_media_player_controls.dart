@@ -40,7 +40,11 @@ class SmallMediaPlayerControls extends ConsumerWidget {
               null => const Center(
                   child: Text('Nothing is playing right now'),
                 ),
-              EpisodeWithStatus(:final episode) => InkWell(
+              EpisodeWithStatus(
+                :final episode,
+                :final playingFromDownloaded,
+              ) =>
+                InkWell(
                   onTap: () async {
                     final action = await showModalBottomSheet<
                         EpisodePlayerModalResultAction>(

@@ -93,7 +93,12 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     final status = await Repository()
         .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
         .firstOrNull;
-    return EpisodeWithStatus(episode: episode, status: status);
+    return EpisodeWithStatus(
+      episode: episode,
+      // TODO: Implement
+      playingFromDownloaded: false,
+      status: status,
+    );
   }
 
   Future<void> _onPlaybackStateChange(PlaybackState playbackState) async {

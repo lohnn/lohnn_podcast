@@ -8,14 +8,17 @@ part 'episode_with_status.mapper.dart';
 @MappableClass()
 class EpisodeWithStatus with EpisodeWithStatusMappable {
   final Episode episode;
+  final bool playingFromDownloaded;
   final UserEpisodeStatus status;
 
   factory EpisodeWithStatus({
     required Episode episode,
+    required bool playingFromDownloaded,
     UserEpisodeStatus? status,
   }) {
     return EpisodeWithStatus._(
       episode: episode,
+      playingFromDownloaded: playingFromDownloaded,
       status: status ??
           UserEpisodeStatus(
             episodeId: episode.id,
@@ -27,6 +30,7 @@ class EpisodeWithStatus with EpisodeWithStatusMappable {
 
   EpisodeWithStatus._({
     required this.episode,
+    required this.playingFromDownloaded,
     required this.status,
   });
 }

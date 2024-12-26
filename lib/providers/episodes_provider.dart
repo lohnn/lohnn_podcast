@@ -52,6 +52,8 @@ class Episodes extends _$Episodes {
         for (final episode in episodes)
           EpisodeWithStatus(
             episode: episode,
+            // TODO: Implement
+            playingFromDownloaded: false,
             status: userEpisodeStatusList[episode.id],
           ),
       ];
