@@ -8,6 +8,7 @@ import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/data/user_episode_status.model.dart';
 import 'package:podcast/extensions/future_extensions.dart';
 import 'package:podcast/providers/app_lifecycle_state_provider.dart';
+import 'package:podcast/providers/episode_loader_provider.dart';
 import 'package:podcast/providers/playlist_pod_provider.dart';
 import 'package:podcast/services/podcast_audio_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -83,7 +84,21 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       final statuses =
           await [for (final episode in queue) _getForEpisode(episode)].wait;
       await _player.setQueue([for (final status in statuses) status]);
-      state = AsyncData(statuses.first);
+
+      final nextEpisode = statuses.firstOrNull;
+      if (nextEpisode != null) {
+        await for (final fileResponse in ref
+            .read(episodeLoaderProvider(nextEpisode.episode).notifier)
+            .load()) {
+          print('Loaded episode: $fileResponse');
+          await _player.loadEpisode(
+            nextEpisode,
+            episodeUri: fileResponse.currentUri,
+          );
+        }
+      }
+
+      state = AsyncData(nextEpisode);
     } else {
       state = const AsyncData(null);
     }
@@ -136,7 +151,11 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
     ref.read(playlistPodProvider.notifier).addToTopOfQueue(episode);
 
-    await _player.loadEpisode(status, autoPlay: true);
+    await _player.loadEpisode(
+      status,
+      episodeUri: Uri.parse(''),
+      autoPlay: true,
+    );
 
     if (autoPlay) _player.play();
   }

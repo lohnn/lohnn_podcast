@@ -14,6 +14,7 @@ class PlaylistPod extends _$PlaylistPod {
   @override
   Stream<List<Episode>> build() async* {
     try {
+      // TODO: This could the reason the player is loading for a long time when we have no internet
       await Repository().get<PlayQueueItem>(forceLocalSyncFromRemote: true);
     } catch (_) {}
 

@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/episode.model.dart';
@@ -14,49 +11,6 @@ import 'package:podcast/data/serdes/duration_model.dart';
 import 'package:podcast/data/user_episode_status.model.dart';
 import 'package:podcast/extensions/future_extensions.dart';
 import 'package:rxdart/rxdart.dart';
-
-class EpisodeFileService extends FileService {
-  final http.Client _httpClient = http.Client();
-
-  EpisodeFileService();
-
-  @override
-  Future<FileServiceResponse> get(
-    String url, {
-    Map<String, String>? headers,
-  }) async {
-    final req = http.Request('GET', Uri.parse(url));
-    req.maxRedirects = 10;
-    if (headers != null) {
-      req.headers.addAll(headers);
-    }
-    final httpResponse = await _httpClient.send(req);
-
-    return HttpGetResponse(httpResponse);
-  }
-}
-
-class EpisodeLoader {
-  const EpisodeLoader();
-
-  static final _cacheManager = CacheManager(
-    Config(
-      'episodes',
-      maxNrOfCacheObjects: 10,
-      fileService: EpisodeFileService(),
-    ),
-  );
-
-  /// Downloads the episode and returns the URI to the file.
-  ///
-  /// During download, the uri will report the original URL of the episode.
-  Stream<FileResponse> load(Episode episode) {
-    return _cacheManager.getFileStream(
-      episode.url.uri.toString(),
-      withProgress: true,
-    );
-  }
-}
 
 class PodcastMediaItem extends MediaItem {
   final Episode episode;
@@ -76,7 +30,6 @@ class PodcastAudioHandler extends BaseAudioHandler
     with SeekHandler, QueueHandler {
   final _player = AudioPlayer();
   final AudioSession audioSession;
-  final EpisodeLoader episodeLoader = const EpisodeLoader();
 
   @override
   // ignore: overridden_fields
@@ -181,57 +134,31 @@ class PodcastAudioHandler extends BaseAudioHandler
     await super.updateQueue([
       for (final status in newQueue) status.episode.mediaItem(),
     ]);
-    await loadEpisode(newQueue.first);
   }
 
   Future<void> loadEpisode(
     EpisodeWithStatus status, {
+    required Uri episodeUri,
     bool autoPlay = false,
   }) async {
     _stopPositionStream();
-    try {
-      await for (final fileResponse in episodeLoader.load(status.episode)) {
-        final fileUri = switch (fileResponse) {
-          FileInfo(:final file) => file.uri,
-          FileResponse(:final originalUrl) => Uri.parse(originalUrl),
-        };
 
-        final duration = await _player.setAudioSource(
-          AudioSource.uri(fileUri),
-          initialPosition: status.status.currentPosition.duration,
-        );
+    final fileUri = episodeUri;
 
-        mediaItem.add(
-          status.episode.mediaItem(
-            actualDuration: duration,
-            isPlayingFromDownloaded: fileResponse is FileInfo,
-          ),
-        );
+    final duration = await _player.setAudioSource(
+      AudioSource.uri(fileUri),
+      initialPosition: status.status.currentPosition.duration,
+    );
 
-        if (autoPlay) await play();
-        _startPositionStream();
-      }
-    } catch (e) {
-      debugPrint(
-        'Error loading episode: ${status.episode.id}. Trying to play from url directly.',
-      );
-      final fileUri = status.episode.url.uri;
+    mediaItem.add(
+      status.episode.mediaItem(
+        actualDuration: duration,
+        isPlayingFromDownloaded: episodeUri.scheme == 'file',
+      ),
+    );
 
-      final duration = await _player.setAudioSource(
-        AudioSource.uri(fileUri),
-        initialPosition: status.status.currentPosition.duration,
-      );
-
-      mediaItem.add(
-        status.episode.mediaItem(
-          actualDuration: duration,
-          isPlayingFromDownloaded: false,
-        ),
-      );
-
-      if (autoPlay) await play();
-      _startPositionStream();
-    }
+    if (autoPlay) await play();
+    _startPositionStream();
   }
 
   Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
