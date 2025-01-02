@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:podcast/secrets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -26,15 +28,16 @@ class UserPod extends _$UserPod {
   }
 
   Future<void> logIn() async {
-    // TODO(lohnn): Figure out how to get this working
-    // await _supabaseAuth.signInWithOAuth(
-    //   OAuthProvider.google,
-    //   redirectTo: 'lohnnpodcast://se.lohnn.poodcast/authenticated',
-    // );
-    // print('hello');
-    // return;
     // Just making sure we are properly logged out before trying to log in.
     await logOut();
+
+    if (Platform.isMacOS) {
+      await _supabaseAuth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: 'lohnnpodcast://se.lohnn.poodcast/authenticated',
+      );
+      return;
+    }
 
     // Supabase
     final supabaseAuth = await switch (await _googleSignIn.signInSilently(
