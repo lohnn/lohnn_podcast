@@ -63,7 +63,11 @@ class AudioPlayerPod extends _$AudioPlayerPod {
       ref.onDispose(subscription.cancel);
 
       // Initial setup of the queue
-      ref.read(playlistPodProvider.future).then(updateQueue);
+      ref.listen(playlistPodProvider, (oldState, newState) {
+        final queue = newState.valueOrNull ?? [];
+        updateQueue(queue);
+      });
+      // ref.read(playlistPodProvider.future).then(updateQueue);
 
       ref.listen(appLifecycleStatePodProvider, (_, state) {
         if (state == AppLifecycleState.paused) {
@@ -79,6 +83,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     }
   }
 
+  // TODO: Updates to queue (without playing) does not trigger this
   Future<void> updateQueue(List<Episode> queue) async {
     if (queue.isNotEmpty) {
       final statuses =
@@ -87,20 +92,28 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
       final nextEpisode = statuses.firstOrNull;
       if (nextEpisode != null) {
-        await for (final fileResponse in ref
-            .read(episodeLoaderProvider(nextEpisode.episode).notifier)
-            .load()) {
-          print('Loaded episode: $fileResponse');
-          await _player.loadEpisode(
-            nextEpisode,
-            episodeUri: fileResponse.currentUri,
-          );
-        }
+        loadNextEpisode(nextEpisode);
       }
 
       state = AsyncData(nextEpisode);
     } else {
       state = const AsyncData(null);
+    }
+  }
+
+  Future<void> loadNextEpisode(
+    EpisodeWithStatus episodeWithStatus, {
+    bool autoPlay = false,
+  }) async {
+    // TODO: Check if this is cancelled correctly when changing during download
+    await for (final fileResponse in ref
+        .read(episodeLoaderProvider(episodeWithStatus.episode).notifier)
+        .load()) {
+      await _player.loadEpisode(
+        episodeWithStatus,
+        episodeUri: fileResponse.currentUri,
+        autoPlay: autoPlay,
+      );
     }
   }
 
@@ -151,11 +164,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
     ref.read(playlistPodProvider.notifier).addToTopOfQueue(episode);
 
-    await _player.loadEpisode(
-      status,
-      episodeUri: Uri.parse(''),
-      autoPlay: true,
-    );
+    loadNextEpisode(status, autoPlay: true);
 
     if (autoPlay) _player.play();
   }
@@ -183,7 +192,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   /// Stops the player and disposes stream after delay if the player is not
   /// playing.
   void timeStopPlaying() {
-    if (_player.playbackState.valueOrNull?.playing ?? false) return;
+    if (_player.isPlaying) return;
     _player.timeStop();
   }
 

@@ -80,6 +80,8 @@ class PodcastAudioHandler extends BaseAudioHandler
     });
   }
 
+  bool get isPlaying => _player.playing;
+
   @override
   Future<void> play() async {
     await audioSession.setActive(true);
@@ -143,10 +145,14 @@ class PodcastAudioHandler extends BaseAudioHandler
   }) async {
     _stopPositionStream();
 
-    final fileUri = episodeUri;
+    // If the player is already playing the same file, don't reload it.
+    if (_player.audioSource case UriAudioSource(:final uri)
+        when uri == episodeUri) {
+      return;
+    }
 
     final duration = await _player.setAudioSource(
-      AudioSource.uri(fileUri),
+      AudioSource.uri(episodeUri),
       initialPosition: status.status.currentPosition.duration,
     );
 
@@ -157,7 +163,9 @@ class PodcastAudioHandler extends BaseAudioHandler
       ),
     );
 
-    if (autoPlay) await play();
+    // If the player was playing (such as when an episode has finished),
+    // continue playing this new episode.
+    if (autoPlay || isPlaying) await play();
     _startPositionStream();
   }
 
