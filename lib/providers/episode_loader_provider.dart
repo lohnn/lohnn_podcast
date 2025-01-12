@@ -1,7 +1,11 @@
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:http/http.dart' as http;
+import 'dart:async';
+
+import 'package:dio/dio.dart';
+import 'package:file/file.dart';
+import 'package:file/local.dart';
 import 'package:podcast/data/episode.model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'episode_loader_provider.g.dart';
 
@@ -40,26 +44,18 @@ final class LocalEpisodeFile extends EpisodeFileResponse {
 
 @riverpod
 class EpisodeLoader extends _$EpisodeLoader {
-  static final _cacheManager = CacheManager(
-    Config(
-      'episodes',
-      maxNrOfCacheObjects: 10,
-      fileService: EpisodeFileService(),
-    ),
-  );
+  static const _cacheManager = EpisodeCacheManager();
 
   @override
   Future<EpisodeFileResponse> build(Episode episode) async {
     final localFile = await _cacheManager.getFileFromCache(
-      episode.url.uri.toString(),
+      episode,
     );
     if (localFile != null) {
-      return LocalEpisodeFile(
-        remoteUri: episode.url.uri,
-        localUri: localFile.uri,
-      );
+      return localFile;
     } else {
-      // TODO: Somehow check if currently downloading
+      // TODO: Somehow check if currently downloading and return [DownloadingEpisodeFile]
+      _cacheManager.getCurrentStatus(episode);
       return RemoteEpisodeFile(remoteUri: episode.url.uri);
     }
   }
@@ -74,7 +70,7 @@ class EpisodeLoader extends _$EpisodeLoader {
       return;
     }
 
-    await for (final fileResponse in _cacheManager.getFileStream(
+    await for (final fileResponse in _cacheManager.download(
       episode.url.uri.toString(),
       withProgress: true,
     )) {
@@ -92,15 +88,25 @@ class EpisodeLoader extends _$EpisodeLoader {
 }
 
 class EpisodeFileService extends FileService {
-  final http.Client _httpClient = http.Client();
+  factory EpisodeFileService() => EpisodeFileService._(Dio());
 
-  EpisodeFileService();
+  const EpisodeFileService._(this._dio);
+
+  final Dio _dio;
 
   @override
-  Future<FileServiceResponse> get(
-    String url, {
-    Map<String, String>? headers,
-  }) async {
+  BehaviorSubject<EpisodeFileResponse> get(Episode episode) {
+    // TODO: Make sure to always close the subject when done, even if an error occurs
+    final controller = BehaviorSubject<EpisodeFileResponse>();
+
+    final response = _dio.downloadUri<ResponseBody>(
+      episode.url.uri,
+      episode.url.uri.pathSegments.last,
+      options: Options(
+        responseType: ResponseType.stream,
+      ),
+    );
+
     final req = http.Request('GET', Uri.parse(url));
     req.maxRedirects = 10;
     if (headers != null) {
@@ -108,7 +114,7 @@ class EpisodeFileService extends FileService {
     }
     final httpResponse = await _httpClient.send(req);
 
-    return HttpGetResponse(httpResponse);
+    return controller;
   }
 }
 
@@ -117,4 +123,70 @@ extension on FileResponse {
         FileInfo(:final file) => file.uri,
         FileResponse(:final originalUrl) => Uri.parse(originalUrl),
       };
+}
+
+class EpisodeCacheManager {
+  static EpisodeCacheManager? _instance;
+
+  factory EpisodeCacheManager() {
+    if (_instance case final instance?) {
+      return instance;
+    }
+    // TODO: Cleanup old files
+    return _instance = EpisodeCacheManager._(
+      fileSystem: const LocalFileSystem(),
+      episodeFileService: const EpisodeFileService(),
+    );
+  }
+
+  EpisodeCacheManager._({
+    required this.fileSystem,
+    required this.episodeFileService,
+  });
+
+  final FileSystem fileSystem;
+
+  final EpisodeFileService episodeFileService;
+
+  final Map<Episode, BehaviorSubject<EpisodeFileResponse>> _downloads = {};
+
+  Future<LocalEpisodeFile?> getFileFromCache(Episode episode) async {
+    final file = fileSystem.file(
+      episode.url.uri.pathSegments.last,
+    );
+    if (await file.exists()) {
+      return LocalEpisodeFile(
+        remoteUri: episode.url.uri,
+        localUri: file.uri,
+      );
+    }
+    return null;
+  }
+
+  EpisodeFileResponse? getCurrentStatus(Episode episode) {
+    return _downloads[episode]?.valueOrNull;
+  }
+
+  Stream<EpisodeFileResponse> download(Episode episode) async* {
+    if (_downloads[episode] case final controller?) {
+      yield* controller.stream;
+      return;
+    }
+
+    final file = fileSystem.file(
+      episode.url.uri.pathSegments.last,
+    );
+    if (await file.exists()) {
+      yield LocalEpisodeFile(
+        remoteUri: episode.url.uri,
+        localUri: file.uri,
+      );
+      return;
+    }
+
+    // TODO: Implement
+    final subject = _downloads[episode] = episodeFileService.get(episode);
+
+    yield* subject.stream;
+  }
 }
