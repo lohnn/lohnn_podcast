@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:file/file.dart';
 import 'package:file/local.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:podcast/data/episode.model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -19,6 +20,11 @@ sealed class EpisodeFileResponse {
 
 final class RemoteEpisodeFile extends EpisodeFileResponse {
   const RemoteEpisodeFile({required super.remoteUri});
+  
+  @override
+  String toString() {
+    return 'RemoteEpisodeFile(remoteUri: $remoteUri)';
+  }
 }
 
 final class DownloadingEpisodeFile extends EpisodeFileResponse {
@@ -28,6 +34,11 @@ final class DownloadingEpisodeFile extends EpisodeFileResponse {
     required super.remoteUri,
     required this.progress,
   });
+  
+  @override
+  String toString() {
+    return 'DownloadingEpisodeFile(remoteUri: $remoteUri, progress: $progress)';
+  }
 }
 
 final class LocalEpisodeFile extends EpisodeFileResponse {
@@ -40,11 +51,16 @@ final class LocalEpisodeFile extends EpisodeFileResponse {
     required super.remoteUri,
     required this.localUri,
   });
+  
+  @override
+  String toString() {
+    return 'LocalEpisodeFile(remoteUri: $remoteUri, localUri: $localUri)';
+  }
 }
 
 @riverpod
 class EpisodeLoader extends _$EpisodeLoader {
-  static const _cacheManager = EpisodeCacheManager();
+  static final _cacheManager = EpisodeCacheManager();
 
   @override
   Future<EpisodeFileResponse> build(Episode episode) async {
@@ -70,59 +86,64 @@ class EpisodeLoader extends _$EpisodeLoader {
       return;
     }
 
-    await for (final fileResponse in _cacheManager.download(
-      episode.url.uri.toString(),
-      withProgress: true,
-    )) {
-      state = AsyncData(switch (fileResponse) {
-        FileInfo(:final file) => LocalEpisodeFile(
-            remoteUri: episode.url.uri,
-            localUri: file.uri,
-          ),
-        FileResponse(:final originalUrl) => RemoteEpisodeFile(
-            remoteUri: Uri.parse(originalUrl),
-          ),
-      });
+    await for (final fileResponse in _cacheManager.download(episode)) {
+      state = AsyncData(fileResponse);
+      yield fileResponse;
     }
   }
 }
 
-class EpisodeFileService extends FileService {
+class EpisodeFileService {
   factory EpisodeFileService() => EpisodeFileService._(Dio());
 
   const EpisodeFileService._(this._dio);
 
   final Dio _dio;
 
-  @override
-  BehaviorSubject<EpisodeFileResponse> get(Episode episode) {
+  BehaviorSubject<EpisodeFileResponse> get(Episode episode, File destination) {
     // TODO: Make sure to always close the subject when done, even if an error occurs
     final controller = BehaviorSubject<EpisodeFileResponse>();
 
-    final response = _dio.downloadUri<ResponseBody>(
+    final tempDuringDownloadFile = destination.parent.childFile(
+      '${destination.basename}.download',
+    );
+
+    final response = _dio.downloadUri(
       episode.url.uri,
-      episode.url.uri.pathSegments.last,
+      tempDuringDownloadFile.path,
       options: Options(
         responseType: ResponseType.stream,
       ),
+      onReceiveProgress: (received, total) {
+        controller.add(
+          DownloadingEpisodeFile(
+            remoteUri: episode.url.uri,
+            progress: received / total,
+          ),
+        );
+      },
+    ).then(
+      (response) {
+        tempDuringDownloadFile.renameSync(destination.path);
+        controller.add(
+          LocalEpisodeFile(
+            remoteUri: episode.url.uri,
+            localUri: destination.uri,
+          ),
+        );
+        controller.close();
+      },
+      onError: (error, stackTrace) {
+        if ((error, stackTrace)
+            case (final Object error, final StackTrace stackTrace)) {
+          controller.addError(error, stackTrace);
+        }
+        controller.close();
+      },
     );
-
-    final req = http.Request('GET', Uri.parse(url));
-    req.maxRedirects = 10;
-    if (headers != null) {
-      req.headers.addAll(headers);
-    }
-    final httpResponse = await _httpClient.send(req);
 
     return controller;
   }
-}
-
-extension on FileResponse {
-  Uri get uri => switch (this) {
-        FileInfo(:final file) => file.uri,
-        FileResponse(:final originalUrl) => Uri.parse(originalUrl),
-      };
 }
 
 class EpisodeCacheManager {
@@ -135,7 +156,7 @@ class EpisodeCacheManager {
     // TODO: Cleanup old files
     return _instance = EpisodeCacheManager._(
       fileSystem: const LocalFileSystem(),
-      episodeFileService: const EpisodeFileService(),
+      episodeFileService: EpisodeFileService(),
     );
   }
 
@@ -149,6 +170,15 @@ class EpisodeCacheManager {
   final EpisodeFileService episodeFileService;
 
   final Map<Episode, BehaviorSubject<EpisodeFileResponse>> _downloads = {};
+
+  Future<File> _fileFromEpisode(Episode episode) async {
+    final cacheDirectory = const LocalFileSystem().directory(
+      await getApplicationCacheDirectory(),
+    );
+    // TODO: Use episode safeId instead of URL
+    //  Maybe together with the podcast ID
+    return cacheDirectory.childFile(episode.url.uri.pathSegments.last);
+  }
 
   Future<LocalEpisodeFile?> getFileFromCache(Episode episode) async {
     final file = fileSystem.file(
@@ -184,8 +214,12 @@ class EpisodeCacheManager {
       return;
     }
 
-    // TODO: Implement
-    final subject = _downloads[episode] = episodeFileService.get(episode);
+    // The get function is closing the sink
+    // ignore: close_sinks
+    final subject = _downloads[episode] = episodeFileService.get(
+      episode,
+      await _fileFromEpisode(episode),
+    );
 
     yield* subject.stream;
   }

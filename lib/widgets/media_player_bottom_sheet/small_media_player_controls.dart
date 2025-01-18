@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode_with_status.dart';
+import 'package:podcast/extensions/nullability_extensions.dart';
 import 'package:podcast/intents/play_pause_intent.dart';
 import 'package:podcast/providers/audio_player_provider.dart';
+import 'package:podcast/providers/episode_loader_provider.dart';
 import 'package:podcast/screens/modals/episode_player_modal.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/episode_progress_bar.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart';
@@ -22,6 +24,15 @@ class SmallMediaPlayerControls extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final episodeSnapshot = ref.watch(audioPlayerPodProvider);
+
+    final episodeLocation = episodeSnapshot.valueOrNull?.let(
+      (episodeWithStatus) => ref.watch(
+        episodeLoaderProvider(episodeWithStatus.episode),
+      ),
+    );
+    if (episodeLocation case final location?) {
+      print(location);
+    }
 
     return Shortcuts(
       shortcuts: const {
