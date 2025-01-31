@@ -1,32 +1,31 @@
 // ignore_for_file: avoid_print
+import 'dart:convert';
 import 'dart:io';
 
-void main() {
-  print("First let's set up your Google auth URL.");
+void main(List<String> args) {
+  if(args.contains('--help')) {
+    print('''
+    This script sets up the project with the necessary secrets.
+    
+    You can either provide a file with the secrets or enter them manually in 
+    a flow (no arguments).
+    
+    Usage with file:
+    [no arguments]  Read secrets from input one by one
+    -f <file>       Read secrets from a file
+    ''');
+    return;
+  }
+  
+  final Keys keys;
+  if (args.indexOf('-f') case final fileIndex
+      when fileIndex != -1 && args.length > fileIndex + 1) {
+    keys = Keys.readFromFile(args[fileIndex + 1]);
+  } else {
+    keys = Keys.collectFromInput();
+  }
 
-  print(
-    'Please go to https://console.cloud.google.com/apis/credentials and create a new OAuth 2.0 client ID for Apple (iOS).',
-  );
-  print(
-    'Please enter the client id: (e.g. 123456789-asdf4321.apps.googleusercontent.com)',
-  );
-
-  final clientId = stdin.readLineSync();
-  final reversedClientId = clientId!.split('.').reversed.join('.');
-
-  print('Also create a server client ID for the same project.');
-  print(
-    'Please enter the server client id: (e.g. 123456789-asdf4321.apps.googleusercontent.com)',
-  );
-  final serverClientId = stdin.readLineSync();
-
-  print("Now let's set up your Supabase backend.");
-  print('Enter your Supabase url: (e.g. https://abc123.supabase.co)');
-  final backendUrl = stdin.readLineSync();
-
-  print('Enter your Supabase anon key: (e.g. abc123)');
-  final supabaseAnonKey = stdin.readLineSync();
-
+  final reversedClientId = keys.clientId.split('.').reversed.join('.');
   File('macos/Runner/PodcastSecrets.plist').writeAsStringSync(
     secretsPlistContent(reversedClientId),
   );
@@ -36,10 +35,10 @@ void main() {
 
   File('lib/secrets.dart').writeAsStringSync(
     secretsContent(
-      backendUrl: backendUrl!,
-      supabaseAnonKey: supabaseAnonKey!,
-      googleClientId: clientId,
-      googleServerClientId: serverClientId!,
+      backendUrl: keys.backendUrl,
+      supabaseAnonKey: keys.supabaseAnonKey,
+      googleClientId: keys.clientId,
+      googleServerClientId: keys.serverClientId,
     ),
   );
   print('Config is now set up and ready to go!');
@@ -91,3 +90,78 @@ class Secrets {
   static const String googleServerClientId = '$googleServerClientId';
 }
 ''';
+
+class Keys {
+  final String clientId;
+  final String serverClientId;
+  final String backendUrl;
+  final String supabaseAnonKey;
+
+  const Keys({
+    required this.clientId,
+    required this.serverClientId,
+    required this.backendUrl,
+    required this.supabaseAnonKey,
+  });
+
+  factory Keys.collectFromInput() {
+    print("First let's set up your Google auth URL.");
+
+    print(
+      'Please go to https://console.cloud.google.com/apis/credentials and create a new OAuth 2.0 client ID for Apple (iOS).',
+    );
+    print(
+      'Please enter the client id: (e.g. 123456789-asdf4321.apps.googleusercontent.com)',
+    );
+
+    final clientId = stdin.readLineSync();
+
+    print('Also create a server client ID for the same project.');
+    print(
+      'Please enter the server client id: (e.g. 123456789-asdf4321.apps.googleusercontent.com)',
+    );
+    final serverClientId = stdin.readLineSync();
+
+    print("Now let's set up your Supabase backend.");
+    print('Enter your Supabase url: (e.g. https://abc123.supabase.co)');
+    final backendUrl = stdin.readLineSync();
+
+    print('Enter your Supabase anon key: (e.g. abc123)');
+    final supabaseAnonKey = stdin.readLineSync();
+
+    return Keys(
+      clientId: clientId!,
+      serverClientId: serverClientId!,
+      backendUrl: backendUrl!,
+      supabaseAnonKey: supabaseAnonKey!,
+    );
+  }
+
+  factory Keys.readFromFile(String filePath) {
+    final content = File(filePath).readAsStringSync();
+
+    final {
+      'clientId': String clientId,
+      'serverClientId': String serverClientId,
+      'backendUrl': String backendUrl,
+      'supabaseAnonKey': String supabaseAnonKey,
+    } = (json.decode(content) as Map);
+
+    return Keys(
+      clientId: clientId,
+      serverClientId: serverClientId,
+      backendUrl: backendUrl,
+      supabaseAnonKey: supabaseAnonKey,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Keys('
+        'clientId: $clientId, '
+        'serverClientId: $serverClientId, '
+        'backendUrl: $backendUrl, '
+        'supabaseAnonKey: $supabaseAnonKey'
+        ')';
+  }
+}
