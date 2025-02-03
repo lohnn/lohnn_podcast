@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:file/file.dart';
 import 'package:file/local.dart';
@@ -20,7 +21,7 @@ sealed class EpisodeFileResponse {
 
 final class RemoteEpisodeFile extends EpisodeFileResponse {
   const RemoteEpisodeFile({required super.remoteUri});
-  
+
   @override
   String toString() {
     return 'RemoteEpisodeFile(remoteUri: $remoteUri)';
@@ -34,7 +35,7 @@ final class DownloadingEpisodeFile extends EpisodeFileResponse {
     required super.remoteUri,
     required this.progress,
   });
-  
+
   @override
   String toString() {
     return 'DownloadingEpisodeFile(remoteUri: $remoteUri, progress: $progress)';
@@ -51,7 +52,7 @@ final class LocalEpisodeFile extends EpisodeFileResponse {
     required super.remoteUri,
     required this.localUri,
   });
-  
+
   @override
   String toString() {
     return 'LocalEpisodeFile(remoteUri: $remoteUri, localUri: $localUri)';
@@ -70,9 +71,8 @@ class EpisodeLoader extends _$EpisodeLoader {
     if (localFile != null) {
       return localFile;
     } else {
-      // TODO: Somehow check if currently downloading and return [DownloadingEpisodeFile]
-      _cacheManager.getCurrentStatus(episode);
-      return RemoteEpisodeFile(remoteUri: episode.url.uri);
+      return _cacheManager.getCurrentStatus(episode) ??
+          RemoteEpisodeFile(remoteUri: episode.url.uri);
     }
   }
 
@@ -101,18 +101,18 @@ class EpisodeFileService {
   final Dio _dio;
 
   BehaviorSubject<EpisodeFileResponse> get(Episode episode, File destination) {
-    // TODO: Make sure to always close the subject when done, even if an error occurs
     final controller = BehaviorSubject<EpisodeFileResponse>();
 
     final tempDuringDownloadFile = destination.parent.childFile(
       '${destination.basename}.download',
     );
 
-    final response = _dio.downloadUri(
+    _dio.downloadUri(
       episode.url.uri,
       tempDuringDownloadFile.path,
       options: Options(
         responseType: ResponseType.stream,
+        maxRedirects: 10,
       ),
       onReceiveProgress: (received, total) {
         controller.add(
@@ -153,37 +153,52 @@ class EpisodeCacheManager {
     if (_instance case final instance?) {
       return instance;
     }
-    // TODO: Cleanup old files
     return _instance = EpisodeCacheManager._(
-      fileSystem: const LocalFileSystem(),
       episodeFileService: EpisodeFileService(),
     );
   }
 
   EpisodeCacheManager._({
-    required this.fileSystem,
     required this.episodeFileService,
   });
-
-  final FileSystem fileSystem;
 
   final EpisodeFileService episodeFileService;
 
   final Map<Episode, BehaviorSubject<EpisodeFileResponse>> _downloads = {};
 
-  Future<File> _fileFromEpisode(Episode episode) async {
-    final cacheDirectory = const LocalFileSystem().directory(
-      await getApplicationCacheDirectory(),
+  final _applicationCacheDirectoryMemoizer = AsyncMemoizer<Directory>();
+
+  /// The directory where the episodes are stored.
+  ///
+  /// Also makes sure to clean up the directory before returning it.
+  Future<Directory> get applicationCacheDirectory async {
+    // TODO: Clean up old episodes too
+    return _applicationCacheDirectoryMemoizer.runOnce(
+      () async {
+        final dir = const LocalFileSystem().directory(
+          await getApplicationCacheDirectory(),
+        );
+
+        final files = await dir.list().toList();
+        for (final file in files) {
+          if (file case final File file when file.path.endsWith('.download')) {
+            await file.delete();
+          }
+        }
+
+        return dir;
+      },
     );
-    // TODO: Use episode safeId instead of URL
-    //  Maybe together with the podcast ID
-    return cacheDirectory.childFile(episode.url.uri.pathSegments.last);
+  }
+
+  Future<File> _fileFromEpisode(Episode episode) async {
+    return (await applicationCacheDirectory).childFile(episode.localFilePath);
   }
 
   Future<LocalEpisodeFile?> getFileFromCache(Episode episode) async {
-    final file = fileSystem.file(
-      episode.url.uri.pathSegments.last,
-    );
+    final file =
+        (await applicationCacheDirectory).childFile(episode.localFilePath);
+
     if (await file.exists()) {
       return LocalEpisodeFile(
         remoteUri: episode.url.uri,
@@ -203,9 +218,9 @@ class EpisodeCacheManager {
       return;
     }
 
-    final file = fileSystem.file(
-      episode.url.uri.pathSegments.last,
-    );
+    final file =
+        (await applicationCacheDirectory).childFile(episode.localFilePath);
+    
     if (await file.exists()) {
       yield LocalEpisodeFile(
         remoteUri: episode.url.uri,

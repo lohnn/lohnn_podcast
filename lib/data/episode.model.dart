@@ -46,6 +46,9 @@ class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
   @Supabase(ignore: true)
   String get safePodcastId => Uri.encodeComponent(podcastId);
 
+  @Supabase(ignore: true)
+  String get localFilePath => '$safeId-${url.uri.pathSegments.last}';
+
   PodcastMediaItem mediaItem({
     Duration? actualDuration,
     bool? isPlayingFromDownloaded,

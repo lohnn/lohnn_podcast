@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.6.0 <4.0.0'
 
 dependencies:
+  async: ^2.11.0
   audio_service: ^0.18.16
   audio_session: ^0.1.24
   brick_offline_first: ^3.4.0
@@ -31,6 +32,7 @@ dependencies:
   hooks_riverpod: ^2.6.1
   intl: ^0.19.0
   just_audio: ^0.9.45
+  path_provider: ^2.1.5
   rive:   ^0.13.20
   riverpod_annotation: ^2.6.1
   rxdart: ^0.28.0
