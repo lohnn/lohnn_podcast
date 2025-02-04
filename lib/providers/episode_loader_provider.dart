@@ -184,7 +184,6 @@ class EpisodeCacheManager {
   ///
   /// Also makes sure to clean up the directory before returning it.
   Future<Directory> get applicationCacheDirectory async {
-    // TODO: Clean up old episodes too
     return _applicationCacheDirectoryMemoizer.runOnce(() async {
       final dir = await const LocalFileSystem()
           .directory(
@@ -201,7 +200,9 @@ class EpisodeCacheManager {
             await file.delete();
           } else if (FileStat.statSync(file.path)
               .accessed
-              .isBefore(DateTime.now().subtract(const Duration(days: 30)))) {
+              // TODO: This logic should be improved somewhoe
+              //  Maybe we should look at the queue and remove files that are not in the queue?
+              .isBefore(DateTime.now().subtract(const Duration(days: 5)))) {
             await file.delete();
           }
         }
