@@ -24,7 +24,6 @@ class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
   final DateTime? pubDate;
   final String? description;
   final UriModel imageUrl;
-  @Supabase(nullable: true)
   final DurationModel? duration;
   @Supabase(foreignKey: 'podcast_id')
   final String podcastId;

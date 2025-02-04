@@ -29,7 +29,7 @@ class PodcastPod extends _$PodcastPod {
 
 @riverpod
 class Podcasts extends _$Podcasts {
-  final _query = Query(providerArgs: {'orderBy': 'name ASC'});
+  final _query = const Query(orderBy: [OrderBy('name')]);
 
   @override
   Stream<EquatableList<Podcast>> build() async* {
