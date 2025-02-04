@@ -18,13 +18,15 @@ class EpisodeProgressBar extends ConsumerWidget {
     final episodeDuration = durations?.duration ?? episode.duration?.duration;
 
     final bufferProgress = switch ((durations?.buffered, episodeDuration)) {
-      (final bufferPosition?, final episodeDuration?) =>
+      (final bufferPosition?, final episodeDuration?)
+          when episodeDuration > Duration.zero =>
         bufferPosition.inMicroseconds / episodeDuration.inMicroseconds,
       _ => null,
     };
 
     final progress = switch ((durations?.position, episodeDuration)) {
-      (final currentPosition?, final episodeDuration?) =>
+      (final currentPosition?, final episodeDuration?)
+          when episodeDuration > Duration.zero =>
         currentPosition.inMicroseconds / episodeDuration.inMicroseconds,
       _ => null,
     };
