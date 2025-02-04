@@ -108,7 +108,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     // TODO: Check if this is cancelled correctly when changing during download
     await for (final fileResponse in ref
         .read(episodeLoaderProvider(episodeWithStatus.episode).notifier)
-        .load()) {
+        .tryDownload()) {
       await _player.loadEpisode(
         episodeWithStatus,
         episodeUri: fileResponse.currentUri,

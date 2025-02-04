@@ -17,6 +17,8 @@ sealed class EpisodeFileResponse {
   Uri get currentUri => remoteUri;
 
   final Uri remoteUri;
+
+  double get currentDownloadProgress;
 }
 
 final class RemoteEpisodeFile extends EpisodeFileResponse {
@@ -26,6 +28,9 @@ final class RemoteEpisodeFile extends EpisodeFileResponse {
   String toString() {
     return 'RemoteEpisodeFile(remoteUri: $remoteUri)';
   }
+
+  @override
+  double get currentDownloadProgress => 0;
 }
 
 final class DownloadingEpisodeFile extends EpisodeFileResponse {
@@ -40,6 +45,9 @@ final class DownloadingEpisodeFile extends EpisodeFileResponse {
   String toString() {
     return 'DownloadingEpisodeFile(remoteUri: $remoteUri, progress: $progress)';
   }
+
+  @override
+  double get currentDownloadProgress => progress * 100;
 }
 
 final class LocalEpisodeFile extends EpisodeFileResponse {
@@ -57,6 +65,9 @@ final class LocalEpisodeFile extends EpisodeFileResponse {
   String toString() {
     return 'LocalEpisodeFile(remoteUri: $remoteUri, localUri: $localUri)';
   }
+
+  @override
+  double get currentDownloadProgress => 100;
 }
 
 @riverpod
@@ -65,6 +76,7 @@ class EpisodeLoader extends _$EpisodeLoader {
 
   @override
   Future<EpisodeFileResponse> build(Episode episode) async {
+    ref.keepAlive();
     final localFile = await _cacheManager.getFileFromCache(
       episode,
     );
@@ -79,7 +91,7 @@ class EpisodeLoader extends _$EpisodeLoader {
   /// Downloads the episode and returns the URI to the file.
   ///
   /// During download, the uri will report the original URL of the episode.
-  Stream<EpisodeFileResponse> load() async* {
+  Stream<EpisodeFileResponse> tryDownload() async* {
     final status = await future;
     if (status is LocalEpisodeFile) {
       yield status;
@@ -173,22 +185,30 @@ class EpisodeCacheManager {
   /// Also makes sure to clean up the directory before returning it.
   Future<Directory> get applicationCacheDirectory async {
     // TODO: Clean up old episodes too
-    return _applicationCacheDirectoryMemoizer.runOnce(
-      () async {
-        final dir = const LocalFileSystem().directory(
-          await getApplicationCacheDirectory(),
-        );
+    return _applicationCacheDirectoryMemoizer.runOnce(() async {
+      final dir = await const LocalFileSystem()
+          .directory(
+            await getApplicationCacheDirectory(),
+          )
+          .childDirectory('episodes')
+          .create(recursive: true);
 
-        final files = await dir.list().toList();
-        for (final file in files) {
-          if (file case final File file when file.path.endsWith('.download')) {
+      // Clean up old files
+      final files = await dir.list().toList();
+      for (final file in files) {
+        if (file case final File file) {
+          if (file.path.endsWith('.download')) {
+            await file.delete();
+          } else if (FileStat.statSync(file.path)
+              .accessed
+              .isBefore(DateTime.now().subtract(const Duration(days: 30)))) {
             await file.delete();
           }
         }
+      }
 
-        return dir;
-      },
-    );
+      return dir;
+    });
   }
 
   Future<File> _fileFromEpisode(Episode episode) async {
@@ -220,7 +240,7 @@ class EpisodeCacheManager {
 
     final file =
         (await applicationCacheDirectory).childFile(episode.localFilePath);
-    
+
     if (await file.exists()) {
       yield LocalEpisodeFile(
         remoteUri: episode.url.uri,
