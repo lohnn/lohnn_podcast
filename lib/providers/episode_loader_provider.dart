@@ -198,7 +198,7 @@ class EpisodeCacheManager {
         if (file case final File file) {
           if (file.path.endsWith('.download')) {
             await file.delete();
-          } else if (FileStat.statSync(file.path)
+          } else if ((await FileStat.stat(file.path))
               .accessed
               // TODO: This logic should be improved somewhoe
               //  Maybe we should look at the queue and remove files that are not in the queue?
