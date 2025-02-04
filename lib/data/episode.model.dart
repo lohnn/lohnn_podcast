@@ -55,7 +55,6 @@ class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
   }) {
     return PodcastMediaItem(
       episode: this,
-      isPlayingFromDownloaded: isPlayingFromDownloaded,
       // TODO: This should be able to use the local URL as well?
       id: url.uri.toString(),
       title: title,

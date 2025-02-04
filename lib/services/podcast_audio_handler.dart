@@ -14,11 +14,9 @@ import 'package:rxdart/rxdart.dart';
 
 class PodcastMediaItem extends MediaItem {
   final Episode episode;
-  final bool? isPlayingFromDownloaded;
 
   PodcastMediaItem({
     required this.episode,
-    required this.isPlayingFromDownloaded,
     required super.id,
     required super.title,
     required super.artUri,
@@ -162,6 +160,9 @@ class PodcastAudioHandler extends BaseAudioHandler
         isPlayingFromDownloaded: episodeUri.scheme == 'file',
       ),
     );
+
+    // Seek to the last known position of the episode.
+    seek(status.status.currentPosition.duration);
 
     // If the player was playing (such as when an episode has finished),
     // continue playing this new episode.
