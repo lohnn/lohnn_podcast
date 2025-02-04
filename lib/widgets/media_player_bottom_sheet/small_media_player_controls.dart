@@ -100,13 +100,8 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
                                           StateMachineController.fromArtboard(
                                     artboard,
                                     'Download',
-                                    onStateChange: (smName, stateName) {
-                                      debugPrint(
-                                        'State Machine: $smName, State: $stateName',
-                                      );
-                                    },
-                                  )!;
-                                  artboard.addController(controller);
+                                  );
+                                  artboard.addController(controller!);
 
                                   final currentDownloadProgress =
                                       episodeSnapshot.valueOrNull?.let(
