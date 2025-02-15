@@ -12,10 +12,7 @@ class ShowPlaylistButton extends ConsumerWidget {
       onPressed: () {
         Navigator.of(context).pop(EpisodePlayerModalResultAction.showPlaylist);
       },
-      icon: Icon(
-        Icons.playlist_play,
-        color: theme.colorScheme.primary,
-      ),
+      icon: Icon(Icons.playlist_play, color: theme.colorScheme.primary),
     );
   }
 }

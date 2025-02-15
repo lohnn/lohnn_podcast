@@ -28,24 +28,41 @@ class PodcastMapper extends ClassMapperBase<Podcast> {
   static String _$link(Podcast v) => v.link;
   static const Field<Podcast, String> _f$link = Field('link', _$link);
   static String _$description(Podcast v) => v.description;
-  static const Field<Podcast, String> _f$description =
-      Field('description', _$description);
+  static const Field<Podcast, String> _f$description = Field(
+    'description',
+    _$description,
+  );
   static UriModel _$imageUrl(Podcast v) => v.imageUrl;
-  static const Field<Podcast, UriModel> _f$imageUrl =
-      Field('imageUrl', _$imageUrl, key: 'image_url');
+  static const Field<Podcast, UriModel> _f$imageUrl = Field(
+    'imageUrl',
+    _$imageUrl,
+    key: 'image_url',
+  );
   static String? _$language(Podcast v) => v.language;
-  static const Field<Podcast, String> _f$language =
-      Field('language', _$language, opt: true);
+  static const Field<Podcast, String> _f$language = Field(
+    'language',
+    _$language,
+    opt: true,
+  );
   static String? _$lastBuildDate(Podcast v) => v.lastBuildDate;
   static const Field<Podcast, String> _f$lastBuildDate = Field(
-      'lastBuildDate', _$lastBuildDate,
-      key: 'last_build_date', opt: true);
+    'lastBuildDate',
+    _$lastBuildDate,
+    key: 'last_build_date',
+    opt: true,
+  );
   static String? _$copyright(Podcast v) => v.copyright;
-  static const Field<Podcast, String> _f$copyright =
-      Field('copyright', _$copyright, opt: true);
+  static const Field<Podcast, String> _f$copyright = Field(
+    'copyright',
+    _$copyright,
+    opt: true,
+  );
   static String? _$generator(Podcast v) => v.generator;
-  static const Field<Podcast, String> _f$generator =
-      Field('generator', _$generator, opt: true);
+  static const Field<Podcast, String> _f$generator = Field(
+    'generator',
+    _$generator,
+    opt: true,
+  );
 
   @override
   final MappableFields<Podcast> fields = const {
@@ -62,15 +79,16 @@ class PodcastMapper extends ClassMapperBase<Podcast> {
 
   static Podcast _instantiate(DecodingData data) {
     return Podcast(
-        id: data.dec(_f$id),
-        name: data.dec(_f$name),
-        link: data.dec(_f$link),
-        description: data.dec(_f$description),
-        imageUrl: data.dec(_f$imageUrl),
-        language: data.dec(_f$language),
-        lastBuildDate: data.dec(_f$lastBuildDate),
-        copyright: data.dec(_f$copyright),
-        generator: data.dec(_f$generator));
+      id: data.dec(_f$id),
+      name: data.dec(_f$name),
+      link: data.dec(_f$link),
+      description: data.dec(_f$description),
+      imageUrl: data.dec(_f$imageUrl),
+      language: data.dec(_f$language),
+      lastBuildDate: data.dec(_f$lastBuildDate),
+      copyright: data.dec(_f$copyright),
+      generator: data.dec(_f$generator),
+    );
   }
 
   @override
@@ -87,13 +105,15 @@ class PodcastMapper extends ClassMapperBase<Podcast> {
 
 mixin PodcastMappable {
   String toJson() {
-    return PodcastMapper.ensureInitialized()
-        .encodeJson<Podcast>(this as Podcast);
+    return PodcastMapper.ensureInitialized().encodeJson<Podcast>(
+      this as Podcast,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return PodcastMapper.ensureInitialized()
-        .encodeMap<Podcast>(this as Podcast);
+    return PodcastMapper.ensureInitialized().encodeMap<Podcast>(
+      this as Podcast,
+    );
   }
 
   PodcastCopyWith<Podcast, Podcast, Podcast> get copyWith =>
@@ -105,8 +125,10 @@ mixin PodcastMappable {
 
   @override
   bool operator ==(Object other) {
-    return PodcastMapper.ensureInitialized()
-        .equalsValue(this as Podcast, other);
+    return PodcastMapper.ensureInitialized().equalsValue(
+      this as Podcast,
+      other,
+    );
   }
 
   @override
@@ -123,16 +145,17 @@ extension PodcastValueCopy<$R, $Out> on ObjectCopyWith<$R, Podcast, $Out> {
 abstract class PodcastCopyWith<$R, $In extends Podcast, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   UriModelCopyWith<$R, UriModel, UriModel> get imageUrl;
-  $R call(
-      {String? id,
-      String? name,
-      String? link,
-      String? description,
-      UriModel? imageUrl,
-      String? language,
-      String? lastBuildDate,
-      String? copyright,
-      String? generator});
+  $R call({
+    String? id,
+    String? name,
+    String? link,
+    String? description,
+    UriModel? imageUrl,
+    String? language,
+    String? lastBuildDate,
+    String? copyright,
+    String? generator,
+  });
   PodcastCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -148,38 +171,41 @@ class _PodcastCopyWithImpl<$R, $Out>
   UriModelCopyWith<$R, UriModel, UriModel> get imageUrl =>
       $value.imageUrl.copyWith.$chain((v) => call(imageUrl: v));
   @override
-  $R call(
-          {String? id,
-          String? name,
-          String? link,
-          String? description,
-          UriModel? imageUrl,
-          Object? language = $none,
-          Object? lastBuildDate = $none,
-          Object? copyright = $none,
-          Object? generator = $none}) =>
-      $apply(FieldCopyWithData({
-        if (id != null) #id: id,
-        if (name != null) #name: name,
-        if (link != null) #link: link,
-        if (description != null) #description: description,
-        if (imageUrl != null) #imageUrl: imageUrl,
-        if (language != $none) #language: language,
-        if (lastBuildDate != $none) #lastBuildDate: lastBuildDate,
-        if (copyright != $none) #copyright: copyright,
-        if (generator != $none) #generator: generator
-      }));
+  $R call({
+    String? id,
+    String? name,
+    String? link,
+    String? description,
+    UriModel? imageUrl,
+    Object? language = $none,
+    Object? lastBuildDate = $none,
+    Object? copyright = $none,
+    Object? generator = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (id != null) #id: id,
+      if (name != null) #name: name,
+      if (link != null) #link: link,
+      if (description != null) #description: description,
+      if (imageUrl != null) #imageUrl: imageUrl,
+      if (language != $none) #language: language,
+      if (lastBuildDate != $none) #lastBuildDate: lastBuildDate,
+      if (copyright != $none) #copyright: copyright,
+      if (generator != $none) #generator: generator,
+    }),
+  );
   @override
   Podcast $make(CopyWithData data) => Podcast(
-      id: data.get(#id, or: $value.id),
-      name: data.get(#name, or: $value.name),
-      link: data.get(#link, or: $value.link),
-      description: data.get(#description, or: $value.description),
-      imageUrl: data.get(#imageUrl, or: $value.imageUrl),
-      language: data.get(#language, or: $value.language),
-      lastBuildDate: data.get(#lastBuildDate, or: $value.lastBuildDate),
-      copyright: data.get(#copyright, or: $value.copyright),
-      generator: data.get(#generator, or: $value.generator));
+    id: data.get(#id, or: $value.id),
+    name: data.get(#name, or: $value.name),
+    link: data.get(#link, or: $value.link),
+    description: data.get(#description, or: $value.description),
+    imageUrl: data.get(#imageUrl, or: $value.imageUrl),
+    language: data.get(#language, or: $value.language),
+    lastBuildDate: data.get(#lastBuildDate, or: $value.lastBuildDate),
+    copyright: data.get(#copyright, or: $value.copyright),
+    generator: data.get(#generator, or: $value.generator),
+  );
 
   @override
   PodcastCopyWith<$R2, Podcast, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

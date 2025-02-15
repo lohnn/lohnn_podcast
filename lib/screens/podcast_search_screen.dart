@@ -14,9 +14,7 @@ class PodcastSearchScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search Podcasts'),
-      ),
+      appBar: AppBar(title: const Text('Search Podcasts')),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final rssUrl = await showDialog<String>(
@@ -27,9 +25,7 @@ class PodcastSearchScreen extends ConsumerWidget {
 
           await LoadingScreen.showLoading(
             context: context,
-            job: ref.read(podcastsProvider.notifier).addPodcastToList(
-                  rssUrl,
-                ),
+            job: ref.read(podcastsProvider.notifier).addPodcastToList(rssUrl),
           );
         },
         child: const Icon(Icons.add),
@@ -45,7 +41,7 @@ class _PodcastSearchScreen
 
   @override
   ProviderBase<AsyncValue<List<({Podcast podcast, bool isSubscribed})>>>
-      get provider => findPodcastProvider;
+  get provider => findPodcastProvider;
 
   @override
   Widget buildWithData(
@@ -60,19 +56,22 @@ class _PodcastSearchScreen
         return PodcastListTile(
           key: ValueKey(podcast),
           podcast,
-          trailing: isSubscribed
-              ? IconButton(
-                  onPressed: () {
-                    ref.read(findPodcastProvider.notifier).unsubscribe(podcast);
-                  },
-                  icon: const Icon(Icons.check),
-                )
-              : IconButton(
-                  onPressed: () {
-                    ref.read(findPodcastProvider.notifier).subscribe(podcast);
-                  },
-                  icon: const Icon(Icons.add),
-                ),
+          trailing:
+              isSubscribed
+                  ? IconButton(
+                    onPressed: () {
+                      ref
+                          .read(findPodcastProvider.notifier)
+                          .unsubscribe(podcast);
+                    },
+                    icon: const Icon(Icons.check),
+                  )
+                  : IconButton(
+                    onPressed: () {
+                      ref.read(findPodcastProvider.notifier).subscribe(podcast);
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
         );
       },
     );

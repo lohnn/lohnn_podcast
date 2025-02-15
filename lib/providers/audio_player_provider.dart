@@ -106,9 +106,10 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     bool autoPlay = false,
   }) async {
     // TODO: Check if this is cancelled correctly when changing during download
-    await for (final fileResponse in ref
-        .read(episodeLoaderProvider(episodeWithStatus.episode).notifier)
-        .tryDownload()) {
+    await for (final fileResponse
+        in ref
+            .read(episodeLoaderProvider(episodeWithStatus.episode).notifier)
+            .tryDownload()) {
       await _player.loadEpisode(
         episodeWithStatus,
         episodeUri: fileResponse.currentUri,
@@ -118,9 +119,10 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   }
 
   Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
-    final status = await Repository()
-        .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
-        .firstOrNull;
+    final status =
+        await Repository()
+            .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
+            .firstOrNull;
     return EpisodeWithStatus(
       episode: episode,
       // TODO: Implement
@@ -155,10 +157,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     }
   }
 
-  Future<void> playEpisode(
-    Episode episode, {
-    bool autoPlay = true,
-  }) async {
+  Future<void> playEpisode(Episode episode, {bool autoPlay = true}) async {
     final status = await _getForEpisode(episode);
     state = AsyncData(status);
 
@@ -170,20 +169,20 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   }
 
   void triggerMediaAction(MediaAction action) => switch (action) {
-        MediaAction.playPause => switch (
-              _player.playbackState.valueOrNull?.playing ?? false) {
-            true => _player.pause(),
-            false => _player.play(),
-          },
-        MediaAction.play => _player.play(),
-        MediaAction.pause => _player.pause(),
-        MediaAction.stop => _player.stop(),
-        MediaAction.fastForward => _player.fastForward(),
-        MediaAction.skipToNext => _player.fastForward(),
-        MediaAction.rewind => _player.rewind(),
-        MediaAction.skipToPrevious => _player.rewind(),
-        _ => throw UnsupportedError('Action $action not supported yet.')
-      };
+    MediaAction.playPause =>
+      switch (_player.playbackState.valueOrNull?.playing ?? false) {
+        true => _player.pause(),
+        false => _player.play(),
+      },
+    MediaAction.play => _player.play(),
+    MediaAction.pause => _player.pause(),
+    MediaAction.stop => _player.stop(),
+    MediaAction.fastForward => _player.fastForward(),
+    MediaAction.skipToNext => _player.fastForward(),
+    MediaAction.rewind => _player.rewind(),
+    MediaAction.skipToPrevious => _player.rewind(),
+    _ => throw UnsupportedError('Action $action not supported yet.'),
+  };
 
   void setPosition(int positionInMillis) {
     _player.seek(Duration(milliseconds: positionInMillis));
@@ -201,9 +200,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
 @riverpod
 Stream<({Duration position, Duration buffered, Duration? duration})>
-    currentPosition(
-  CurrentPositionRef ref,
-) async* {
+currentPosition(CurrentPositionRef ref) async* {
   final audioPlayer = await ref.watch(_audioServicePodProvider.future);
   yield* audioPlayer.positionStream;
 }

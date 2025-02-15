@@ -17,25 +17,19 @@ class UserEpisodeStatusPod extends _$UserEpisodeStatusPod {
     ref.keepAlive();
     await for (final status
         in Repository().subscribeToRealtime<UserEpisodeStatus>()) {
-      yield {
-        for (final status in status) status.episodeId: status,
-      }.equatable;
+      yield {for (final status in status) status.episodeId: status}.equatable;
     }
   }
 
   Future<void> markListened(EpisodeWithStatus episodeWithStatus) {
     return Repository().upsert<UserEpisodeStatus>(
-      episodeWithStatus.status.copyWith(
-        isPlayed: true,
-      ),
+      episodeWithStatus.status.copyWith(isPlayed: true),
     );
   }
 
   Future<void> markUnlistened(EpisodeWithStatus episodeWithStatus) {
     return Repository().upsert<UserEpisodeStatus>(
-      episodeWithStatus.status.copyWith(
-        isPlayed: false,
-      ),
+      episodeWithStatus.status.copyWith(isPlayed: false),
     );
   }
 }

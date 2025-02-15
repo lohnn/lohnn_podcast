@@ -10,18 +10,12 @@ import 'package:podcast/data/episode.model.dart';
 part 'play_queue_item.model.mapper.dart';
 
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(
-    tableName: 'user_play_queue',
-  ),
+  supabaseConfig: SupabaseSerializable(tableName: 'user_play_queue'),
 )
 @MappableClass()
 class PlayQueueItem extends OfflineFirstWithSupabaseModel
     with PlayQueueItemMappable {
-  @Supabase(
-    unique: true,
-    foreignKey: 'episode_id',
-    ignoreTo: true,
-  )
+  @Supabase(unique: true, foreignKey: 'episode_id', ignoreTo: true)
   final Episode episode;
   final int queueOrder;
 
@@ -29,8 +23,5 @@ class PlayQueueItem extends OfflineFirstWithSupabaseModel
   @Sqlite(unique: true, index: true)
   String get episodeId => episode.id;
 
-  PlayQueueItem({
-    required this.episode,
-    required this.queueOrder,
-  });
+  PlayQueueItem({required this.episode, required this.queueOrder});
 }

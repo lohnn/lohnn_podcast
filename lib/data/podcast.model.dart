@@ -10,13 +10,10 @@ import 'package:podcast/data/serdes/uri_model.dart';
 part 'podcast.model.mapper.dart';
 
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(
-    tableName: 'podcasts',
-  ),
+  supabaseConfig: SupabaseSerializable(tableName: 'podcasts'),
 )
 @MappableClass(caseStyle: CaseStyle.snakeCase)
-class Podcast extends OfflineFirstWithSupabaseModel
-    with PodcastMappable {
+class Podcast extends OfflineFirstWithSupabaseModel with PodcastMappable {
   @Supabase(unique: true, name: 'rss_url')
   @Sqlite(index: true, unique: true)
   @MappableField(key: 'rss_url')

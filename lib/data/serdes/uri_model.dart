@@ -9,9 +9,7 @@ class UriModelHook extends MappingHook {
   @override
   Object? beforeDecode(Object? value) {
     if (value is String) {
-      return {
-        'url': value,
-      };
+      return {'url': value};
     }
     return value;
   }
@@ -26,21 +24,13 @@ class UriModel extends OfflineFirstSerdes<String, String>
 
   UriModel._(this.uri);
 
-  factory UriModel.fromRest(String data) => UriModel._(
-        Uri.parse(data),
-      );
+  factory UriModel.fromRest(String data) => UriModel._(Uri.parse(data));
 
-  factory UriModel.fromSupabase(String data) => UriModel._(
-        Uri.parse(data),
-      );
+  factory UriModel.fromSupabase(String data) => UriModel._(Uri.parse(data));
 
-  factory UriModel.fromSqlite(String data) => UriModel._(
-        Uri.parse(data),
-      );
+  factory UriModel.fromSqlite(String data) => UriModel._(Uri.parse(data));
 
-  factory UriModel.fromGraphql(String data) => UriModel._(
-        Uri.parse(data),
-      );
+  factory UriModel.fromGraphql(String data) => UriModel._(Uri.parse(data));
 
   @override
   String toSqlite() {

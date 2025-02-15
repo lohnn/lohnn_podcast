@@ -19,7 +19,8 @@ class EpisodeWithStatus with EpisodeWithStatusMappable {
     return EpisodeWithStatus._(
       episode: episode,
       playingFromDownloaded: playingFromDownloaded,
-      status: status ??
+      status:
+          status ??
           UserEpisodeStatus(
             episodeId: episode.id,
             isPlayed: false,

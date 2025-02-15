@@ -10,23 +10,18 @@ class DurationModel extends OfflineFirstSerdes<int, int>
 
   DurationModel(this.duration);
 
-  factory DurationModel.fromRest(int durationMillis) => DurationModel(
-        Duration(seconds: durationMillis),
-      );
+  factory DurationModel.fromRest(int durationMillis) =>
+      DurationModel(Duration(seconds: durationMillis));
 
   factory DurationModel.fromSupabase(int durationMillis) {
-    return DurationModel(
-      Duration(seconds: durationMillis),
-    );
+    return DurationModel(Duration(seconds: durationMillis));
   }
 
-  factory DurationModel.fromSqlite(int durationMillis) => DurationModel(
-        Duration(seconds: durationMillis),
-      );
+  factory DurationModel.fromSqlite(int durationMillis) =>
+      DurationModel(Duration(seconds: durationMillis));
 
-  factory DurationModel.fromGraphql(int durationMillis) => DurationModel(
-        Duration(seconds: durationMillis),
-      );
+  factory DurationModel.fromGraphql(int durationMillis) =>
+      DurationModel(Duration(seconds: durationMillis));
 
   @override
   int toSqlite() {

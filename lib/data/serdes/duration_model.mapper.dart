@@ -21,13 +21,13 @@ class DurationModelMapper extends ClassMapperBase<DurationModel> {
   final String id = 'DurationModel';
 
   static Duration _$duration(DurationModel v) => v.duration;
-  static const Field<DurationModel, Duration> _f$duration =
-      Field('duration', _$duration);
+  static const Field<DurationModel, Duration> _f$duration = Field(
+    'duration',
+    _$duration,
+  );
 
   @override
-  final MappableFields<DurationModel> fields = const {
-    #duration: _f$duration,
-  };
+  final MappableFields<DurationModel> fields = const {#duration: _f$duration};
 
   static DurationModel _instantiate(DecodingData data) {
     return DurationModel(data.dec(_f$duration));
@@ -47,34 +47,40 @@ class DurationModelMapper extends ClassMapperBase<DurationModel> {
 
 mixin DurationModelMappable {
   String toJson() {
-    return DurationModelMapper.ensureInitialized()
-        .encodeJson<DurationModel>(this as DurationModel);
+    return DurationModelMapper.ensureInitialized().encodeJson<DurationModel>(
+      this as DurationModel,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return DurationModelMapper.ensureInitialized()
-        .encodeMap<DurationModel>(this as DurationModel);
+    return DurationModelMapper.ensureInitialized().encodeMap<DurationModel>(
+      this as DurationModel,
+    );
   }
 
   DurationModelCopyWith<DurationModel, DurationModel, DurationModel>
-      get copyWith => _DurationModelCopyWithImpl(
-          this as DurationModel, $identity, $identity);
+  get copyWith =>
+      _DurationModelCopyWithImpl(this as DurationModel, $identity, $identity);
   @override
   String toString() {
-    return DurationModelMapper.ensureInitialized()
-        .stringifyValue(this as DurationModel);
+    return DurationModelMapper.ensureInitialized().stringifyValue(
+      this as DurationModel,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return DurationModelMapper.ensureInitialized()
-        .equalsValue(this as DurationModel, other);
+    return DurationModelMapper.ensureInitialized().equalsValue(
+      this as DurationModel,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return DurationModelMapper.ensureInitialized()
-        .hashValue(this as DurationModel);
+    return DurationModelMapper.ensureInitialized().hashValue(
+      this as DurationModel,
+    );
   }
 }
 
@@ -107,6 +113,6 @@ class _DurationModelCopyWithImpl<$R, $Out>
 
   @override
   DurationModelCopyWith<$R2, DurationModel, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _DurationModelCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _DurationModelCopyWithImpl($value, $cast, t);
 }

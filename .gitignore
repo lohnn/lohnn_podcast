@@ -56,3 +56,4 @@ app.*.map.json
 /macos/Runner/PodcastSecrets.plist
 /ios/Runner/PodcastSecrets.plist
 /lib/secrets.dart
+/lib/default_firebase_config.dart

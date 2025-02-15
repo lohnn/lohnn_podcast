@@ -56,10 +56,7 @@ final class LocalEpisodeFile extends EpisodeFileResponse {
   @override
   Uri get currentUri => localUri;
 
-  const LocalEpisodeFile({
-    required super.remoteUri,
-    required this.localUri,
-  });
+  const LocalEpisodeFile({required super.remoteUri, required this.localUri});
 
   @override
   String toString() {
@@ -77,9 +74,7 @@ class EpisodeLoader extends _$EpisodeLoader {
   @override
   Future<EpisodeFileResponse> build(Episode episode) async {
     ref.keepAlive();
-    final localFile = await _cacheManager.getFileFromCache(
-      episode,
-    );
+    final localFile = await _cacheManager.getFileFromCache(episode);
     if (localFile != null) {
       return localFile;
     } else {
@@ -119,40 +114,41 @@ class EpisodeFileService {
       '${destination.basename}.download',
     );
 
-    _dio.downloadUri(
-      episode.url.uri,
-      tempDuringDownloadFile.path,
-      options: Options(
-        responseType: ResponseType.stream,
-        maxRedirects: 10,
-      ),
-      onReceiveProgress: (received, total) {
-        controller.add(
-          DownloadingEpisodeFile(
-            remoteUri: episode.url.uri,
-            progress: received / total,
-          ),
+    _dio
+        .downloadUri(
+          episode.url.uri,
+          tempDuringDownloadFile.path,
+          options: Options(responseType: ResponseType.stream, maxRedirects: 10),
+          onReceiveProgress: (received, total) {
+            controller.add(
+              DownloadingEpisodeFile(
+                remoteUri: episode.url.uri,
+                progress: received / total,
+              ),
+            );
+          },
+        )
+        .then(
+          (response) {
+            tempDuringDownloadFile.renameSync(destination.path);
+            controller.add(
+              LocalEpisodeFile(
+                remoteUri: episode.url.uri,
+                localUri: destination.uri,
+              ),
+            );
+            controller.close();
+          },
+          onError: (error, stackTrace) {
+            if ((error, stackTrace) case (
+              final Object error,
+              final StackTrace stackTrace,
+            )) {
+              controller.addError(error, stackTrace);
+            }
+            controller.close();
+          },
         );
-      },
-    ).then(
-      (response) {
-        tempDuringDownloadFile.renameSync(destination.path);
-        controller.add(
-          LocalEpisodeFile(
-            remoteUri: episode.url.uri,
-            localUri: destination.uri,
-          ),
-        );
-        controller.close();
-      },
-      onError: (error, stackTrace) {
-        if ((error, stackTrace)
-            case (final Object error, final StackTrace stackTrace)) {
-          controller.addError(error, stackTrace);
-        }
-        controller.close();
-      },
-    );
 
     return controller;
   }
@@ -170,9 +166,7 @@ class EpisodeCacheManager {
     );
   }
 
-  EpisodeCacheManager._({
-    required this.episodeFileService,
-  });
+  EpisodeCacheManager._({required this.episodeFileService});
 
   final EpisodeFileService episodeFileService;
 
@@ -186,9 +180,7 @@ class EpisodeCacheManager {
   Future<Directory> get applicationCacheDirectory async {
     return _applicationCacheDirectoryMemoizer.runOnce(() async {
       final dir = await const LocalFileSystem()
-          .directory(
-            await getApplicationCacheDirectory(),
-          )
+          .directory(await getApplicationCacheDirectory())
           .childDirectory('episodes')
           .create(recursive: true);
 
@@ -198,11 +190,10 @@ class EpisodeCacheManager {
         if (file case final File file) {
           if (file.path.endsWith('.download')) {
             await file.delete();
-          } else if ((await FileStat.stat(file.path))
-              .accessed
-              // TODO: This logic should be improved somewhoe
-              //  Maybe we should look at the queue and remove files that are not in the queue?
-              .isBefore(DateTime.now().subtract(const Duration(days: 5)))) {
+          } else if ((await FileStat.stat(file.path)).accessed
+          // TODO: This logic should be improved somewhoe
+          //  Maybe we should look at the queue and remove files that are not in the queue?
+          .isBefore(DateTime.now().subtract(const Duration(days: 5)))) {
             await file.delete();
           }
         }
@@ -217,14 +208,12 @@ class EpisodeCacheManager {
   }
 
   Future<LocalEpisodeFile?> getFileFromCache(Episode episode) async {
-    final file =
-        (await applicationCacheDirectory).childFile(episode.localFilePath);
+    final file = (await applicationCacheDirectory).childFile(
+      episode.localFilePath,
+    );
 
     if (await file.exists()) {
-      return LocalEpisodeFile(
-        remoteUri: episode.url.uri,
-        localUri: file.uri,
-      );
+      return LocalEpisodeFile(remoteUri: episode.url.uri, localUri: file.uri);
     }
     return null;
   }
@@ -239,23 +228,22 @@ class EpisodeCacheManager {
       return;
     }
 
-    final file =
-        (await applicationCacheDirectory).childFile(episode.localFilePath);
+    final file = (await applicationCacheDirectory).childFile(
+      episode.localFilePath,
+    );
 
     if (await file.exists()) {
-      yield LocalEpisodeFile(
-        remoteUri: episode.url.uri,
-        localUri: file.uri,
-      );
+      yield LocalEpisodeFile(remoteUri: episode.url.uri, localUri: file.uri);
       return;
     }
 
     // The get function is closing the sink
     // ignore: close_sinks
-    final subject = _downloads[episode] = episodeFileService.get(
-      episode,
-      await _fileFromEpisode(episode),
-    );
+    final subject =
+        _downloads[episode] = episodeFileService.get(
+          episode,
+          await _fileFromEpisode(episode),
+        );
 
     yield* subject.stream;
   }

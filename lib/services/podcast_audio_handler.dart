@@ -31,16 +31,17 @@ class PodcastAudioHandler extends BaseAudioHandler
 
   @override
   // ignore: overridden_fields
-  final BehaviorSubject<PodcastMediaItem?> mediaItem =
-      BehaviorSubject.seeded(null);
+  final BehaviorSubject<PodcastMediaItem?> mediaItem = BehaviorSubject.seeded(
+    null,
+  );
 
   Stream<({Duration position, Duration buffered, Duration? duration})>
-      get positionStream => Rx.combineLatest3(
-            _player.positionStream,
-            _player.bufferedPositionStream,
-            _player.durationStream,
-            (a, b, c) => (position: a, buffered: b, duration: c),
-          );
+  get positionStream => Rx.combineLatest3(
+    _player.positionStream,
+    _player.bufferedPositionStream,
+    _player.durationStream,
+    (a, b, c) => (position: a, buffered: b, duration: c),
+  );
 
   /// Initialise our audio handler.
   PodcastAudioHandler({required this.audioSession}) {
@@ -62,20 +63,20 @@ class PodcastAudioHandler extends BaseAudioHandler
     _stopPositionStream();
     _positionSubscription = _player.positionStream
         .throttleTime(const Duration(seconds: 10), trailing: true)
-        .listen((
-      position,
-    ) async {
-      final currentEpisode = mediaItem.valueOrNull?.episode;
+        .listen((position) async {
+          final currentEpisode = mediaItem.valueOrNull?.episode;
 
-      if (currentEpisode case final currentEpisode?) {
-        final status = await _getForEpisode(currentEpisode);
-        final newPosition = DurationModel(position);
+          if (currentEpisode case final currentEpisode?) {
+            final status = await _getForEpisode(currentEpisode);
+            final newPosition = DurationModel(position);
 
-        final newStatus = status.status.copyWith(currentPosition: newPosition);
-        // TODO: Look into why this is called twice every time
-        Repository().upsert<UserEpisodeStatus>(newStatus);
-      }
-    });
+            final newStatus = status.status.copyWith(
+              currentPosition: newPosition,
+            );
+            // TODO: Look into why this is called twice every time
+            Repository().upsert<UserEpisodeStatus>(newStatus);
+          }
+        });
   }
 
   bool get isPlaying => _player.playing;
@@ -144,8 +145,9 @@ class PodcastAudioHandler extends BaseAudioHandler
     _stopPositionStream();
 
     // If the player is already playing the same file, don't reload it.
-    if (_player.audioSource case UriAudioSource(:final uri)
-        when uri == episodeUri) {
+    if (_player.audioSource case UriAudioSource(
+      :final uri,
+    ) when uri == episodeUri) {
       return;
     }
 
@@ -171,9 +173,10 @@ class PodcastAudioHandler extends BaseAudioHandler
   }
 
   Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
-    final status = await Repository()
-        .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
-        .firstOrNull;
+    final status =
+        await Repository()
+            .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
+            .firstOrNull;
     return EpisodeWithStatus(
       episode: episode,
       // TODO: Implement

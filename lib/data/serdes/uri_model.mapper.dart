@@ -20,17 +20,20 @@ class UriModelMapper extends ClassMapperBase<UriModel> {
   @override
   final String id = 'UriModel';
 
-  static const Field<UriModel, String> _f$url =
-      Field('url', null, mode: FieldMode.param);
+  static const Field<UriModel, String> _f$url = Field(
+    'url',
+    null,
+    mode: FieldMode.param,
+  );
   static Uri _$uri(UriModel v) => v.uri;
-  static const Field<UriModel, Uri> _f$uri =
-      Field('uri', _$uri, mode: FieldMode.member);
+  static const Field<UriModel, Uri> _f$uri = Field(
+    'uri',
+    _$uri,
+    mode: FieldMode.member,
+  );
 
   @override
-  final MappableFields<UriModel> fields = const {
-    #url: _f$url,
-    #uri: _f$uri,
-  };
+  final MappableFields<UriModel> fields = const {#url: _f$url, #uri: _f$uri};
 
   @override
   final MappingHook hook = const UriModelHook();
@@ -52,13 +55,15 @@ class UriModelMapper extends ClassMapperBase<UriModel> {
 
 mixin UriModelMappable {
   String toJson() {
-    return UriModelMapper.ensureInitialized()
-        .encodeJson<UriModel>(this as UriModel);
+    return UriModelMapper.ensureInitialized().encodeJson<UriModel>(
+      this as UriModel,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return UriModelMapper.ensureInitialized()
-        .encodeMap<UriModel>(this as UriModel);
+    return UriModelMapper.ensureInitialized().encodeMap<UriModel>(
+      this as UriModel,
+    );
   }
 
   UriModelCopyWith<UriModel, UriModel, UriModel> get copyWith =>
@@ -70,8 +75,10 @@ mixin UriModelMappable {
 
   @override
   bool operator ==(Object other) {
-    return UriModelMapper.ensureInitialized()
-        .equalsValue(this as UriModel, other);
+    return UriModelMapper.ensureInitialized().equalsValue(
+      this as UriModel,
+      other,
+    );
   }
 
   @override
@@ -106,6 +113,6 @@ class _UriModelCopyWithImpl<$R, $Out>
 
   @override
   UriModelCopyWith<$R2, UriModel, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _UriModelCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _UriModelCopyWithImpl($value, $cast, t);
 }

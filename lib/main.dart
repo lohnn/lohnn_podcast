@@ -66,15 +66,13 @@ class EntryAnimationScreen extends HookWidget {
                     artboard,
                     'State Machine 1',
                   );
-                  controller!.addEventListener(
-                    (event) {
-                      Future.microtask(() {
-                        if (event.name == 'Done') {
-                          hasShownAnimation.value = true;
-                        }
-                      });
-                    },
-                  );
+                  controller!.addEventListener((event) {
+                    Future.microtask(() {
+                      if (event.name == 'Done') {
+                        hasShownAnimation.value = true;
+                      }
+                    });
+                  });
                   artboard.addController(controller);
                 },
               ),
@@ -93,18 +91,11 @@ class MainApp extends AsyncValueWidget<User?> {
   ProviderBase<AsyncValue<User?>> get provider => userPodProvider;
 
   @override
-  Widget buildWithData(
-    BuildContext context,
-    WidgetRef ref,
-    User? data,
-  ) {
-    useOnAppLifecycleStateChange(
-      (previous, current) {
-        // Open and close the socket connection based on the app lifecycle state
-        ref.read(appLifecycleStatePodProvider.notifier).lifecycleState =
-            current;
-      },
-    );
+  Widget buildWithData(BuildContext context, WidgetRef ref, User? data) {
+    useOnAppLifecycleStateChange((previous, current) {
+      // Open and close the socket connection based on the app lifecycle state
+      ref.read(appLifecycleStatePodProvider.notifier).lifecycleState = current;
+    });
     return switch (data) {
       null => const LoginScreen(),
       _ => const LoggedInScreen(),

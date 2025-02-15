@@ -18,10 +18,7 @@ import 'package:rive/rive.dart';
 class SmallMediaPlayerControls extends HookConsumerWidget {
   final GoRouter router;
 
-  const SmallMediaPlayerControls({
-    super.key,
-    required this.router,
-  });
+  const SmallMediaPlayerControls({super.key, required this.router});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,17 +48,15 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
         height: 85,
         child: switch (episodeSnapshot) {
           AsyncLoading() => const Center(
-              child: CircularProgressIndicator.adaptive(),
-            ),
+            child: CircularProgressIndicator.adaptive(),
+          ),
           AsyncError() => const Center(child: Text('Error loading episode')),
           AsyncData(value: final episode) => switch (episode) {
-              null => const Center(
-                  child: Text('Nothing is playing right now'),
-                ),
-              EpisodeWithStatus(:final episode) => InkWell(
-                  onTap: () async {
-                    final action = await showModalBottomSheet<
-                        EpisodePlayerModalResultAction>(
+            null => const Center(child: Text('Nothing is playing right now')),
+            EpisodeWithStatus(:final episode) => InkWell(
+              onTap: () async {
+                final action =
+                    await showModalBottomSheet<EpisodePlayerModalResultAction>(
                       context: context,
                       isScrollControlled: true,
                       useSafeArea: true,
@@ -69,74 +64,74 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
                       builder: (context) => const EpisodePlayerModal(),
                     );
 
-                    switch (action) {
-                      case EpisodePlayerModalResultAction.showPlaylist:
-                        if (context.mounted) {
-                          router.push('/playlist');
-                        }
-                      case null:
+                switch (action) {
+                  case EpisodePlayerModalResultAction.showPlaylist:
+                    if (context.mounted) {
+                      router.push('/playlist');
                     }
-                  },
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: RoundedImage(
-                                imageUri: episode.imageUrl.uri,
-                                imageSize: 60,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 36,
-                              child: RiveAnimation.asset(
-                                'assets/animations/podcast.riv',
-                                artboard: 'Download',
-                                onInit: (artboard) {
-                                  final controller =
-                                      downloadRiveController.value =
-                                          StateMachineController.fromArtboard(
-                                    artboard,
-                                    'Download',
-                                  );
-                                  artboard.addController(controller!);
+                  case null:
+                }
+              },
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: RoundedImage(
+                            imageUri: episode.imageUrl.uri,
+                            imageSize: 60,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 36,
+                          child: RiveAnimation.asset(
+                            'assets/animations/podcast.riv',
+                            artboard: 'Download',
+                            onInit: (artboard) {
+                              final controller =
+                                  downloadRiveController.value =
+                                      StateMachineController.fromArtboard(
+                                        artboard,
+                                        'Download',
+                                      );
+                              artboard.addController(controller!);
 
-                                  final currentDownloadProgress =
-                                      episodeSnapshot.valueOrNull?.let(
+                              final currentDownloadProgress = episodeSnapshot
+                                  .valueOrNull
+                                  ?.let(
                                     (episodeWithStatus) => ref.read(
                                       episodeLoaderProvider(
                                         episodeWithStatus.episode,
                                       ).select(
-                                        (e) => e.valueOrNull
-                                            ?.currentDownloadProgress,
+                                        (e) =>
+                                            e
+                                                .valueOrNull
+                                                ?.currentDownloadProgress,
                                       ),
                                     ),
                                   );
-                                  if (currentDownloadProgress != null) {
-                                    controller
-                                        .getNumberInput('Progress')!
-                                        .value = currentDownloadProgress;
-                                  }
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(child: Text(episode.title)),
-                            const PlayPauseButton(),
-                          ],
+                              if (currentDownloadProgress != null) {
+                                controller.getNumberInput('Progress')!.value =
+                                    currentDownloadProgress;
+                              }
+                            },
+                          ),
                         ),
-                      ),
-                      EpisodeProgressBar(
-                        episode,
-                        height: 4,
-                      ),
-                    ],
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(episode.title)),
+                        const PlayPauseButton(),
+                      ],
+                    ),
                   ),
-                )
-            },
-          AsyncValue<EpisodeWithStatus?>() => throw UnimplementedError(
+                  EpisodeProgressBar(episode, height: 4),
+                ],
+              ),
+            ),
+          },
+          AsyncValue<EpisodeWithStatus?>() =>
+            throw UnimplementedError(
               'This should not be a case, AsyncValue is just not sealed',
             ),
         },

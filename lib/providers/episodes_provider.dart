@@ -44,20 +44,22 @@ class Episodes extends _$Episodes {
 
     final userEpisodeStatusList =
         ref.watch(userEpisodeStatusPodProvider).valueOrNull ??
-            const EquatableMap.empty();
+        const EquatableMap.empty();
 
-    final episodes =
-        ref.watch(_episodesImplProvider(podcastId)).whenData((episodes) {
-      return [
-        for (final episode in episodes)
-          EpisodeWithStatus(
-            episode: episode,
-            // TODO: Implement
-            playingFromDownloaded: false,
-            status: userEpisodeStatusList[episode.id],
-          ),
-      ];
-    }).whenData(EquatableList.new);
+    final episodes = ref
+        .watch(_episodesImplProvider(podcastId))
+        .whenData((episodes) {
+          return [
+            for (final episode in episodes)
+              EpisodeWithStatus(
+                episode: episode,
+                // TODO: Implement
+                playingFromDownloaded: false,
+                status: userEpisodeStatusList[episode.id],
+              ),
+          ];
+        })
+        .whenData(EquatableList.new);
     return (podcast, episodes).pack();
   }
 

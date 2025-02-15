@@ -30,11 +30,7 @@ class EquatableList<E> implements List<E> {
 
   @override
   bool operator ==(Object other) {
-    return other is EquatableList<E> &&
-        _equality.equals(
-          _data,
-          other._data,
-        );
+    return other is EquatableList<E> && _equality.equals(_data, other._data);
   }
 
   @override

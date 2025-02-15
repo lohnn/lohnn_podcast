@@ -64,11 +64,9 @@ class Repository extends OfflineFirstWithSupabaseRepository
     );
   }
 
-  Future<void>
-      upsertLocalIterable<TModel extends OfflineFirstWithSupabaseModel>(
-    Iterable<TModel> instances, {
-    Query? query,
-  }) {
+  Future<void> upsertLocalIterable<
+    TModel extends OfflineFirstWithSupabaseModel
+  >(Iterable<TModel> instances, {Query? query}) {
     return instances.map(upsertLocal).wait;
   }
 

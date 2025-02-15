@@ -29,7 +29,8 @@ class RoundedImage extends StatelessWidget {
           child: SizedBox(
             height: imageSize,
             width: imageSize,
-            child: imageUri?.let(
+            child:
+                imageUri?.let(
                   (uri) => ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: CachedNetworkImage(

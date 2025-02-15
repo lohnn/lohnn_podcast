@@ -20,6 +20,10 @@ dependencies:
   dart_mappable: ^4.3.1
   dio: ^5.8.0+1
   file: ^7.0.1
+  firebase_analytics: ^11.4.2
+  firebase_core: ^3.11.0
+  firebase_crashlytics: ^4.3.2
+  firebase_performance: ^0.10.1+2
   flutter:
     sdk: flutter
   flutter_hooks: ^0.20.5

@@ -65,10 +65,7 @@ class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (episode.description case final description?)
-                  Text(
-                    description.removeHtmlTags(),
-                    maxLines: 2,
-                  ),
+                  Text(description.removeHtmlTags(), maxLines: 2),
                 Row(
                   children: [
                     PlayEpisodeButton(episode),

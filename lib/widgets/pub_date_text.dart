@@ -19,9 +19,7 @@ class PubDateText extends StatelessWidget {
             children: [
               TextSpan(text: value),
               if (DateTime.now().difference(pubDate).inDays > 1)
-                TextSpan(
-                  text: ' (${_dateFormat.format(pubDate)})',
-                ),
+                TextSpan(text: ' (${_dateFormat.format(pubDate)})'),
             ],
           ),
         );
