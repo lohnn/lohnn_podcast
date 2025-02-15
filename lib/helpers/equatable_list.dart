@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 extension EquatableListExtension<E> on List<E> {
   EquatableList<E> get equatable => EquatableList(this);

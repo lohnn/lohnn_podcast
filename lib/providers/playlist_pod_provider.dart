@@ -13,10 +13,16 @@ part 'playlist_pod_provider.g.dart';
 class PlaylistPod extends _$PlaylistPod {
   @override
   Stream<List<Episode>> build() async* {
-    Repository().get<PlayQueueItem>(forceLocalSyncFromRemote: true);
+    try {
+      // TODO: This could the reason the player is loading for a long time when we have no internet
+      await Repository().get<PlayQueueItem>(forceLocalSyncFromRemote: true);
+    } catch (_) {}
+
     await for (final queue in Repository().subscribe<PlayQueueItem>(
       policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
-      query: Query(providerArgs: {'orderBy': 'queueOrder ASC'}),
+      query: const Query(
+        orderBy: [OrderBy('queueOrder')],
+      ),
     )) {
       yield [for (final item in queue) item.episode];
     }

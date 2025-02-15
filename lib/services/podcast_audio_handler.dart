@@ -78,6 +78,8 @@ class PodcastAudioHandler extends BaseAudioHandler
     });
   }
 
+  bool get isPlaying => _player.playing;
+
   @override
   Future<void> play() async {
     await audioSession.setActive(true);
@@ -132,23 +134,39 @@ class PodcastAudioHandler extends BaseAudioHandler
     await super.updateQueue([
       for (final status in newQueue) status.episode.mediaItem(),
     ]);
-    await loadEpisode(newQueue.first);
   }
 
   Future<void> loadEpisode(
     EpisodeWithStatus status, {
+    required Uri episodeUri,
     bool autoPlay = false,
   }) async {
     _stopPositionStream();
 
+    // If the player is already playing the same file, don't reload it.
+    if (_player.audioSource case UriAudioSource(:final uri)
+        when uri == episodeUri) {
+      return;
+    }
+
     final duration = await _player.setAudioSource(
-      AudioSource.uri(status.episode.url.uri),
+      AudioSource.uri(episodeUri),
       initialPosition: status.status.currentPosition.duration,
     );
 
-    mediaItem.add(status.episode.mediaItem(actualDuration: duration));
+    mediaItem.add(
+      status.episode.mediaItem(
+        actualDuration: duration,
+        isPlayingFromDownloaded: episodeUri.scheme == 'file',
+      ),
+    );
 
-    if (autoPlay) await play();
+    // Seek to the last known position of the episode.
+    seek(status.status.currentPosition.duration);
+
+    // If the player was playing (such as when an episode has finished),
+    // continue playing this new episode.
+    if (autoPlay || isPlaying) await play();
     _startPositionStream();
   }
 
@@ -156,7 +174,12 @@ class PodcastAudioHandler extends BaseAudioHandler
     final status = await Repository()
         .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
         .firstOrNull;
-    return EpisodeWithStatus(episode: episode, status: status);
+    return EpisodeWithStatus(
+      episode: episode,
+      // TODO: Implement
+      playingFromDownloaded: false,
+      status: status,
+    );
   }
 
   void clearPlaying() {

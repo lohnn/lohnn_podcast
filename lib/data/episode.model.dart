@@ -12,9 +12,7 @@ import 'package:podcast/services/podcast_audio_handler.dart';
 part 'episode.model.mapper.dart';
 
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(
-    tableName: 'episodes',
-  ),
+  supabaseConfig: SupabaseSerializable(tableName: 'episodes'),
 )
 @MappableClass()
 class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
@@ -26,7 +24,6 @@ class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
   final DateTime? pubDate;
   final String? description;
   final UriModel imageUrl;
-  @Supabase(nullable: true)
   final DurationModel? duration;
   @Supabase(foreignKey: 'podcast_id')
   final String podcastId;
@@ -48,14 +45,20 @@ class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
   @Supabase(ignore: true)
   String get safePodcastId => Uri.encodeComponent(podcastId);
 
+  @Supabase(ignore: true)
+  String get localFilePath => '$safeId-${url.uri.pathSegments.last}';
+
   PodcastMediaItem mediaItem({
     Duration? actualDuration,
-  }) =>
-      PodcastMediaItem(
-        episode: this,
-        id: url.uri.toString(),
-        title: title,
-        artUri: imageUrl.uri,
-        duration: actualDuration ?? duration?.duration,
-      );
+    bool? isPlayingFromDownloaded,
+  }) {
+    return PodcastMediaItem(
+      episode: this,
+      // TODO: This should be able to use the local URL as well?
+      id: url.uri.toString(),
+      title: title,
+      artUri: imageUrl.uri,
+      duration: actualDuration ?? duration?.duration,
+    );
+  }
 }

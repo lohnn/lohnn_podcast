@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 extension EquatableMapExtension<K, V> on Map<K, V> {
   EquatableMap<K, V> get equatable => EquatableMap(this);

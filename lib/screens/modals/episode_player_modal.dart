@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -44,7 +46,10 @@ class EpisodePlayerModal extends HookConsumerWidget {
             if ((durations?.position, episodeDuration)
                 case (final currentPosition?, final episodeDuration?)) ...[
               Slider.adaptive(
-                value: currentPosition.inMilliseconds.toDouble(),
+                value: min(
+                  currentPosition.inMilliseconds.toDouble(),
+                  episodeDuration.inMilliseconds.toDouble(),
+                ),
                 max: episodeDuration.inMilliseconds.toDouble(),
                 onChanged: (value) {
                   ref

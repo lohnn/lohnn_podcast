@@ -69,28 +69,30 @@ class LoggedInScreen extends HookConsumerWidget {
           ),
           GoRoute(
             path: '/:podcastId',
-            builder: (context, state) => EpisodeListScreen(
-              state.pathParameters['podcastId']!,
-            ),
+            builder:
+                (context, state) =>
+                    EpisodeListScreen(state.pathParameters['podcastId']!),
           ),
           GoRoute(
             path: '/:podcastId/:episodeId',
-            builder: (context, state) => EpisodeDetailsScreen(
-              podcastId: state.pathParameters['podcastId']!,
-              episodeId: state.pathParameters['episodeId']!,
-            ),
-          )
+            builder:
+                (context, state) => EpisodeDetailsScreen(
+                  podcastId: state.pathParameters['podcastId']!,
+                  episodeId: state.pathParameters['episodeId']!,
+                ),
+          ),
         ],
       ),
     );
 
-    final colorScheme = ref
-        .watch(
-          currentPlayingEpisodeColorSchemeProvider(
-            Theme.of(context).brightness,
-          ),
-        )
-        .valueOrNull;
+    final colorScheme =
+        ref
+            .watch(
+              currentPlayingEpisodeColorSchemeProvider(
+                Theme.of(context).brightness,
+              ),
+            )
+            .valueOrNull;
 
     return AnimatedTheme(
       key: const ValueKey('LoggedInScreen.theme'),
@@ -98,28 +100,22 @@ class LoggedInScreen extends HookConsumerWidget {
       child: PodcastActions(
         child: Shortcuts(
           shortcuts: const {
-            SingleActivator(LogicalKeyboardKey.mediaPlayPause):
-                ChangePlayStateIntent(
-              MediaAction.playPause,
-            ),
-            SingleActivator(LogicalKeyboardKey.mediaPlay):
-                ChangePlayStateIntent(
-              MediaAction.play,
-            ),
-            SingleActivator(LogicalKeyboardKey.mediaPause):
-                ChangePlayStateIntent(
-              MediaAction.pause,
-            ),
-            SingleActivator(LogicalKeyboardKey.mediaStop):
-                ChangePlayStateIntent(
-              MediaAction.pause,
-            ),
+            SingleActivator(
+              LogicalKeyboardKey.mediaPlayPause,
+            ): ChangePlayStateIntent(MediaAction.playPause),
+            SingleActivator(
+              LogicalKeyboardKey.mediaPlay,
+            ): ChangePlayStateIntent(MediaAction.play),
+            SingleActivator(
+              LogicalKeyboardKey.mediaPause,
+            ): ChangePlayStateIntent(MediaAction.pause),
+            SingleActivator(
+              LogicalKeyboardKey.mediaStop,
+            ): ChangePlayStateIntent(MediaAction.pause),
           },
           child: Scaffold(
             // bottomSheet: const MediaBottomSheet(),
-            bottomNavigationBar: SmallMediaPlayerControls(
-              router: router,
-            ),
+            bottomNavigationBar: SmallMediaPlayerControls(router: router),
             body: Router<Object>(
               restorationScopeId: 'router',
               routeInformationProvider: router.routeInformationProvider,
