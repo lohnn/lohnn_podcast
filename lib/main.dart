@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/brick/repository.dart';
+import 'package:podcast/default_firebase_config.dart';
 import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast/providers/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
@@ -14,6 +16,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // TODO: Add Firebase configuration to the init-script?
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Repository.configure(databaseFactory);
   await Repository().initialize();
 
