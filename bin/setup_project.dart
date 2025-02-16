@@ -2,8 +2,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+// TODO: Add to startup script: google-services.json
+
 void main(List<String> args) {
-  if(args.contains('--help')) {
+  if (args.contains('--help')) {
     print('''
     This script sets up the project with the necessary secrets.
     
@@ -16,7 +18,7 @@ void main(List<String> args) {
     ''');
     return;
   }
-  
+
   final Keys keys;
   if (args.indexOf('-f') case final fileIndex
       when fileIndex != -1 && args.length > fileIndex + 1) {
@@ -26,12 +28,12 @@ void main(List<String> args) {
   }
 
   final reversedClientId = keys.clientId.split('.').reversed.join('.');
-  File('macos/Runner/PodcastSecrets.plist').writeAsStringSync(
-    secretsPlistContent(reversedClientId),
-  );
-  File('ios/Runner/PodcastSecrets.plist').writeAsStringSync(
-    secretsPlistContent(reversedClientId),
-  );
+  File(
+    'macos/Runner/PodcastSecrets.plist',
+  ).writeAsStringSync(secretsPlistContent(reversedClientId));
+  File(
+    'ios/Runner/PodcastSecrets.plist',
+  ).writeAsStringSync(secretsPlistContent(reversedClientId));
 
   File('lib/secrets.dart').writeAsStringSync(
     secretsContent(
@@ -79,8 +81,7 @@ String secretsContent({
   required String supabaseAnonKey,
   required String googleClientId,
   required String googleServerClientId,
-}) =>
-    '''
+}) => '''
 class Secrets {
   const Secrets._();
 

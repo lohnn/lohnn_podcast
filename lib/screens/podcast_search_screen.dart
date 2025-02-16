@@ -37,7 +37,7 @@ class PodcastSearchScreen extends ConsumerWidget {
 
 class _PodcastSearchScreen
     extends AsyncValueWidget<List<({Podcast podcast, bool isSubscribed})>> {
-  const _PodcastSearchScreen({super.key});
+  const _PodcastSearchScreen();
 
   @override
   ProviderBase<AsyncValue<List<({Podcast podcast, bool isSubscribed})>>>

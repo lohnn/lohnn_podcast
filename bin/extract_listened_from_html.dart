@@ -8,8 +8,9 @@ import 'package:html/parser.dart';
 void main() async {
   // 1. Load the HTML file
   final dir = Directory('bin/podcast-history');
-  final files =
-      dir.listSync().whereType<File>().where((e) => e.path.endsWith('.html'));
+  final files = dir.listSync().whereType<File>().where(
+    (e) => e.path.endsWith('.html'),
+  );
 
   final json = <String, List<String>>{};
 
@@ -24,15 +25,16 @@ void main() async {
     final podcastTitle = document.querySelector('title')!.text;
 
     // 4. Find completed episodes
-    final completedEpisodes = document
-        .querySelectorAll('a.D9uPgd')
-        .where(
-          (element) => element.querySelector('.USCfSb') != null,
-        ) // Check for checkmark icon
-        .map((element) => element.querySelector('.e3ZUqe')?.text.trim())
-        .where((title) => title != null)
-        .cast<String>()
-        .toList();
+    final completedEpisodes =
+        document
+            .querySelectorAll('a.D9uPgd')
+            .where(
+              (element) => element.querySelector('.USCfSb') != null,
+            ) // Check for checkmark icon
+            .map((element) => element.querySelector('.e3ZUqe')?.text.trim())
+            .where((title) => title != null)
+            .cast<String>()
+            .toList();
 
     json[podcastTitle] = completedEpisodes.toList();
   }

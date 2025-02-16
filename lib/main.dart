@@ -17,7 +17,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // TODO: Add Firebase configuration to the init-script?
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+    name: 'lohnn-podcast',
+  );
   await Repository.configure(databaseFactory);
   await Repository().initialize();
 
