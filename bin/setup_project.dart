@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,7 +5,7 @@ import 'dart:io';
 
 void main(List<String> args) {
   if (args.contains('--help')) {
-    print('''
+    stdout.writeln('''
     This script sets up the project with the necessary secrets.
     
     You can either provide a file with the secrets or enter them manually in 
@@ -43,7 +42,7 @@ void main(List<String> args) {
       googleServerClientId: keys.serverClientId,
     ),
   );
-  print('Config is now set up and ready to go!');
+  stdout.writeln('Config is now set up and ready to go!');
 }
 
 String secretsPlistContent(String reversedClientId) => '''
@@ -106,28 +105,28 @@ class Keys {
   });
 
   factory Keys.collectFromInput() {
-    print("First let's set up your Google auth URL.");
+    stdout.writeln("First let's set up your Google auth URL.");
 
-    print(
+    stdout.writeln(
       'Please go to https://console.cloud.google.com/apis/credentials and create a new OAuth 2.0 client ID for Apple (iOS).',
     );
-    print(
+    stdout.writeln(
       'Please enter the client id: (e.g. 123456789-asdf4321.apps.googleusercontent.com)',
     );
 
     final clientId = stdin.readLineSync();
 
-    print('Also create a server client ID for the same project.');
-    print(
+    stdout.writeln('Also create a server client ID for the same project.');
+    stdout.writeln(
       'Please enter the server client id: (e.g. 123456789-asdf4321.apps.googleusercontent.com)',
     );
     final serverClientId = stdin.readLineSync();
 
-    print("Now let's set up your Supabase backend.");
-    print('Enter your Supabase url: (e.g. https://abc123.supabase.co)');
+    stdout.writeln("Now let's set up your Supabase backend.");
+    stdout.writeln('Enter your Supabase url: (e.g. https://abc123.supabase.co)');
     final backendUrl = stdin.readLineSync();
 
-    print('Enter your Supabase anon key: (e.g. abc123)');
+    stdout.writeln('Enter your Supabase anon key: (e.g. abc123)');
     final supabaseAnonKey = stdin.readLineSync();
 
     return Keys(

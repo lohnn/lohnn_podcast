@@ -22,15 +22,11 @@ class UserEpisodeStatusMapper extends ClassMapperBase<UserEpisodeStatus> {
   final String id = 'UserEpisodeStatus';
 
   static String _$episodeId(UserEpisodeStatus v) => v.episodeId;
-  static const Field<UserEpisodeStatus, String> _f$episodeId = Field(
-    'episodeId',
-    _$episodeId,
-  );
+  static const Field<UserEpisodeStatus, String> _f$episodeId =
+      Field('episodeId', _$episodeId);
   static bool _$isPlayed(UserEpisodeStatus v) => v.isPlayed;
-  static const Field<UserEpisodeStatus, bool> _f$isPlayed = Field(
-    'isPlayed',
-    _$isPlayed,
-  );
+  static const Field<UserEpisodeStatus, bool> _f$isPlayed =
+      Field('isPlayed', _$isPlayed);
   static DurationModel _$currentPosition(UserEpisodeStatus v) =>
       v.currentPosition;
   static const Field<UserEpisodeStatus, DurationModel> _f$currentPosition =
@@ -45,10 +41,9 @@ class UserEpisodeStatusMapper extends ClassMapperBase<UserEpisodeStatus> {
 
   static UserEpisodeStatus _instantiate(DecodingData data) {
     return UserEpisodeStatus(
-      episodeId: data.dec(_f$episodeId),
-      isPlayed: data.dec(_f$isPlayed),
-      currentPosition: data.dec(_f$currentPosition),
-    );
+        episodeId: data.dec(_f$episodeId),
+        isPlayed: data.dec(_f$isPlayed),
+        currentPosition: data.dec(_f$currentPosition));
   }
 
   @override
@@ -74,57 +69,42 @@ mixin UserEpisodeStatusMappable {
         .encodeMap<UserEpisodeStatus>(this as UserEpisodeStatus);
   }
 
-  UserEpisodeStatusCopyWith<
-    UserEpisodeStatus,
-    UserEpisodeStatus,
-    UserEpisodeStatus
-  >
-  get copyWith => _UserEpisodeStatusCopyWithImpl(
-    this as UserEpisodeStatus,
-    $identity,
-    $identity,
-  );
+  UserEpisodeStatusCopyWith<UserEpisodeStatus, UserEpisodeStatus,
+          UserEpisodeStatus>
+      get copyWith => _UserEpisodeStatusCopyWithImpl(
+          this as UserEpisodeStatus, $identity, $identity);
   @override
   String toString() {
-    return UserEpisodeStatusMapper.ensureInitialized().stringifyValue(
-      this as UserEpisodeStatus,
-    );
+    return UserEpisodeStatusMapper.ensureInitialized()
+        .stringifyValue(this as UserEpisodeStatus);
   }
 
   @override
   bool operator ==(Object other) {
-    return UserEpisodeStatusMapper.ensureInitialized().equalsValue(
-      this as UserEpisodeStatus,
-      other,
-    );
+    return UserEpisodeStatusMapper.ensureInitialized()
+        .equalsValue(this as UserEpisodeStatus, other);
   }
 
   @override
   int get hashCode {
-    return UserEpisodeStatusMapper.ensureInitialized().hashValue(
-      this as UserEpisodeStatus,
-    );
+    return UserEpisodeStatusMapper.ensureInitialized()
+        .hashValue(this as UserEpisodeStatus);
   }
 }
 
 extension UserEpisodeStatusValueCopy<$R, $Out>
     on ObjectCopyWith<$R, UserEpisodeStatus, $Out> {
   UserEpisodeStatusCopyWith<$R, UserEpisodeStatus, $Out>
-  get $asUserEpisodeStatus =>
-      $base.as((v, t, t2) => _UserEpisodeStatusCopyWithImpl(v, t, t2));
+      get $asUserEpisodeStatus =>
+          $base.as((v, t, t2) => _UserEpisodeStatusCopyWithImpl(v, t, t2));
 }
 
-abstract class UserEpisodeStatusCopyWith<
-  $R,
-  $In extends UserEpisodeStatus,
-  $Out
->
-    implements ClassCopyWith<$R, $In, $Out> {
+abstract class UserEpisodeStatusCopyWith<$R, $In extends UserEpisodeStatus,
+    $Out> implements ClassCopyWith<$R, $In, $Out> {
   DurationModelCopyWith<$R, DurationModel, DurationModel> get currentPosition;
   $R call({String? episodeId, bool? isPlayed, DurationModel? currentPosition});
   UserEpisodeStatusCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  );
+      Then<$Out2, $R2> t);
 }
 
 class _UserEpisodeStatusCopyWithImpl<$R, $Out>
@@ -139,26 +119,23 @@ class _UserEpisodeStatusCopyWithImpl<$R, $Out>
   DurationModelCopyWith<$R, DurationModel, DurationModel> get currentPosition =>
       $value.currentPosition.copyWith.$chain((v) => call(currentPosition: v));
   @override
-  $R call({
-    String? episodeId,
-    bool? isPlayed,
-    DurationModel? currentPosition,
-  }) => $apply(
-    FieldCopyWithData({
-      if (episodeId != null) #episodeId: episodeId,
-      if (isPlayed != null) #isPlayed: isPlayed,
-      if (currentPosition != null) #currentPosition: currentPosition,
-    }),
-  );
+  $R call(
+          {String? episodeId,
+          bool? isPlayed,
+          DurationModel? currentPosition}) =>
+      $apply(FieldCopyWithData({
+        if (episodeId != null) #episodeId: episodeId,
+        if (isPlayed != null) #isPlayed: isPlayed,
+        if (currentPosition != null) #currentPosition: currentPosition
+      }));
   @override
   UserEpisodeStatus $make(CopyWithData data) => UserEpisodeStatus(
-    episodeId: data.get(#episodeId, or: $value.episodeId),
-    isPlayed: data.get(#isPlayed, or: $value.isPlayed),
-    currentPosition: data.get(#currentPosition, or: $value.currentPosition),
-  );
+      episodeId: data.get(#episodeId, or: $value.episodeId),
+      isPlayed: data.get(#isPlayed, or: $value.isPlayed),
+      currentPosition: data.get(#currentPosition, or: $value.currentPosition));
 
   @override
   UserEpisodeStatusCopyWith<$R2, UserEpisodeStatus, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  ) => _UserEpisodeStatusCopyWithImpl($value, $cast, t);
+          Then<$Out2, $R2> t) =>
+      _UserEpisodeStatusCopyWithImpl($value, $cast, t);
 }

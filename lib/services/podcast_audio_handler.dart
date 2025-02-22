@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:logging/logging.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/data/episode_with_status.dart';
@@ -26,10 +27,13 @@ class PodcastMediaItem extends MediaItem {
 
 class PodcastAudioHandler extends BaseAudioHandler
     with SeekHandler, QueueHandler {
+  final log = Logger('se.lohnn.podcast.PodcastAudioHandler');
+
   final _player = AudioPlayer();
   final AudioSession audioSession;
 
   @override
+  // Just an override to set the type of the BehaviorSubject to PodcastMediaItem.
   // ignore: overridden_fields
   final BehaviorSubject<PodcastMediaItem?> mediaItem = BehaviorSubject.seeded(
     null,
@@ -48,7 +52,6 @@ class PodcastAudioHandler extends BaseAudioHandler
     // So that our clients (the Flutter UI and the system notification) know
     // what state to display, here we set up our audio handler to broadcast all
     // playback state changes as they happen via playbackState...
-    // @TODO: Can we send current position updates to [playbackState]
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
   }
 
@@ -61,36 +64,42 @@ class PodcastAudioHandler extends BaseAudioHandler
 
   void _startPositionStream() {
     _stopPositionStream();
-    print(
+
+    log.fine(
       'Starting position stream for ${mediaItem.valueOrNull?.episode.title}',
     );
     _positionSubscription = _player.positionStream
         .throttleTime(
-          const Duration(seconds: 4),
+          const Duration(seconds: 10),
           leading: false,
           trailing: true,
         )
         .distinct()
         .listen((position) async {
           final currentEpisode = mediaItem.valueOrNull?.episode;
-          print(
+          log.fine(
             'Position: $position - Current episode: ${currentEpisode?.title}',
           );
 
           if (currentEpisode case final currentEpisode?) {
-            final status = await _getForEpisode(currentEpisode);
-            final newStatus = status.status.copyWith(
-              currentPosition: DurationModel(position),
+            await _sendPositionUpdate(
+              episode: currentEpisode,
+              position: position,
             );
-            Repository().upsert<UserEpisodeStatus>(newStatus);
           }
         });
   }
 
-  void _sendPositionUpdate({
-    required Duration duration,
+  Future<void> _sendPositionUpdate({
     required Episode episode,
-  }) {}
+    required Duration position,
+  }) async {
+    final status = await _getForEpisode(episode);
+    final newStatus = status.status.copyWith(
+      currentPosition: DurationModel(position),
+    );
+    await Repository().upsert<UserEpisodeStatus>(newStatus);
+  }
 
   bool get isPlaying => _player.playing;
 
@@ -164,7 +173,7 @@ class PodcastAudioHandler extends BaseAudioHandler
       return;
     }
 
-    print(
+    log.fine(
       'Loading episode: ${status.episode.title} - ${status.status.currentPosition.duration}',
     );
 
@@ -194,12 +203,7 @@ class PodcastAudioHandler extends BaseAudioHandler
         await Repository()
             .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
             .firstOrNull;
-    return EpisodeWithStatus(
-      episode: episode,
-      // TODO: Implement
-      playingFromDownloaded: false,
-      status: status,
-    );
+    return EpisodeWithStatus(episode: episode, status: status);
   }
 
   void clearPlaying() {
@@ -213,6 +217,7 @@ class PodcastAudioHandler extends BaseAudioHandler
   /// it can be broadcast to audio_service clients.
   PlaybackState _transformEvent(PlaybackEvent event) {
     return PlaybackState(
+      updateTime: event.updateTime,
       controls: [
         const MediaControl(
           androidIcon: 'drawable/baseline_replay_10_24',
@@ -226,6 +231,7 @@ class PodcastAudioHandler extends BaseAudioHandler
           action: MediaAction.fastForward,
         ),
       ],
+      androidCompactActionIndices: const [0, 1, 2],
       systemActions: const {
         MediaAction.seek,
         MediaAction.seekForward,

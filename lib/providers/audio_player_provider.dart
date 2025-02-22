@@ -124,8 +124,6 @@ class AudioPlayerPod extends _$AudioPlayerPod {
             .firstOrNull;
     return EpisodeWithStatus(
       episode: episode,
-      // TODO: Implement
-      playingFromDownloaded: false,
       status: status,
     );
   }

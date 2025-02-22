@@ -1,7 +1,11 @@
+import 'dart:developer' as developer;
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/default_firebase_config.dart';
 import 'package:podcast/providers/app_lifecycle_state_provider.dart';
@@ -16,6 +20,23 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  if (kDebugMode) {
+    hierarchicalLoggingEnabled = true;
+    Logger.root.level = Level.ALL;
+    Logger.root.onRecord.listen((record) {
+      developer.log(
+        record.message,
+        time: record.time,
+        level: record.level.value,
+        name: record.loggerName,
+        stackTrace: record.stackTrace,
+        error: record.error,
+        sequenceNumber: record.sequenceNumber,
+        zone: record.zone,
+      );
+    });
+  }
+  
   // TODO: Add Firebase configuration to the init-script?
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

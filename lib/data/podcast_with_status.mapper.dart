@@ -22,28 +22,18 @@ class PodcastWithStatusMapper extends ClassMapperBase<PodcastWithStatus> {
   final String id = 'PodcastWithStatus';
 
   static Podcast _$podcast(PodcastWithStatus v) => v.podcast;
-  static const Field<PodcastWithStatus, Podcast> _f$podcast = Field(
-    'podcast',
-    _$podcast,
-  );
+  static const Field<PodcastWithStatus, Podcast> _f$podcast =
+      Field('podcast', _$podcast);
   static int? _$listenedEpisodes(PodcastWithStatus v) => v.listenedEpisodes;
-  static const Field<PodcastWithStatus, int> _f$listenedEpisodes = Field(
-    'listenedEpisodes',
-    _$listenedEpisodes,
-    key: 'listened_episodes',
-  );
+  static const Field<PodcastWithStatus, int> _f$listenedEpisodes =
+      Field('listenedEpisodes', _$listenedEpisodes, key: r'listened_episodes');
   static int? _$totalEpisodes(PodcastWithStatus v) => v.totalEpisodes;
-  static const Field<PodcastWithStatus, int> _f$totalEpisodes = Field(
-    'totalEpisodes',
-    _$totalEpisodes,
-    key: 'total_episodes',
-  );
+  static const Field<PodcastWithStatus, int> _f$totalEpisodes =
+      Field('totalEpisodes', _$totalEpisodes, key: r'total_episodes');
   static bool? _$hasUnseenEpisodes(PodcastWithStatus v) => v.hasUnseenEpisodes;
   static const Field<PodcastWithStatus, bool> _f$hasUnseenEpisodes = Field(
-    'hasUnseenEpisodes',
-    _$hasUnseenEpisodes,
-    key: 'has_unseen_episodes',
-  );
+      'hasUnseenEpisodes', _$hasUnseenEpisodes,
+      key: r'has_unseen_episodes');
 
   @override
   final MappableFields<PodcastWithStatus> fields = const {
@@ -55,11 +45,10 @@ class PodcastWithStatusMapper extends ClassMapperBase<PodcastWithStatus> {
 
   static PodcastWithStatus _instantiate(DecodingData data) {
     return PodcastWithStatus(
-      podcast: data.dec(_f$podcast),
-      listenedEpisodes: data.dec(_f$listenedEpisodes),
-      totalEpisodes: data.dec(_f$totalEpisodes),
-      hasUnseenEpisodes: data.dec(_f$hasUnseenEpisodes),
-    );
+        podcast: data.dec(_f$podcast),
+        listenedEpisodes: data.dec(_f$listenedEpisodes),
+        totalEpisodes: data.dec(_f$totalEpisodes),
+        hasUnseenEpisodes: data.dec(_f$hasUnseenEpisodes));
   }
 
   @override
@@ -85,62 +74,46 @@ mixin PodcastWithStatusMappable {
         .encodeMap<PodcastWithStatus>(this as PodcastWithStatus);
   }
 
-  PodcastWithStatusCopyWith<
-    PodcastWithStatus,
-    PodcastWithStatus,
-    PodcastWithStatus
-  >
-  get copyWith => _PodcastWithStatusCopyWithImpl(
-    this as PodcastWithStatus,
-    $identity,
-    $identity,
-  );
+  PodcastWithStatusCopyWith<PodcastWithStatus, PodcastWithStatus,
+          PodcastWithStatus>
+      get copyWith => _PodcastWithStatusCopyWithImpl(
+          this as PodcastWithStatus, $identity, $identity);
   @override
   String toString() {
-    return PodcastWithStatusMapper.ensureInitialized().stringifyValue(
-      this as PodcastWithStatus,
-    );
+    return PodcastWithStatusMapper.ensureInitialized()
+        .stringifyValue(this as PodcastWithStatus);
   }
 
   @override
   bool operator ==(Object other) {
-    return PodcastWithStatusMapper.ensureInitialized().equalsValue(
-      this as PodcastWithStatus,
-      other,
-    );
+    return PodcastWithStatusMapper.ensureInitialized()
+        .equalsValue(this as PodcastWithStatus, other);
   }
 
   @override
   int get hashCode {
-    return PodcastWithStatusMapper.ensureInitialized().hashValue(
-      this as PodcastWithStatus,
-    );
+    return PodcastWithStatusMapper.ensureInitialized()
+        .hashValue(this as PodcastWithStatus);
   }
 }
 
 extension PodcastWithStatusValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PodcastWithStatus, $Out> {
   PodcastWithStatusCopyWith<$R, PodcastWithStatus, $Out>
-  get $asPodcastWithStatus =>
-      $base.as((v, t, t2) => _PodcastWithStatusCopyWithImpl(v, t, t2));
+      get $asPodcastWithStatus =>
+          $base.as((v, t, t2) => _PodcastWithStatusCopyWithImpl(v, t, t2));
 }
 
-abstract class PodcastWithStatusCopyWith<
-  $R,
-  $In extends PodcastWithStatus,
-  $Out
->
-    implements ClassCopyWith<$R, $In, $Out> {
+abstract class PodcastWithStatusCopyWith<$R, $In extends PodcastWithStatus,
+    $Out> implements ClassCopyWith<$R, $In, $Out> {
   PodcastCopyWith<$R, Podcast, Podcast> get podcast;
-  $R call({
-    Podcast? podcast,
-    int? listenedEpisodes,
-    int? totalEpisodes,
-    bool? hasUnseenEpisodes,
-  });
+  $R call(
+      {Podcast? podcast,
+      int? listenedEpisodes,
+      int? totalEpisodes,
+      bool? hasUnseenEpisodes});
   PodcastWithStatusCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  );
+      Then<$Out2, $R2> t);
 }
 
 class _PodcastWithStatusCopyWithImpl<$R, $Out>
@@ -155,32 +128,28 @@ class _PodcastWithStatusCopyWithImpl<$R, $Out>
   PodcastCopyWith<$R, Podcast, Podcast> get podcast =>
       $value.podcast.copyWith.$chain((v) => call(podcast: v));
   @override
-  $R call({
-    Podcast? podcast,
-    int? listenedEpisodes,
-    int? totalEpisodes,
-    bool? hasUnseenEpisodes,
-  }) => $apply(
-    FieldCopyWithData({
-      if (podcast != null) #podcast: podcast,
-      if (listenedEpisodes != null) #listenedEpisodes: listenedEpisodes,
-      if (totalEpisodes != null) #totalEpisodes: totalEpisodes,
-      if (hasUnseenEpisodes != null) #hasUnseenEpisodes: hasUnseenEpisodes,
-    }),
-  );
+  $R call(
+          {Podcast? podcast,
+          int? listenedEpisodes,
+          int? totalEpisodes,
+          bool? hasUnseenEpisodes}) =>
+      $apply(FieldCopyWithData({
+        if (podcast != null) #podcast: podcast,
+        if (listenedEpisodes != null) #listenedEpisodes: listenedEpisodes,
+        if (totalEpisodes != null) #totalEpisodes: totalEpisodes,
+        if (hasUnseenEpisodes != null) #hasUnseenEpisodes: hasUnseenEpisodes
+      }));
   @override
   PodcastWithStatus $make(CopyWithData data) => PodcastWithStatus(
-    podcast: data.get(#podcast, or: $value.podcast),
-    listenedEpisodes: data.get(#listenedEpisodes, or: $value.listenedEpisodes),
-    totalEpisodes: data.get(#totalEpisodes, or: $value.totalEpisodes),
-    hasUnseenEpisodes: data.get(
-      #hasUnseenEpisodes,
-      or: $value.hasUnseenEpisodes,
-    ),
-  );
+      podcast: data.get(#podcast, or: $value.podcast),
+      listenedEpisodes:
+          data.get(#listenedEpisodes, or: $value.listenedEpisodes),
+      totalEpisodes: data.get(#totalEpisodes, or: $value.totalEpisodes),
+      hasUnseenEpisodes:
+          data.get(#hasUnseenEpisodes, or: $value.hasUnseenEpisodes));
 
   @override
   PodcastWithStatusCopyWith<$R2, PodcastWithStatus, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  ) => _PodcastWithStatusCopyWithImpl($value, $cast, t);
+          Then<$Out2, $R2> t) =>
+      _PodcastWithStatusCopyWithImpl($value, $cast, t);
 }

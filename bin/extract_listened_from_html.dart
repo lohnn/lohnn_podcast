@@ -1,4 +1,6 @@
-// ignore_for_file: avoid_print, depend_on_referenced_packages
+// This is just a script to extract listened episodes from the HTML files that
+// are exported from Google Podcasts.
+// ignore_for_file: depend_on_referenced_packages
 import 'dart:convert';
 import 'dart:io';
 
@@ -15,7 +17,7 @@ void main() async {
   final json = <String, List<String>>{};
 
   for (final file in files) {
-    print('Extracting listened episodes from ${file.path}...');
+    stdout.writeln('Extracting listened episodes from ${file.path}...');
     final htmlContent = await file.readAsString();
 
     // 2. Parse the HTML
@@ -40,5 +42,5 @@ void main() async {
   }
 
   File('bin/listened-episodes.json').writeAsStringSync(jsonEncode(json));
-  print('${json.values.flattened.length} listened episodes extracted');
+  stdout.writeln('${json.values.flattened.length} listened episodes extracted');
 }
