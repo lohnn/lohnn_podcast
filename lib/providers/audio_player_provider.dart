@@ -83,7 +83,6 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     }
   }
 
-  // TODO: Updates to queue (without playing) does not trigger this
   Future<void> updateQueue(List<Episode> queue) async {
     if (queue.isNotEmpty) {
       final statuses =
@@ -135,8 +134,6 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     if (playbackState.processingState == AudioProcessingState.completed) {
       final episodeWithStatus = await future;
       await _player.stop();
-
-      // TODO: Validate following logic is valid
 
       // Set listened to true in episode
       final status = episodeWithStatus!.status.copyWith(isPlayed: true);

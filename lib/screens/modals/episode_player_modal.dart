@@ -41,7 +41,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
               final currentPosition?,
               final episodeDuration?,
             )) ...[
-              Slider.adaptive(
+              Slider(
                 value: min(
                   currentPosition.inMilliseconds.toDouble(),
                   episodeDuration.inMilliseconds.toDouble(),

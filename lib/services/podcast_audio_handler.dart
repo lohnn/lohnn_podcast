@@ -61,23 +61,36 @@ class PodcastAudioHandler extends BaseAudioHandler
 
   void _startPositionStream() {
     _stopPositionStream();
+    print(
+      'Starting position stream for ${mediaItem.valueOrNull?.episode.title}',
+    );
     _positionSubscription = _player.positionStream
-        .throttleTime(const Duration(seconds: 10), trailing: true)
+        .throttleTime(
+          const Duration(seconds: 4),
+          leading: false,
+          trailing: true,
+        )
+        .distinct()
         .listen((position) async {
           final currentEpisode = mediaItem.valueOrNull?.episode;
+          print(
+            'Position: $position - Current episode: ${currentEpisode?.title}',
+          );
 
           if (currentEpisode case final currentEpisode?) {
             final status = await _getForEpisode(currentEpisode);
-            final newPosition = DurationModel(position);
-
             final newStatus = status.status.copyWith(
-              currentPosition: newPosition,
+              currentPosition: DurationModel(position),
             );
-            // TODO: Look into why this is called twice every time
             Repository().upsert<UserEpisodeStatus>(newStatus);
           }
         });
   }
+
+  void _sendPositionUpdate({
+    required Duration duration,
+    required Episode episode,
+  }) {}
 
   bool get isPlaying => _player.playing;
 
@@ -151,6 +164,10 @@ class PodcastAudioHandler extends BaseAudioHandler
       return;
     }
 
+    print(
+      'Loading episode: ${status.episode.title} - ${status.status.currentPosition.duration}',
+    );
+
     final duration = await _player.setAudioSource(
       AudioSource.uri(episodeUri),
       initialPosition: status.status.currentPosition.duration,
@@ -164,7 +181,7 @@ class PodcastAudioHandler extends BaseAudioHandler
     );
 
     // Seek to the last known position of the episode.
-    seek(status.status.currentPosition.duration);
+    await seek(status.status.currentPosition.duration);
 
     // If the player was playing (such as when an episode has finished),
     // continue playing this new episode.
