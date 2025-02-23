@@ -59,7 +59,10 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     try {
       _player = await ref.watch(_audioServicePodProvider.future);
 
-      final subscription = _player.playbackState.listen(_onPlaybackStateChange);
+      final subscription = _player.playbackState
+          .map((e) => e.processingState)
+          .distinct()
+          .listen(_onPlaybackStateChange);
       ref.onDispose(subscription.cancel);
 
       // Initial setup of the queue
@@ -122,14 +125,13 @@ class AudioPlayerPod extends _$AudioPlayerPod {
         await Repository()
             .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
             .firstOrNull;
-    return EpisodeWithStatus(
-      episode: episode,
-      status: status,
-    );
+    return EpisodeWithStatus(episode: episode, status: status);
   }
 
-  Future<void> _onPlaybackStateChange(PlaybackState playbackState) async {
-    if (playbackState.processingState == AudioProcessingState.completed) {
+  Future<void> _onPlaybackStateChange(
+    AudioProcessingState playbackState,
+  ) async {
+    if (playbackState == AudioProcessingState.completed) {
       final episodeWithStatus = await future;
       await _player.stop();
 
