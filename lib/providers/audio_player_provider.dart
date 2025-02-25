@@ -88,39 +88,36 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
   Future<void> updateQueue(List<Episode> queue) async {
     if (queue.isNotEmpty) {
-      final statuses =
-          await [for (final episode in queue) _getForEpisode(episode)].wait;
-      await _player.setQueue([for (final status in statuses) status]);
+      await _player.setQueue(queue);
 
-      final nextEpisode = statuses.firstOrNull;
+      final nextEpisode = queue.firstOrNull;
       if (nextEpisode != null) {
         loadNextEpisode(nextEpisode);
+        state = AsyncData(await _getStatusForEpisode(nextEpisode));
+      } else {
+        state = const AsyncData(null);
       }
-
-      state = AsyncData(nextEpisode);
     } else {
       state = const AsyncData(null);
     }
   }
 
-  Future<void> loadNextEpisode(
-    EpisodeWithStatus episodeWithStatus, {
-    bool autoPlay = false,
-  }) async {
-    // TODO: Check if this is cancelled correctly when changing during download
+  Future<void> loadNextEpisode(Episode episode, {bool autoPlay = false}) async {
     await for (final fileResponse
-        in ref
-            .read(episodeLoaderProvider(episodeWithStatus.episode).notifier)
-            .tryDownload()) {
+        in ref.read(episodeLoaderProvider(episode).notifier).tryDownload()) {
+      // TODO: This will be called multiple times if the episode is not
+      //  downloaded. Potentially causing the player to load the episode when
+      //  another is already playing. - We need to stop the player from
+      //  restarting the episode if another has started playing.F
       await _player.loadEpisode(
-        episodeWithStatus,
+        episode,
         episodeUri: fileResponse.currentUri,
         autoPlay: autoPlay,
       );
     }
   }
 
-  Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
+  Future<EpisodeWithStatus> _getStatusForEpisode(Episode episode) async {
     final status =
         await Repository()
             .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
@@ -146,7 +143,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
       // Start next episode from queue? (if not automatic)
       if (nextItem case final nextItem?) {
-        playEpisode(nextItem);
+        await playEpisode(nextItem);
       } else {
         _player.clearPlaying();
         state = const AsyncData(null);
@@ -155,12 +152,12 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   }
 
   Future<void> playEpisode(Episode episode, {bool autoPlay = true}) async {
-    final status = await _getForEpisode(episode);
+    final status = await _getStatusForEpisode(episode);
     state = AsyncData(status);
 
     ref.read(playlistPodProvider.notifier).addToTopOfQueue(episode);
 
-    loadNextEpisode(status, autoPlay: true);
+    loadNextEpisode(episode, autoPlay: true);
 
     if (autoPlay) _player.play();
   }

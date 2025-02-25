@@ -94,7 +94,7 @@ class PodcastAudioHandler extends BaseAudioHandler
     required Episode episode,
     required Duration position,
   }) async {
-    final status = await _getForEpisode(episode);
+    final status = await _getStatusForEpisode(episode);
     final newStatus = status.status.copyWith(
       currentPosition: DurationModel(position),
     );
@@ -153,14 +153,14 @@ class PodcastAudioHandler extends BaseAudioHandler
   @override
   Future<void> seek(Duration position) => _player.seek(position);
 
-  Future<void> setQueue(List<EpisodeWithStatus> newQueue) async {
+  Future<void> setQueue(List<Episode> newQueue) async {
     await super.updateQueue([
-      for (final status in newQueue) status.episode.mediaItem(),
+      for (final episode in newQueue) episode.mediaItem(),
     ]);
   }
 
   Future<void> loadEpisode(
-    EpisodeWithStatus status, {
+    Episode episode, {
     required Uri episodeUri,
     bool autoPlay = false,
   }) async {
@@ -172,9 +172,11 @@ class PodcastAudioHandler extends BaseAudioHandler
     ) when uri == episodeUri) {
       return;
     }
+    
+    final status = await _getStatusForEpisode(episode);
 
     log.fine(
-      'Loading episode: ${status.episode.title} - ${status.status.currentPosition.duration}',
+      'Loading episode: ${episode.title} - ${status.status.currentPosition.duration}',
     );
 
     final duration = await _player.setAudioSource(
@@ -183,7 +185,7 @@ class PodcastAudioHandler extends BaseAudioHandler
     );
 
     mediaItem.add(
-      status.episode.mediaItem(
+      episode.mediaItem(
         actualDuration: duration,
         isPlayingFromDownloaded: episodeUri.scheme == 'file',
       ),
@@ -198,7 +200,8 @@ class PodcastAudioHandler extends BaseAudioHandler
     _startPositionStream();
   }
 
-  Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
+  // @TODO: This is duplicated with [AudioPlayerPod._getStatusForEpisode]
+  Future<EpisodeWithStatus> _getStatusForEpisode(Episode episode) async {
     final status =
         await Repository()
             .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
