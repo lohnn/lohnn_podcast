@@ -76,6 +76,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
