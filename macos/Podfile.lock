@@ -252,14 +252,14 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
 
 SPEC CHECKSUMS:
-  app_links: afe860c55c7ef176cea7fb630a2b7d7736de591d
+  app_links: 86a57d95d4dec830373b8c85c21d1c59a4a5dc21
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
-  audio_service: aa99a6ba2ae7565996015322b0bb024e1d25c6fd
-  audio_session: eaca2512cf2b39212d724f35d11f46180ad3a33e
+  audio_service: cab6c1a0eaf01b5a35b567e11fa67d3cc1956910
+  audio_session: 728ae3823d914f809c485d390274861a24b0904e
   Firebase: d80354ed7f6df5f9aca55e9eb47cc4b634735eaf
-  firebase_analytics: a0691c6fed27491747d59eaed7b340e190239d9d
-  firebase_core: 09900d820b67333857f9cdded7ac10558f1f5592
-  firebase_crashlytics: 90b0c76836a3d88c330ac24b964103abdd2bbc65
+  firebase_analytics: 1a71372a9735d7046d2c69db848a8d178f9fb587
+  firebase_core: 68e1d27035b096239f147a041643e14e156f1481
+  firebase_crashlytics: 58dd6dab26f83a6d76ec041d44e1af9758867f43
   FirebaseAnalytics: 4fd42def128146e24e480e89f310e3d8534ea42b
   FirebaseCore: 99fe0c4b44a39f37d99e6404e02009d2db5d718d
   FirebaseCoreExtension: 3d3f2017a00d06e09ab4ebe065391b0bb642565e
@@ -269,23 +269,23 @@ SPEC CHECKSUMS:
   FirebaseRemoteConfigInterop: 98897a64aa372eac3c5b3fe2816594ccfaac55ef
   FirebaseSessions: c4d40a97f88f9eaff2834d61b4fea0a522d62123
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  google_sign_in_ios: 19297361f2c51d7d8ac0201b866ef1fa5d1f94a8
+  google_sign_in_ios: 4111e87aa5e24a4404f00ea13479f35e571969cc
   GoogleAppMeasurement: fc0817122bd4d4189164f85374e06773b9561896
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleSignIn: d4281ab6cf21542b1cfaff85c191f230b399d2db
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
   GTMSessionFetcher: 8000756fc1c19d2e5697b90311f7832d2e33f6cd
-  just_audio: 4e391f57b79cad2b0674030a00453ca5ce817eed
+  just_audio: a42c63806f16995daf5b219ae1d679deb76e6a79
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
-  rive_common: ea79040f86acf053a2d5a75a2506175ee39796a5
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
-  sign_in_with_apple: 6673c03c9e3643f6c8d33601943fbfa9ae99f94e
-  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
-  url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
+  rive_common: 9580b9f1f08a8c85006083078e80479edf3db26a
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
+  sign_in_with_apple: a9e97e744e8edc36aefc2723111f652102a7a727
+  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
+  url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
 
 PODFILE CHECKSUM: f233e6b54bf29e673fd0179834e6bbb91cc027d0
 
