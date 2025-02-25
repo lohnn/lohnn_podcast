@@ -22,7 +22,8 @@ class PodcastMapper extends ClassMapperBase<Podcast> {
   final String id = 'Podcast';
 
   static String _$id(Podcast v) => v.id;
-  static const Field<Podcast, String> _f$id = Field('id', _$id, key: 'rss_url');
+  static const Field<Podcast, String> _f$id =
+      Field('id', _$id, key: r'rss_url');
   static String _$name(Podcast v) => v.name;
   static const Field<Podcast, String> _f$name = Field('name', _$name);
   static String _$link(Podcast v) => v.link;
@@ -32,14 +33,14 @@ class PodcastMapper extends ClassMapperBase<Podcast> {
       Field('description', _$description);
   static UriModel _$imageUrl(Podcast v) => v.imageUrl;
   static const Field<Podcast, UriModel> _f$imageUrl =
-      Field('imageUrl', _$imageUrl, key: 'image_url');
+      Field('imageUrl', _$imageUrl, key: r'image_url');
   static String? _$language(Podcast v) => v.language;
   static const Field<Podcast, String> _f$language =
       Field('language', _$language, opt: true);
   static String? _$lastBuildDate(Podcast v) => v.lastBuildDate;
   static const Field<Podcast, String> _f$lastBuildDate = Field(
       'lastBuildDate', _$lastBuildDate,
-      key: 'last_build_date', opt: true);
+      key: r'last_build_date', opt: true);
   static String? _$copyright(Podcast v) => v.copyright;
   static const Field<Podcast, String> _f$copyright =
       Field('copyright', _$copyright, opt: true);

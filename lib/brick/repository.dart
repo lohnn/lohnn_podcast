@@ -34,6 +34,19 @@ class Repository extends OfflineFirstWithSupabaseRepository
   static Future<void> configure(DatabaseFactory databaseFactory) async {
     final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
       databaseFactory: databaseFactory,
+      reattemptForStatusCodes: const [
+        400,
+        403,
+        404,
+        405,
+        408,
+        409,
+        429,
+        500,
+        502,
+        503,
+        504,
+      ],
     );
 
     await Supabase.initialize(
@@ -64,11 +77,9 @@ class Repository extends OfflineFirstWithSupabaseRepository
     );
   }
 
-  Future<void>
-      upsertLocalIterable<TModel extends OfflineFirstWithSupabaseModel>(
-    Iterable<TModel> instances, {
-    Query? query,
-  }) {
+  Future<void> upsertLocalIterable<
+    TModel extends OfflineFirstWithSupabaseModel
+  >(Iterable<TModel> instances, {Query? query}) {
     return instances.map(upsertLocal).wait;
   }
 

@@ -59,7 +59,10 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     try {
       _player = await ref.watch(_audioServicePodProvider.future);
 
-      final subscription = _player.playbackState.listen(_onPlaybackStateChange);
+      final subscription = _player.playbackState
+          .map((e) => e.processingState)
+          .distinct()
+          .listen(_onPlaybackStateChange);
       ref.onDispose(subscription.cancel);
 
       // Initial setup of the queue
@@ -83,58 +86,51 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     }
   }
 
-  // TODO: Updates to queue (without playing) does not trigger this
   Future<void> updateQueue(List<Episode> queue) async {
     if (queue.isNotEmpty) {
-      final statuses =
-          await [for (final episode in queue) _getForEpisode(episode)].wait;
-      await _player.setQueue([for (final status in statuses) status]);
+      await _player.setQueue(queue);
 
-      final nextEpisode = statuses.firstOrNull;
+      final nextEpisode = queue.firstOrNull;
       if (nextEpisode != null) {
         loadNextEpisode(nextEpisode);
+        state = AsyncData(await _getStatusForEpisode(nextEpisode));
+      } else {
+        state = const AsyncData(null);
       }
-
-      state = AsyncData(nextEpisode);
     } else {
       state = const AsyncData(null);
     }
   }
 
-  Future<void> loadNextEpisode(
-    EpisodeWithStatus episodeWithStatus, {
-    bool autoPlay = false,
-  }) async {
-    // TODO: Check if this is cancelled correctly when changing during download
-    await for (final fileResponse in ref
-        .read(episodeLoaderProvider(episodeWithStatus.episode).notifier)
-        .tryDownload()) {
+  Future<void> loadNextEpisode(Episode episode, {bool autoPlay = false}) async {
+    await for (final fileResponse
+        in ref.read(episodeLoaderProvider(episode).notifier).tryDownload()) {
+      // TODO: This will be called multiple times if the episode is not
+      //  downloaded. Potentially causing the player to load the episode when
+      //  another is already playing. - We need to stop the player from
+      //  restarting the episode if another has started playing.F
       await _player.loadEpisode(
-        episodeWithStatus,
+        episode,
         episodeUri: fileResponse.currentUri,
         autoPlay: autoPlay,
       );
     }
   }
 
-  Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
-    final status = await Repository()
-        .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
-        .firstOrNull;
-    return EpisodeWithStatus(
-      episode: episode,
-      // TODO: Implement
-      playingFromDownloaded: false,
-      status: status,
-    );
+  Future<EpisodeWithStatus> _getStatusForEpisode(Episode episode) async {
+    final status =
+        await Repository()
+            .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
+            .firstOrNull;
+    return EpisodeWithStatus(episode: episode, status: status);
   }
 
-  Future<void> _onPlaybackStateChange(PlaybackState playbackState) async {
-    if (playbackState.processingState == AudioProcessingState.completed) {
+  Future<void> _onPlaybackStateChange(
+    AudioProcessingState playbackState,
+  ) async {
+    if (playbackState == AudioProcessingState.completed) {
       final episodeWithStatus = await future;
       await _player.stop();
-
-      // TODO: Validate following logic is valid
 
       // Set listened to true in episode
       final status = episodeWithStatus!.status.copyWith(isPlayed: true);
@@ -147,7 +143,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
       // Start next episode from queue? (if not automatic)
       if (nextItem case final nextItem?) {
-        playEpisode(nextItem);
+        await playEpisode(nextItem);
       } else {
         _player.clearPlaying();
         state = const AsyncData(null);
@@ -155,35 +151,32 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     }
   }
 
-  Future<void> playEpisode(
-    Episode episode, {
-    bool autoPlay = true,
-  }) async {
-    final status = await _getForEpisode(episode);
+  Future<void> playEpisode(Episode episode, {bool autoPlay = true}) async {
+    final status = await _getStatusForEpisode(episode);
     state = AsyncData(status);
 
     ref.read(playlistPodProvider.notifier).addToTopOfQueue(episode);
 
-    loadNextEpisode(status, autoPlay: true);
+    loadNextEpisode(episode, autoPlay: true);
 
     if (autoPlay) _player.play();
   }
 
   void triggerMediaAction(MediaAction action) => switch (action) {
-        MediaAction.playPause => switch (
-              _player.playbackState.valueOrNull?.playing ?? false) {
-            true => _player.pause(),
-            false => _player.play(),
-          },
-        MediaAction.play => _player.play(),
-        MediaAction.pause => _player.pause(),
-        MediaAction.stop => _player.stop(),
-        MediaAction.fastForward => _player.fastForward(),
-        MediaAction.skipToNext => _player.fastForward(),
-        MediaAction.rewind => _player.rewind(),
-        MediaAction.skipToPrevious => _player.rewind(),
-        _ => throw UnsupportedError('Action $action not supported yet.')
-      };
+    MediaAction.playPause =>
+      switch (_player.playbackState.valueOrNull?.playing ?? false) {
+        true => _player.pause(),
+        false => _player.play(),
+      },
+    MediaAction.play => _player.play(),
+    MediaAction.pause => _player.pause(),
+    MediaAction.stop => _player.stop(),
+    MediaAction.fastForward => _player.fastForward(),
+    MediaAction.skipToNext => _player.fastForward(),
+    MediaAction.rewind => _player.rewind(),
+    MediaAction.skipToPrevious => _player.rewind(),
+    _ => throw UnsupportedError('Action $action not supported yet.'),
+  };
 
   void setPosition(int positionInMillis) {
     _player.seek(Duration(milliseconds: positionInMillis));
@@ -201,9 +194,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
 @riverpod
 Stream<({Duration position, Duration buffered, Duration? duration})>
-    currentPosition(
-  CurrentPositionRef ref,
-) async* {
+currentPosition(CurrentPositionRef ref) async* {
   final audioPlayer = await ref.watch(_audioServicePodProvider.future);
   yield* audioPlayer.positionStream;
 }

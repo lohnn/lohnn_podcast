@@ -26,13 +26,13 @@ class PodcastsWithStatus extends _$PodcastsWithStatus {
   void _listenToTableChanges() {
     // Update on user podcast subscriptions change, such as when last_seen is updated
     // @TODO: Trigger reload only on the podcast to which the episode belongs
-    ref.listen(
-      watchTableProvider('user_podcast_subscriptions'),
-      (oldValue, newValue) {
-        if (newValue == null) return;
-        ref.invalidateSelf();
-      },
-    );
+    ref.listen(watchTableProvider('user_podcast_subscriptions'), (
+      oldValue,
+      newValue,
+    ) {
+      if (newValue == null) return;
+      ref.invalidateSelf();
+    });
 
     // New episodes should trigger a reload
     // @TODO: Trigger reload only on the podcast to which the episode belongs
@@ -46,76 +46,68 @@ class PodcastsWithStatus extends _$PodcastsWithStatus {
     );
 
     // @TODO: Trigger reload only on the podcast to which the episode belongs
-    ref.listen(
-      userEpisodeStatusPodProvider,
-      (oldValue, newValue) {
-        final oldStatus = oldValue?.valueOrNull;
-        final newStatus = newValue.valueOrNull;
-        if (oldStatus == null) return;
-        if (newStatus == null) return;
-        if (oldStatus == newStatus) return;
+    ref.listen(userEpisodeStatusPodProvider, (oldValue, newValue) {
+      final oldStatus = oldValue?.valueOrNull;
+      final newStatus = newValue.valueOrNull;
+      if (oldStatus == null) return;
+      if (newStatus == null) return;
+      if (oldStatus == newStatus) return;
 
-        final oldListenedStatus =
-            oldStatus.values.map((value) => value.isPlayed).equatable;
-        final newListenedStatus =
-            newStatus.values.map((value) => value.isPlayed).equatable;
+      final oldListenedStatus =
+          oldStatus.values.map((value) => value.isPlayed).equatable;
+      final newListenedStatus =
+          newStatus.values.map((value) => value.isPlayed).equatable;
 
-        if (oldListenedStatus != newListenedStatus) {
-          ref.invalidateSelf();
-        }
-      },
-    );
+      if (oldListenedStatus != newListenedStatus) {
+        ref.invalidateSelf();
+      }
+    });
   }
 
   void _listenPodcastChanges() {
-    ref.listen(
-      podcastsProvider,
-      fireImmediately: true,
-      (oldValue, newValue) async {
-        final oldPodcasts = oldValue?.valueOrNull;
-        final newPodcasts = newValue.valueOrNull;
+    ref.listen(podcastsProvider, fireImmediately: true, (
+      oldValue,
+      newValue,
+    ) async {
+      final oldPodcasts = oldValue?.valueOrNull;
+      final newPodcasts = newValue.valueOrNull;
 
-        // If there is no podcasts in new value, we can just skip this
-        if (newPodcasts == null) return;
-        // Podcast list didn't actually update, let's just ignore
-        if (newPodcasts == oldPodcasts) return;
-        // If we don't already show data, let's first show converted null list
-        if (state is! AsyncData) {
-          state = AsyncData(
-            [
-              for (final podcast in newPodcasts)
-                PodcastWithStatus.notListened(podcast: podcast),
-            ].equatable,
-          );
-        }
-
-        final podcastsWithCount = await Repository()
-            .remoteProvider
-            .client
-            .rpc<List<Map<String, dynamic>>>(
-              'podcast_with_count',
-            );
-
+      // If there is no podcasts in new value, we can just skip this
+      if (newPodcasts == null) return;
+      // Podcast list didn't actually update, let's just ignore
+      if (newPodcasts == oldPodcasts) return;
+      // If we don't already show data, let's first show converted null list
+      if (state is! AsyncData) {
         state = AsyncData(
-          <PodcastWithStatus>[
-            for (final podcast in podcastsWithCount)
-              if (podcast
-                  case {
-                    'podcast_id': final String podcastId,
-                    'episode_count': final int episodeCount,
-                    'played_episode_count': final int playedEpisodeCount,
-                    'has_unseen_episodes': final bool hasUnseenEpisodes,
-                  })
-                PodcastWithStatus(
-                  podcast: newPodcasts
-                      .firstWhere((podcast) => podcast.id == podcastId),
-                  listenedEpisodes: playedEpisodeCount,
-                  totalEpisodes: episodeCount,
-                  hasUnseenEpisodes: hasUnseenEpisodes,
-                ),
+          [
+            for (final podcast in newPodcasts)
+              PodcastWithStatus.notListened(podcast: podcast),
           ].equatable,
         );
-      },
-    );
+      }
+
+      final podcastsWithCount = await Repository().remoteProvider.client
+          .rpc<List<Map<String, dynamic>>>('podcast_with_count');
+
+      state = AsyncData(
+        <PodcastWithStatus>[
+          for (final podcast in podcastsWithCount)
+            if (podcast case {
+              'podcast_id': final String podcastId,
+              'episode_count': final int episodeCount,
+              'played_episode_count': final int playedEpisodeCount,
+              'has_unseen_episodes': final bool hasUnseenEpisodes,
+            })
+              PodcastWithStatus(
+                podcast: newPodcasts.firstWhere(
+                  (podcast) => podcast.id == podcastId,
+                ),
+                listenedEpisodes: playedEpisodeCount,
+                totalEpisodes: episodeCount,
+                hasUnseenEpisodes: hasUnseenEpisodes,
+              ),
+        ].equatable,
+      );
+    });
   }
 }

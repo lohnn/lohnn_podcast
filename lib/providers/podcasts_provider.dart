@@ -52,13 +52,13 @@ class Podcasts extends _$Podcasts {
   /// the user's subscriptions to podcasts. When the table is updated, the
   /// podcast list is updated.
   void keepUpToDateWithSubscriptions() {
-    ref.listen(
-      watchTableProvider('user_podcast_subscriptions'),
-      (oldValue, newValue) {
-        if (newValue == null) return;
-        _syncWithRemote();
-      },
-    );
+    ref.listen(watchTableProvider('user_podcast_subscriptions'), (
+      oldValue,
+      newValue,
+    ) {
+      if (newValue == null) return;
+      _syncWithRemote();
+    });
   }
 
   /// Syncs the local database with the remote database, using force local sync,
@@ -77,15 +77,15 @@ class Podcasts extends _$Podcasts {
   Future<void> refreshAll() async {
     final podcasts = await future;
     await Repository().remoteProvider.client.functions.invoke(
-          'add_podcast_list',
-          body: podcasts.map((e) => e.rssUrl).toList(),
-        );
+      'add_podcast_list',
+      body: podcasts.map((e) => e.rssUrl).toList(),
+    );
   }
 
   Future<void> addPodcastToList(String rssUrl) {
     return Repository().remoteProvider.client.functions.invoke(
-          'add_podcast',
-          body: rssUrl,
-        );
+      'add_podcast',
+      body: rssUrl,
+    );
   }
 }

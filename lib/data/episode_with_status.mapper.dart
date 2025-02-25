@@ -25,10 +25,6 @@ class EpisodeWithStatusMapper extends ClassMapperBase<EpisodeWithStatus> {
   static Episode _$episode(EpisodeWithStatus v) => v.episode;
   static const Field<EpisodeWithStatus, Episode> _f$episode =
       Field('episode', _$episode);
-  static bool _$playingFromDownloaded(EpisodeWithStatus v) =>
-      v.playingFromDownloaded;
-  static const Field<EpisodeWithStatus, bool> _f$playingFromDownloaded =
-      Field('playingFromDownloaded', _$playingFromDownloaded);
   static UserEpisodeStatus _$status(EpisodeWithStatus v) => v.status;
   static const Field<EpisodeWithStatus, UserEpisodeStatus> _f$status =
       Field('status', _$status, opt: true);
@@ -36,15 +32,12 @@ class EpisodeWithStatusMapper extends ClassMapperBase<EpisodeWithStatus> {
   @override
   final MappableFields<EpisodeWithStatus> fields = const {
     #episode: _f$episode,
-    #playingFromDownloaded: _f$playingFromDownloaded,
     #status: _f$status,
   };
 
   static EpisodeWithStatus _instantiate(DecodingData data) {
     return EpisodeWithStatus(
-        episode: data.dec(_f$episode),
-        playingFromDownloaded: data.dec(_f$playingFromDownloaded),
-        status: data.dec(_f$status));
+        episode: data.dec(_f$episode), status: data.dec(_f$status));
   }
 
   @override
@@ -105,10 +98,7 @@ abstract class EpisodeWithStatusCopyWith<$R, $In extends EpisodeWithStatus,
   EpisodeCopyWith<$R, Episode, Episode> get episode;
   UserEpisodeStatusCopyWith<$R, UserEpisodeStatus, UserEpisodeStatus>
       get status;
-  $R call(
-      {Episode? episode,
-      bool? playingFromDownloaded,
-      UserEpisodeStatus? status});
+  $R call({Episode? episode, UserEpisodeStatus? status});
   EpisodeWithStatusCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -130,21 +120,14 @@ class _EpisodeWithStatusCopyWithImpl<$R, $Out>
           .copyWith
           .$chain((v) => call(status: v));
   @override
-  $R call(
-          {Episode? episode,
-          bool? playingFromDownloaded,
-          Object? status = $none}) =>
+  $R call({Episode? episode, Object? status = $none}) =>
       $apply(FieldCopyWithData({
         if (episode != null) #episode: episode,
-        if (playingFromDownloaded != null)
-          #playingFromDownloaded: playingFromDownloaded,
         if (status != $none) #status: status
       }));
   @override
   EpisodeWithStatus $make(CopyWithData data) => EpisodeWithStatus(
       episode: data.get(#episode, or: $value.episode),
-      playingFromDownloaded:
-          data.get(#playingFromDownloaded, or: $value.playingFromDownloaded),
       status: data.get(#status, or: $value.status));
 
   @override

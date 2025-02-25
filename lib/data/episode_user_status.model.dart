@@ -7,9 +7,7 @@ import 'package:podcast/data/serdes/duration_model.dart';
 part 'episode_user_status.model.mapper.dart';
 
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(
-    tableName: 'episodes',
-  ),
+  supabaseConfig: SupabaseSerializable(tableName: 'episodes'),
 )
 @MappableClass()
 class EpisodeUserStatus extends OfflineFirstWithSupabaseModel

@@ -6,21 +6,17 @@ extension AsyncValueRecord2Extension<T, E> on (AsyncValue<T>, AsyncValue<E>) {
       (AsyncValue<T>(value: final data?), AsyncValue<E>(value: final data2?)) =>
         AsyncData((data, data2)),
       (AsyncError<T>(:final error, :final stackTrace), _) ||
-      (_, AsyncError<E>(:final error, :final stackTrace)) =>
-        AsyncError(
-          error,
-          stackTrace,
-        ),
+      (
+        _,
+        AsyncError<E>(:final error, :final stackTrace),
+      ) => AsyncError(error, stackTrace),
       _ => const AsyncLoading(),
     };
   }
 }
 
-extension AsyncValueRecord3Extension<T, E, S> on (
-  AsyncValue<T>,
-  AsyncValue<E>,
-  AsyncValue<S>
-) {
+extension AsyncValueRecord3Extension<T, E, S>
+    on (AsyncValue<T>, AsyncValue<E>, AsyncValue<S>) {
   AsyncValue<(T, E, S)> pack() {
     return switch (($1, $2, $3)) {
       (
@@ -31,11 +27,11 @@ extension AsyncValueRecord3Extension<T, E, S> on (
         AsyncData((data, data2, data3)),
       (AsyncError<T>(:final error, :final stackTrace), _, _) ||
       (_, AsyncError<E>(:final error, :final stackTrace), _) ||
-      (_, _, AsyncError<S>(:final error, :final stackTrace)) =>
-        AsyncError(
-          error,
-          stackTrace,
-        ),
+      (
+        _,
+        _,
+        AsyncError<S>(:final error, :final stackTrace),
+      ) => AsyncError(error, stackTrace),
       _ => const AsyncLoading(),
     };
   }

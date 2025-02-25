@@ -6,11 +6,7 @@ class ErrorScreen extends ConsumerWidget {
   final VoidCallback onRefresh;
   final AsyncError<dynamic> state;
 
-  const ErrorScreen(
-    this.state, {
-    super.key,
-    required this.onRefresh,
-  });
+  const ErrorScreen(this.state, {super.key, required this.onRefresh});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

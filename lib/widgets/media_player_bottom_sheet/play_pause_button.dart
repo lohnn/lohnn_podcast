@@ -24,22 +24,19 @@ class PlayPauseButton extends ConsumerWidget {
                   .read(audioPlayerPodProvider.notifier)
                   .triggerMediaAction(MediaAction.playPause);
             },
-            icon: Icon(
-              switch (playing) {
-                false => Icons.play_arrow,
-                true => Icons.pause,
-              },
-              color: theme.colorScheme.primary,
-            ),
+            icon: Icon(switch (playing) {
+              false => Icons.play_arrow,
+              true => Icons.pause,
+            }, color: theme.colorScheme.primary),
           ),
         _ => IconButton(
-            onPressed: null,
-            icon: SizedBox(
-              width: theme.iconTheme.size ?? kDefaultFontSize,
-              height: theme.iconTheme.size ?? kDefaultFontSize,
-              child: const CircularProgressIndicator.adaptive(),
-            ),
+          onPressed: null,
+          icon: SizedBox(
+            width: theme.iconTheme.size ?? kDefaultFontSize,
+            height: theme.iconTheme.size ?? kDefaultFontSize,
+            child: const CircularProgressIndicator.adaptive(),
           ),
+        ),
       },
     );
   }

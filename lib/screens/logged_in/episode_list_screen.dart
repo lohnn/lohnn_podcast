@@ -40,7 +40,9 @@ class EpisodeListScreen
             return ListTile(
               key: ValueKey(episodeWithStatus.episode.id),
               onTap: () {
-                context.push('/${podcast.safeId}/${episodeWithStatus.episode.safeId}');
+                context.push(
+                  '/${podcast.safeId}/${episodeWithStatus.episode.safeId}',
+                );
               },
               leading: RoundedImage(
                 imageUri: episodeWithStatus.episode.imageUrl.uri,
@@ -66,10 +68,7 @@ class EpisodeListScreen
                 children: [
                   if (episodeWithStatus.episode.description
                       case final description?)
-                    Text(
-                      description.removeHtmlTags(),
-                      maxLines: 2,
-                    ),
+                    Text(description.removeHtmlTags(), maxLines: 2),
                   Row(
                     children: [
                       PlayEpisodeButton(episodeWithStatus.episode),
@@ -96,18 +95,19 @@ class EpisodeListScreen
                 ],
               ),
               trailing: PopupMenuButton<_PopupActions>(
-                itemBuilder: (context) => [
-                  if (episodeWithStatus.status.isPlayed)
-                    const PopupMenuItem(
-                      value: _PopupActions.markUnlistened,
-                      child: Text('Mark unlistened'),
-                    )
-                  else
-                    const PopupMenuItem(
-                      value: _PopupActions.markListened,
-                      child: Text('Mark listened'),
-                    ),
-                ],
+                itemBuilder:
+                    (context) => [
+                      if (episodeWithStatus.status.isPlayed)
+                        const PopupMenuItem(
+                          value: _PopupActions.markUnlistened,
+                          child: Text('Mark unlistened'),
+                        )
+                      else
+                        const PopupMenuItem(
+                          value: _PopupActions.markListened,
+                          child: Text('Mark listened'),
+                        ),
+                    ],
                 icon: const Icon(Icons.more_vert),
                 onSelected: (value) async {
                   switch (value) {
@@ -130,8 +130,4 @@ class EpisodeListScreen
   }
 }
 
-enum _PopupActions {
-  markListened,
-  markUnlistened,
-  ;
-}
+enum _PopupActions { markListened, markUnlistened }

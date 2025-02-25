@@ -20,10 +20,7 @@ class MediaActionButton extends ConsumerWidget {
       onPressed: () {
         ref.read(audioPlayerPodProvider.notifier).triggerMediaAction(action);
       },
-      icon: Icon(
-        icon,
-        color: theme.colorScheme.primary,
-      ),
+      icon: Icon(icon, color: theme.colorScheme.primary),
     );
   }
 }

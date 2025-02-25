@@ -25,13 +25,9 @@ class EquatableMap<K, V> implements Map<K, V> {
 
   @override
   bool operator ==(Object other) {
-    return other is EquatableMap<K, V> &&
-        _equality.equals(
-          _data,
-          other._data,
-        );
+    return other is EquatableMap<K, V> && _equality.equals(_data, other._data);
   }
-  
+
   @override
   String toString() {
     return 'EquatableMap<$K, $V>{$_data}';

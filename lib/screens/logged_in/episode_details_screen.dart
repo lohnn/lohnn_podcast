@@ -23,10 +23,8 @@ class EpisodeDetailsScreen
   });
 
   @override
-  EpisodePodProvider get provider => episodePodProvider(
-        podcastId: podcastId,
-        episodeId: episodeId,
-      );
+  EpisodePodProvider get provider =>
+      episodePodProvider(podcastId: podcastId, episodeId: episodeId);
 
   @override
   Widget buildWithData(
@@ -41,14 +39,15 @@ class EpisodeDetailsScreen
       appBar: AppBar(),
       body: AnimatedTheme(
         data: Theme.of(context).copyWith(
-          colorScheme: ref
-              .watch(
-                episodeColorSchemeProvider(
-                  episode,
-                  Theme.of(context).brightness,
-                ),
-              )
-              .valueOrNull,
+          colorScheme:
+              ref
+                  .watch(
+                    episodeColorSchemeProvider(
+                      episode,
+                      Theme.of(context).brightness,
+                    ),
+                  )
+                  .valueOrNull,
         ),
         key: const Key('EpisodeDetailsScreen.theme'),
         child: SingleChildScrollView(
@@ -60,10 +59,7 @@ class EpisodeDetailsScreen
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    RoundedImage(
-                      imageUri: episode.imageUrl.uri,
-                      imageSize: 76,
-                    ),
+                    RoundedImage(imageUri: episode.imageUrl.uri, imageSize: 76),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(

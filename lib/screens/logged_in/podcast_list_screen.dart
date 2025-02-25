@@ -30,32 +30,33 @@ class PodcastListScreen extends AsyncValueWidget<List<PodcastWithStatus>> {
           ),
           PopupMenuButton(
             icon: const Icon(Icons.more_vert),
-            itemBuilder: (BuildContext context) => [
-              PopupMenuItem(
-                onTap: () {
-                  ref.read(podcastsProvider.notifier).refreshAll();
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.refresh),
-                    SizedBox(width: 12),
-                    Text('Refresh all'),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                onTap: () {
-                  ref.read(userPodProvider.notifier).logOut();
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.logout),
-                    SizedBox(width: 12),
-                    Text('Log out'),
-                  ],
-                ),
-              ),
-            ],
+            itemBuilder:
+                (BuildContext context) => [
+                  PopupMenuItem(
+                    onTap: () {
+                      ref.read(podcastsProvider.notifier).refreshAll();
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.refresh),
+                        SizedBox(width: 12),
+                        Text('Refresh all'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    onTap: () {
+                      ref.read(userPodProvider.notifier).logOut();
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.logout),
+                        SizedBox(width: 12),
+                        Text('Log out'),
+                      ],
+                    ),
+                  ),
+                ],
           ),
         ],
       ),

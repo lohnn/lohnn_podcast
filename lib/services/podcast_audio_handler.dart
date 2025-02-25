@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:logging/logging.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/data/episode_with_status.dart';
@@ -26,28 +27,31 @@ class PodcastMediaItem extends MediaItem {
 
 class PodcastAudioHandler extends BaseAudioHandler
     with SeekHandler, QueueHandler {
+  final log = Logger('se.lohnn.podcast.PodcastAudioHandler');
+
   final _player = AudioPlayer();
   final AudioSession audioSession;
 
   @override
+  // Just an override to set the type of the BehaviorSubject to PodcastMediaItem.
   // ignore: overridden_fields
-  final BehaviorSubject<PodcastMediaItem?> mediaItem =
-      BehaviorSubject.seeded(null);
+  final BehaviorSubject<PodcastMediaItem?> mediaItem = BehaviorSubject.seeded(
+    null,
+  );
 
   Stream<({Duration position, Duration buffered, Duration? duration})>
-      get positionStream => Rx.combineLatest3(
-            _player.positionStream,
-            _player.bufferedPositionStream,
-            _player.durationStream,
-            (a, b, c) => (position: a, buffered: b, duration: c),
-          );
+  get positionStream => Rx.combineLatest3(
+    _player.positionStream,
+    _player.bufferedPositionStream,
+    _player.durationStream,
+    (a, b, c) => (position: a, buffered: b, duration: c),
+  );
 
   /// Initialise our audio handler.
   PodcastAudioHandler({required this.audioSession}) {
     // So that our clients (the Flutter UI and the system notification) know
     // what state to display, here we set up our audio handler to broadcast all
     // playback state changes as they happen via playbackState...
-    // @TODO: Can we send current position updates to [playbackState]
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
   }
 
@@ -60,22 +64,41 @@ class PodcastAudioHandler extends BaseAudioHandler
 
   void _startPositionStream() {
     _stopPositionStream();
+
+    log.fine(
+      'Starting position stream for ${mediaItem.valueOrNull?.episode.title}',
+    );
     _positionSubscription = _player.positionStream
-        .throttleTime(const Duration(seconds: 10), trailing: true)
-        .listen((
-      position,
-    ) async {
-      final currentEpisode = mediaItem.valueOrNull?.episode;
+        .throttleTime(
+          const Duration(seconds: 10),
+          leading: false,
+          trailing: true,
+        )
+        .distinct()
+        .listen((position) async {
+          final currentEpisode = mediaItem.valueOrNull?.episode;
+          log.fine(
+            'Position: $position - Current episode: ${currentEpisode?.title}',
+          );
 
-      if (currentEpisode case final currentEpisode?) {
-        final status = await _getForEpisode(currentEpisode);
-        final newPosition = DurationModel(position);
+          if (currentEpisode case final currentEpisode?) {
+            await _sendPositionUpdate(
+              episode: currentEpisode,
+              position: position,
+            );
+          }
+        });
+  }
 
-        final newStatus = status.status.copyWith(currentPosition: newPosition);
-        // TODO: Look into why this is called twice every time
-        Repository().upsert<UserEpisodeStatus>(newStatus);
-      }
-    });
+  Future<void> _sendPositionUpdate({
+    required Episode episode,
+    required Duration position,
+  }) async {
+    final status = await _getStatusForEpisode(episode);
+    final newStatus = status.status.copyWith(
+      currentPosition: DurationModel(position),
+    );
+    await Repository().upsert<UserEpisodeStatus>(newStatus);
   }
 
   bool get isPlaying => _player.playing;
@@ -130,24 +153,31 @@ class PodcastAudioHandler extends BaseAudioHandler
   @override
   Future<void> seek(Duration position) => _player.seek(position);
 
-  Future<void> setQueue(List<EpisodeWithStatus> newQueue) async {
+  Future<void> setQueue(List<Episode> newQueue) async {
     await super.updateQueue([
-      for (final status in newQueue) status.episode.mediaItem(),
+      for (final episode in newQueue) episode.mediaItem(),
     ]);
   }
 
   Future<void> loadEpisode(
-    EpisodeWithStatus status, {
+    Episode episode, {
     required Uri episodeUri,
     bool autoPlay = false,
   }) async {
     _stopPositionStream();
 
     // If the player is already playing the same file, don't reload it.
-    if (_player.audioSource case UriAudioSource(:final uri)
-        when uri == episodeUri) {
+    if (_player.audioSource case UriAudioSource(
+      :final uri,
+    ) when uri == episodeUri) {
       return;
     }
+    
+    final status = await _getStatusForEpisode(episode);
+
+    log.fine(
+      'Loading episode: ${episode.title} - ${status.status.currentPosition.duration}',
+    );
 
     final duration = await _player.setAudioSource(
       AudioSource.uri(episodeUri),
@@ -155,14 +185,14 @@ class PodcastAudioHandler extends BaseAudioHandler
     );
 
     mediaItem.add(
-      status.episode.mediaItem(
+      episode.mediaItem(
         actualDuration: duration,
         isPlayingFromDownloaded: episodeUri.scheme == 'file',
       ),
     );
 
     // Seek to the last known position of the episode.
-    seek(status.status.currentPosition.duration);
+    await seek(status.status.currentPosition.duration);
 
     // If the player was playing (such as when an episode has finished),
     // continue playing this new episode.
@@ -170,16 +200,13 @@ class PodcastAudioHandler extends BaseAudioHandler
     _startPositionStream();
   }
 
-  Future<EpisodeWithStatus> _getForEpisode(Episode episode) async {
-    final status = await Repository()
-        .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
-        .firstOrNull;
-    return EpisodeWithStatus(
-      episode: episode,
-      // TODO: Implement
-      playingFromDownloaded: false,
-      status: status,
-    );
+  // @TODO: This is duplicated with [AudioPlayerPod._getStatusForEpisode]
+  Future<EpisodeWithStatus> _getStatusForEpisode(Episode episode) async {
+    final status =
+        await Repository()
+            .get<UserEpisodeStatus>(query: Query.where('episodeId', episode.id))
+            .firstOrNull;
+    return EpisodeWithStatus(episode: episode, status: status);
   }
 
   void clearPlaying() {
@@ -193,6 +220,7 @@ class PodcastAudioHandler extends BaseAudioHandler
   /// it can be broadcast to audio_service clients.
   PlaybackState _transformEvent(PlaybackEvent event) {
     return PlaybackState(
+      updateTime: event.updateTime,
       controls: [
         const MediaControl(
           androidIcon: 'drawable/baseline_replay_10_24',
@@ -206,6 +234,7 @@ class PodcastAudioHandler extends BaseAudioHandler
           action: MediaAction.fastForward,
         ),
       ],
+      androidCompactActionIndices: const [0, 1, 2],
       systemActions: const {
         MediaAction.seek,
         MediaAction.seekForward,

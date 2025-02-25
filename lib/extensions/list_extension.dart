@@ -10,12 +10,9 @@ extension IterableExtension<T> on Iterable<T> {
 
 extension ListExtension<T> on List<T> {
   List<T> _reorder(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) {
-      // ignore: parameter_assignments
-      newIndex -= 1;
-    }
+    final adjustedIndex = (oldIndex < newIndex) ? newIndex - 1 : newIndex;
     final item = removeAt(oldIndex);
-    insert(newIndex, item);
+    insert(adjustedIndex, item);
     return this;
   }
 }

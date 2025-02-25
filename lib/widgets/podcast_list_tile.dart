@@ -8,12 +8,7 @@ class PodcastListTile extends StatelessWidget {
   final Widget? trailing;
   final bool? showDot;
 
-  const PodcastListTile(
-    this.podcast, {
-    this.trailing,
-    this.showDot,
-    super.key,
-  });
+  const PodcastListTile(this.podcast, {this.trailing, this.showDot, super.key});
 
   @override
   Widget build(BuildContext context) {

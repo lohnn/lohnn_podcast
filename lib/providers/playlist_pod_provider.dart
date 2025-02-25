@@ -20,9 +20,7 @@ class PlaylistPod extends _$PlaylistPod {
 
     await for (final queue in Repository().subscribe<PlayQueueItem>(
       policy: OfflineFirstGetPolicy.awaitRemoteWhenNoneExist,
-      query: const Query(
-        orderBy: [OrderBy('queueOrder')],
-      ),
+      query: const Query(orderBy: [OrderBy('queueOrder')]),
     )) {
       yield [for (final item in queue) item.episode];
     }
@@ -51,9 +49,10 @@ class PlaylistPod extends _$PlaylistPod {
     queue.remove(episode);
     state = AsyncData(queue);
 
-    final queueItem = await Repository()
-        .get<PlayQueueItem>(query: Query.where('episodeId', episode.id))
-        .first;
+    final queueItem =
+        await Repository()
+            .get<PlayQueueItem>(query: Query.where('episodeId', episode.id))
+            .first;
     await Repository().delete<PlayQueueItem>(queueItem);
 
     await _recalculateOrder();

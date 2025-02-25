@@ -26,14 +26,14 @@ class PodcastWithStatusMapper extends ClassMapperBase<PodcastWithStatus> {
       Field('podcast', _$podcast);
   static int? _$listenedEpisodes(PodcastWithStatus v) => v.listenedEpisodes;
   static const Field<PodcastWithStatus, int> _f$listenedEpisodes =
-      Field('listenedEpisodes', _$listenedEpisodes, key: 'listened_episodes');
+      Field('listenedEpisodes', _$listenedEpisodes, key: r'listened_episodes');
   static int? _$totalEpisodes(PodcastWithStatus v) => v.totalEpisodes;
   static const Field<PodcastWithStatus, int> _f$totalEpisodes =
-      Field('totalEpisodes', _$totalEpisodes, key: 'total_episodes');
+      Field('totalEpisodes', _$totalEpisodes, key: r'total_episodes');
   static bool? _$hasUnseenEpisodes(PodcastWithStatus v) => v.hasUnseenEpisodes;
   static const Field<PodcastWithStatus, bool> _f$hasUnseenEpisodes = Field(
       'hasUnseenEpisodes', _$hasUnseenEpisodes,
-      key: 'has_unseen_episodes');
+      key: r'has_unseen_episodes');
 
   @override
   final MappableFields<PodcastWithStatus> fields = const {

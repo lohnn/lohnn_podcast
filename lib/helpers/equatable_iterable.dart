@@ -28,10 +28,6 @@ class EquatableIterable<E> extends Iterable<E> {
 
   @override
   bool operator ==(Object other) {
-    return other is EquatableIterable<E> &&
-        _equality.equals(
-          _data,
-          other,
-        );
+    return other is EquatableIterable<E> && _equality.equals(_data, other);
   }
 }

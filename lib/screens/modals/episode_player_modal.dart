@@ -10,10 +10,7 @@ import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart
 import 'package:podcast/widgets/media_player_bottom_sheet/show_playlist_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
-enum EpisodePlayerModalResultAction {
-  showPlaylist,
-  ;
-}
+enum EpisodePlayerModalResultAction { showPlaylist }
 
 class EpisodePlayerModal extends HookConsumerWidget {
   const EpisodePlayerModal({super.key});
@@ -23,13 +20,10 @@ class EpisodePlayerModal extends HookConsumerWidget {
     final episode = ref.watch(audioPlayerPodProvider).valueOrNull?.episode;
     final durations = ref.watch(currentPositionProvider).valueOrNull;
 
-    useEffect(
-      () {
-        if (episode == null) Navigator.pop(context);
-        return null;
-      },
-      [episode],
-    );
+    useEffect(() {
+      if (episode == null) Navigator.pop(context);
+      return null;
+    }, [episode]);
 
     if (episode == null) return Container();
 
@@ -43,9 +37,11 @@ class EpisodePlayerModal extends HookConsumerWidget {
           children: [
             RoundedImage(imageUri: episode.imageUrl.uri),
             Text(episode.title),
-            if ((durations?.position, episodeDuration)
-                case (final currentPosition?, final episodeDuration?)) ...[
-              Slider.adaptive(
+            if ((durations?.position, episodeDuration) case (
+              final currentPosition?,
+              final episodeDuration?,
+            )) ...[
+              Slider(
                 value: min(
                   currentPosition.inMilliseconds.toDouble(),
                   episodeDuration.inMilliseconds.toDouble(),

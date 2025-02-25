@@ -10,9 +10,7 @@ analyzer:
 
   exclude:
     - lib/**.g.dart
-    - lib/**.freezed.dart
     - lib/**.migration.dart
-    - lib/screens/customer_service/licenses/open_source_licenses.dart # ignore_for_file does not work
   errors:
     avoid_setters_without_getters: ignore
     invalid_annotation_target: ignore

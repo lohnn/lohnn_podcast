@@ -24,27 +24,22 @@ class FindPodcast extends _$FindPodcast {
 
   void subscribe(Podcast podcast) {
     Repository().remoteProvider.client.functions.invoke(
-          'subscribe_to_podcast',
-          body: podcast.id,
-        );
+      'subscribe_to_podcast',
+      body: podcast.id,
+    );
   }
 
   void unsubscribe(Podcast podcast) {
     Repository().remoteProvider.client.functions.invoke(
-          'unsubscribe_from_podcast',
-          body: podcast.id,
-        );
+      'unsubscribe_from_podcast',
+      body: podcast.id,
+    );
   }
 }
 
 @riverpod
-Future<Iterable<Podcast>> _findPodcastImpl(
-  _FindPodcastImplRef ref,
-) async {
-  final podcastsResponse = await Repository()
-      .remoteProvider
-      .client
-      .functions
+Future<Iterable<Podcast>> _findPodcastImpl(_FindPodcastImplRef ref) async {
+  final podcastsResponse = await Repository().remoteProvider.client.functions
       .invoke('find_podcasts');
 
   final data =
