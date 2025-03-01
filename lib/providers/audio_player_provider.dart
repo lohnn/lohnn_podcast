@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
@@ -92,7 +94,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
       final nextEpisode = queue.firstOrNull;
       if (nextEpisode != null) {
-        loadNextEpisode(nextEpisode);
+        await loadNextEpisode(nextEpisode);
         state = AsyncData(await _getStatusForEpisode(nextEpisode));
       } else {
         state = const AsyncData(null);
@@ -102,19 +104,39 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     }
   }
 
+  StreamSubscription<EpisodeFileResponse>? _downloadSubscription;
+
+  /// Loads the next episode in the queue and starts playing it.
+  ///
+  /// If [autoPlay] is set to true, the episode will start playing immediately.
+  /// If [autoPlay] is set to false, the episode will be loaded but not played.
+  ///
+  /// It will check for already downloaded episodes and start playing it. If
+  /// the episode is not downloaded, it will start downloading it.
+  ///
+  /// Returns a future that completes when the episode has been loaded from the
+  /// first source.
   Future<void> loadNextEpisode(Episode episode, {bool autoPlay = false}) async {
-    await for (final fileResponse
-        in ref.read(episodeLoaderProvider(episode).notifier).tryDownload()) {
-      // TODO: This will be called multiple times if the episode is not
-      //  downloaded. Potentially causing the player to load the episode when
-      //  another is already playing. - We need to stop the player from
-      //  restarting the episode if another has started playing.F
-      await _player.loadEpisode(
-        episode,
-        episodeUri: fileResponse.currentUri,
-        autoPlay: autoPlay,
-      );
-    }
+    _downloadSubscription?.cancel();
+
+    final completer = Completer<void>();
+
+    _downloadSubscription = ref
+        .read(episodeLoaderProvider(episode).notifier)
+        .tryDownload()
+        .listen((fileResponse) async {
+          await _player.loadEpisode(
+            episode,
+            episodeUri: fileResponse.currentUri,
+            autoPlay: autoPlay,
+          );
+        
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
+        });
+
+    return completer.future;
   }
 
   Future<EpisodeWithStatus> _getStatusForEpisode(Episode episode) async {
@@ -157,7 +179,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
     ref.read(playlistPodProvider.notifier).addToTopOfQueue(episode);
 
-    loadNextEpisode(episode, autoPlay: true);
+    await loadNextEpisode(episode, autoPlay: true);
 
     if (autoPlay) _player.play();
   }
