@@ -57,6 +57,16 @@ class PodcastAudioHandler extends BaseAudioHandler
 
   StreamSubscription<Duration>? _positionSubscription;
 
+  // TODO: Revise this to use better logic
+  Stream<void> get episodeFinished => playbackState
+      .map((state) => state.processingState)
+      .distinct()
+      .where((processingState) {
+        log.fine('Processing state: $processingState}');
+        return processingState == AudioProcessingState.completed;
+      })
+      .map((_) {});
+
   void _stopPositionStream() {
     _positionSubscription?.cancel();
     _positionSubscription = null;
@@ -164,24 +174,23 @@ class PodcastAudioHandler extends BaseAudioHandler
     required Uri episodeUri,
     bool autoPlay = false,
   }) async {
-    _stopPositionStream();
-
     // If the player is already playing the same file, don't reload it.
     if (_player.audioSource case UriAudioSource(
       :final uri,
     ) when uri == episodeUri) {
+      if (autoPlay) await play();
       return;
     }
-    
+
+    _stopPositionStream();
     final status = await _getStatusForEpisode(episode);
 
-    log.fine(
-      'Loading episode: ${episode.title} - ${status.status.currentPosition.duration}',
-    );
+    final seekToPosition = status.status.currentPosition.duration;
+    log.fine('Loading episode: ${episode.title} - $seekToPosition');
 
     final duration = await _player.setAudioSource(
       AudioSource.uri(episodeUri),
-      initialPosition: status.status.currentPosition.duration,
+      initialPosition: seekToPosition,
     );
 
     mediaItem.add(
@@ -191,8 +200,14 @@ class PodcastAudioHandler extends BaseAudioHandler
       ),
     );
 
-    // Seek to the last known position of the episode.
-    await seek(status.status.currentPosition.duration);
+    // If the episode is almost finished, rewind 10 seconds.
+    if (duration ?? episode.duration?.duration case final episodeDuration?
+        when seekToPosition.inSeconds > episodeDuration.inSeconds - 10) {
+      await _player.seek(episodeDuration - const Duration(seconds: 10));
+    } else {
+      // Seek to the last known position of the episode.
+      await _player.seek(seekToPosition);
+    }
 
     // If the player was playing (such as when an episode has finished),
     // continue playing this new episode.
