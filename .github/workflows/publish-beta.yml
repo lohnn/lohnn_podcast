@@ -49,7 +49,7 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: default-test-group
           releaseNotes: Ny uppdatering av appen!
-          file: build/app/outputs/bundle/release/app-release.apk
+          file: build/app/outputs/flutter-apk/app-release.apk
 
       # TODO: Release notes?
       # TODO: Bump version?
