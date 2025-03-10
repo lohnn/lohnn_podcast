@@ -40,7 +40,7 @@ jobs:
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build Android app
-        run: flutter build aab --release
+        run: flutter build apk --release
 
       - name: Upload to App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
@@ -49,7 +49,7 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: default-test-group
           releaseNotes: Ny uppdatering av appen!
-          file: build/app/outputs/bundle/release/app-release.aab
+          file: build/app/outputs/bundle/release/app-release.apk
 
       # TODO: Release notes?
       # TODO: Bump version?
