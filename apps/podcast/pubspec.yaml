@@ -1,0 +1,73 @@
+name: podcast
+description: "The Flutterest Podcast App Ever"
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.7.0 <4.0.0'
+  flutter: 3.29.1
+resolution: workspace
+
+dependencies:
+  async: ^2.12.0
+  audio_service: ^0.18.17
+  audio_session: ^0.1.25
+  brick_offline_first: ^3.4.0
+  brick_offline_first_with_supabase: ^1.3.0
+  brick_sqlite: ^3.2.2
+  brick_supabase: ^1.4.1+1
+  build_runner: ^2.4.15
+  cached_network_image: ^3.4.1
+  collection: ^1.19.1
+  dart_mappable: ^4.4.0
+  dio: ^5.8.0+1
+  file: ^7.0.1
+  firebase_analytics: ^11.4.3
+  firebase_core: ^3.12.0
+  firebase_crashlytics: ^4.3.3
+  firebase_performance: ^0.10.1+3
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.20.5
+  flutter_widget_from_html_core: ^0.16.0
+  go_router: ^14.8.0
+  google_sign_in: ^6.2.2
+  hashlib: ^1.21.1
+  hooks_riverpod: ^2.6.1
+  intl: ^0.19.0
+  just_audio: ^0.9.46
+  logging: ^1.3.0
+  path_provider: ^2.1.5
+  rive:   ^0.13.20
+  riverpod_annotation: ^2.6.1
+  rxdart: ^0.28.0
+  sqflite: ^2.4.2
+  sqflite_common: ^2.5.5
+  supabase_auth_ui: ^0.5.4
+  supabase_flutter: ^2.8.3
+  timeago_flutter: ^3.7.0
+  url_launcher: ^6.3.1
+  uuid: ^4.5.1
+  vector_graphics: ^1.1.18
+  xml: ^6.5.0
+
+dev_dependencies:
+  brick_offline_first_build: ^3.3.0
+  brick_offline_first_with_supabase_build: ^1.1.0
+  custom_lint: ^0.7.0
+  dart_mappable_builder: ^4.3.1+1
+  flutter_test:
+    sdk: flutter
+  lint: ^2.6.1
+  riverpod_generator: ^2.6.3
+  riverpod_lint: ^2.6.3
+  vector_graphics_compiler: ^1.1.16
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/animations/
+    - assets/icons/
+    - path: assets/vectors/
+      transformers:
+        - package: vector_graphics_compiler

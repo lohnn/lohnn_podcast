@@ -1,6 +1,5 @@
 // This is just a script to extract listened episodes from the HTML files that
 // are exported from Google Podcasts.
-// ignore_for_file: depend_on_referenced_packages
 import 'dart:convert';
 import 'dart:io';
 
