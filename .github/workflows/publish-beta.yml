@@ -49,9 +49,6 @@ jobs:
       - name: Setup project config
         run: dart bin/setup_project.dart -f project_setup_config.json
 
-      - name: Pub get
-        run: flutter pub get
-
       - name: Build runner
         run: melos generate
 
