@@ -20,15 +20,21 @@ jobs:
       - name: Create project_setup_config.json
         run: echo '${{ secrets.PROJECT_SETUP_CONFIG }}' > project_setup_config.json
       - name: Create google-services.json
-        run: echo '${{ secrets.GOOGLE_SERVICES_ANDROID }}' > android/app/google-services.json
+        run: echo '${{ secrets.GOOGLE_SERVICES_ANDROID }}' > apps/podcast/android/app/google-services.json
       - name: Create firebase_options.dart
-        run: echo "${{ secrets.FIREBASE_OPTIONS_DART }}" > lib/default_firebase_config.dart
+        run: echo "${{ secrets.FIREBASE_OPTIONS_DART }}" > apps/podcast/lib/default_firebase_config.dart
     
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version-file: pubspec.yaml
+          flutter-version-file: apps/podcast/pubspec.yaml
+
+      - name: Setup melos
+        run: flutter pub global activate melos
+      - name: Bootstrap melos
+        run: melos bootstrap
+        # TODO: Bump version
 
       - name: Setup project config
         run: dart bin/setup_project.dart -f project_setup_config.json
@@ -40,16 +46,15 @@ jobs:
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build Android app
-        run: flutter build apk --release
+        run: cd apps/podcast && flutter build apk --release
 
       - name: Upload to App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
+        if: github.ref == 'refs/heads/main'
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: default-test-group
           releaseNotes: Ny uppdatering av appen!
-          file: build/app/outputs/flutter-apk/app-release.apk
-
-      # TODO: Release notes?
-      # TODO: Bump version?
+          # TODO: Release notes from melos
+          file: apps/podcast/build/app/outputs/flutter-apk/app-release.apk
