@@ -51,6 +51,7 @@ app.*.map.json
 **.freezed.dart
 
 # Podcast app specific files
+project_setup_config.json
 /bin/podcast-history/
 /bin/listened-episodes.json
 /macos/Runner/PodcastSecrets.plist
