@@ -21,6 +21,8 @@ jobs:
         run: echo '${{ secrets.PROJECT_SETUP_CONFIG }}' > project_setup_config.json
       - name: Create google-services.json
         run: echo '${{ secrets.GOOGLE_SERVICES_ANDROID }}' > android/app/google-services.json
+      - name: Create firebase_options.dart
+        run: echo "${{ secrets.FIREBASE_OPTIONS_DART }}" > lib/default_firebase_config.dart
     
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
