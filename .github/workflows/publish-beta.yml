@@ -1,0 +1,46 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Publish to beta testers
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create project_setup_config.json
+        run: echo "${{ secrets.PROJECT_SETUP_CONFIG }}" > project_setup_config.json
+      - name: Create firebase.json
+        run: echo "${{ secrets.FIREBASE_JSON }}" > firebase.json
+    
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+      - name: Setup Flutterfire
+        run: dart pub global activate flutterfire_cli
+
+      - name: Setup project config
+        run: dart bin/setup_project.dart --f project_setup_config.json
+      - name: Setup Firebase config
+        run: flutterfire configure -y 
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Build Android app
+        run: flutter build aab --release
+
+      # TODO: Release notes?
+      # TODO: Bump version?
+      # TODO: Publish to app distribution
