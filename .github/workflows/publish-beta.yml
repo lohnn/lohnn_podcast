@@ -31,7 +31,7 @@ jobs:
         run: dart pub global activate flutterfire_cli
 
       - name: Setup project config
-        run: dart bin/setup_project.dart --f project_setup_config.json
+        run: dart bin/setup_project.dart -f project_setup_config.json
       - name: Setup Firebase config
         run: flutterfire configure -y 
 
