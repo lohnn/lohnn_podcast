@@ -20,15 +20,15 @@ jobs:
       - name: Create project_setup_config.json
         env:
           PROJECT_SETUP_CONFIG: ${{ secrets.PROJECT_SETUP_CONFIG }}
-        run: echo $PROJECT_SETUP_CONFIG > project_setup_config.json
+        run: echo '$PROJECT_SETUP_CONFIG' > project_setup_config.json
       - name: Create google-services.json
         env:
           GOOGLE_SERVICES_ANDROID: ${{ secrets.GOOGLE_SERVICES_ANDROID }}
-        run: echo $GOOGLE_SERVICES_ANDROID > apps/podcast/android/app/google-services.json
+        run: echo '$GOOGLE_SERVICES_ANDROID' > apps/podcast/android/app/google-services.json
       - name: Create firebase_options.dart
         env:
           FIREBASE_OPTIONS_DART: ${{ secrets.FIREBASE_OPTIONS_DART }}
-        run: echo $FIREBASE_OPTIONS_DART > apps/podcast/lib/default_firebase_config.dart
+        run: echo "$FIREBASE_OPTIONS_DART" > apps/podcast/lib/default_firebase_config.dart
       - name: Create keystore
         env:
           KEYSTORE: ${{ secrets.PODCAST_RELEASE_KEYSTORE }}
