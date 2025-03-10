@@ -28,13 +28,13 @@ void main(List<String> args) {
 
   final reversedClientId = keys.clientId.split('.').reversed.join('.');
   File(
-    'macos/Runner/PodcastSecrets.plist',
+    'apps/podcast/macos/Runner/PodcastSecrets.plist',
   ).writeAsStringSync(secretsPlistContent(reversedClientId));
   File(
-    'ios/Runner/PodcastSecrets.plist',
+    'apps/podcast/ios/Runner/PodcastSecrets.plist',
   ).writeAsStringSync(secretsPlistContent(reversedClientId));
 
-  File('lib/secrets.dart').writeAsStringSync(
+  File('apps/podcast/lib/secrets.dart').writeAsStringSync(
     secretsContent(
       backendUrl: keys.backendUrl,
       supabaseAnonKey: keys.supabaseAnonKey,
