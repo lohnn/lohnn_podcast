@@ -52,6 +52,7 @@ app.*.map.json
 
 # Podcast app specific files
 project_setup_config.json
+podcast_release.keystore
 /bin/podcast-history/
 /bin/listened-episodes.json
 /macos/Runner/PodcastSecrets.plist

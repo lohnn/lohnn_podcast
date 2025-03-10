@@ -46,6 +46,9 @@ jobs:
         run: melos generate
 
       - name: Build Android app
+        env: 
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
         run: melos exec -- flutter build apk --release --build-number=${{github.run_number}}
 
       - name: Upload to App Distribution
