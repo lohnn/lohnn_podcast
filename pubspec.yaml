@@ -76,3 +76,6 @@ melos:
     generate:
       run: melos exec --order-dependents -- dart run build_runner build -d
       description: Run code generation.
+    build_release:
+        run: melos exec --order-dependents -- flutter build apk --release
+        description: Build release APK.
