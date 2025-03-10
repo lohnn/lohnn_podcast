@@ -74,8 +74,5 @@ melos:
         vector_graphics_compiler: ^1.1.16
   scripts:
     generate:
-      run: melos exec --order-dependents -- dart run build_runner build -d
+      exec: dart run build_runner build -d
       description: Run code generation.
-    build_release:
-        run: melos exec --order-dependents -- flutter build apk --release
-        description: Build release APK.
