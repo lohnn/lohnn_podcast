@@ -42,6 +42,14 @@ jobs:
       - name: Build Android app
         run: flutter build aab --release
 
+      - name: Upload to App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: default-test-group
+          releaseNotes: Ny uppdatering av appen!
+          file: build/app/outputs/bundle/release/app-release.aab
+
       # TODO: Release notes?
       # TODO: Bump version?
-      # TODO: Publish to app distribution
