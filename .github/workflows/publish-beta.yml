@@ -26,7 +26,7 @@ jobs:
       - name: Create keystore
         env:
           KEYSTORE: ${{ secrets.PODCAST_RELEASE_KEYSTORE }}
-        run: echo $KEYSTORE > base64 --decode podcast_release.keystore
+        run: echo $KEYSTORE | base64 --decode > podcast_release.keystore
     
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
