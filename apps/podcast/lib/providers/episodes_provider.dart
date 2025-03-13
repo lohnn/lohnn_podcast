@@ -94,10 +94,8 @@ Stream<List<Episode>> _episodesImpl(
 
   final query = Query(
     where: [Where('podcastId', value: podcastId)],
-    providerArgs: {
-      'orderBy': 'pubDate DESC',
-      // @TODO: Look into adding pagination
-    },
+    orderBy: [const OrderBy('pubDate', ascending: false)],
+    // @TODO: Look into adding pagination
   );
 
   yield* Repository().subscribeToRealtime<Episode>(query: query);
