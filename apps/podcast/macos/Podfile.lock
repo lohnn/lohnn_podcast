@@ -22,14 +22,14 @@ PODS:
   - Firebase/Crashlytics (11.8.0):
     - Firebase/CoreOnly
     - FirebaseCrashlytics (~> 11.8.0)
-  - firebase_analytics (11.4.3):
+  - firebase_analytics (11.4.4):
     - Firebase/Analytics (= 11.8.0)
     - firebase_core
     - FlutterMacOS
-  - firebase_core (3.12.0):
+  - firebase_core (3.12.1):
     - Firebase/CoreOnly (~> 11.8.0)
     - FlutterMacOS
-  - firebase_crashlytics (4.3.3):
+  - firebase_crashlytics (4.3.4):
     - Firebase/CoreOnly (~> 11.8.0)
     - Firebase/Crashlytics (~> 11.8.0)
     - firebase_core
@@ -257,9 +257,9 @@ SPEC CHECKSUMS:
   audio_service: cab6c1a0eaf01b5a35b567e11fa67d3cc1956910
   audio_session: 728ae3823d914f809c485d390274861a24b0904e
   Firebase: d80354ed7f6df5f9aca55e9eb47cc4b634735eaf
-  firebase_analytics: 1a71372a9735d7046d2c69db848a8d178f9fb587
-  firebase_core: 68e1d27035b096239f147a041643e14e156f1481
-  firebase_crashlytics: 58dd6dab26f83a6d76ec041d44e1af9758867f43
+  firebase_analytics: 75b9d9ea8b21ce77898a3a46910e2051e93db8e1
+  firebase_core: 1b573eac37729348cdc472516991dd7e269ae37e
+  firebase_crashlytics: b750f8add6d086d6e3b0441cfbbcca57ef7e8c0d
   FirebaseAnalytics: 4fd42def128146e24e480e89f310e3d8534ea42b
   FirebaseCore: 99fe0c4b44a39f37d99e6404e02009d2db5d718d
   FirebaseCoreExtension: 3d3f2017a00d06e09ab4ebe065391b0bb642565e
