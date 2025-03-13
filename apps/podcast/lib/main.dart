@@ -11,7 +11,7 @@ import 'package:podcast/default_firebase_config.dart';
 import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast/providers/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
-import 'package:podcast/screens/logged_in_screen.dart';
+import 'package:podcast/screens/logged_in/logged_in_screen.dart';
 import 'package:podcast/screens/login_screen.dart';
 import 'package:rive/rive.dart';
 import 'package:sqflite/sqflite.dart';

@@ -3,6 +3,7 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/data/podcast.model.dart';
+import 'package:podcast/providers/color_scheme_from_remote_image_provider.dart';
 import 'package:podcast/providers/episode_color_scheme_provider.dart';
 import 'package:podcast/providers/episodes_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
@@ -42,8 +43,8 @@ class EpisodeDetailsScreen
           colorScheme:
               ref
                   .watch(
-                    episodeColorSchemeProvider(
-                      episode,
+                    ColorSchemeFromRemoteImageProvider(
+                      episode.imageUrl,
                       Theme.of(context).brightness,
                     ),
                   )

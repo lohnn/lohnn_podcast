@@ -11,11 +11,11 @@ import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
-class EpisodeListScreen
+class PodcastDetailsScreen
     extends AsyncValueWidget<(Podcast, List<EpisodeWithStatus>)> {
   final String podcastId;
 
-  const EpisodeListScreen(this.podcastId, {super.key});
+  const PodcastDetailsScreen(this.podcastId, {super.key});
 
   @override
   EpisodesProvider get provider => episodesProvider(podcastId: podcastId);

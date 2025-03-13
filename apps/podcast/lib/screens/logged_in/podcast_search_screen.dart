@@ -6,6 +6,7 @@ import 'package:podcast/providers/podcasts_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
 import 'package:podcast/screens/loading_screen.dart';
+import 'package:podcast/screens/modals/podcast_details_modal.dart';
 import 'package:podcast/widgets/podcast_list_tile.dart';
 
 class PodcastSearchScreen extends ConsumerWidget {
@@ -56,6 +57,16 @@ class _PodcastSearchScreen
         return PodcastListTile(
           key: ValueKey(podcast),
           podcast,
+          onTap: () {
+            // @TODO: Set theme color from podcast image
+            showModalBottomSheet(
+              context: context,
+              useSafeArea: true,
+              showDragHandle: true,
+              // @TODO: Eventually maybe show episode list here as well
+              builder: (context) => PodcastDetailsModal(podcast: podcast),
+            );
+          },
           trailing:
               isSubscribed
                   ? IconButton(

@@ -21,7 +21,7 @@ abstract class AsyncValueWidget<T> extends HookConsumerWidget {
           state,
           onRefresh: () => ref.invalidate(provider),
         ),
-        _ => const LoadingScreen(),
+        _ => Scaffold(appBar: AppBar(), body: const LoadingScreen()),
       },
     );
   }
