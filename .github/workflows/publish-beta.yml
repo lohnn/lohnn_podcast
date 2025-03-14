@@ -58,14 +58,14 @@ jobs:
       - name: Build runner
         run: melos generate
 
+      - name: Get Release Notes
+        run: dart bin/extract_release_notes.dart -o release_notes.txt
+
       - name: Build Android app
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
         run: melos exec -- flutter build apk --release --build-number=${{github.run_number}}
-
-      - name: Get Release Notes
-        run: dart bin/extract_release_notes.dart -o release_notes.txt
 
       - name: Upload to App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
