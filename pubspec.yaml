@@ -8,6 +8,7 @@ environment:
 dependencies:
   collection: ^1.19.1
   html: ^0.15.5
+  pubspec_parse: ^1.5.0
 
 dev_dependencies:
   melos: ^7.0.0-dev.7
