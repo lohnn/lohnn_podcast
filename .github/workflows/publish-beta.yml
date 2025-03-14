@@ -40,7 +40,15 @@ jobs:
         run: flutter pub global activate melos
       - name: Bootstrap melos
         run: melos bootstrap
-        # TODO: Bump version
+
+      - name: Bump version
+        run: melos version --all --yes
+      - name: Push version
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git commit -am "chore(release): publish new versions [skip ci]"
+          git push origin main --follow-tags
 
       - name: Setup project config
         run: dart bin/setup_project.dart -f project_setup_config.json
@@ -61,6 +69,11 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: default-test-group
-          releaseNotes: Ny uppdatering av appen!
-          # TODO: Release notes from melos
+          releaseNotes: ${{ steps.get-release-notes.outputs.notes }}
           file: apps/podcast/build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Get Release Notes
+        id: get-release-notes
+        run: |
+          NOTES=$(dart bin/extract_release_notes.dart)
+          echo "::set-output name=notes::$NOTES"
