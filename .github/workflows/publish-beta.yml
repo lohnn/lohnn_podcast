@@ -29,7 +29,7 @@ jobs:
         env:
           KEYSTORE: ${{ secrets.PODCAST_RELEASE_KEYSTORE }}
         run: echo $KEYSTORE | base64 --decode > podcast_release.keystore
-    
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -58,8 +58,11 @@ jobs:
       - name: Build runner
         run: melos generate
 
+      - name: Get Release Notes
+        run: dart bin/extract_release_notes.dart -o release_notes.txt
+
       - name: Build Android app
-        env: 
+        env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
         run: melos exec -- flutter build apk --release --build-number=${{github.run_number}}
@@ -71,11 +74,5 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: default-test-group
-          releaseNotes: ${{ steps.get-release-notes.outputs.notes }}
+          releaseNotesFile: release_notes.txt
           file: apps/podcast/build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Get Release Notes
-        id: get-release-notes
-        run: |
-          NOTES=$(dart bin/extract_release_notes.dart)
-          echo "::set-output name=notes::$NOTES"
