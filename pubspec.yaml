@@ -1,4 +1,6 @@
 name: lohnn_podcast_workspace
+workspace:
+  - apps/podcast
 
 environment:
   sdk: ">=3.7.0 <4.0.0"
@@ -10,13 +12,11 @@ dependencies:
 dev_dependencies:
   melos: ^7.0.0-dev.7
 
-workspace:
-  - apps/podcast
-
 melos:
   command:
     version:
-#      branch: main
+      # Only allow versioning to happen on main branch.
+      branch: main
     bootstrap:
       environment:
         sdk: '>=3.7.0 <4.0.0'
