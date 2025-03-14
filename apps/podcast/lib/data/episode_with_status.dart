@@ -26,8 +26,5 @@ class EpisodeWithStatus with EpisodeWithStatusMappable {
     );
   }
 
-  EpisodeWithStatus._({
-    required this.episode,
-    required this.status,
-  });
+  EpisodeWithStatus._({required this.episode, required this.status});
 }
