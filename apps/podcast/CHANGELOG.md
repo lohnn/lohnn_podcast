@@ -1,3 +1,7 @@
+## 0.1.2+2
+
+ - **REFACTOR**: Format code.
+
 ## 0.1.2+1
 
  - **FEATURE**: Added a modal with podcast info in search view.

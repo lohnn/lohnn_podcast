@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`podcast` - `v0.1.2+2`](#podcast---v0122)
+
+---
+
+#### `podcast` - `v0.1.2+2`
+
+ - **REFACTOR**: Format code.
+
+
+## 2025-03-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`podcast` - `v0.1.2+1`](#podcast---v0121)
 
 ---
