@@ -1,3 +1,8 @@
+## 0.1.3
+
+ - **REFACTOR**: Format code.
+ - **FEAT**: Searching podcast from public podcast index added!
+
 ## 0.1.2+2
 
  - **REFACTOR**: Format code.
