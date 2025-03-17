@@ -39,8 +39,18 @@ class _PodcastSearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: Implement here if podcast is already subscribed
     final state = ref.watch(findPodcastProvider);
+    // @TODO: This could be cleaned up to be prettier
+    final subscribedPodcastsUrls =
+        ref
+            .watch(
+              podcastsProvider.select(
+                (state) => state.whenData(
+                  (podcasts) => podcasts.map((podcast) => podcast.rssUrl),
+                ),
+              ),
+            )
+            .valueOrNull;
 
     return CustomScrollView(
       slivers: [
@@ -90,22 +100,25 @@ class _PodcastSearchScreen extends ConsumerWidget {
                     builder: (context) => PodcastDetailsModal(podcast: podcast),
                   );
                 },
-                // trailing:
-                //     isSubscribed
-                //         ? IconButton(
-                //           onPressed: () {
-                //              ref
-                //                  .read(findPodcastProvider.notifier)
-                //                  .unsubscribe(podcast);
-                //           },
-                //           icon: const Icon(Icons.check),
-                //         )
-                //         : IconButton(
-                //           onPressed: () {
-                //              ref.read(findPodcastProvider.notifier).subscribe(podcast);
-                //           },
-                //           icon: const Icon(Icons.add),
-                //         ),
+                trailing: switch (subscribedPodcastsUrls?.contains(
+                  podcast.url.uri.toString(),
+                )) {
+                  null => null,
+                  true => IconButton(
+                    onPressed: () {
+                      ref
+                          .read(findPodcastProvider.notifier)
+                          .unsubscribe(podcast);
+                    },
+                    icon: const Icon(Icons.check),
+                  ),
+                  false => IconButton(
+                    onPressed: () {
+                      ref.read(findPodcastProvider.notifier).subscribe(podcast);
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
+                },
               );
             }),
           ),
