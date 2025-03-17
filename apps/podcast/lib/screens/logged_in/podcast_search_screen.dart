@@ -14,21 +14,6 @@ class PodcastSearchScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Search Podcasts')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final rssUrl = await showDialog<String>(
-            context: context,
-            builder: (context) => GetTextDialog.addPodcastDialog(),
-          );
-          if (rssUrl == null || !context.mounted) return;
-
-          await LoadingScreen.showLoading(
-            context: context,
-            job: ref.read(podcastsProvider.notifier).addPodcastToList(rssUrl),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
       body: const _PodcastSearchScreen(),
     );
   }
@@ -68,6 +53,26 @@ class _PodcastSearchScreen extends ConsumerWidget {
                   // onTap: () => controller.openView(),
                   // onChanged: (_) => controller.openView(),
                   onChanged: ref.read(findPodcastProvider.notifier).search,
+                  trailing: [
+                    IconButton(
+                      onPressed: () async {
+                        final rssUrl = await showDialog<String>(
+                          context: context,
+                          builder:
+                              (context) => GetTextDialog.addPodcastDialog(),
+                        );
+                        if (rssUrl == null || !context.mounted) return;
+
+                        await LoadingScreen.showLoading(
+                          context: context,
+                          job: ref
+                              .read(podcastsProvider.notifier)
+                              .addPodcastToList(rssUrl),
+                        );
+                      },
+                      icon: const Icon(Icons.rss_feed),
+                    ),
+                  ],
                 );
               },
               suggestionsBuilder: (context, controller) {
