@@ -42,9 +42,9 @@ class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
   static String _$language(PodcastSearch v) => v.language;
   static const Field<PodcastSearch, String> _f$language =
       Field('language', _$language);
-  static Map<int, String>? _$categories(PodcastSearch v) => v.categories;
+  static Map<int, String> _$categories(PodcastSearch v) => v.categories;
   static const Field<PodcastSearch, Map<int, String>> _f$categories =
-      Field('categories', _$categories);
+      Field('categories', _$categories, opt: true, def: const {});
 
   @override
   final MappableFields<PodcastSearch> fields = const {
@@ -127,7 +127,7 @@ abstract class PodcastSearchCopyWith<$R, $In extends PodcastSearch, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   UriModelCopyWith<$R, UriModel, UriModel> get url;
   UriModelCopyWith<$R, UriModel, UriModel> get artwork;
-  MapCopyWith<$R, int, String, ObjectCopyWith<$R, String, String>>?
+  MapCopyWith<$R, int, String, ObjectCopyWith<$R, String, String>>
       get categories;
   $R call(
       {int? id,
@@ -157,13 +157,11 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
   UriModelCopyWith<$R, UriModel, UriModel> get artwork =>
       $value.artwork.copyWith.$chain((v) => call(artwork: v));
   @override
-  MapCopyWith<$R, int, String, ObjectCopyWith<$R, String, String>>?
-      get categories => $value.categories != null
-          ? MapCopyWith(
-              $value.categories!,
-              (v, t) => ObjectCopyWith(v, $identity, t),
-              (v) => call(categories: v))
-          : null;
+  MapCopyWith<$R, int, String, ObjectCopyWith<$R, String, String>>
+      get categories => MapCopyWith(
+          $value.categories,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(categories: v));
   @override
   $R call(
           {int? id,
@@ -174,7 +172,7 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
           String? author,
           String? lastPublished,
           String? language,
-          Object? categories = $none}) =>
+          Map<int, String>? categories}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (url != null) #url: url,
@@ -184,7 +182,7 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
         if (author != null) #author: author,
         if (lastPublished != null) #lastPublished: lastPublished,
         if (language != null) #language: language,
-        if (categories != $none) #categories: categories
+        if (categories != null) #categories: categories
       }));
   @override
   PodcastSearch $make(CopyWithData data) => PodcastSearch(

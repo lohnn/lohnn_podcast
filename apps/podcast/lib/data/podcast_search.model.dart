@@ -20,7 +20,7 @@ class PodcastSearch extends OfflineFirstWithSupabaseModel
   final UriModel artwork;
   final String lastPublished;
   final String language;
-  final Map<int, String>? categories;
+  final Map<int, String> categories;
 
   PodcastSearch({
     required this.id,
@@ -31,6 +31,6 @@ class PodcastSearch extends OfflineFirstWithSupabaseModel
     required this.author,
     required this.lastPublished,
     required this.language,
-    required this.categories,
+    this.categories = const {},
   });
 }
