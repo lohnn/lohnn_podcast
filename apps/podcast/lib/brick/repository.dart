@@ -9,6 +9,7 @@ import 'package:brick_sqlite/memory_cache_provider.dart';
 import 'package:brick_supabase/brick_supabase.dart' hide Supabase;
 import 'package:podcast/brick/brick.g.dart';
 import 'package:podcast/brick/db/schema.g.dart';
+import 'package:podcast/data/podcast_search.model.dart';
 import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast/secrets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -113,6 +114,15 @@ class Repository extends OfflineFirstWithSupabaseRepository
           callback: callback,
         )
         .subscribe();
+  }
+
+  Future<List<PodcastSearch>> findPodcasts([String? searchTerm]) async {
+    final response = await remoteProvider.client.functions.invoke(
+      'find_podcasts',
+      body: searchTerm,
+    );
+    final data = (response.data as List<dynamic>).cast<Map<String, dynamic>>();
+    return data.map(PodcastSearchMapper.fromMap).toList(growable: false);
   }
 }
 

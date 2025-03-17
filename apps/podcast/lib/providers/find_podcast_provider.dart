@@ -1,48 +1,42 @@
 import 'package:podcast/brick/repository.dart';
-import 'package:podcast/data/podcast.model.dart';
-import 'package:podcast/extensions/async_value_extensions.dart';
-import 'package:podcast/providers/podcasts_provider.dart';
+import 'package:podcast/data/podcast_search.model.dart';
+import 'package:podcast/helpers/debouncer.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'find_podcast_provider.g.dart';
 
 @riverpod
 class FindPodcast extends _$FindPodcast {
+  final _searchDebouncer = Debouncer.long();
+
   @override
-  AsyncValue<List<({Podcast podcast, bool isSubscribed})>> build() {
-    return (
-      ref.watch(podcastsProvider),
-      ref.watch(_findPodcastImplProvider),
-    ).pack().whenData((tuple) {
-      final (myPodcasts, podcasts) = tuple;
-      return [
-        for (final podcast in podcasts)
-          (podcast: podcast, isSubscribed: myPodcasts.contains(podcast)),
-      ];
+  Future<List<PodcastSearch>> build() {
+    return Repository().findPodcasts();
+  }
+
+  Future<void> search(String searchTerm) async {
+    state = const AsyncLoading();
+    _searchDebouncer.run(() async {
+      try {
+        final podcasts = await Repository().findPodcasts(searchTerm);
+        state = AsyncData(podcasts);
+      } catch (e, stackTrace) {
+        state = AsyncError(e, stackTrace);
+      }
     });
   }
 
-  void subscribe(Podcast podcast) {
-    Repository().remoteProvider.client.functions.invoke(
+  Future<void> subscribe(String podcastUrl) {
+    return Repository().remoteProvider.client.functions.invoke(
       'subscribe_to_podcast',
-      body: podcast.id,
+      body: podcastUrl,
     );
   }
 
-  void unsubscribe(Podcast podcast) {
-    Repository().remoteProvider.client.functions.invoke(
+  Future<void> unsubscribe(String podcastUrl) {
+    return Repository().remoteProvider.client.functions.invoke(
       'unsubscribe_from_podcast',
-      body: podcast.id,
+      body: podcastUrl,
     );
   }
-}
-
-@riverpod
-Future<Iterable<Podcast>> _findPodcastImpl(_FindPodcastImplRef ref) async {
-  final podcastsResponse = await Repository().remoteProvider.client.functions
-      .invoke('find_podcasts');
-
-  final data =
-      (podcastsResponse.data as List<dynamic>).cast<Map<String, dynamic>>();
-  return data.map(PodcastMapper.fromMap);
 }

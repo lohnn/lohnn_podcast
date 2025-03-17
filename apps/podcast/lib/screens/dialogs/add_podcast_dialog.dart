@@ -12,7 +12,7 @@ class GetTextDialog extends HookWidget {
   });
 
   factory GetTextDialog.addPodcastDialog() {
-    return const GetTextDialog(title: 'Add podcast', textFieldHint: 'Rss url');
+    return const GetTextDialog(title: 'Add podcast by RSS', textFieldHint: 'Rss url');
   }
 
   factory GetTextDialog.importListenedEpisodesDialog() {

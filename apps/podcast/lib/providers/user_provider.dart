@@ -26,6 +26,12 @@ class UserPod extends _$UserPod {
       yield _supabaseAuth.currentUser;
     }
   }
+  
+  Future<void> logInAnonymously() async {
+    // Just making sure we are properly logged out before trying to log in.
+    await logOut();
+    await _supabaseAuth.signInAnonymously();
+  }
 
   Future<void> logIn() async {
     // Just making sure we are properly logged out before trying to log in.
