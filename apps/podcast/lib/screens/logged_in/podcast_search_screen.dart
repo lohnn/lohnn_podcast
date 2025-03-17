@@ -5,7 +5,7 @@ import 'package:podcast/providers/podcasts_provider.dart';
 import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
 import 'package:podcast/screens/loading_screen.dart';
 import 'package:podcast/screens/modals/podcast_details_modal.dart';
-import 'package:podcast/widgets/podcast_list_tile.dart';
+import 'package:podcast/widgets/rounded_image.dart';
 
 class PodcastSearchScreen extends HookConsumerWidget {
   const PodcastSearchScreen({super.key});
@@ -105,9 +105,26 @@ class _PodcastSearchScreen extends ConsumerWidget {
               index,
             ) {
               final podcast = data[index];
-              return PodcastListTile.search(
+              return ListTile(
+                titleAlignment: ListTileTitleAlignment.titleHeight,
                 key: ValueKey(podcast),
-                podcast,
+                leading: RoundedImage(
+                  imageUri: podcast.artwork.uri,
+                  imageSize: 40,
+                ),
+                title: Text(podcast.title),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(podcast.author),
+                    Wrap(
+                      children: [
+                        for (final category in podcast.categories.values)
+                          Chip(label: Text(category)),
+                      ],
+                    ),
+                  ],
+                ),
                 onTap: () {
                   // @TODO: Set theme color from podcast image
                   showModalBottomSheet(

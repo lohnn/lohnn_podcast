@@ -37,23 +37,6 @@ class PodcastListTile extends StatelessWidget {
     );
   }
 
-  factory PodcastListTile.search(
-    PodcastSearch podcast, {
-    Key? key,
-    Widget? trailing,
-    bool? showDot,
-    required VoidCallback onTap,
-  }) {
-    return PodcastListTile(
-      key: key,
-      imageUrl: podcast.artwork,
-      name: podcast.title,
-      trailing: trailing,
-      showDot: showDot ?? false,
-      onTap: onTap,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListTile(
