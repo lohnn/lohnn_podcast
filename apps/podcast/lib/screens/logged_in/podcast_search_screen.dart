@@ -66,8 +66,8 @@ class _PodcastSearchScreen extends ConsumerWidget {
                         await LoadingScreen.showLoading(
                           context: context,
                           job: ref
-                              .read(podcastsProvider.notifier)
-                              .addPodcastToList(rssUrl),
+                              .read(findPodcastProvider.notifier)
+                              .subscribe(rssUrl),
                         );
                       },
                       icon: const Icon(Icons.rss_feed),
@@ -145,13 +145,15 @@ class _PodcastSearchScreen extends ConsumerWidget {
                     onPressed: () {
                       ref
                           .read(findPodcastProvider.notifier)
-                          .unsubscribe(podcast);
+                          .unsubscribe(podcast.url.uri.toString());
                     },
                     icon: const Icon(Icons.check),
                   ),
                   false => IconButton(
                     onPressed: () {
-                      ref.read(findPodcastProvider.notifier).subscribe(podcast);
+                      ref
+                          .read(findPodcastProvider.notifier)
+                          .subscribe(podcast.url.uri.toString());
                     },
                     icon: const Icon(Icons.add),
                   ),

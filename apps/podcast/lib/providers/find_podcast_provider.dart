@@ -26,17 +26,17 @@ class FindPodcast extends _$FindPodcast {
     });
   }
 
-  void subscribe(PodcastSearch podcast) {
-    Repository().remoteProvider.client.functions.invoke(
+  Future<void> subscribe(String podcastUrl) {
+    return Repository().remoteProvider.client.functions.invoke(
       'subscribe_to_podcast',
-      body: podcast.url.uri.toString(),
+      body: podcastUrl,
     );
   }
 
-  void unsubscribe(PodcastSearch podcast) {
-    Repository().remoteProvider.client.functions.invoke(
+  Future<void> unsubscribe(String podcastUrl) {
+    return Repository().remoteProvider.client.functions.invoke(
       'unsubscribe_from_podcast',
-      body: podcast.url.uri.toString(),
+      body: podcastUrl,
     );
   }
 }
