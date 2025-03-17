@@ -118,6 +118,8 @@ class _PodcastSearchScreen extends ConsumerWidget {
                   children: [
                     Text(podcast.author),
                     Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
                       children: [
                         for (final category in podcast.categories.values)
                           Chip(label: Text(category)),
