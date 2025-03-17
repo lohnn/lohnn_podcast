@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/providers/user_provider.dart';
@@ -16,6 +17,11 @@ class LoginScreen extends HookConsumerWidget {
         children: [
           if (error case final error?) error,
           TextButton(
+            onLongPress: switch (kDebugMode) {
+              true =>
+                () => ref.read(userPodProvider.notifier).logInAnonymously(),
+              false => null,
+            },
             onPressed: () {
               ref.read(userPodProvider.notifier).logIn();
             },
