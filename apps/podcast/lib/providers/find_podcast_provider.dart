@@ -7,7 +7,7 @@ part 'find_podcast_provider.g.dart';
 
 @riverpod
 class FindPodcast extends _$FindPodcast {
-  final _searchDebouncer = Debouncer.short();
+  final _searchDebouncer = Debouncer.long();
 
   @override
   Future<List<PodcastSearch>> build() {
@@ -17,22 +17,26 @@ class FindPodcast extends _$FindPodcast {
   Future<void> search(String searchTerm) async {
     state = const AsyncLoading();
     _searchDebouncer.run(() async {
-      final podcasts = await Repository().findPodcasts(searchTerm);
-      state = AsyncData(podcasts);
+      try {
+        final podcasts = await Repository().findPodcasts(searchTerm);
+        state = AsyncData(podcasts);
+      } catch (e, stackTrace) {
+        state = AsyncError(e, stackTrace);
+      }
     });
   }
 
   void subscribe(PodcastSearch podcast) {
     Repository().remoteProvider.client.functions.invoke(
       'subscribe_to_podcast',
-      body: podcast.url,
+      body: podcast.url.uri.toString(),
     );
   }
 
   void unsubscribe(PodcastSearch podcast) {
     Repository().remoteProvider.client.functions.invoke(
       'unsubscribe_from_podcast',
-      body: podcast.url,
+      body: podcast.url.uri.toString(),
     );
   }
 }

@@ -80,6 +80,19 @@ class _PodcastSearchScreen extends ConsumerWidget {
           const SliverFillRemaining(
             child: Center(child: CircularProgressIndicator.adaptive()),
           )
+        else if (state.hasError)
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverFillRemaining(
+              child: Center(
+                child: Text(
+                  'Something went wrong.\n'
+                  'Please send an error report to podcast@lohnn.se with your search term.',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ),
+            ),
+          )
         else if (state.valueOrNull case final data?)
           SliverList(
             delegate: SliverChildBuilderDelegate(childCount: data.length, (
