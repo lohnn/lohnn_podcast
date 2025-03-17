@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/podcast.model.dart';
+import 'package:podcast/data/podcast_search.model.dart';
 import 'package:podcast/providers/find_podcast_provider.dart';
 import 'package:podcast/providers/podcasts_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
@@ -37,24 +38,24 @@ class PodcastSearchScreen extends ConsumerWidget {
 }
 
 class _PodcastSearchScreen
-    extends AsyncValueWidget<List<({Podcast podcast, bool isSubscribed})>> {
+    extends AsyncValueWidget<List<({PodcastSearch podcast, bool isSubscribed})>> {
   const _PodcastSearchScreen();
 
   @override
-  ProviderBase<AsyncValue<List<({Podcast podcast, bool isSubscribed})>>>
+  ProviderBase<AsyncValue<List<({PodcastSearch podcast, bool isSubscribed})>>>
   get provider => findPodcastProvider;
 
   @override
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    List<({Podcast podcast, bool isSubscribed})> data,
+    List<({PodcastSearch podcast, bool isSubscribed})> data,
   ) {
     return ListView.builder(
       itemCount: data.length,
       itemBuilder: (context, index) {
         final (:podcast, :isSubscribed) = data[index];
-        return PodcastListTile(
+        return PodcastListTile.search(
           key: ValueKey(podcast),
           podcast,
           onTap: () {
@@ -71,15 +72,15 @@ class _PodcastSearchScreen
               isSubscribed
                   ? IconButton(
                     onPressed: () {
-                      ref
-                          .read(findPodcastProvider.notifier)
-                          .unsubscribe(podcast);
+                      // ref
+                      //     .read(findPodcastProvider.notifier)
+                      //     .unsubscribe(podcast);
                     },
                     icon: const Icon(Icons.check),
                   )
                   : IconButton(
                     onPressed: () {
-                      ref.read(findPodcastProvider.notifier).subscribe(podcast);
+                      // ref.read(findPodcastProvider.notifier).subscribe(podcast);
                     },
                     icon: const Icon(Icons.add),
                   ),

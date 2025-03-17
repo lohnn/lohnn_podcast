@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/podcast.model.dart';
+import 'package:podcast/data/podcast_search.model.dart';
 import 'package:podcast/providers/color_scheme_from_remote_image_provider.dart';
 import 'package:podcast/widgets/rounded_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PodcastDetailsModal extends ConsumerWidget {
-  final Podcast podcast;
+  final PodcastSearch podcast;
 
   const PodcastDetailsModal({super.key, required this.podcast});
 
@@ -19,7 +20,7 @@ class PodcastDetailsModal extends ConsumerWidget {
             ref
                 .watch(
                   colorSchemeFromRemoteImageProvider(
-                    podcast.imageUrl,
+                    podcast.artwork,
                     Theme.of(context).brightness,
                   ),
                 )
@@ -35,28 +36,28 @@ class PodcastDetailsModal extends ConsumerWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  RoundedImage(imageUri: podcast.imageUrl.uri, imageSize: 100),
+                  RoundedImage(imageUri: podcast.artwork.uri, imageSize: 100),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          podcast.name,
+                          podcast.title,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),
+                        // InkWell(
+                        //   child: Container(
+                        //     width: double.infinity,
+                        //     padding: const EdgeInsets.symmetric(vertical: 8),
+                        //     child: Text(podcast.link),
+                        //   ),
+                        //   onTap: () => launchUrlString(podcast.link),
+                        // ),
                         InkWell(
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text(podcast.link),
-                          ),
-                          onTap: () => launchUrlString(podcast.link),
-                        ),
-                        InkWell(
-                          onTap: () => launchUrlString(podcast.rssUrl),
+                          onTap: () => launchUrl(podcast.url.uri),
                           child: const Padding(
                             padding: EdgeInsets.symmetric(vertical: 8),
                             child: Row(

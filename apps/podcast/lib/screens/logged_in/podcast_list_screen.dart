@@ -70,7 +70,7 @@ class PodcastListScreen extends AsyncValueWidget<List<PodcastWithStatus>> {
             :hasUnseenEpisodes,
           ) = podcasts[index];
 
-          return PodcastListTile(
+          return PodcastListTile.podcast(
             podcast,
             showDot: hasUnseenEpisodes,
             onTap: () {
