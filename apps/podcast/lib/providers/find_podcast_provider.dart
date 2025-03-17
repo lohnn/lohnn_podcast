@@ -1,25 +1,40 @@
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/data/podcast.model.dart';
 import 'package:podcast/data/podcast_search.model.dart';
-import 'package:podcast/extensions/async_value_extensions.dart';
-import 'package:podcast/providers/podcasts_provider.dart';
+import 'package:podcast/helpers/debouncer.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'find_podcast_provider.g.dart';
 
 @riverpod
 class FindPodcast extends _$FindPodcast {
+  final _searchDebouncer = Debouncer.short();
+
   @override
-  AsyncValue<List<({PodcastSearch podcast, bool isSubscribed})>> build() {
-    return (
-      ref.watch(podcastsProvider),
-      ref.watch(_findPodcastImplProvider),
-    ).pack().whenData((tuple) {
-      final (myPodcasts, podcasts) = tuple;
-      return [
-        for (final podcast in podcasts)
-          (podcast: podcast, isSubscribed: myPodcasts.contains(podcast)),
-      ];
+  Future<List<PodcastSearch>> build() {
+    // final podcastUrls = await ref.watch(
+    //   podcastsProvider.selectAsync(
+    //     (podcasts) => podcasts.map((podcast) => podcast.rssUrl),
+    //   ),
+    // );
+    return Repository().findPodcasts();
+    // return (podcastUrls, trendingPodcasts).pack().whenData((tuple) {
+    //   final (myPodcasts, podcasts) = tuple;
+    //   return [
+    //     for (final podcast in podcasts)
+    //       (
+    //         podcast: podcast,
+    //         isSubscribed: myPodcasts.contains(podcast.url.uri.toString()),
+    //       ),
+    //   ];
+    // });
+  }
+
+  Future<void> search(String searchTerm) async {
+    state = const AsyncLoading();
+    _searchDebouncer.run(() async {
+      final podcasts = await Repository().findPodcasts(searchTerm);
+      state = AsyncData(podcasts);
     });
   }
 
@@ -36,16 +51,4 @@ class FindPodcast extends _$FindPodcast {
       body: podcast.id,
     );
   }
-}
-
-@riverpod
-Future<Iterable<PodcastSearch>> _findPodcastImpl(
-  _FindPodcastImplRef ref,
-) async {
-  final podcastsResponse = await Repository().remoteProvider.client.functions
-      .invoke('find_podcasts');
-
-  final data =
-      (podcastsResponse.data as List<dynamic>).cast<Map<String, dynamic>>();
-  return data.map(PodcastSearchMapper.fromMap);
 }

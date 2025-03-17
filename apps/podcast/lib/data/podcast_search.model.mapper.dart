@@ -39,9 +39,6 @@ class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
   static String _$lastPublished(PodcastSearch v) => v.lastPublished;
   static const Field<PodcastSearch, String> _f$lastPublished =
       Field('lastPublished', _$lastPublished);
-  static int _$trendScore(PodcastSearch v) => v.trendScore;
-  static const Field<PodcastSearch, int> _f$trendScore =
-      Field('trendScore', _$trendScore);
   static String _$language(PodcastSearch v) => v.language;
   static const Field<PodcastSearch, String> _f$language =
       Field('language', _$language);
@@ -58,7 +55,6 @@ class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
     #artwork: _f$artwork,
     #author: _f$author,
     #lastPublished: _f$lastPublished,
-    #trendScore: _f$trendScore,
     #language: _f$language,
     #categories: _f$categories,
   };
@@ -72,7 +68,6 @@ class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
         artwork: data.dec(_f$artwork),
         author: data.dec(_f$author),
         lastPublished: data.dec(_f$lastPublished),
-        trendScore: data.dec(_f$trendScore),
         language: data.dec(_f$language),
         categories: data.dec(_f$categories));
   }
@@ -140,7 +135,6 @@ abstract class PodcastSearchCopyWith<$R, $In extends PodcastSearch, $Out>
       UriModel? artwork,
       String? author,
       String? lastPublished,
-      int? trendScore,
       String? language,
       String? categories});
   PodcastSearchCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
@@ -169,7 +163,6 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
           UriModel? artwork,
           String? author,
           String? lastPublished,
-          int? trendScore,
           String? language,
           String? categories}) =>
       $apply(FieldCopyWithData({
@@ -180,7 +173,6 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
         if (artwork != null) #artwork: artwork,
         if (author != null) #author: author,
         if (lastPublished != null) #lastPublished: lastPublished,
-        if (trendScore != null) #trendScore: trendScore,
         if (language != null) #language: language,
         if (categories != null) #categories: categories
       }));
@@ -193,7 +185,6 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
       artwork: data.get(#artwork, or: $value.artwork),
       author: data.get(#author, or: $value.author),
       lastPublished: data.get(#lastPublished, or: $value.lastPublished),
-      trendScore: data.get(#trendScore, or: $value.trendScore),
       language: data.get(#language, or: $value.language),
       categories: data.get(#categories, or: $value.categories));
 

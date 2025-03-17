@@ -19,7 +19,6 @@ class PodcastSearch extends OfflineFirstWithSupabaseModel
   @MappableField()
   final UriModel artwork;
   final String lastPublished;
-  final int trendScore;
   final String language;
   final String categories;
 
@@ -31,7 +30,6 @@ class PodcastSearch extends OfflineFirstWithSupabaseModel
     required this.artwork,
     required this.author,
     required this.lastPublished,
-    required this.trendScore,
     required this.language,
     required this.categories,
   });

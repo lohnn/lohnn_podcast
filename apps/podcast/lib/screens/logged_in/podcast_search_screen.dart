@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/data/podcast.model.dart';
-import 'package:podcast/data/podcast_search.model.dart';
 import 'package:podcast/providers/find_podcast_provider.dart';
 import 'package:podcast/providers/podcasts_provider.dart';
-import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
 import 'package:podcast/screens/loading_screen.dart';
 import 'package:podcast/screens/modals/podcast_details_modal.dart';
 import 'package:podcast/widgets/podcast_list_tile.dart';
 
-class PodcastSearchScreen extends ConsumerWidget {
+class PodcastSearchScreen extends HookConsumerWidget {
   const PodcastSearchScreen({super.key});
 
   @override
@@ -37,55 +34,82 @@ class PodcastSearchScreen extends ConsumerWidget {
   }
 }
 
-class _PodcastSearchScreen
-    extends AsyncValueWidget<List<({PodcastSearch podcast, bool isSubscribed})>> {
+class _PodcastSearchScreen extends ConsumerWidget {
   const _PodcastSearchScreen();
 
   @override
-  ProviderBase<AsyncValue<List<({PodcastSearch podcast, bool isSubscribed})>>>
-  get provider => findPodcastProvider;
+  Widget build(BuildContext context, WidgetRef ref) {
+    // TODO: Implement here if podcast is already subscribed
+    final state = ref.watch(findPodcastProvider);
 
-  @override
-  Widget buildWithData(
-    BuildContext context,
-    WidgetRef ref,
-    List<({PodcastSearch podcast, bool isSubscribed})> data,
-  ) {
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (context, index) {
-        final (:podcast, :isSubscribed) = data[index];
-        return PodcastListTile.search(
-          key: ValueKey(podcast),
-          podcast,
-          onTap: () {
-            // @TODO: Set theme color from podcast image
-            showModalBottomSheet(
-              context: context,
-              useSafeArea: true,
-              showDragHandle: true,
-              // @TODO: Eventually maybe show episode list here as well
-              builder: (context) => PodcastDetailsModal(podcast: podcast),
-            );
-          },
-          trailing:
-              isSubscribed
-                  ? IconButton(
-                    onPressed: () {
-                      // ref
-                      //     .read(findPodcastProvider.notifier)
-                      //     .unsubscribe(podcast);
-                    },
-                    icon: const Icon(Icons.check),
-                  )
-                  : IconButton(
-                    onPressed: () {
-                      // ref.read(findPodcastProvider.notifier).subscribe(podcast);
-                    },
-                    icon: const Icon(Icons.add),
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          sliver: SliverToBoxAdapter(
+            child: SearchAnchor(
+              builder: (context, controller) {
+                return SearchBar(
+                  controller: controller,
+                  padding: const WidgetStatePropertyAll(
+                    EdgeInsets.symmetric(horizontal: 16),
                   ),
-        );
-      },
+                  leading: const Icon(Icons.search),
+                  // onTap: () => controller.openView(),
+                  // onChanged: (_) => controller.openView(),
+                  onChanged: ref.read(findPodcastProvider.notifier).search,
+                );
+              },
+              suggestionsBuilder: (context, controller) {
+                return [];
+              },
+            ),
+          ),
+        ),
+        if (state.isLoading)
+          const SliverFillRemaining(
+            child: Center(child: CircularProgressIndicator.adaptive()),
+          )
+        else if (state.valueOrNull case final data?)
+          SliverList(
+            delegate: SliverChildBuilderDelegate(childCount: data.length, (
+              context,
+              index,
+            ) {
+              final podcast = data[index];
+              return PodcastListTile.search(
+                key: ValueKey(podcast),
+                podcast,
+                onTap: () {
+                  // @TODO: Set theme color from podcast image
+                  showModalBottomSheet(
+                    context: context,
+                    useSafeArea: true,
+                    showDragHandle: true,
+                    // @TODO: Eventually maybe show episode list here as well
+                    builder: (context) => PodcastDetailsModal(podcast: podcast),
+                  );
+                },
+                // trailing:
+                //     isSubscribed
+                //         ? IconButton(
+                //           onPressed: () {
+                //              ref
+                //                  .read(findPodcastProvider.notifier)
+                //                  .unsubscribe(podcast);
+                //           },
+                //           icon: const Icon(Icons.check),
+                //         )
+                //         : IconButton(
+                //           onPressed: () {
+                //              ref.read(findPodcastProvider.notifier).subscribe(podcast);
+                //           },
+                //           icon: const Icon(Icons.add),
+                //         ),
+              );
+            }),
+          ),
+      ],
     );
   }
 }
