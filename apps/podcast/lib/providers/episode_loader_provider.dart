@@ -4,6 +4,7 @@ import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:file/file.dart';
 import 'package:file/local.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:podcast/data/episode.model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -74,6 +75,10 @@ class EpisodeLoader extends _$EpisodeLoader {
   @override
   Future<EpisodeFileResponse> build(Episode episode) async {
     ref.keepAlive();
+    if (kIsWeb) {
+      return RemoteEpisodeFile(remoteUri: episode.url.uri);
+    }
+
     final localFile = await _cacheManager.getFileFromCache(episode);
     if (localFile != null) {
       return localFile;
@@ -88,6 +93,12 @@ class EpisodeLoader extends _$EpisodeLoader {
   /// During download, the uri will report the original URL of the episode.
   Stream<EpisodeFileResponse> tryDownload() async* {
     final status = await future;
+
+    if (kIsWeb) {
+      yield status;
+      return;
+    }
+
     if (status is LocalEpisodeFile) {
       yield status;
       return;
