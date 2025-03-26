@@ -25,7 +25,7 @@ class LoggedInScreen extends HookConsumerWidget {
       () => GoRouter(
         routes: [
           GoRoute(
-            onExit: (context, __) async {
+            onExit: (context, _) async {
               final shouldClose = await showDialog<bool>(
                 context: context,
                 builder: (context) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:podcast/data/podcast.model.dart';
-import 'package:podcast/data/podcast_search.model.dart';
 import 'package:podcast/data/serdes/uri_model.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 

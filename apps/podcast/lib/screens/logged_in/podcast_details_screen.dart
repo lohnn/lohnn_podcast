@@ -26,7 +26,7 @@ class PodcastDetailsScreen
     WidgetRef ref,
     (Podcast, List<EpisodeWithStatus>) data,
   ) {
-    // TODO: Verify why provider is rebuilding multiple times
+    // @TODO: Verify why provider is rebuilding multiple times
     final queue = ref.watch(playlistPodProvider).valueOrNull ?? [];
     final (podcast, episodes) = data;
     return Scaffold(

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-// TODO: Add to startup script: google-services.json
+// @TODO: Add to startup script: google-services.json
 
 void main(List<String> args) {
   if (args.contains('--help')) {

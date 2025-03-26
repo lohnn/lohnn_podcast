@@ -116,39 +116,39 @@ class EpisodeFileService {
 
     _dio
         .downloadUri(
-          episode.url.uri,
-          tempDuringDownloadFile.path,
-          options: Options(responseType: ResponseType.stream, maxRedirects: 10),
-          onReceiveProgress: (received, total) {
-            controller.add(
-              DownloadingEpisodeFile(
-                remoteUri: episode.url.uri,
-                progress: received / total,
-              ),
-            );
-          },
-        )
+      episode.url.uri,
+      tempDuringDownloadFile.path,
+      options: Options(responseType: ResponseType.stream, maxRedirects: 10),
+      onReceiveProgress: (received, total) {
+        controller.add(
+          DownloadingEpisodeFile(
+            remoteUri: episode.url.uri,
+            progress: received / total,
+          ),
+        );
+      },
+    )
         .then(
           (response) {
-            tempDuringDownloadFile.renameSync(destination.path);
-            controller.add(
-              LocalEpisodeFile(
-                remoteUri: episode.url.uri,
-                localUri: destination.uri,
-              ),
-            );
-            controller.close();
-          },
-          onError: (error, stackTrace) {
-            if ((error, stackTrace) case (
-              final Object error,
-              final StackTrace stackTrace,
-            )) {
-              controller.addError(error, stackTrace);
-            }
-            controller.close();
-          },
+        tempDuringDownloadFile.renameSync(destination.path);
+        controller.add(
+          LocalEpisodeFile(
+            remoteUri: episode.url.uri,
+            localUri: destination.uri,
+          ),
         );
+        controller.close();
+      },
+      onError: (error, stackTrace) {
+        if ((error, stackTrace) case (
+        final Object error,
+        final StackTrace stackTrace,
+        )) {
+          controller.addError(error, stackTrace);
+        }
+        controller.close();
+      },
+    );
 
     return controller;
   }
@@ -177,7 +177,7 @@ class EpisodeCacheManager {
   /// The directory where the episodes are stored.
   ///
   /// Also makes sure to clean up the directory before returning it.
-  Future<Directory> get applicationCacheDirectory async {
+  Future<Directory> get applicationCacheDirectory {
     return _applicationCacheDirectoryMemoizer.runOnce(() async {
       final dir = await const LocalFileSystem()
           .directory(await getApplicationCacheDirectory())
@@ -191,9 +191,9 @@ class EpisodeCacheManager {
           if (file.path.endsWith('.download')) {
             await file.delete();
           } else if ((await FileStat.stat(file.path)).accessed
-          // TODO: This logic should be improved somewhoe
+          // @TODO: This logic should be improved somewhow
           //  Maybe we should look at the queue and remove files that are not in the queue?
-          .isBefore(DateTime.now().subtract(const Duration(days: 5)))) {
+              .isBefore(DateTime.now().subtract(const Duration(days: 5)))) {
             await file.delete();
           }
         }
@@ -240,10 +240,10 @@ class EpisodeCacheManager {
     // The get function is closing the sink
     // ignore: close_sinks
     final subject =
-        _downloads[episode] = episodeFileService.get(
-          episode,
-          await _fileFromEpisode(episode),
-        );
+    _downloads[episode] = episodeFileService.get(
+      episode,
+      await _fileFromEpisode(episode),
+    );
 
     yield* subject.stream;
   }

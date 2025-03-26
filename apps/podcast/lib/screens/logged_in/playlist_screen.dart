@@ -41,7 +41,7 @@ class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
             },
             leading: RoundedImage(
               imageUri: episode.imageUrl.uri,
-              // TODO: Do this more prettier
+              // @TODO: Do this more prettier
               showDot: !(valueOrNull2?[episode.id]?.isPlayed ?? false),
               imageSize: 40,
             ),

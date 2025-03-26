@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 extension AsyncValueRecord2Extension<T, E> on (AsyncValue<T>, AsyncValue<E>) {
   AsyncValue<(T, E)> pack() {
     return switch (($1, $2)) {
-      (AsyncValue<T>(value: final data?), AsyncValue<E>(value: final data2?)) =>
+      (AsyncValue<T>(value: final T data), AsyncValue<E>(value: final E data2)) =>
         AsyncData((data, data2)),
       (AsyncError<T>(:final error, :final stackTrace), _) ||
       (
@@ -20,9 +20,9 @@ extension AsyncValueRecord3Extension<T, E, S>
   AsyncValue<(T, E, S)> pack() {
     return switch (($1, $2, $3)) {
       (
-        AsyncValue<T>(value: final data?),
-        AsyncValue<E>(value: final data2?),
-        AsyncValue<S>(value: final data3?),
+        AsyncValue<T>(value: final T data),
+        AsyncValue<E>(value: final E data2),
+        AsyncValue<S>(value: final S data3),
       ) =>
         AsyncData((data, data2, data3)),
       (AsyncError<T>(:final error, :final stackTrace), _, _) ||

@@ -39,6 +39,7 @@ class _PodcastSearchScreen extends ConsumerWidget {
 
     return CustomScrollView(
       slivers: [
+        // @TODO: This should be sticky at the top
         SliverPadding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           sliver: SliverToBoxAdapter(
@@ -49,7 +50,6 @@ class _PodcastSearchScreen extends ConsumerWidget {
                   padding: const WidgetStatePropertyAll(
                     EdgeInsets.symmetric(horizontal: 16),
                   ),
-                  leading: const Icon(Icons.search),
                   // onTap: () => controller.openView(),
                   // onChanged: (_) => controller.openView(),
                   onChanged: ref.read(findPodcastProvider.notifier).search,

@@ -37,7 +37,7 @@ Future<void> main() async {
     });
   }
 
-  // TODO: Add Firebase configuration to the init-script?
+  // @TODO: Add Firebase configuration to the init-script?
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
     name: 'lohnn-podcast',
