@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in_web/web_only.dart' as google_sign_in;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/providers/user_provider.dart';
 
@@ -16,17 +17,20 @@ class LoginScreen extends HookConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (error case final error?) error,
-          TextButton(
-            onLongPress: switch (kDebugMode) {
-              true =>
-                () => ref.read(userPodProvider.notifier).logInAnonymously(),
-              false => null,
-            },
-            onPressed: () {
-              ref.read(userPodProvider.notifier).logIn();
-            },
-            child: const Text('Log in'),
-          ),
+          if (kIsWeb)
+            google_sign_in.renderButton()
+          else
+            TextButton(
+              onLongPress: switch (kDebugMode) {
+                true =>
+                  () => ref.read(userPodProvider.notifier).logInAnonymously(),
+                false => null,
+              },
+              onPressed: () {
+                ref.read(userPodProvider.notifier).logIn();
+              },
+              child: const Text('Log in'),
+            ),
         ],
       ),
     );
