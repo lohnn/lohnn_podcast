@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:podcast/extensions/nullability_extensions.dart';
+import 'package:podcast/widgets/potentially_cached_image.dart';
 
 class RoundedImage extends StatelessWidget {
   final Uri? imageUri;
@@ -33,12 +33,10 @@ class RoundedImage extends StatelessWidget {
                 imageUri?.let(
                   (uri) => ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: CachedNetworkImage(
-                      imageUrl: uri.toString(),
+                    child: PotentiallyCachedImage(
+                      uri.toString(),
                       width: imageSize,
                       height: imageSize,
-                      memCacheWidth: scaledImageSize,
-                      memCacheHeight: scaledImageSize,
                     ),
                   ),
                 ) ??
