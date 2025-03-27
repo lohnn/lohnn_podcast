@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/data/podcast.model.dart';
 import 'package:podcast/providers/color_scheme_from_remote_image_provider.dart';
-import 'package:podcast/providers/episode_color_scheme_provider.dart';
 import 'package:podcast/providers/episodes_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';

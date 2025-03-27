@@ -54,7 +54,7 @@ class Episode extends OfflineFirstWithSupabaseModel with EpisodeMappable {
   }) {
     return PodcastMediaItem(
       episode: this,
-      // TODO: This should be able to use the local URL as well?
+      // @TODO: This should be able to use the local URL as well?
       id: url.uri.toString(),
       title: title,
       artUri: imageUrl.uri,

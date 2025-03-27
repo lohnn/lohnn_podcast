@@ -14,7 +14,8 @@ import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/screens/logged_in/logged_in_screen.dart';
 import 'package:podcast/screens/login_screen.dart';
 import 'package:rive/rive.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
@@ -37,11 +38,18 @@ Future<void> main() async {
     });
   }
 
-  // TODO: Add Firebase configuration to the init-script?
+  // @TODO: Add Firebase configuration to the init-script?
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
     name: 'lohnn-podcast',
   );
+
+  if (kIsWeb) {
+    // Change default factory on the web
+    databaseFactory = databaseFactoryFfiWeb;
+  } else {
+    databaseFactory = databaseFactoryFfi;
+  }
   await Repository.configure(databaseFactory);
   await Repository().initialize();
 

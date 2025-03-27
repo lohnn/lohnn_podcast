@@ -5,6 +5,7 @@ import 'package:podcast/providers/podcasts_provider.dart';
 import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
 import 'package:podcast/screens/loading_screen.dart';
 import 'package:podcast/screens/modals/podcast_details_modal.dart';
+import 'package:podcast/widgets/plasma_sphere_widget.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class PodcastSearchScreen extends HookConsumerWidget {
@@ -39,6 +40,7 @@ class _PodcastSearchScreen extends ConsumerWidget {
 
     return CustomScrollView(
       slivers: [
+        // @TODO: This should be sticky at the top
         SliverPadding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           sliver: SliverToBoxAdapter(
@@ -49,7 +51,6 @@ class _PodcastSearchScreen extends ConsumerWidget {
                   padding: const WidgetStatePropertyAll(
                     EdgeInsets.symmetric(horizontal: 16),
                   ),
-                  leading: const Icon(Icons.search),
                   // onTap: () => controller.openView(),
                   // onChanged: (_) => controller.openView(),
                   onChanged: ref.read(findPodcastProvider.notifier).search,
@@ -82,9 +83,7 @@ class _PodcastSearchScreen extends ConsumerWidget {
           ),
         ),
         if (state.isLoading)
-          const SliverFillRemaining(
-            child: Center(child: CircularProgressIndicator.adaptive()),
-          )
+          const SliverFillRemaining(child: Center(child: ParticleLoading()))
         else if (state.hasError)
           SliverPadding(
             padding: const EdgeInsets.all(16),

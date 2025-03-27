@@ -57,7 +57,7 @@ class PodcastAudioHandler extends BaseAudioHandler
 
   StreamSubscription<Duration>? _positionSubscription;
 
-  // TODO: Revise this to use better logic
+  // @TODO: Revise this to use better logic
   Stream<void> get episodeFinished => playbackState
       .map((state) => state.processingState)
       .distinct()

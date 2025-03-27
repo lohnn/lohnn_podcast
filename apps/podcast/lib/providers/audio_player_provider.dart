@@ -31,7 +31,7 @@ Future<PodcastAudioHandler> _podcastAudioHandler(
 @Riverpod(keepAlive: true)
 class _AudioServicePod extends _$AudioServicePod {
   @override
-  Future<PodcastAudioHandler> build() async {
+  Future<PodcastAudioHandler> build() {
     return _initService();
   }
 
@@ -58,7 +58,7 @@ class _AudioServicePod extends _$AudioServicePod {
 class AudioPlayerPod extends _$AudioPlayerPod {
   late PodcastAudioHandler _player;
 
-  final log = Logger('se.lohnn.podcast.AudioPlayerPod');
+  final _log = Logger('se.lohnn.podcast.AudioPlayerPod');
 
   @override
   Future<EpisodeWithStatus?> build() async {
@@ -119,7 +119,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   ///
   /// Returns a future that completes when the episode has been loaded from the
   /// first source.
-  Future<void> loadNextEpisode(Episode episode, {bool autoPlay = false}) async {
+  Future<void> loadNextEpisode(Episode episode, {bool autoPlay = false}) {
     _downloadSubscription?.cancel();
 
     final completer = Completer<void>();
@@ -170,7 +170,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
   Future<void> _onEpisodeFinished() async {
     final episodeWithStatus = await future;
 
-    log.fine('Episode finished: ${episodeWithStatus?.episode.title}');
+    _log.fine('Episode finished: ${episodeWithStatus?.episode.title}');
 
     await _player.stop();
 
