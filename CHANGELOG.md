@@ -15,6 +15,28 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`podcast` - `v0.1.4+1`](#podcast---v0141)
+
+---
+
+#### `podcast` - `v0.1.4+1`
+
+ - **REFACTOR**: Format code.
+ - **FIX**: Mobile could not start.
+
+
+## 2025-03-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`podcast` - `v0.1.4`](#podcast---v014)
 
 ---
