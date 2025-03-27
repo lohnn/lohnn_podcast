@@ -5,6 +5,7 @@ import 'package:podcast/providers/podcasts_provider.dart';
 import 'package:podcast/screens/dialogs/add_podcast_dialog.dart';
 import 'package:podcast/screens/loading_screen.dart';
 import 'package:podcast/screens/modals/podcast_details_modal.dart';
+import 'package:podcast/widgets/plasma_sphere_widget.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class PodcastSearchScreen extends HookConsumerWidget {
@@ -82,9 +83,7 @@ class _PodcastSearchScreen extends ConsumerWidget {
           ),
         ),
         if (state.isLoading)
-          const SliverFillRemaining(
-            child: Center(child: CircularProgressIndicator.adaptive()),
-          )
+          const SliverFillRemaining(child: Center(child: ParticleLoading()))
         else if (state.hasError)
           SliverPadding(
             padding: const EdgeInsets.all(16),
