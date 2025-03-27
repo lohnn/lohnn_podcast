@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -47,7 +48,7 @@ Future<void> main() async {
   if (kIsWeb) {
     // Change default factory on the web
     databaseFactory = databaseFactoryFfiWeb;
-  } else {
+  } else if (!Platform.isAndroid && !Platform.isIOS) {
     databaseFactory = databaseFactoryFfi;
   }
   await Repository.configure(databaseFactory);
