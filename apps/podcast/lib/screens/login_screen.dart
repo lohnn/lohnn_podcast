@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in_web/web_only.dart' as google_sign_in;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/providers/user_provider.dart';
+import 'package:podcast/widgets/google_login_button/google_login_button.dart';
 
 class LoginScreen extends HookConsumerWidget {
   final Widget? error;
@@ -18,7 +18,7 @@ class LoginScreen extends HookConsumerWidget {
         children: [
           if (error case final error?) error,
           if (kIsWeb)
-            google_sign_in.renderButton()
+            googleSignInButton()
           else
             TextButton(
               onLongPress: switch (kDebugMode) {
