@@ -49,7 +49,7 @@ Future<void> main() async {
   if (isWeb) {
     // Change default factory on the web
     databaseFactory = databaseFactoryFfiWeb;
-  } else if (!Platform.isAndroid && !Platform.isIOS) {
+  } else if (isDesktop) {
     databaseFactory = databaseFactoryFfi;
   }
   await Repository.configure(databaseFactory);
