@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/default_firebase_config.dart';
+import 'package:podcast/helpers/platform_helpers.dart';
 import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast/providers/user_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
@@ -45,10 +46,10 @@ Future<void> main() async {
     name: 'lohnn-podcast',
   );
 
-  if (kIsWeb) {
+  if (isWeb) {
     // Change default factory on the web
     databaseFactory = databaseFactoryFfiWeb;
-  } else if (!Platform.isAndroid && !Platform.isIOS) {
+  } else if (isDesktop) {
     databaseFactory = databaseFactoryFfi;
   }
   await Repository.configure(databaseFactory);

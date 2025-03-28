@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:podcast/helpers/platform_helpers.dart';
 import 'package:podcast/secrets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -17,9 +17,9 @@ class UserPod extends _$UserPod {
 
   @override
   Stream<User?> build() async* {
-    if (kIsWeb) {
+    if (isWeb) {
       _googleSignIn = GoogleSignIn(clientId: Secrets.googleServerClientId);
-      
+
       ref.onDispose(
         _googleSignIn.onCurrentUserChanged.whereNotNull().listen((user) async {
           final authentication = await user.authentication;

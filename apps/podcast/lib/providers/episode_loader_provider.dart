@@ -7,6 +7,7 @@ import 'package:file/local.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:podcast/data/episode.model.dart';
+import 'package:podcast/helpers/platform_helpers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -75,7 +76,7 @@ class EpisodeLoader extends _$EpisodeLoader {
   @override
   Future<EpisodeFileResponse> build(Episode episode) async {
     ref.keepAlive();
-    if (kIsWeb) {
+    if (isWeb) {
       return RemoteEpisodeFile(remoteUri: episode.url.uri);
     }
 
@@ -94,7 +95,7 @@ class EpisodeLoader extends _$EpisodeLoader {
   Stream<EpisodeFileResponse> tryDownload() async* {
     final status = await future;
 
-    if (kIsWeb) {
+    if (isWeb) {
       yield status;
       return;
     }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:podcast/helpers/platform_helpers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 export 'dart:ui' show AppLifecycleState;
@@ -15,6 +16,8 @@ class AppLifecycleStatePod extends _$AppLifecycleStatePod {
   }
 
   set lifecycleState(ui.AppLifecycleState newState) {
+    if (isWeb) return;
+    
     // Only update if on mobile
     if (Platform.isAndroid || Platform.isIOS) {
       state = newState;
