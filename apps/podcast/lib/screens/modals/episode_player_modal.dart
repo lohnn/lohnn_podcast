@@ -47,7 +47,8 @@ class EpisodePlayerModal extends HookConsumerWidget {
                   episodeDuration.inMilliseconds.toDouble(),
                 ),
                 max: episodeDuration.inMilliseconds.toDouble(),
-                onChanged: (value) {
+                onChanged: (_) {},
+                onChangeEnd: (value) {
                   ref
                       .read(audioPlayerPodProvider.notifier)
                       .setPosition(value.toInt());
