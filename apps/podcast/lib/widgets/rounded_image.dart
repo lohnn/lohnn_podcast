@@ -37,6 +37,8 @@ class RoundedImage extends StatelessWidget {
                       uri.toString(),
                       width: imageSize,
                       height: imageSize,
+                      cachedWidth: scaledImageSize,
+                      cachedHeight: scaledImageSize,
                     ),
                   ),
                 ) ??
