@@ -25,7 +25,7 @@ class PotentiallyCachedImage extends StatelessWidget {
         uri,
         width: width,
         height: height,
-        webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
+        webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
       );
     }
     return CachedNetworkImage(
