@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:podcast/helpers/platform_helpers.dart';
 
 class PotentiallyCachedImage extends StatelessWidget {
   final String uri;
@@ -20,7 +20,7 @@ class PotentiallyCachedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) {
+    if (isWeb) {
       return Image.network(
         uri,
         width: width,
@@ -29,7 +29,7 @@ class PotentiallyCachedImage extends StatelessWidget {
       );
     }
     return CachedNetworkImage(
-      imageUrl: uri.toString(),
+      imageUrl: uri,
       width: width,
       height: height,
       memCacheWidth: cachedWidth,

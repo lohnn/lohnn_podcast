@@ -413,7 +413,6 @@ class _ParticleAppState extends State<ParticleApp> {
               label: 'Rotation Speed',
               value: rotationSpeed,
               min: 0.1,
-              max: 1,
               onChanged: (newSpeed) {
                 setState(() {
                   rotationSpeed = newSpeed;
