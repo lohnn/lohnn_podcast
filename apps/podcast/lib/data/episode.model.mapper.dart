@@ -92,7 +92,8 @@ mixin EpisodeMappable {
   }
 
   EpisodeCopyWith<Episode, Episode, Episode> get copyWith =>
-      _EpisodeCopyWithImpl(this as Episode, $identity, $identity);
+      _EpisodeCopyWithImpl<Episode, Episode>(
+          this as Episode, $identity, $identity);
   @override
   String toString() {
     return EpisodeMapper.ensureInitialized().stringifyValue(this as Episode);
@@ -112,7 +113,7 @@ mixin EpisodeMappable {
 
 extension EpisodeValueCopy<$R, $Out> on ObjectCopyWith<$R, Episode, $Out> {
   EpisodeCopyWith<$R, Episode, $Out> get $asEpisode =>
-      $base.as((v, t, t2) => _EpisodeCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _EpisodeCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class EpisodeCopyWith<$R, $In extends Episode, $Out>
@@ -182,5 +183,5 @@ class _EpisodeCopyWithImpl<$R, $Out>
 
   @override
   EpisodeCopyWith<$R2, Episode, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _EpisodeCopyWithImpl($value, $cast, t);
+      _EpisodeCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

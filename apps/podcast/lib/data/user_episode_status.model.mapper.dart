@@ -71,8 +71,9 @@ mixin UserEpisodeStatusMappable {
 
   UserEpisodeStatusCopyWith<UserEpisodeStatus, UserEpisodeStatus,
           UserEpisodeStatus>
-      get copyWith => _UserEpisodeStatusCopyWithImpl(
-          this as UserEpisodeStatus, $identity, $identity);
+      get copyWith =>
+          _UserEpisodeStatusCopyWithImpl<UserEpisodeStatus, UserEpisodeStatus>(
+              this as UserEpisodeStatus, $identity, $identity);
   @override
   String toString() {
     return UserEpisodeStatusMapper.ensureInitialized()
@@ -95,8 +96,8 @@ mixin UserEpisodeStatusMappable {
 extension UserEpisodeStatusValueCopy<$R, $Out>
     on ObjectCopyWith<$R, UserEpisodeStatus, $Out> {
   UserEpisodeStatusCopyWith<$R, UserEpisodeStatus, $Out>
-      get $asUserEpisodeStatus =>
-          $base.as((v, t, t2) => _UserEpisodeStatusCopyWithImpl(v, t, t2));
+      get $asUserEpisodeStatus => $base
+          .as((v, t, t2) => _UserEpisodeStatusCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class UserEpisodeStatusCopyWith<$R, $In extends UserEpisodeStatus,
@@ -137,5 +138,5 @@ class _UserEpisodeStatusCopyWithImpl<$R, $Out>
   @override
   UserEpisodeStatusCopyWith<$R2, UserEpisodeStatus, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _UserEpisodeStatusCopyWithImpl($value, $cast, t);
+      _UserEpisodeStatusCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

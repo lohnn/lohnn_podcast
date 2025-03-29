@@ -31,6 +31,9 @@ class Podcast extends OfflineFirstWithSupabaseModel with PodcastMappable {
   @Supabase(ignore: true)
   String get rssUrl => id;
 
+  @Supabase(ignore: true)
+  Uri get rssUri => Uri.parse(id);
+
   /// A safe ID that can be used as path and query parameters
   @Supabase(ignore: true)
   String get safeId => Uri.encodeComponent(id);

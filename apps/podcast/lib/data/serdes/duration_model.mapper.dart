@@ -57,7 +57,7 @@ mixin DurationModelMappable {
   }
 
   DurationModelCopyWith<DurationModel, DurationModel, DurationModel>
-      get copyWith => _DurationModelCopyWithImpl(
+      get copyWith => _DurationModelCopyWithImpl<DurationModel, DurationModel>(
           this as DurationModel, $identity, $identity);
   @override
   String toString() {
@@ -81,7 +81,7 @@ mixin DurationModelMappable {
 extension DurationModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, DurationModel, $Out> {
   DurationModelCopyWith<$R, DurationModel, $Out> get $asDurationModel =>
-      $base.as((v, t, t2) => _DurationModelCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _DurationModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class DurationModelCopyWith<$R, $In extends DurationModel, $Out>
@@ -108,5 +108,5 @@ class _DurationModelCopyWithImpl<$R, $Out>
   @override
   DurationModelCopyWith<$R2, DurationModel, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _DurationModelCopyWithImpl($value, $cast, t);
+      _DurationModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

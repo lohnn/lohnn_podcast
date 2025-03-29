@@ -63,7 +63,7 @@ mixin PlayQueueItemMappable {
   }
 
   PlayQueueItemCopyWith<PlayQueueItem, PlayQueueItem, PlayQueueItem>
-      get copyWith => _PlayQueueItemCopyWithImpl(
+      get copyWith => _PlayQueueItemCopyWithImpl<PlayQueueItem, PlayQueueItem>(
           this as PlayQueueItem, $identity, $identity);
   @override
   String toString() {
@@ -87,7 +87,7 @@ mixin PlayQueueItemMappable {
 extension PlayQueueItemValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PlayQueueItem, $Out> {
   PlayQueueItemCopyWith<$R, PlayQueueItem, $Out> get $asPlayQueueItem =>
-      $base.as((v, t, t2) => _PlayQueueItemCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _PlayQueueItemCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PlayQueueItemCopyWith<$R, $In extends PlayQueueItem, $Out>
@@ -121,5 +121,5 @@ class _PlayQueueItemCopyWithImpl<$R, $Out>
   @override
   PlayQueueItemCopyWith<$R2, PlayQueueItem, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PlayQueueItemCopyWithImpl($value, $cast, t);
+      _PlayQueueItemCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
