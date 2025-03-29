@@ -56,10 +56,16 @@ class PodcastDetailsScreen
                       '/${podcast.safeId}/${episodeWithStatus.episode.safeId}',
                     );
                   },
-                  leading: RoundedImage(
-                    imageUri: episodeWithStatus.episode.imageUrl.uri,
-                    showDot: !episodeWithStatus.status.isPlayed,
-                    imageSize: 40,
+                  leading: Tooltip(
+                    message: switch (episodeWithStatus.status.isPlayed) {
+                      true => 'Played episode',
+                      false => 'Unplayed episode',
+                    },
+                    child: RoundedImage(
+                      imageUri: episodeWithStatus.episode.imageUrl.uri,
+                      showDot: !episodeWithStatus.status.isPlayed,
+                      imageSize: 40,
+                    ),
                   ),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,6 +92,7 @@ class PodcastDetailsScreen
                           PlayEpisodeButton(episodeWithStatus.episode),
                           if (queue.contains(episodeWithStatus.episode))
                             IconButton(
+                              tooltip: 'Remove from queue',
                               onPressed: () {
                                 ref
                                     .read(playlistPodProvider.notifier)
@@ -95,6 +102,7 @@ class PodcastDetailsScreen
                             )
                           else
                             IconButton(
+                              tooltip: 'Add to queue',
                               onPressed: () {
                                 ref
                                     .read(playlistPodProvider.notifier)

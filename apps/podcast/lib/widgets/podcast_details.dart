@@ -61,57 +61,60 @@ class PodcastDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            RoundedImage(imageUri: podcast.artwork, imageSize: 100),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    podcast.title,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  InkWell(
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(podcast.link.toString()),
+    return SelectableRegion(
+      selectionControls: materialTextSelectionControls,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RoundedImage(imageUri: podcast.artwork, imageSize: 100),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      podcast.title,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    onTap: () => launchUrl(podcast.link),
-                  ),
-                  InkWell(
-                    onTap: () => launchUrl(podcast.url),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Row(
-                        children: [Text('Rss feed'), Icon(Icons.rss_feed)],
+                    const SizedBox(height: 8),
+                    InkWell(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(podcast.link.toString()),
+                      ),
+                      onTap: () => launchUrl(podcast.link),
+                    ),
+                    InkWell(
+                      onTap: () => launchUrl(podcast.url),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          children: [Text('Rss feed'), Icon(Icons.rss_feed)],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        _SubscribeChip(podcast),
-        const SizedBox(height: 12),
-        HtmlWidget(
-          podcast.description,
-          onTapUrl: (url) {
-            launchUrlString(url);
-            return true;
-          },
-        ),
-      ],
+            ],
+          ),
+          const SizedBox(height: 12),
+          _SubscribeChip(podcast),
+          const SizedBox(height: 12),
+          HtmlWidget(
+            podcast.description,
+            onTapUrl: (url) {
+              launchUrlString(url);
+              return true;
+            },
+          ),
+        ],
+      ),
     );
   }
 }

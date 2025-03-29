@@ -11,6 +11,7 @@ class PlayEpisodeButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
+      tooltip: 'Play ${episode.title}',
       onPressed: () {
         ref.read(audioPlayerPodProvider.notifier).playEpisode(episode);
       },

@@ -50,37 +50,43 @@ class EpisodeDetailsScreen
                   .valueOrNull,
         ),
         key: const Key('EpisodeDetailsScreen.theme'),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RoundedImage(imageUri: episode.imageUrl.uri, imageSize: 76),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        podcast.name,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
+        child: SelectableRegion(
+          selectionControls: materialTextSelectionControls,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RoundedImage(
+                        imageUri: episode.imageUrl.uri,
+                        imageSize: 76,
                       ),
-                    ),
-                  ],
-                ),
-                if (episode.pubDate case final pubDate?) PubDateText(pubDate),
-                PlayEpisodeButton(episode),
-                if (episode.description case final description?)
-                  HtmlWidget(
-                    description,
-                    onTapUrl: (url) {
-                      launchUrlString(url);
-                      return true;
-                    },
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          podcast.name,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
-              ],
+                  if (episode.pubDate case final pubDate?) PubDateText(pubDate),
+                  PlayEpisodeButton(episode),
+                  if (episode.description case final description?)
+                    HtmlWidget(
+                      description,
+                      onTapUrl: (url) {
+                        launchUrlString(url);
+                        return true;
+                      },
+                    ),
+                ],
+              ),
             ),
           ),
         ),
