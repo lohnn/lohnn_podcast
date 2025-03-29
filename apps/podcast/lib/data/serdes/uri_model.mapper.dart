@@ -62,7 +62,8 @@ mixin UriModelMappable {
   }
 
   UriModelCopyWith<UriModel, UriModel, UriModel> get copyWith =>
-      _UriModelCopyWithImpl(this as UriModel, $identity, $identity);
+      _UriModelCopyWithImpl<UriModel, UriModel>(
+          this as UriModel, $identity, $identity);
   @override
   String toString() {
     return UriModelMapper.ensureInitialized().stringifyValue(this as UriModel);
@@ -82,7 +83,7 @@ mixin UriModelMappable {
 
 extension UriModelValueCopy<$R, $Out> on ObjectCopyWith<$R, UriModel, $Out> {
   UriModelCopyWith<$R, UriModel, $Out> get $asUriModel =>
-      $base.as((v, t, t2) => _UriModelCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _UriModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class UriModelCopyWith<$R, $In extends UriModel, $Out>
@@ -107,5 +108,5 @@ class _UriModelCopyWithImpl<$R, $Out>
   @override
   UriModelCopyWith<$R2, UriModel, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _UriModelCopyWithImpl($value, $cast, t);
+      _UriModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

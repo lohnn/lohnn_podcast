@@ -96,7 +96,7 @@ mixin PodcastSearchMappable {
   }
 
   PodcastSearchCopyWith<PodcastSearch, PodcastSearch, PodcastSearch>
-      get copyWith => _PodcastSearchCopyWithImpl(
+      get copyWith => _PodcastSearchCopyWithImpl<PodcastSearch, PodcastSearch>(
           this as PodcastSearch, $identity, $identity);
   @override
   String toString() {
@@ -120,7 +120,7 @@ mixin PodcastSearchMappable {
 extension PodcastSearchValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PodcastSearch, $Out> {
   PodcastSearchCopyWith<$R, PodcastSearch, $Out> get $asPodcastSearch =>
-      $base.as((v, t, t2) => _PodcastSearchCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _PodcastSearchCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PodcastSearchCopyWith<$R, $In extends PodcastSearch, $Out>
@@ -199,5 +199,5 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
   @override
   PodcastSearchCopyWith<$R2, PodcastSearch, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PodcastSearchCopyWithImpl($value, $cast, t);
+      _PodcastSearchCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

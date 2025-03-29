@@ -76,8 +76,9 @@ mixin PodcastWithStatusMappable {
 
   PodcastWithStatusCopyWith<PodcastWithStatus, PodcastWithStatus,
           PodcastWithStatus>
-      get copyWith => _PodcastWithStatusCopyWithImpl(
-          this as PodcastWithStatus, $identity, $identity);
+      get copyWith =>
+          _PodcastWithStatusCopyWithImpl<PodcastWithStatus, PodcastWithStatus>(
+              this as PodcastWithStatus, $identity, $identity);
   @override
   String toString() {
     return PodcastWithStatusMapper.ensureInitialized()
@@ -100,8 +101,8 @@ mixin PodcastWithStatusMappable {
 extension PodcastWithStatusValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PodcastWithStatus, $Out> {
   PodcastWithStatusCopyWith<$R, PodcastWithStatus, $Out>
-      get $asPodcastWithStatus =>
-          $base.as((v, t, t2) => _PodcastWithStatusCopyWithImpl(v, t, t2));
+      get $asPodcastWithStatus => $base
+          .as((v, t, t2) => _PodcastWithStatusCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PodcastWithStatusCopyWith<$R, $In extends PodcastWithStatus,
@@ -151,5 +152,5 @@ class _PodcastWithStatusCopyWithImpl<$R, $Out>
   @override
   PodcastWithStatusCopyWith<$R2, PodcastWithStatus, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PodcastWithStatusCopyWithImpl($value, $cast, t);
+      _PodcastWithStatusCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
