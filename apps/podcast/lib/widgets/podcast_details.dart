@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast/data/podcast.model.dart';
 import 'package:podcast/data/podcast_search.model.dart';
+import 'package:podcast/providers/find_podcast_provider.dart';
+import 'package:podcast/providers/podcasts_provider.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -11,12 +14,14 @@ class _PodcastDetailsInformation {
   final String description;
   final Uri url;
   final Uri artwork;
+  final Uri link;
 
   const _PodcastDetailsInformation({
     required this.title,
     required this.description,
     required this.url,
     required this.artwork,
+    required this.link,
   });
 }
 
@@ -36,6 +41,7 @@ class PodcastDetails extends StatelessWidget {
         description: podcast.description,
         url: podcast.url.uri,
         artwork: podcast.artwork.uri,
+        link: podcast.url.uri,
       ),
     );
   }
@@ -48,6 +54,7 @@ class PodcastDetails extends StatelessWidget {
         description: podcast.description,
         url: podcast.rssUri,
         artwork: podcast.imageUrl.uri,
+        link: Uri.parse(podcast.link),
       ),
     );
   }
@@ -72,14 +79,14 @@ class PodcastDetails extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
-                  // InkWell(
-                  //   child: Container(
-                  //     width: double.infinity,
-                  //     padding: const EdgeInsets.symmetric(vertical: 8),
-                  //     child: Text(podcast.link),
-                  //   ),
-                  //   onTap: () => launchUrlString(podcast.link),
-                  // ),
+                  InkWell(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(podcast.link.toString()),
+                    ),
+                    onTap: () => launchUrl(podcast.link),
+                  ),
                   InkWell(
                     onTap: () => launchUrl(podcast.url),
                     child: const Padding(
@@ -95,6 +102,8 @@ class PodcastDetails extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
+        _SubscribeChip(podcast),
+        const SizedBox(height: 12),
         HtmlWidget(
           podcast.description,
           onTapUrl: (url) {
@@ -104,5 +113,47 @@ class PodcastDetails extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class _SubscribeChip extends ConsumerWidget {
+  final _PodcastDetailsInformation podcast;
+
+  const _SubscribeChip(this.podcast);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return switch (ref
+        .watch(subscribedPodcastProvider(rssUrl: podcast.url.toString()))
+        .valueOrNull) {
+      null => const Chip(label: Text('Loading...')),
+      true => InputChip(
+        onPressed: () {
+          ref
+              .read(findPodcastProvider.notifier)
+              .unsubscribe(podcast.url.toString());
+        },
+        label: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Remove podcast'),
+            SizedBox(width: 8),
+            Icon(Icons.remove),
+          ],
+        ),
+      ),
+      false => InputChip(
+        onPressed: () {
+          // TODO: Reload does not work!
+          ref
+              .read(findPodcastProvider.notifier)
+              .subscribe(podcast.url.toString());
+        },
+        label: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [Text('Add podcast'), SizedBox(width: 8), Icon(Icons.add)],
+        ),
+      ),
+    };
   }
 }

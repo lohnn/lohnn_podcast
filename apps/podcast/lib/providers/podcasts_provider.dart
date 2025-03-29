@@ -8,6 +8,32 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'podcasts_provider.g.dart';
 
 @riverpod
+Future<bool?> subscribedPodcast(
+  SubscribedPodcastRef ref, {
+  required String rssUrl,
+}) async {
+  return ref
+      .watch(_subscribedPodcastUrlsProvider)
+      .valueOrNull
+      ?.contains(rssUrl);
+}
+
+@riverpod
+Future<Iterable<String>?> _subscribedPodcastUrls(
+  _SubscribedPodcastUrlsRef ref,
+) async {
+  return ref
+      .watch(
+        podcastsProvider.select(
+          (state) => state.whenData(
+            (podcasts) => podcasts.map((podcast) => podcast.rssUrl),
+          ),
+        ),
+      )
+      .valueOrNull;
+}
+
+@riverpod
 class PodcastPod extends _$PodcastPod {
   @override
   Future<Podcast> build(String podcastId) async {
@@ -85,6 +111,22 @@ class Podcasts extends _$Podcasts {
   Future<void> addPodcastToList(String rssUrl) {
     return Repository().remoteProvider.client.functions.invoke(
       'add_podcast',
+      body: rssUrl,
+    );
+  }
+  
+  Future<void> subscribe(String rssUrl) {
+    state = const AsyncLoading();
+    return Repository().remoteProvider.client.functions.invoke(
+      'subscribe_to_podcast',
+      body: rssUrl,
+    );
+  }
+  
+  Future<void> unsubscribe(String rssUrl) {
+    state = const AsyncLoading();
+    return Repository().remoteProvider.client.functions.invoke(
+      'unsubscribe_from_podcast',
       body: rssUrl,
     );
   }

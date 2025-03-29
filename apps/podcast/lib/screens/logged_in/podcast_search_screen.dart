@@ -121,9 +121,13 @@ class PodcastSearchScreen extends ConsumerWidget {
                           (context) => PodcastDetailsModal(podcast: podcast),
                     );
                   },
-                  trailing: switch (subscribedPodcastsUrls?.contains(
-                    podcast.url.uri.toString(),
-                  )) {
+                  trailing: switch (ref
+                      .watch(
+                        subscribedPodcastProvider(
+                          rssUrl: podcast.url.uri.toString(),
+                        ),
+                      )
+                      .valueOrNull) {
                     null => null,
                     true => IconButton(
                       onPressed: () {
