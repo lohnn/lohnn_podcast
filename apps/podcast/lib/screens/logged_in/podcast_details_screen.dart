@@ -5,11 +5,11 @@ import 'package:podcast/data/episode_with_status.dart';
 import 'package:podcast/data/podcast.model.dart';
 import 'package:podcast/extensions/string_extensions.dart';
 import 'package:podcast/providers/episodes_provider.dart';
-import 'package:podcast/providers/playlist_pod_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/podcast_details.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
+import 'package:podcast/widgets/queue_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class PodcastDetailsScreen
@@ -27,8 +27,6 @@ class PodcastDetailsScreen
     WidgetRef ref,
     (Podcast, List<EpisodeWithStatus>) data,
   ) {
-    // @TODO: Verify why provider is rebuilding multiple times
-    final queue = ref.watch(playlistPodProvider).valueOrNull ?? [];
     final (podcast, episodes) = data;
     return Scaffold(
       appBar: AppBar(title: Text(podcast.name)),
@@ -90,28 +88,7 @@ class PodcastDetailsScreen
                       Row(
                         children: [
                           PlayEpisodeButton(episodeWithStatus.episode),
-                          if (queue.contains(episodeWithStatus.episode))
-                            IconButton(
-                              tooltip: 'Remove from queue',
-                              onPressed: () {
-                                ref
-                                    .read(playlistPodProvider.notifier)
-                                    .removeFromQueue(episodeWithStatus.episode);
-                              },
-                              icon: const Icon(Icons.playlist_remove),
-                            )
-                          else
-                            IconButton(
-                              tooltip: 'Add to queue',
-                              onPressed: () {
-                                ref
-                                    .read(playlistPodProvider.notifier)
-                                    .addToBottomOfQueue(
-                                      episodeWithStatus.episode,
-                                    );
-                              },
-                              icon: const Icon(Icons.playlist_add),
-                            ),
+                          QueueButton(episode: episodeWithStatus.episode),
                         ],
                       ),
                     ],

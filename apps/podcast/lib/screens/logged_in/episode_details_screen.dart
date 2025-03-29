@@ -8,6 +8,7 @@ import 'package:podcast/providers/episodes_provider.dart';
 import 'package:podcast/screens/async_value_screen.dart';
 import 'package:podcast/widgets/play_episode_button.dart';
 import 'package:podcast/widgets/pub_date_text.dart';
+import 'package:podcast/widgets/queue_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -63,21 +64,38 @@ class EpisodeDetailsScreen
                     children: [
                       RoundedImage(
                         imageUri: episode.imageUrl.uri,
-                        imageSize: 76,
+                        imageSize: 100,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 16),
                       Expanded(
-                        child: Text(
-                          podcast.name,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              podcast.name,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              episode.title,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
                   if (episode.pubDate case final pubDate?) PubDateText(pubDate),
-                  PlayEpisodeButton(episode),
-                  if (episode.description case final description?)
+                  Row(
+                    children: [
+                      PlayEpisodeButton(episode),
+                      QueueButton(episode: episode),
+                    ],
+                  ),
+                  if (episode.description case final description?) ...[
+                    const SizedBox(height: 16),
                     HtmlWidget(
                       description,
                       onTapUrl: (url) {
@@ -85,6 +103,7 @@ class EpisodeDetailsScreen
                         return true;
                       },
                     ),
+                  ],
                 ],
               ),
             ),
