@@ -24,7 +24,7 @@ class LoginScreen extends HookConsumerWidget {
             TextButton(
               onLongPress: switch (kDebugMode) {
                 true =>
-                    () => ref.read(userPodProvider.notifier).logInAnonymously(),
+                  () => ref.read(userPodProvider.notifier).logInAnonymously(),
                 false => null,
               },
               onPressed: () {

@@ -17,7 +17,7 @@ class AppLifecycleStatePod extends _$AppLifecycleStatePod {
 
   set lifecycleState(ui.AppLifecycleState newState) {
     if (isWeb) return;
-    
+
     // Only update if on mobile
     if (Platform.isAndroid || Platform.isIOS) {
       state = newState;

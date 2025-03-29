@@ -144,7 +144,6 @@ class _SubscribeChip extends ConsumerWidget {
       ),
       false => InputChip(
         onPressed: () {
-          // TODO: Reload does not work!
           ref
               .read(findPodcastProvider.notifier)
               .subscribe(podcast.url.toString());

@@ -4,7 +4,6 @@ import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:file/file.dart';
 import 'package:file/local.dart';
-import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:podcast/data/episode.model.dart';
 import 'package:podcast/helpers/platform_helpers.dart';
@@ -128,39 +127,39 @@ class EpisodeFileService {
 
     _dio
         .downloadUri(
-      episode.url.uri,
-      tempDuringDownloadFile.path,
-      options: Options(responseType: ResponseType.stream, maxRedirects: 10),
-      onReceiveProgress: (received, total) {
-        controller.add(
-          DownloadingEpisodeFile(
-            remoteUri: episode.url.uri,
-            progress: received / total,
-          ),
-        );
-      },
-    )
+          episode.url.uri,
+          tempDuringDownloadFile.path,
+          options: Options(responseType: ResponseType.stream, maxRedirects: 10),
+          onReceiveProgress: (received, total) {
+            controller.add(
+              DownloadingEpisodeFile(
+                remoteUri: episode.url.uri,
+                progress: received / total,
+              ),
+            );
+          },
+        )
         .then(
           (response) {
-        tempDuringDownloadFile.renameSync(destination.path);
-        controller.add(
-          LocalEpisodeFile(
-            remoteUri: episode.url.uri,
-            localUri: destination.uri,
-          ),
+            tempDuringDownloadFile.renameSync(destination.path);
+            controller.add(
+              LocalEpisodeFile(
+                remoteUri: episode.url.uri,
+                localUri: destination.uri,
+              ),
+            );
+            controller.close();
+          },
+          onError: (error, stackTrace) {
+            if ((error, stackTrace) case (
+              final Object error,
+              final StackTrace stackTrace,
+            )) {
+              controller.addError(error, stackTrace);
+            }
+            controller.close();
+          },
         );
-        controller.close();
-      },
-      onError: (error, stackTrace) {
-        if ((error, stackTrace) case (
-        final Object error,
-        final StackTrace stackTrace,
-        )) {
-          controller.addError(error, stackTrace);
-        }
-        controller.close();
-      },
-    );
 
     return controller;
   }
@@ -205,7 +204,7 @@ class EpisodeCacheManager {
           } else if ((await FileStat.stat(file.path)).accessed
           // @TODO: This logic should be improved somewhow
           //  Maybe we should look at the queue and remove files that are not in the queue?
-              .isBefore(DateTime.now().subtract(const Duration(days: 5)))) {
+          .isBefore(DateTime.now().subtract(const Duration(days: 5)))) {
             await file.delete();
           }
         }
@@ -252,10 +251,10 @@ class EpisodeCacheManager {
     // The get function is closing the sink
     // ignore: close_sinks
     final subject =
-    _downloads[episode] = episodeFileService.get(
-      episode,
-      await _fileFromEpisode(episode),
-    );
+        _downloads[episode] = episodeFileService.get(
+          episode,
+          await _fileFromEpisode(episode),
+        );
 
     yield* subject.stream;
   }

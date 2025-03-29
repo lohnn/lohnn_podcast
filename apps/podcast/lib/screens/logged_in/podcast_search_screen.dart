@@ -14,18 +14,6 @@ class PodcastSearchScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(findPodcastProvider);
-    // @TODO: This could be cleaned up to be prettier
-    final subscribedPodcastsUrls =
-        ref
-            .watch(
-              podcastsProvider.select(
-                (state) => state.whenData(
-                  (podcasts) => podcasts.map((podcast) => podcast.rssUrl),
-                ),
-              ),
-            )
-            .valueOrNull;
-
     return Scaffold(
       appBar: AppBar(
         title: SearchAnchor(

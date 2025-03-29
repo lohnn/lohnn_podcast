@@ -114,7 +114,7 @@ class Podcasts extends _$Podcasts {
       body: rssUrl,
     );
   }
-  
+
   Future<void> subscribe(String rssUrl) {
     state = const AsyncLoading();
     return Repository().remoteProvider.client.functions.invoke(
@@ -122,7 +122,7 @@ class Podcasts extends _$Podcasts {
       body: rssUrl,
     );
   }
-  
+
   Future<void> unsubscribe(String rssUrl) {
     state = const AsyncLoading();
     return Repository().remoteProvider.client.functions.invoke(
