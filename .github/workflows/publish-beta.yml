@@ -18,6 +18,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Create project_setup_config.json
         run: echo '${{ secrets.PROJECT_SETUP_CONFIG }}' > project_setup_config.json
