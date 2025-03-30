@@ -1,3 +1,8 @@
+## 0.1.5
+
+ - **REFACTOR**: Format code.
+ - **FEAT**: UI improvments.
+
 ## 0.1.4+1
 
  - **REFACTOR**: Format code.
