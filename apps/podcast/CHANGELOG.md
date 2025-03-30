@@ -1,3 +1,7 @@
+## 0.1.4+2
+
+ - **REFACTOR**: Format code.
+
 ## 0.1.4+1
 
  - **REFACTOR**: Format code.
