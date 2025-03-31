@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -13,6 +14,7 @@ import 'package:podcast/screens/logged_in/playlist_screen.dart';
 import 'package:podcast/screens/logged_in/podcast_details_screen.dart';
 import 'package:podcast/screens/logged_in/podcast_list_screen.dart';
 import 'package:podcast/screens/logged_in/podcast_search_screen.dart';
+import 'package:podcast/widgets/currently_playing_information.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/small_media_player_controls.dart';
 import 'package:podcast/widgets/podcast_actions.dart';
 
@@ -113,15 +115,40 @@ class LoggedInScreen extends HookConsumerWidget {
               LogicalKeyboardKey.mediaStop,
             ): ChangePlayStateIntent(MediaAction.pause),
           },
-          child: Scaffold(
-            // bottomSheet: const MediaBottomSheet(),
-            bottomNavigationBar: SmallMediaPlayerControls(router: router),
-            body: Router<Object>(
-              restorationScopeId: 'router',
-              routeInformationProvider: router.routeInformationProvider,
-              routeInformationParser: router.routeInformationParser,
-              routerDelegate: router.routerDelegate,
-              backButtonDispatcher: router.backButtonDispatcher,
+          child: AdaptiveLayout(
+            bodyRatio: 0.7,
+            bottomNavigation: SlotLayout(
+              config: {
+                Breakpoints.smallAndUp: SlotLayout.from(
+                  key: const Key('LoggedInScreen.SmallMediaPlayerControls'),
+                  builder:
+                      (context) => SmallMediaPlayerControls(router: router),
+                ),
+              },
+            ),
+            body: SlotLayout(
+              config: {
+                Breakpoints.smallAndUp: SlotLayout.from(
+                  key: const Key('LoggedInScreen.Body'),
+                  builder:
+                      (context) => Router<Object>(
+                        restorationScopeId: 'router',
+                        routeInformationProvider:
+                            router.routeInformationProvider,
+                        routeInformationParser: router.routeInformationParser,
+                        routerDelegate: router.routerDelegate,
+                        backButtonDispatcher: router.backButtonDispatcher,
+                      ),
+                ),
+              },
+            ),
+            secondaryBody: SlotLayout(
+              config: {
+                Breakpoints.mediumLargeAndUp: SlotLayout.from(
+                  key: const Key('LoggedInScreen.SecondaryBody'),
+                  builder: (context) => const CurrentlyPlayingInformation(),
+                ),
+              },
             ),
           ),
         ),

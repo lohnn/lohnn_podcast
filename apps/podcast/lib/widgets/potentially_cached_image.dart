@@ -8,6 +8,7 @@ class PotentiallyCachedImage extends StatelessWidget {
   final double? height;
   final int? cachedWidth;
   final int? cachedHeight;
+  final BoxFit? fit;
 
   const PotentiallyCachedImage(
     this.uri, {
@@ -16,6 +17,7 @@ class PotentiallyCachedImage extends StatelessWidget {
     this.height,
     this.cachedWidth,
     this.cachedHeight,
+    this.fit,
   });
 
   @override
@@ -26,6 +28,7 @@ class PotentiallyCachedImage extends StatelessWidget {
         width: width,
         height: height,
         webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+        fit: fit,
       );
     }
     return CachedNetworkImage(
@@ -34,6 +37,7 @@ class PotentiallyCachedImage extends StatelessWidget {
       height: height,
       memCacheWidth: cachedWidth,
       memCacheHeight: cachedHeight,
+      fit: fit,
     );
   }
 }

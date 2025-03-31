@@ -6,12 +6,14 @@ class RoundedImage extends StatelessWidget {
   final Uri? imageUri;
   final bool showDot;
   final double? imageSize;
+  final BoxFit? fit;
 
   const RoundedImage({
+    super.key,
     required this.imageUri,
     this.showDot = false,
     this.imageSize,
-    super.key,
+    this.fit,
   });
 
   @override
@@ -39,6 +41,7 @@ class RoundedImage extends StatelessWidget {
                       height: imageSize,
                       cachedWidth: scaledImageSize,
                       cachedHeight: scaledImageSize,
+                      fit: fit,
                     ),
                   ),
                 ) ??
