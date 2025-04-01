@@ -146,7 +146,9 @@ class LoggedInScreen extends HookConsumerWidget {
               config: {
                 Breakpoints.mediumLargeAndUp: SlotLayout.from(
                   key: const Key('LoggedInScreen.SecondaryBody'),
-                  builder: (context) => const CurrentlyPlayingInformation(),
+                  builder:
+                      (context) =>
+                          CurrentlyPlayingInformation(onNavigate: router.push),
                 ),
               },
             ),
