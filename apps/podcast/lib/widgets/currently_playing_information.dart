@@ -49,6 +49,7 @@ class CurrentlyPlayingInformation extends ConsumerWidget {
                     children: [
                       for (final (index, episode) in queue.indexed)
                         _CarouselInformation(
+                          key: ValueKey(episode),
                           constraints: constraints,
                           index: index,
                           episode: episode,
@@ -71,6 +72,7 @@ class _CarouselInformation extends ConsumerWidget {
   final BoxConstraints constraints;
 
   const _CarouselInformation({
+    super.key,
     required this.episode,
     required this.index,
     required this.constraints,
