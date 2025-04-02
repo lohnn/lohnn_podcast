@@ -51,7 +51,9 @@ app.*.map.json
 **.freezed.dart
 
 # Podcast app specific files
-project_setup_config.json
+project_setup_config*.json
+.firebaserc
+.firebase/**
 podcast_release.keystore
 /bin/podcast-history/
 /bin/listened-episodes.json
