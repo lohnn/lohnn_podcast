@@ -60,28 +60,33 @@ class LoggedInScreen extends HookConsumerWidget {
             },
             path: '/',
             builder: (context, state) => const PodcastListScreen(),
-          ),
-          GoRoute(
-            path: '/search',
-            builder: (context, state) => const PodcastSearchScreen(),
-          ),
-          GoRoute(
-            path: '/playlist',
-            builder: (context, state) => const PlaylistScreen(),
-          ),
-          GoRoute(
-            path: '/:podcastId',
-            builder:
-                (context, state) =>
-                    PodcastDetailsScreen(state.pathParameters['podcastId']!),
-          ),
-          GoRoute(
-            path: '/:podcastId/:episodeId',
-            builder:
-                (context, state) => EpisodeDetailsScreen(
-                  podcastId: state.pathParameters['podcastId']!,
-                  episodeId: state.pathParameters['episodeId']!,
-                ),
+            routes: [
+              GoRoute(
+                path: '/search',
+                builder: (context, state) => const PodcastSearchScreen(),
+              ),
+              GoRoute(
+                path: '/playlist',
+                builder: (context, state) => const PlaylistScreen(),
+              ),
+              GoRoute(
+                path: '/:podcastId',
+                builder:
+                    (context, state) => PodcastDetailsScreen(
+                      state.pathParameters['podcastId']!,
+                    ),
+                routes: [
+                  GoRoute(
+                    path: '/:episodeId',
+                    builder:
+                        (context, state) => EpisodeDetailsScreen(
+                          podcastId: state.pathParameters['podcastId']!,
+                          episodeId: state.pathParameters['episodeId']!,
+                        ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
@@ -148,7 +153,7 @@ class LoggedInScreen extends HookConsumerWidget {
                   key: const Key('LoggedInScreen.SecondaryBody'),
                   builder:
                       (context) =>
-                          CurrentlyPlayingInformation(onNavigate: router.push),
+                          CurrentlyPlayingInformation(onNavigate: router.go),
                 ),
               },
             ),

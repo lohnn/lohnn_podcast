@@ -29,7 +29,18 @@ class CurrentlyPlayingInformation extends ConsumerWidget {
         spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('In your queue:', style: textTheme.titleLarge),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () => onNavigate('/playlist'),
+                icon: Icon(
+                  Icons.playlist_play,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              Text('In your queue:', style: textTheme.titleLarge),
+            ],
+          ),
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) {
