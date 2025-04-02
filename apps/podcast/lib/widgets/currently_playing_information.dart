@@ -32,6 +32,7 @@ class CurrentlyPlayingInformation extends ConsumerWidget {
           Row(
             children: [
               IconButton(
+                tooltip: 'Show playlist',
                 onPressed: () => onNavigate('/playlist'),
                 icon: Icon(
                   Icons.playlist_play,

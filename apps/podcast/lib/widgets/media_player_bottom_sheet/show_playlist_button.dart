@@ -9,6 +9,7 @@ class ShowPlaylistButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     return IconButton(
+      tooltip: 'Show playlist',
       onPressed: () {
         Navigator.of(context).pop(EpisodePlayerModalResultAction.showPlaylist);
       },
