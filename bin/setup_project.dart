@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:glob/glob.dart';
+import 'package:glob/list_local_fs.dart';
+
 // @TODO: Add to startup script: google-services.json
 
 void main(List<String> args) {
@@ -105,6 +108,29 @@ class Keys {
   });
 
   factory Keys.collectFromInput() {
+    final files = Glob(
+      'project_setup_config*.json',
+    ).listSync().whereType<File>().toList(growable: false);
+
+    if (files.isNotEmpty) {
+      stdout.writeln(
+        'You seem to have config file(s) already. Do you want to use it?',
+      );
+      stdout.writeln('Files:');
+      stdout.writeln('0 - Enter config manually');
+      for (final (index, file) in files.indexed) {
+        stdout.writeln('${index + 1} - ${file.path}');
+      }
+      stdout.write('Enter the index of the file you want to use: ');
+
+      final fileIndex = int.tryParse(stdin.readLineSync()!) ?? 0;
+      if (fileIndex != 0) {
+        stdout.writeln();
+        stdout.writeln('Using file: ${files[fileIndex - 1].path}');
+        return Keys.readFromFile(files[fileIndex - 1].path);
+      }
+    }
+
     stdout.writeln("First let's set up your Google auth URL.");
 
     stdout.writeln(
@@ -123,7 +149,9 @@ class Keys {
     final serverClientId = stdin.readLineSync();
 
     stdout.writeln("Now let's set up your Supabase backend.");
-    stdout.writeln('Enter your Supabase url: (e.g. https://abc123.supabase.co)');
+    stdout.writeln(
+      'Enter your Supabase url: (e.g. https://abc123.supabase.co)',
+    );
     final backendUrl = stdin.readLineSync();
 
     stdout.writeln('Enter your Supabase anon key: (e.g. abc123)');
