@@ -124,6 +124,10 @@ class Repository extends OfflineFirstWithSupabaseRepository
     final data = (response.data as List<dynamic>).cast<Map<String, dynamic>>();
     return data.map(PodcastSearchMapper.fromMap).toList(growable: false);
   }
+
+  Future<void> checkInUser() async {
+    await remoteProvider.client.rpc('check_in_user');
+  }
 }
 
 @riverpod

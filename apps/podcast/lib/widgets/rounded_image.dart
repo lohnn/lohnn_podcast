@@ -6,12 +6,16 @@ class RoundedImage extends StatelessWidget {
   final Uri? imageUri;
   final bool showDot;
   final double? imageSize;
+  final BoxFit? fit;
+  final double? radius;
 
   const RoundedImage({
+    super.key,
     required this.imageUri,
     this.showDot = false,
     this.imageSize,
-    super.key,
+    this.fit,
+    this.radius,
   });
 
   @override
@@ -32,13 +36,14 @@ class RoundedImage extends StatelessWidget {
             child:
                 imageUri?.let(
                   (uri) => ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(radius ?? 8),
                     child: PotentiallyCachedImage(
                       uri.toString(),
                       width: imageSize,
                       height: imageSize,
                       cachedWidth: scaledImageSize,
                       cachedHeight: scaledImageSize,
+                      fit: fit,
                     ),
                   ),
                 ) ??

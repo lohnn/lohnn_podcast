@@ -19,6 +19,7 @@ dependencies:
   build_runner: ^2.4.15
   cached_network_image: ^3.4.1
   collection: ^1.19.1
+  custom_adaptive_scaffold: ^2.0.1
   dart_mappable: ^4.5.0
   dio: ^5.8.0+1
   file: ^7.0.1
