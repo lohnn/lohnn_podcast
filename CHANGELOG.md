@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-04-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`podcast` - `v0.1.5`](#podcast---v015)
+
+---
+
+#### `podcast` - `v0.1.5`
+
+ - **REFACTOR**: Format code.
+ - **FEAT**: Polishing up the UI of the app.
+
+
 ## 2025-03-30
 
 ### Changes
