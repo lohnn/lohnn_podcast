@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:podcast/brick/repository.dart';
 import 'package:podcast/helpers/platform_helpers.dart';
 import 'package:podcast/secrets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,6 +18,13 @@ class UserPod extends _$UserPod {
 
   @override
   Stream<User?> build() async* {
+    listenSelf((oldValue, newValue) {
+      // Check in once, when the user is logged in
+      if (newValue.valueOrNull != null && oldValue != newValue) {
+        Repository().checkInUser();
+      }
+    });
+
     if (isWeb) {
       _googleSignIn = GoogleSignIn(clientId: Secrets.googleServerClientId);
 
