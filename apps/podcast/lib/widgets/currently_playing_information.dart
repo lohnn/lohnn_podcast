@@ -48,6 +48,7 @@ class CurrentlyPlayingInformation extends ConsumerWidget {
                 return SizedBox(
                   height: constraints.maxHeight,
                   child: CarouselView.weighted(
+                    scrollDirection: Axis.vertical,
                     itemSnapping: true,
                     onTap: (index) async {
                       final podcast = await ref.read(
@@ -57,7 +58,16 @@ class CurrentlyPlayingInformation extends ConsumerWidget {
                       if (!context.mounted) return;
                       onNavigate('/${podcast.safeId}/${queue[index].safeId}');
                     },
-                    flexWeights: const [1, 7, 1],
+                    flexWeights: [
+                      1,
+                      7,
+                      1,
+                      for (final _ in constraints.maxHeight.inIncrements(
+                        start: 800,
+                        step: 200,
+                      ))
+                        1,
+                    ],
                     children: [
                       for (final (index, episode) in queue.indexed)
                         _CarouselInformation(
@@ -96,49 +106,57 @@ class _CarouselInformation extends ConsumerWidget {
         ref.watch(podcastPodProvider(episode.podcastId)).valueOrNull;
 
     final textTheme = Theme.of(context).textTheme;
-    return ClipRect(
-      child: OverflowBox(
-        maxWidth: constraints.maxWidth * 7 / 9,
-        minWidth: constraints.maxWidth * 7 / 9,
-        child: SingleChildScrollView(
-          child: Column(
-            spacing: 8,
-            children: [
-              RoundedImage(
-                radius: 28,
-                imageUri: episode.imageUrl.uri,
-                fit: BoxFit.cover,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: constraints.maxWidth * 1 / 20,
-                ),
-                child: Column(
-                  spacing: 8,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(podcast?.name ?? '', style: textTheme.titleMedium),
-                    Text(episode.title, style: textTheme.titleMedium),
-                    if (episode.pubDate case final pubDate?)
-                      DefaultTextStyle(
-                        style: textTheme.labelSmall!,
-                        child: PubDateText(pubDate),
-                      ),
-                    if (episode.description case final description?)
-                      HtmlWidget(
-                        description,
-                        onTapUrl: (url) {
-                          launchUrlString(url);
-                          return true;
-                        },
-                      ),
-                  ],
-                ),
-              ),
-            ],
+    return OverflowBox(
+      alignment: Alignment.topLeft,
+      minHeight: 0,
+      maxHeight: double.infinity,
+      child: Column(
+        spacing: 8,
+        children: [
+          RoundedImage(
+            radius: 28,
+            imageUri: episode.imageUrl.uri,
+            fit: BoxFit.cover,
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Column(
+              spacing: 8,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(podcast?.name ?? '', style: textTheme.titleMedium),
+                Text(episode.title, style: textTheme.titleMedium),
+                if (episode.pubDate case final pubDate?)
+                  DefaultTextStyle(
+                    style: textTheme.labelSmall!,
+                    child: PubDateText(pubDate),
+                  ),
+                if (episode.description case final description?)
+                  HtmlWidget(
+                    description,
+                    onTapUrl: (url) {
+                      launchUrlString(url);
+                      return true;
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
+  }
+}
+
+extension on double {
+  /// Generates a sequence of doubles starting from [start] to [this] (exclusive)
+  /// with a step of [step].
+  Iterable<double> inIncrements({
+    required double start,
+    required double step,
+  }) sync* {
+    for (var i = start; i < this; i += step) {
+      yield i;
+    }
   }
 }
