@@ -129,6 +129,14 @@ class LoggedInScreen extends HookConsumerWidget {
                   builder:
                       (context) => SmallMediaPlayerControls(router: router),
                 ),
+                Breakpoints.mediumAndUp: SlotLayout.from(
+                  key: const Key('LoggedInScreen.SmallMediaPlayerControls'),
+                  builder:
+                      (context) => SmallMediaPlayerControls(
+                        router: router,
+                        showSkipButtons: true,
+                      ),
+                ),
               },
             ),
             body: SlotLayout(
