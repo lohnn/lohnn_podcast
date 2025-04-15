@@ -49,7 +49,8 @@ class UserPod extends _$UserPod {
   }
 
   Future<void> _authenticateSupabase(
-      GoogleSignInAuthentication authentication,) {
+    GoogleSignInAuthentication authentication,
+  ) {
     return _supabaseAuth.signInWithIdToken(
       provider: OAuthProvider.google,
       idToken: authentication.idToken!,

@@ -29,11 +29,8 @@ class SwipeOption<T> {
   // Use keys for hit testing
   final Key key;
 
-  SwipeOption({
-    required this.icon,
-    required this.value,
-    required this.tooltip,
-  }) : key = GlobalKey();
+  SwipeOption({required this.icon, required this.value, required this.tooltip})
+    : key = GlobalKey();
 }
 
 class _LongPressSwipeMenuState<T> extends State<LongPressSwipeMenu<T>>
