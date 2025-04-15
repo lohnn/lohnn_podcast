@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-04-15
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`podcast` - `v0.1.6`](#podcast---v016)
+
+---
+
+#### `podcast` - `v0.1.6`
+
+ - **REFACTOR**: Format code.
+ - **FEAT**: UI improvements and better login flow.
+
+
 ## 2025-04-12
 
 ### Changes
