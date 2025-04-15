@@ -204,8 +204,7 @@ class _LongPressSwipeMenuState<T> extends State<LongPressSwipeMenu<T>>
   }
 
   void _updateHover(Offset globalPosition) {
-    if (_overlayEntry == null || !_animationController.isCompleted) {
-      // Don't allow hover selection until animation is done
+    if (_overlayEntry == null) {
       return;
     }
 
