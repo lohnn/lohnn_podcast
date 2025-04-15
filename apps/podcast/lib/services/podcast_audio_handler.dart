@@ -32,6 +32,14 @@ class PodcastAudioHandler extends BaseAudioHandler
   final _player = AudioPlayer();
   final AudioSession audioSession;
 
+  /// Skip queue items is overridden with skipping time
+  @override
+  Future<void> skipToNext() => fastForward();
+
+  /// Skip queue items is overridden with skipping time
+  @override
+  Future<void> skipToPrevious() => rewind();
+
   @override
   // Just an override to set the type of the BehaviorSubject to PodcastMediaItem.
   // ignore: overridden_fields
