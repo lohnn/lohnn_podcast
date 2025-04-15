@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/helpers/platform_helpers.dart';
@@ -34,12 +32,8 @@ class UserPod extends _$UserPod {
           await _authenticateSupabase(authentication);
         }).cancel,
       );
-    } else {
-      _googleSignIn = GoogleSignIn(
-        clientId: Secrets.googleClientId,
-        serverClientId: Secrets.googleServerClientId,
-      );
     }
+
     _supabaseAuth = Supabase.instance.client.auth;
 
     yield _supabaseAuth.currentUser;
@@ -54,35 +48,8 @@ class UserPod extends _$UserPod {
     await _supabaseAuth.signInAnonymously();
   }
 
-  Future<void> logIn() async {
-    // Just making sure we are properly logged out before trying to log in.
-    await logOut();
-
-    if (Platform.isMacOS) {
-      await _supabaseAuth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: 'lohnnpodcast://se.lohnn.poodcast/authenticated',
-      );
-      return;
-    }
-
-    // Supabase
-    final supabaseAuth = await switch (await _googleSignIn.signInSilently(
-      reAuthenticate: true,
-    )) {
-      final user? => user.authentication,
-      _ => (await _googleSignIn.signIn())?.authentication,
-    };
-
-    if (supabaseAuth == null) return;
-    await _authenticateSupabase(supabaseAuth);
-
-    return;
-  }
-
   Future<void> _authenticateSupabase(
-    GoogleSignInAuthentication authentication,
-  ) {
+      GoogleSignInAuthentication authentication,) {
     return _supabaseAuth.signInWithIdToken(
       provider: OAuthProvider.google,
       idToken: authentication.idToken!,

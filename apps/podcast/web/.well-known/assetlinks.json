@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "se.lohnn.podcast",
+      "sha256_cert_fingerprints": [
+        "ED:EC:89:FE:F4:51:05:4D:BE:D3:D1:F8:DC:5E:BB:3B:B3:FF:A0:22:E3:50:EC:69:54:D4:18:9E:34:53:6A:45",
+        "B6:EE:8C:F6:E9:1C:7D:9B:67:2E:28:A0:F2:EC:9D:2C:7B:E3:AC:96:0F:1A:0F:0C:06:B1:B3:54:8C:A2:DF:E0"
+      ]
+    }
+  }
+]
