@@ -1,6 +1,5 @@
 ## 0.1.5
 
- - **REFACTOR**: Format code.
  - **FEAT**: Polishing up the UI of the app.
 
 ## 0.1.4+2
