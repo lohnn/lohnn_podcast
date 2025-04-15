@@ -9,13 +9,19 @@ import 'package:podcast/providers/audio_player_provider.dart';
 import 'package:podcast/screens/modals/episode_player_modal.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/download_animation.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/episode_progress_bar.dart';
+import 'package:podcast/widgets/media_player_bottom_sheet/media_action_button.dart';
 import 'package:podcast/widgets/media_player_bottom_sheet/play_pause_button.dart';
 import 'package:podcast/widgets/rounded_image.dart';
 
 class SmallMediaPlayerControls extends HookConsumerWidget {
   final GoRouter router;
+  final bool showSkipButtons;
 
-  const SmallMediaPlayerControls({super.key, required this.router});
+  const SmallMediaPlayerControls({
+    super.key,
+    required this.router,
+    this.showSkipButtons = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -77,7 +83,9 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
                           ),
                         const SizedBox(width: 8),
                         Expanded(child: Text(episode.title)),
+                        if (showSkipButtons) MediaActionButton.back(),
                         const PlayPauseButton(),
+                        if (showSkipButtons) MediaActionButton.forward(),
                       ],
                     ),
                   ),

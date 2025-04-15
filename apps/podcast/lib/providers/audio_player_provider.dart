@@ -219,6 +219,10 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     _ => throw UnsupportedError('Action $action not supported yet.'),
   };
 
+  void seekRelative(Duration offset) {
+    _player.seekRelative(offset);
+  }
+
   void setPosition(int positionInMillis) {
     _player.seek(Duration(milliseconds: positionInMillis));
   }

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -61,19 +60,13 @@ class EpisodePlayerModal extends HookConsumerWidget {
                 ],
               ),
             ],
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ShowPlaylistButton(),
-                MediaActionButton(
-                  action: MediaAction.rewind,
-                  icon: Icons.replay_10,
-                ),
-                PlayPauseButton(),
-                MediaActionButton(
-                  action: MediaAction.fastForward,
-                  icon: Icons.forward_10,
-                ),
+                const ShowPlaylistButton(),
+                MediaActionButton.back(),
+                const PlayPauseButton(),
+                MediaActionButton.forward(),
               ],
             ),
             const SizedBox(height: 16),

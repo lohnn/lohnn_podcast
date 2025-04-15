@@ -32,6 +32,14 @@ class PodcastAudioHandler extends BaseAudioHandler
   final _player = AudioPlayer();
   final AudioSession audioSession;
 
+  /// Skip queue items is overridden with skipping time
+  @override
+  Future<void> skipToNext() => fastForward();
+
+  /// Skip queue items is overridden with skipping time
+  @override
+  Future<void> skipToPrevious() => rewind();
+
   @override
   // Just an override to set the type of the BehaviorSubject to PodcastMediaItem.
   // ignore: overridden_fields
@@ -160,6 +168,14 @@ class PodcastAudioHandler extends BaseAudioHandler
     return _player.dispose();
   }
 
+  Future<void> seekRelative(Duration offset) {
+    final newPosition = (_player.position + offset).clamp(
+      Duration.zero,
+      _player.duration ?? Duration.zero,
+    );
+    return seek(newPosition);
+  }
+
   @override
   Future<void> seek(Duration position) => _player.seek(position);
 
@@ -271,5 +287,13 @@ class PodcastAudioHandler extends BaseAudioHandler
       speed: _player.speed,
       queueIndex: event.currentIndex,
     );
+  }
+}
+
+extension on Duration {
+  Duration clamp(Duration zero, Duration duration) {
+    if (this < zero) return zero;
+    if (this > duration) return duration;
+    return this;
   }
 }
