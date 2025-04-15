@@ -18,6 +18,10 @@ class PlayPauseButton extends ConsumerWidget {
             when processingState != AudioProcessingState.loading ||
                 processingState != AudioProcessingState.buffering =>
           IconButton(
+            tooltip: switch (playing) {
+              false => 'Play',
+              true => 'Pause',
+            },
             onPressed: () {
               ref
                   .read(audioPlayerPodProvider.notifier)

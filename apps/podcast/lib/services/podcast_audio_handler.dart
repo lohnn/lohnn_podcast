@@ -160,6 +160,14 @@ class PodcastAudioHandler extends BaseAudioHandler
     return _player.dispose();
   }
 
+  Future<void> seekRelative(Duration offset) {
+    final newPosition = (_player.position + offset).clamp(
+      Duration.zero,
+      _player.duration ?? Duration.zero,
+    );
+    return seek(newPosition);
+  }
+
   @override
   Future<void> seek(Duration position) => _player.seek(position);
 
@@ -271,5 +279,13 @@ class PodcastAudioHandler extends BaseAudioHandler
       speed: _player.speed,
       queueIndex: event.currentIndex,
     );
+  }
+}
+
+extension on Duration {
+  Duration clamp(Duration zero, Duration duration) {
+    if (this < zero) return zero;
+    if (this > duration) return duration;
+    return this;
   }
 }

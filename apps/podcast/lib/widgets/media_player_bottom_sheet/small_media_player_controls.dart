@@ -83,17 +83,9 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
                           ),
                         const SizedBox(width: 8),
                         Expanded(child: Text(episode.title)),
-                        if (showSkipButtons)
-                          const MediaActionButton(
-                            action: MediaAction.rewind,
-                            icon: Icons.replay_10,
-                          ),
+                        if (showSkipButtons) MediaActionButton.back(),
                         const PlayPauseButton(),
-                        if (showSkipButtons)
-                          const MediaActionButton(
-                            action: MediaAction.fastForward,
-                            icon: Icons.forward_10,
-                          ),
+                        if (showSkipButtons) MediaActionButton.forward(),
                       ],
                     ),
                   ),
