@@ -7,6 +7,7 @@ environment:
 
 dependencies:
   collection: ^1.19.1
+  glob: ^2.1.3
   html: ^0.15.5
   pubspec_parse: ^1.5.0
 
