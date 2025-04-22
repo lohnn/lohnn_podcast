@@ -163,7 +163,6 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
   Future<EpisodeWithStatus?> _getStatusForEpisode(Episode episode) async {
     final status = await _repository.getUserEpisodeStatus(episode.id);
-    if(status == null) return null;
     return EpisodeWithStatus(episode: episode, status: status);
   }
 

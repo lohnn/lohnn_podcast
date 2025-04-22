@@ -200,10 +200,15 @@ class RepositoryImpl extends OfflineFirstWithSupabaseRepository
   }
 
   @override
-  Future<UserEpisodeStatus?> getUserEpisodeStatus(String episodeId) {
-    return get<UserEpisodeStatusImpl>(
-      query: Query.where('episodeId', episodeId),
-    ).firstOrNull;
+  Future<UserEpisodeStatusImpl> getUserEpisodeStatus(String episodeId) async {
+    return (await get<UserEpisodeStatusImpl>(
+          query: Query.where('episodeId', episodeId),
+        ).firstOrNull) ??
+        UserEpisodeStatusImpl(
+          episodeId: episodeId,
+          isPlayed: false,
+          backingCurrentPosition: DurationModel(Duration.zero),
+        );
   }
 
   @override
@@ -299,19 +304,9 @@ class RepositoryImpl extends OfflineFirstWithSupabaseRepository
 
   @override
   Future<void> updateEpisodePosition(Episode episode, Duration position) async {
-    final newStatus = switch (await getUserEpisodeStatus(episode.id)) {
-      UserEpisodeStatus(:final episodeId, :final isPlayed) =>
-        UserEpisodeStatusImpl(
-          episodeId: episodeId,
-          isPlayed: isPlayed,
-          backingCurrentPosition: DurationModel(position),
-        ),
-      null => UserEpisodeStatusImpl(
-        episodeId: episode.id,
-        isPlayed: false,
-        backingCurrentPosition: DurationModel(position),
-      ),
-    };
+    final newStatus = (await getUserEpisodeStatus(
+      episode.id,
+    )).copyWith(backingCurrentPosition: DurationModel(position));
 
     await upsert<UserEpisodeStatusImpl>(newStatus);
   }
@@ -321,7 +316,9 @@ class RepositoryImpl extends OfflineFirstWithSupabaseRepository
     covariant EpisodeImpl episode,
     int position,
   ) {
-    return upsert<PlayQueueItem>(PlayQueueItem(episode: episode, queueOrder: position));
+    return upsert<PlayQueueItem>(
+      PlayQueueItem(episode: episode, queueOrder: position),
+    );
   }
 }
 
