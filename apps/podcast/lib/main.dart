@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:firebase_core/firebase_core.dart';
@@ -8,12 +9,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:podcast/brick/repository.dart';
 import 'package:podcast/default_firebase_config.dart';
-import 'package:podcast/helpers/platform_helpers.dart';
-import 'package:podcast/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast/providers/user_provider.dart';
-import 'package:podcast/screens/async_value_screen.dart';
-import 'package:podcast/screens/logged_in/logged_in_screen.dart';
 import 'package:podcast/screens/login_screen.dart';
+import 'package:podcast_core/helpers/platform_helpers.dart';
+import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
+import 'package:podcast_core/repository.dart';
+import 'package:podcast_core/screens/async_value_screen.dart';
+import 'package:podcast_core/screens/logged_in/logged_in_screen.dart';
 import 'package:rive/rive.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
@@ -24,7 +26,7 @@ Future<void> main() async {
 
   if (kDebugMode) {
     hierarchicalLoggingEnabled = true;
-    Logger.root.level = Level.ALL;
+    Logger.root.level = Level.OFF;
     Logger.root.onRecord.listen((record) {
       developer.log(
         record.message,
@@ -51,8 +53,15 @@ Future<void> main() async {
   } else if (isDesktop) {
     databaseFactory = databaseFactoryFfi;
   }
-  await Repository.configure(databaseFactory);
-  await Repository().initialize();
+
+  await RepositoryImpl.configure(databaseFactory);
+  try {
+    await RepositoryImpl().initialize();
+  } catch (e) {
+    // Okay, let's do a hail Mary, reset it all!
+    await RepositoryImpl().sqliteProvider.resetDb();
+    await RepositoryImpl().initialize();
+  }
 
   const icon = AssetImage('assets/icons/app_icon.webp');
   final lightColorScheme = await ColorScheme.fromImageProvider(provider: icon);
@@ -63,6 +72,7 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
+      overrides: [repositoryProvider.overrideWith((ref) => RepositoryImpl())],
       child: MaterialApp(
         theme: ThemeData.light().copyWith(colorScheme: lightColorScheme),
         darkTheme: ThemeData.dark().copyWith(colorScheme: darkColorScheme),

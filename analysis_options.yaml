@@ -21,6 +21,7 @@ analyzer:
     deprecated_member_use_from_same_package: ignore
     # Ignore until Riverpod 3.0 is released
     functional_ref: ignore
+    require_trailing_commas: ignore
 
 linter:
   rules:
@@ -35,9 +36,10 @@ linter:
     - omit_local_variable_types
     - prefer_adjacent_string_concatenation
     - prefer_single_quotes
-    - require_trailing_commas
+    #    - require_trailing_commas
     - unnecessary_lambdas
     - use_if_null_to_convert_nulls_to_bools
     - use_super_parameters
     - use_enums
     - use_colored_box
+    - unawaited_futures

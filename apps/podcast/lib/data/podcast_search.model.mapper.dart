@@ -23,16 +23,17 @@ class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
 
   static int _$id(PodcastSearch v) => v.id;
   static const Field<PodcastSearch, int> _f$id = Field('id', _$id);
-  static UriModel _$url(PodcastSearch v) => v.url;
-  static const Field<PodcastSearch, UriModel> _f$url = Field('url', _$url);
+  static UriModel _$backingUrl(PodcastSearch v) => v.backingUrl;
+  static const Field<PodcastSearch, UriModel> _f$backingUrl =
+      Field('backingUrl', _$backingUrl, key: r'url');
   static String _$title(PodcastSearch v) => v.title;
   static const Field<PodcastSearch, String> _f$title = Field('title', _$title);
   static String _$description(PodcastSearch v) => v.description;
   static const Field<PodcastSearch, String> _f$description =
       Field('description', _$description);
-  static UriModel _$artwork(PodcastSearch v) => v.artwork;
-  static const Field<PodcastSearch, UriModel> _f$artwork =
-      Field('artwork', _$artwork);
+  static UriModel _$backingArtwork(PodcastSearch v) => v.backingArtwork;
+  static const Field<PodcastSearch, UriModel> _f$backingArtwork =
+      Field('backingArtwork', _$backingArtwork, key: r'artwork');
   static String _$author(PodcastSearch v) => v.author;
   static const Field<PodcastSearch, String> _f$author =
       Field('author', _$author);
@@ -49,10 +50,10 @@ class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
   @override
   final MappableFields<PodcastSearch> fields = const {
     #id: _f$id,
-    #url: _f$url,
+    #backingUrl: _f$backingUrl,
     #title: _f$title,
     #description: _f$description,
-    #artwork: _f$artwork,
+    #backingArtwork: _f$backingArtwork,
     #author: _f$author,
     #lastPublished: _f$lastPublished,
     #language: _f$language,
@@ -62,10 +63,10 @@ class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
   static PodcastSearch _instantiate(DecodingData data) {
     return PodcastSearch(
         id: data.dec(_f$id),
-        url: data.dec(_f$url),
+        backingUrl: data.dec(_f$backingUrl),
         title: data.dec(_f$title),
         description: data.dec(_f$description),
-        artwork: data.dec(_f$artwork),
+        backingArtwork: data.dec(_f$backingArtwork),
         author: data.dec(_f$author),
         lastPublished: data.dec(_f$lastPublished),
         language: data.dec(_f$language),
@@ -125,16 +126,16 @@ extension PodcastSearchValueCopy<$R, $Out>
 
 abstract class PodcastSearchCopyWith<$R, $In extends PodcastSearch, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  UriModelCopyWith<$R, UriModel, UriModel> get url;
-  UriModelCopyWith<$R, UriModel, UriModel> get artwork;
+  UriModelCopyWith<$R, UriModel, UriModel> get backingUrl;
+  UriModelCopyWith<$R, UriModel, UriModel> get backingArtwork;
   MapCopyWith<$R, int, String, ObjectCopyWith<$R, String, String>>
       get categories;
   $R call(
       {int? id,
-      UriModel? url,
+      UriModel? backingUrl,
       String? title,
       String? description,
-      UriModel? artwork,
+      UriModel? backingArtwork,
       String? author,
       String? lastPublished,
       String? language,
@@ -151,11 +152,11 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
   late final ClassMapperBase<PodcastSearch> $mapper =
       PodcastSearchMapper.ensureInitialized();
   @override
-  UriModelCopyWith<$R, UriModel, UriModel> get url =>
-      $value.url.copyWith.$chain((v) => call(url: v));
+  UriModelCopyWith<$R, UriModel, UriModel> get backingUrl =>
+      $value.backingUrl.copyWith.$chain((v) => call(backingUrl: v));
   @override
-  UriModelCopyWith<$R, UriModel, UriModel> get artwork =>
-      $value.artwork.copyWith.$chain((v) => call(artwork: v));
+  UriModelCopyWith<$R, UriModel, UriModel> get backingArtwork =>
+      $value.backingArtwork.copyWith.$chain((v) => call(backingArtwork: v));
   @override
   MapCopyWith<$R, int, String, ObjectCopyWith<$R, String, String>>
       get categories => MapCopyWith(
@@ -165,20 +166,20 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
   @override
   $R call(
           {int? id,
-          UriModel? url,
+          UriModel? backingUrl,
           String? title,
           String? description,
-          UriModel? artwork,
+          UriModel? backingArtwork,
           String? author,
           String? lastPublished,
           String? language,
           Map<int, String>? categories}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
-        if (url != null) #url: url,
+        if (backingUrl != null) #backingUrl: backingUrl,
         if (title != null) #title: title,
         if (description != null) #description: description,
-        if (artwork != null) #artwork: artwork,
+        if (backingArtwork != null) #backingArtwork: backingArtwork,
         if (author != null) #author: author,
         if (lastPublished != null) #lastPublished: lastPublished,
         if (language != null) #language: language,
@@ -187,10 +188,10 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
   @override
   PodcastSearch $make(CopyWithData data) => PodcastSearch(
       id: data.get(#id, or: $value.id),
-      url: data.get(#url, or: $value.url),
+      backingUrl: data.get(#backingUrl, or: $value.backingUrl),
       title: data.get(#title, or: $value.title),
       description: data.get(#description, or: $value.description),
-      artwork: data.get(#artwork, or: $value.artwork),
+      backingArtwork: data.get(#backingArtwork, or: $value.backingArtwork),
       author: data.get(#author, or: $value.author),
       lastPublished: data.get(#lastPublished, or: $value.lastPublished),
       language: data.get(#language, or: $value.language),

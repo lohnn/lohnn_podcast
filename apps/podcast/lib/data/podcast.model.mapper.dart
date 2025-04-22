@@ -31,9 +31,9 @@ class PodcastMapper extends ClassMapperBase<Podcast> {
   static String _$description(Podcast v) => v.description;
   static const Field<Podcast, String> _f$description =
       Field('description', _$description);
-  static UriModel _$imageUrl(Podcast v) => v.imageUrl;
-  static const Field<Podcast, UriModel> _f$imageUrl =
-      Field('imageUrl', _$imageUrl, key: r'image_url');
+  static UriModel _$backingImageUrl(Podcast v) => v.backingImageUrl;
+  static const Field<Podcast, UriModel> _f$backingImageUrl =
+      Field('backingImageUrl', _$backingImageUrl, key: r'backing_image_url');
   static String? _$language(Podcast v) => v.language;
   static const Field<Podcast, String> _f$language =
       Field('language', _$language, opt: true);
@@ -54,7 +54,7 @@ class PodcastMapper extends ClassMapperBase<Podcast> {
     #name: _f$name,
     #link: _f$link,
     #description: _f$description,
-    #imageUrl: _f$imageUrl,
+    #backingImageUrl: _f$backingImageUrl,
     #language: _f$language,
     #lastBuildDate: _f$lastBuildDate,
     #copyright: _f$copyright,
@@ -67,7 +67,7 @@ class PodcastMapper extends ClassMapperBase<Podcast> {
         name: data.dec(_f$name),
         link: data.dec(_f$link),
         description: data.dec(_f$description),
-        imageUrl: data.dec(_f$imageUrl),
+        backingImageUrl: data.dec(_f$backingImageUrl),
         language: data.dec(_f$language),
         lastBuildDate: data.dec(_f$lastBuildDate),
         copyright: data.dec(_f$copyright),
@@ -124,13 +124,13 @@ extension PodcastValueCopy<$R, $Out> on ObjectCopyWith<$R, Podcast, $Out> {
 
 abstract class PodcastCopyWith<$R, $In extends Podcast, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  UriModelCopyWith<$R, UriModel, UriModel> get imageUrl;
+  UriModelCopyWith<$R, UriModel, UriModel> get backingImageUrl;
   $R call(
       {String? id,
       String? name,
       String? link,
       String? description,
-      UriModel? imageUrl,
+      UriModel? backingImageUrl,
       String? language,
       String? lastBuildDate,
       String? copyright,
@@ -147,15 +147,15 @@ class _PodcastCopyWithImpl<$R, $Out>
   late final ClassMapperBase<Podcast> $mapper =
       PodcastMapper.ensureInitialized();
   @override
-  UriModelCopyWith<$R, UriModel, UriModel> get imageUrl =>
-      $value.imageUrl.copyWith.$chain((v) => call(imageUrl: v));
+  UriModelCopyWith<$R, UriModel, UriModel> get backingImageUrl =>
+      $value.backingImageUrl.copyWith.$chain((v) => call(backingImageUrl: v));
   @override
   $R call(
           {String? id,
           String? name,
           String? link,
           String? description,
-          UriModel? imageUrl,
+          UriModel? backingImageUrl,
           Object? language = $none,
           Object? lastBuildDate = $none,
           Object? copyright = $none,
@@ -165,7 +165,7 @@ class _PodcastCopyWithImpl<$R, $Out>
         if (name != null) #name: name,
         if (link != null) #link: link,
         if (description != null) #description: description,
-        if (imageUrl != null) #imageUrl: imageUrl,
+        if (backingImageUrl != null) #backingImageUrl: backingImageUrl,
         if (language != $none) #language: language,
         if (lastBuildDate != $none) #lastBuildDate: lastBuildDate,
         if (copyright != $none) #copyright: copyright,
@@ -177,7 +177,7 @@ class _PodcastCopyWithImpl<$R, $Out>
       name: data.get(#name, or: $value.name),
       link: data.get(#link, or: $value.link),
       description: data.get(#description, or: $value.description),
-      imageUrl: data.get(#imageUrl, or: $value.imageUrl),
+      backingImageUrl: data.get(#backingImageUrl, or: $value.backingImageUrl),
       language: data.get(#language, or: $value.language),
       lastBuildDate: data.get(#lastBuildDate, or: $value.lastBuildDate),
       copyright: data.get(#copyright, or: $value.copyright),

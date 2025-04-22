@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/extensions/nullability_extensions.dart';
-import 'package:podcast/podcast_theme/podcast_theme_colors.dart';
 import 'package:podcast/providers/user_provider.dart';
+import 'package:podcast_core/extensions/nullability_extensions.dart';
+import 'package:podcast_core/podcast_theme/podcast_theme_colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AvatarCircle extends ConsumerWidget {

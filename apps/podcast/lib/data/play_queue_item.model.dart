@@ -5,7 +5,8 @@ import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supab
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:podcast/data/episode.model.dart';
+import 'package:podcast/data/episode_impl.model.dart';
+import 'package:podcast_core/data/play_queue_item.model.dart' as core;
 
 part 'play_queue_item.model.mapper.dart';
 
@@ -14,11 +15,15 @@ part 'play_queue_item.model.mapper.dart';
 )
 @MappableClass()
 class PlayQueueItem extends OfflineFirstWithSupabaseModel
-    with PlayQueueItemMappable {
+    with PlayQueueItemMappable
+    implements core.PlayQueueItem {
+  @override
   @Supabase(unique: true, foreignKey: 'episode_id', ignoreTo: true)
-  final Episode episode;
+  final EpisodeImpl episode;
+  @override
   final int queueOrder;
 
+  @override
   @Supabase(unique: true, ignoreFrom: true)
   @Sqlite(unique: true, index: true)
   String get episodeId => episode.id;

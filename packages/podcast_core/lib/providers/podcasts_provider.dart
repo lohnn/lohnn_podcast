@@ -1,0 +1,106 @@
+import 'dart:async';
+
+import 'package:podcast_core/data/podcast.model.dart';
+import 'package:podcast_core/helpers/equatable_list.dart';
+import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
+import 'package:podcast_core/repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'podcasts_provider.g.dart';
+
+@riverpod
+Future<bool?> subscribedPodcast(
+  SubscribedPodcastRef ref, {
+  required String rssUrl,
+}) async {
+  return ref
+      .watch(_subscribedPodcastUrlsProvider)
+      .valueOrNull
+      ?.contains(rssUrl);
+}
+
+@riverpod
+Future<Iterable<String>?> _subscribedPodcastUrls(
+  _SubscribedPodcastUrlsRef ref,
+) async {
+  return ref
+      .watch(
+        podcastsProvider.select(
+          (state) => state.whenData(
+            (podcasts) => podcasts.map((podcast) => podcast.rssUrl),
+          ),
+        ),
+      )
+      .valueOrNull;
+}
+
+@riverpod
+class PodcastPod extends _$PodcastPod {
+  late Repository _repository;
+
+  @override
+  Future<Podcast> build(String podcastId) async {
+    _repository = ref.watch(repositoryProvider);
+    return ref.watch(
+      podcastsProvider.selectAsync(
+        (podcasts) => podcasts.firstWhere((podcast) => podcast.id == podcastId),
+      ),
+    );
+  }
+
+  Future<void> updateLastSeen() async {
+    final podcast = await future;
+    return _repository.updateLastSeenPodcast(podcast);
+  }
+}
+
+@riverpod
+class Podcasts extends _$Podcasts {
+  late Repository _repository;
+
+  @override
+  Stream<EquatableList<Podcast>> build() async* {
+    _repository = ref.watch(repositoryProvider);
+    final lifecycleState = ref.watch(appLifecycleStatePodProvider);
+    if (lifecycleState != AppLifecycleState.resumed) return;
+
+    keepUpToDateWithSubscriptions();
+    // Force a clean refresh on startup to clear out any stored rows that may
+    // have been deleted
+    unawaited(_syncWithRemote());
+    yield* _repository.watchPodcasts().map(EquatableList.new);
+  }
+
+  /// Listens to the `user_podcast_subscriptions` table, that is used to store
+  /// the user's subscriptions to podcasts. When the table is updated, the
+  /// podcast list is updated.
+  void keepUpToDateWithSubscriptions() {
+    ref.listen(_repository.userPodcastSubscriptionsChangesProvider, (
+      oldValue,
+      newValue,
+    ) {
+      if (newValue == null) return;
+      _syncWithRemote();
+    });
+  }
+
+  /// Syncs the local database with the remote database, using force local sync,
+  /// that clears the local database of rows that have been deleted remotely.
+  Future<void> _syncWithRemote() {
+    return _repository.getPodcasts();
+  }
+
+  Future<void> refresh(Podcast podcast) {
+    return _repository.refreshPodcast(podcast.rssUrl);
+  }
+
+  Future<void> subscribe(String rssUrl) {
+    state = const AsyncLoading();
+    return _repository.subscribeToPodcast(rssUrl);
+  }
+
+  Future<void> unsubscribe(String rssUrl) {
+    state = const AsyncLoading();
+    return _repository.unsubscribeFromPodcast(rssUrl);
+  }
+}

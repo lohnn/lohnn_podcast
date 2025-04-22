@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast/extensions/nullability_extensions.dart';
-import 'package:podcast/helpers/platform_helpers.dart';
 import 'package:podcast/providers/user_provider.dart';
 import 'package:podcast/widgets/google_login_button/google_login_button.dart';
+import 'package:podcast_core/extensions/nullability_extensions.dart';
+import 'package:podcast_core/helpers/platform_helpers.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class LoginScreen extends HookConsumerWidget {

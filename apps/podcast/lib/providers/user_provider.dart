@@ -1,7 +1,7 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:podcast/brick/repository.dart';
-import 'package:podcast/helpers/platform_helpers.dart';
 import 'package:podcast/secrets.dart';
+import 'package:podcast_core/helpers/platform_helpers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,7 +19,7 @@ class UserPod extends _$UserPod {
     listenSelf((oldValue, newValue) {
       // Check in once, when the user is logged in
       if (newValue.valueOrNull != null && oldValue != newValue) {
-        Repository().checkInUser();
+        RepositoryImpl().checkInUser();
       }
     });
 
