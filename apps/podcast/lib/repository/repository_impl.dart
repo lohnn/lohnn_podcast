@@ -52,6 +52,13 @@ class RepositoryImpl implements core.Repository {
         _episodesUpdatedChangeNotifier.notifyListeners,
       );
     });
+
+    podcastBox.then((box) {
+      box.listenable().addListener(
+        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+        _userPodcastSubscriptionsChangeNotifier.notifyListeners,
+      );
+    });
   }
 
   @override
@@ -100,6 +107,12 @@ class RepositoryImpl implements core.Repository {
 
   @override
   Listenable get episodesUpdated => _episodesUpdatedChangeNotifier;
+
+  final _userPodcastSubscriptionsChangeNotifier = ChangeNotifier();
+
+  @override
+  Listenable get userPodcastSubscriptionsChanges =>
+      _userPodcastSubscriptionsChangeNotifier;
 
   @override
   Future<List<PodcastImpl>> getPodcasts() async {
@@ -175,7 +188,6 @@ class RepositoryImpl implements core.Repository {
 
     await podcastBox.put(podcast.hiveId, podcast);
     await episodeBox.putAll({
-      // TODO: Hive can only store int ids of at most 0xffffffff 🤔
       for (final episode in episodes) episode.hiveId: episode,
     });
   }
@@ -198,12 +210,6 @@ class RepositoryImpl implements core.Repository {
     final box = await lastSeenBox;
     await box.put(podcast.hiveId, DateTime.now());
   }
-
-  final _userPodcastSubscriptionsChangeNotifier = ChangeNotifier();
-
-  @override
-  Listenable get userPodcastSubscriptionsChanges =>
-      _userPodcastSubscriptionsChangeNotifier;
 
   @override
   Stream<List<EpisodeImpl>> watchEpisodesFor({
