@@ -4,12 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 extension RefExtensions on Ref<Object> {
   void listenListenable<T>(
-    Future<Listenable> futureListenable,
+    Listenable watchEpisodesFor,
     void Function() onChanged,
   ) {
-    futureListenable.then((listenable) {
-      listenable.addListener(onChanged);
-      onDispose(() => listenable.removeListener(onChanged));
-    });
+    watchEpisodesFor.addListener(onChanged);
+    onDispose(() => watchEpisodesFor.removeListener(onChanged));
   }
 }

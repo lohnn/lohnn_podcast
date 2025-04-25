@@ -45,6 +45,13 @@ class RepositoryImpl implements core.Repository {
     Hive
       ..init(Directory.current.path)
       ..registerAdapters();
+
+    episodeBox.then((box) {
+      box.listenable().addListener(
+        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+        _episodesUpdatedChangeNotifier.notifyListeners,
+      );
+    });
   }
 
   @override
@@ -89,9 +96,10 @@ class RepositoryImpl implements core.Repository {
     );
   }
 
+  final _episodesUpdatedChangeNotifier = ChangeNotifier();
+
   @override
-  Future<Listenable> get episodesUpdated =>
-      episodeBox.then((box) => box.listenable());
+  Listenable get episodesUpdated => _episodesUpdatedChangeNotifier;
 
   @override
   Future<List<PodcastImpl>> getPodcasts() async {
@@ -191,12 +199,11 @@ class RepositoryImpl implements core.Repository {
     await box.put(podcast.hiveId, DateTime.now());
   }
 
-  // TODO: watchTableProvider('user_podcast_subscriptions');
   final _userPodcastSubscriptionsChangeNotifier = ChangeNotifier();
 
   @override
-  Future<Listenable> get userPodcastSubscriptionsChanges =>
-      Future.value(_userPodcastSubscriptionsChangeNotifier);
+  Listenable get userPodcastSubscriptionsChanges =>
+      _userPodcastSubscriptionsChangeNotifier;
 
   @override
   Stream<List<EpisodeImpl>> watchEpisodesFor({

@@ -51,9 +51,9 @@ abstract class Repository {
 
   Future<void> deletePlayQueueItem(PlayQueueItem item);
 
-  Future<Listenable> get userPodcastSubscriptionsChanges;
+  Listenable get userPodcastSubscriptionsChanges;
 
-  Future<Listenable> get episodesUpdated;
+  Listenable get episodesUpdated;
 
   Future<List<Podcast>> findPodcasts([String? searchTerm]);
 
