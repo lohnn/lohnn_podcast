@@ -13,6 +13,7 @@ import 'package:podcast/repository/adapters/hive_registrar.g.dart';
 import 'package:podcast/repository/search_headers_interceptor.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/data/podcast_with_status.dart';
 import 'package:podcast_core/data/user_episode_status.model.dart';
 import 'package:podcast_core/repository.dart' as core;
@@ -218,11 +219,11 @@ class RepositoryImpl implements core.Repository {
 
   @override
   Stream<List<EpisodeImpl>> watchEpisodesFor({
-    required PodcastId podcastId,
+    required Podcast podcast,
   }) async* {
     final box = await episodeBox;
     final episodes = box.values
-        .where((episode) => episode.podcastId == podcastId)
+        .where((episode) => episode.podcastId == podcast.id)
         .toList(growable: false)
         .sortedByCompare(
           (episode) => episode.datePublished,
@@ -232,7 +233,7 @@ class RepositoryImpl implements core.Repository {
 
     await for (final values in box.stream()) {
       final episodes = values.where(
-        (episode) => episode.podcastId == podcastId,
+        (episode) => episode.podcastId == podcast.id,
       );
       yield episodes
           .toList(growable: false)
