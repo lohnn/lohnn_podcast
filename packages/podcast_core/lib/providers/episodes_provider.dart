@@ -17,7 +17,7 @@ class EpisodePod extends _$EpisodePod {
   @override
   AsyncValue<(PodcastSearch, EpisodeWithStatus)> build({
     required PodcastId podcastId,
-    required int episodeId,
+    required EpisodeId episodeId,
   }) {
     return ref.watch(episodesProvider(podcastId: podcastId)).whenData((pair) {
       final (podcast, episodes) = pair;

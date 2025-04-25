@@ -8,7 +8,6 @@ part 'episode_impl.model.mapper.dart';
 
 @MappableClass()
 class EpisodeImpl with EpisodeImplMappable implements Episode {
-  @override
   @MappableField(key: 'id')
   final int backingId;
   @MappableField(key: 'enclosureUrl')
@@ -38,7 +37,7 @@ class EpisodeImpl with EpisodeImplMappable implements Episode {
 
   @override
   EpisodeId get id => EpisodeId(backingId);
-  
+
   String get hiveId => id.toString();
 
   @override

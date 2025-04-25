@@ -45,45 +45,6 @@ class RepositoryImpl implements core.Repository {
       ..registerAdapters();
   }
 
-  // Future<void> upsertLocalIterable<TModel extends OfflineFirstWithRestModel>(
-  //   Iterable<TModel> instances, {
-  //   Query? query,
-  // }) {
-  //   return instances.map(upsertLocal).wait;
-  // }
-
-  // Future<void> upsertLocal<TModel extends OfflineFirstWithRestModel>(
-  //   TModel instance, {
-  //   Query? query,
-  // }) async {
-  //   final modelId = await sqliteProvider.upsert<TModel>(
-  //     instance,
-  //     query: query,
-  //     repository: this,
-  //   );
-  //   instance.primaryKey = modelId;
-  //   memoryCacheProvider.upsert<TModel>(instance, query: query);
-  //   await notifySubscriptionsWithLocalData<TModel>();
-  // }
-
-  // RealtimeChannel watchTable(
-  //   String table,
-  //   void Function(PostgresChangePayload payload) callback, {
-  //   PostgresChangeEvent? event,
-  //   PostgresChangeFilter? filter,
-  // }) {
-  //   return remoteProvider.client
-  //       .channel(table)
-  //       .onPostgresChanges(
-  //         event: event ?? PostgresChangeEvent.all,
-  //         schema: 'public',
-  //         table: table,
-  //         filter: filter,
-  //         callback: callback,
-  //       )
-  //       .subscribe();
-  // }
-
   @override
   Future<List<PodcastSearch>> findPodcasts([String? searchTerm]) async {
     final path = switch (searchTerm) {
@@ -156,7 +117,7 @@ class RepositoryImpl implements core.Repository {
             podcast: podcast,
             listenedEpisodes:
                 episodesForPodcast
-                    .map((episode) => userEpisodeStatusBox.get(episode.id))
+                    .map((episode) => userEpisodeStatusBox.get(episode.hiveId))
                     .nonNulls
                     .length,
             totalEpisodes: episodesForPodcast.length,
@@ -168,27 +129,27 @@ class RepositoryImpl implements core.Repository {
 
   @override
   Future<UserEpisodeStatusImpl> getUserEpisodeStatus(
-    EpisodeId episodeId,
+    covariant EpisodeImpl episode,
   ) async {
     final box = await userEpisodeStatusBox;
-    return box.get(episodeId) ??
+    return box.get(episode.hiveId) ??
         UserEpisodeStatusImpl.usingEpisodeId(
-          episodeId: episodeId,
+          episodeId: episode.id,
           isPlayed: false,
           currentPosition: Duration.zero,
         );
   }
 
   @override
-  Future<void> refreshPodcast(covariant PodcastSearch podcast) async {
-    // return remoteProvider.client.functions.invoke('add_podcast', body: rssUrl);
+  Future<void> refreshPodcast(covariant PodcastSearch podcast) {
+    return subscribeToPodcast(podcast);
   }
 
   @override
   Future<void> subscribeToPodcast(covariant PodcastSearch podcast) async {
     final response = await podcastIndexDio.get<Map<String, dynamic>>(
       '/episodes/byfeedurl',
-      queryParameters: {'url': podcast.backingUrl},
+      queryParameters: {'url': podcast.backingUrl, 'max': 1000},
     );
 
     final {'items': List<dynamic> items} = response.data!;
@@ -206,7 +167,7 @@ class RepositoryImpl implements core.Repository {
     final podcastBox = await this.podcastBox;
     final episodeBox = await this.episodeBox;
 
-    await podcastBox.put(podcast.id, podcast);
+    await podcastBox.put(podcast.hiveId, podcast);
     await episodeBox.putAll({
       // TODO: Hive can only store int ids of at most 0xffffffff 🤔
       for (final episode in episodes) episode.hiveId: episode,
@@ -218,7 +179,7 @@ class RepositoryImpl implements core.Repository {
     final podcastBox = await this.podcastBox;
     final episodeBox = await this.episodeBox;
 
-    await podcastBox.delete(podcast.id);
+    await podcastBox.delete(podcast.hiveId);
     await episodeBox.deleteAll(
       episodeBox.values
           .where((episode) => episode.podcastId == podcast.id)
@@ -246,16 +207,26 @@ class RepositoryImpl implements core.Repository {
     required PodcastId podcastId,
   }) async* {
     final box = await episodeBox;
-    yield box.values
-      .where((episode) => episode.podcastId == podcastId)
-      .toList(growable: false)..sortedBy((episode) => episode.datePublished);
+    final episodes = box.values
+        .where((episode) => episode.podcastId == podcastId)
+        .toList(growable: false)
+        .sortedByCompare(
+          (episode) => episode.datePublished,
+          (a, b) => b.compareTo(a),
+        );
+    yield episodes;
 
     await for (final values in box.stream()) {
       final episodes = values.where(
         (episode) => episode.podcastId == podcastId,
       );
-      yield episodes.toList(growable: false)
-        ..sortedBy((episode) => episode.datePublished);
+      yield episodes
+          .toList(growable: false)
+          .sortedByCompare(
+            (episode) => episode.datePublished,
+            (a, b) => b.compareTo(a),
+          );
+      ;
     }
   }
 
@@ -318,17 +289,20 @@ class RepositoryImpl implements core.Repository {
         currentPosition: Duration.zero,
       ),
     };
-    await box.put(newStatus.episodeId, newStatus);
+    await box.put(newStatus.episodeHiveId, newStatus);
   }
 
   @override
-  Future<void> updateEpisodePosition(Episode episode, Duration position) async {
+  Future<void> updateEpisodePosition(
+    covariant EpisodeImpl episode,
+    Duration position,
+  ) async {
     final newStatus = (await getUserEpisodeStatus(
-      episode.id,
+      episode,
     )).copyWith(currentPosition: position);
 
     final box = await userEpisodeStatusBox;
-    await box.put(newStatus.episodeId, newStatus);
+    await box.put(newStatus.episodeHiveId, newStatus);
   }
 
   @override
@@ -338,7 +312,7 @@ class RepositoryImpl implements core.Repository {
   ) async {
     final box = await queueItemBox;
     final queueItem = PlayQueueItem(episode: episode, queueOrder: position);
-    await box.put(queueItem.episodeId, queueItem);
+    await box.put(queueItem.episodeHiveId, queueItem);
   }
 }
 

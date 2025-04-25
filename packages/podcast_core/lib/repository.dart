@@ -16,7 +16,7 @@ Repository repository(RepositoryRef ref) {
 }
 
 abstract class Repository {
-  Future<UserEpisodeStatus> getUserEpisodeStatus(EpisodeId episodeId);
+  Future<UserEpisodeStatus> getUserEpisodeStatus(Episode episode);
 
   Stream<List<UserEpisodeStatus>> watchUserEpisodeStatus();
 

@@ -28,4 +28,6 @@ class UserEpisodeStatusImpl
 
   @override
   EpisodeId get episodeId => EpisodeId(backingEpisodeId);
+
+  String get episodeHiveId => episodeId.toString();
 }

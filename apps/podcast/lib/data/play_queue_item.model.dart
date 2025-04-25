@@ -15,5 +15,7 @@ class PlayQueueItem with PlayQueueItemMappable implements core.PlayQueueItem {
   @override
   EpisodeId get episodeId => episode.id;
 
+  String get episodeHiveId => episodeId.toString();
+
   PlayQueueItem({required this.episode, required this.queueOrder});
 }

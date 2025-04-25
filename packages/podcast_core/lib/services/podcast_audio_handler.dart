@@ -228,7 +228,7 @@ class PodcastAudioHandler extends BaseAudioHandler
 
   // @TODO: This is duplicated with [AudioPlayerPod._getStatusForEpisode]
   Future<EpisodeWithStatus?> _getStatusForEpisode(Episode episode) async {
-    final status = await repository.getUserEpisodeStatus(episode.id);
+    final status = await repository.getUserEpisodeStatus(episode);
     return EpisodeWithStatus(episode: episode, status: status);
   }
 

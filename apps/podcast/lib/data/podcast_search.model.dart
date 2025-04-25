@@ -43,6 +43,8 @@ class PodcastSearch with PodcastSearchMappable implements core.PodcastSearch {
   @override
   Uri get artwork => Uri.parse(backingArtwork);
 
+  String get hiveId => id.toString();
+
   PodcastSearch({
     required this.backingId,
     required this.backingUrl,
