@@ -25,7 +25,7 @@ class PodcastSearchScreen extends ConsumerWidget {
               ),
               onChanged: ref.read(findPodcastProvider.notifier).search,
               trailing: const [
-                // TODO: Implement somehow
+                // @TODO: Implement somehow
                 // IconButton(
                 //   onPressed: () async {
                 //     final rssUrl = await showDialog<String>(

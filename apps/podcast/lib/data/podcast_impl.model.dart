@@ -9,7 +9,6 @@ part 'podcast_impl.model.mapper.dart';
 
 @MappableClass()
 class PodcastImpl with PodcastImplMappable implements core.Podcast {
-  @override
   @MappableField(key: 'id')
   final int backingId;
   @MappableField(key: 'url')
@@ -32,10 +31,12 @@ class PodcastImpl with PodcastImplMappable implements core.Podcast {
   final int? lastUpdateTime;
 
   @override
-  String get lastPublished =>
-      (lastUpdateTime ?? newestItemPublishTime)!
-          .let(DateTime.fromMicrosecondsSinceEpoch)
-          .toString();
+  String get lastPublished => lastPublishedDateTime.toString();
+
+  DateTime get lastPublishedDateTime =>
+      (lastUpdateTime ?? newestItemPublishTime)!.let(
+        DateTime.fromMicrosecondsSinceEpoch,
+      );
 
   @override
   Uri get url => Uri.parse(backingUrl);

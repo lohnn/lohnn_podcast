@@ -126,6 +126,8 @@ class RepositoryImpl implements core.Repository {
     final userEpisodeStatusBox = await this.userEpisodeStatusBox;
     final episodeBox = await this.episodeBox;
 
+    final lastSeenBox = await this.lastSeenBox;
+
     return <PodcastWithStatus>[
       for (final podcast in podcastBox.values)
         if (episodeBox.values.where(
@@ -140,8 +142,11 @@ class RepositoryImpl implements core.Repository {
                     .nonNulls
                     .length,
             totalEpisodes: episodesForPodcast.length,
-            // TODO: Store when podcast was last seen somwhere
-            hasUnseenEpisodes: false,
+            hasUnseenEpisodes:
+                lastSeenBox
+                    .get(podcast.hiveId)
+                    ?.isBefore(podcast.lastPublishedDateTime) ??
+                true,
           ),
     ];
   }
