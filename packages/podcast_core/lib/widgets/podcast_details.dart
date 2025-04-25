@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast_core/data/podcast_search.model.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/providers/find_podcast_provider.dart';
 import 'package:podcast_core/providers/podcasts_provider.dart';
 import 'package:podcast_core/widgets/rounded_image.dart';
@@ -9,13 +9,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PodcastDetails extends StatelessWidget {
-  final PodcastSearch podcast;
+  final Podcast podcast;
 
   const PodcastDetails._({super.key, required this.podcast});
 
   factory PodcastDetails.fromSearch({
     Key? key,
-    required PodcastSearch podcast,
+    required Podcast podcast,
   }) {
     return PodcastDetails._(key: key, podcast: podcast);
   }
@@ -95,7 +95,7 @@ class PodcastDetails extends StatelessWidget {
 }
 
 class _SubscribeChip extends ConsumerWidget {
-  final PodcastSearch podcast;
+  final Podcast podcast;
 
   const _SubscribeChip(this.podcast);
 

@@ -1,14 +1,14 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:podcast_core/data/podcast_search.model.dart' as core;
-import 'package:podcast_core/data/podcast_search.model.dart' show PodcastId;
+import 'package:podcast_core/data/podcast.model.dart' as core;
+import 'package:podcast_core/data/podcast.model.dart' show PodcastId;
 import 'package:podcast_core/extensions/nullability_extensions.dart';
 
-export 'package:podcast_core/data/podcast_search.model.dart' show PodcastId;
+export 'package:podcast_core/data/podcast.model.dart' show PodcastId;
 
-part 'podcast_search.model.mapper.dart';
+part 'podcast_impl.model.mapper.dart';
 
 @MappableClass()
-class PodcastSearch with PodcastSearchMappable implements core.PodcastSearch {
+class PodcastImpl with PodcastImplMappable implements core.Podcast {
   @override
   @MappableField(key: 'id')
   final int backingId;
@@ -45,7 +45,7 @@ class PodcastSearch with PodcastSearchMappable implements core.PodcastSearch {
 
   String get hiveId => id.toString();
 
-  PodcastSearch({
+  PodcastImpl({
     required this.backingId,
     required this.backingUrl,
     required this.title,

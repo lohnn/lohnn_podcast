@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast_core/data/podcast_search.model.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/providers/color_scheme_from_remote_image_provider.dart';
 import 'package:podcast_core/widgets/podcast_details.dart';
 
 class PodcastDetailsModal extends ConsumerWidget {
-  final PodcastSearch podcast;
+  final Podcast podcast;
 
   const PodcastDetailsModal({super.key, required this.podcast});
 

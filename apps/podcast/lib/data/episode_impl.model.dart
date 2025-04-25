@@ -1,6 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:podcast/data/podcast_impl.model.dart';
 import 'package:podcast_core/data/episode.model.dart';
-import 'package:podcast_core/data/podcast_search.model.dart';
 import 'package:podcast_core/extensions/nullability_extensions.dart';
 import 'package:podcast_core/services/podcast_audio_handler.dart';
 

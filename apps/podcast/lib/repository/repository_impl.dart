@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive_ce_flutter/adapters.dart';
 import 'package:podcast/data/episode_impl.model.dart';
 import 'package:podcast/data/play_queue_item.model.dart';
-import 'package:podcast/data/podcast_search.model.dart';
+import 'package:podcast/data/podcast_impl.model.dart';
 import 'package:podcast/data/user_episode_status_impl.model.dart';
 import 'package:podcast/repository/adapters/hive_registrar.g.dart';
 import 'package:podcast/repository/search_headers_interceptor.dart';
@@ -30,11 +30,13 @@ class RepositoryImpl implements core.Repository {
 
   final Dio podcastIndexDio;
 
-  Future<Box<PodcastSearch>> get podcastBox => Hive.openBox('podcastBox');
+  Future<Box<PodcastImpl>> get podcastBox => Hive.openBox('podcastBox');
 
   Future<Box<PlayQueueItem>> get queueItemBox => Hive.openBox('queueItemBox');
 
   Future<Box<EpisodeImpl>> get episodeBox => Hive.openBox('episodeBox');
+
+  Future<Box<DateTime>> get lastSeenBox => Hive.openBox('lastSeenBox');
 
   Future<Box<UserEpisodeStatusImpl>> get userEpisodeStatusBox =>
       Hive.openBox('userEpisodeStatusBox');
@@ -46,7 +48,7 @@ class RepositoryImpl implements core.Repository {
   }
 
   @override
-  Future<List<PodcastSearch>> findPodcasts([String? searchTerm]) async {
+  Future<List<PodcastImpl>> findPodcasts([String? searchTerm]) async {
     final path = switch (searchTerm) {
       null || '' => '/podcasts/trending?max=10',
       _ => '/search/byterm',
@@ -61,9 +63,7 @@ class RepositoryImpl implements core.Repository {
 
     final {'feeds': List<dynamic> feeds} = response.data!;
     final podcasts = feeds
-        .map(
-          (feed) => PodcastSearchMapper.fromMap(feed as Map<String, dynamic>),
-        )
+        .map((feed) => PodcastImplMapper.fromMap(feed as Map<String, dynamic>))
         .toList(growable: false);
 
     return podcasts;
@@ -89,14 +89,12 @@ class RepositoryImpl implements core.Repository {
     );
   }
 
-  // TODO: watchTableProvider('episodes', event: PostgresChangeEvent.insert);
-  final _episodeChangeNotifier = ChangeNotifier();
+  @override
+  Future<Listenable> get episodesUpdated =>
+      episodeBox.then((box) => box.listenable());
 
   @override
-  ChangeNotifier get episodesInserted => _episodeChangeNotifier;
-
-  @override
-  Future<List<PodcastSearch>> getPodcasts() async {
+  Future<List<PodcastImpl>> getPodcasts() async {
     final box = await podcastBox;
     return box.values.toList()..sortedBy((podcast) => podcast.title);
   }
@@ -141,12 +139,12 @@ class RepositoryImpl implements core.Repository {
   }
 
   @override
-  Future<void> refreshPodcast(covariant PodcastSearch podcast) {
+  Future<void> refreshPodcast(covariant PodcastImpl podcast) {
     return subscribeToPodcast(podcast);
   }
 
   @override
-  Future<void> subscribeToPodcast(covariant PodcastSearch podcast) async {
+  Future<void> subscribeToPodcast(covariant PodcastImpl podcast) async {
     final response = await podcastIndexDio.get<Map<String, dynamic>>(
       '/episodes/byfeedurl',
       queryParameters: {'url': podcast.backingUrl, 'max': 1000},
@@ -175,7 +173,7 @@ class RepositoryImpl implements core.Repository {
   }
 
   @override
-  Future<void> unsubscribeFromPodcast(covariant PodcastSearch podcast) async {
+  Future<void> unsubscribeFromPodcast(covariant PodcastImpl podcast) async {
     final podcastBox = await this.podcastBox;
     final episodeBox = await this.episodeBox;
 
@@ -188,19 +186,17 @@ class RepositoryImpl implements core.Repository {
   }
 
   @override
-  Future<void> updateLastSeenPodcast(covariant PodcastSearch podcast) async {
-    // return remoteProvider.client.rpc(
-    //   'update_last_seen',
-    //   params: {'podcast_id': podcast.id},
-    // );
+  Future<void> updateLastSeenPodcast(covariant PodcastImpl podcast) async {
+    final box = await lastSeenBox;
+    await box.put(podcast.hiveId, DateTime.now());
   }
 
   // TODO: watchTableProvider('user_podcast_subscriptions');
   final _userPodcastSubscriptionsChangeNotifier = ChangeNotifier();
 
   @override
-  ChangeNotifier get userPodcastSubscriptionsChanges =>
-      _userPodcastSubscriptionsChangeNotifier;
+  Future<Listenable> get userPodcastSubscriptionsChanges =>
+      Future.value(_userPodcastSubscriptionsChangeNotifier);
 
   @override
   Stream<List<EpisodeImpl>> watchEpisodesFor({
@@ -226,7 +222,6 @@ class RepositoryImpl implements core.Repository {
             (episode) => episode.datePublished,
             (a, b) => b.compareTo(a),
           );
-      ;
     }
   }
 
@@ -243,7 +238,7 @@ class RepositoryImpl implements core.Repository {
   }
 
   @override
-  Stream<List<PodcastSearch>> watchPodcasts() async* {
+  Stream<List<PodcastImpl>> watchPodcasts() async* {
     final box = await podcastBox;
     yield box.values.toList(growable: false);
 

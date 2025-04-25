@@ -1,6 +1,6 @@
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
-import 'package:podcast_core/data/podcast_search.model.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/extensions/async_value_extensions.dart';
 import 'package:podcast_core/helpers/equatable_list.dart';
 import 'package:podcast_core/helpers/equatable_map.dart';
@@ -15,7 +15,7 @@ part 'episodes_provider.g.dart';
 @riverpod
 class EpisodePod extends _$EpisodePod {
   @override
-  AsyncValue<(PodcastSearch, EpisodeWithStatus)> build({
+  AsyncValue<(Podcast, EpisodeWithStatus)> build({
     required PodcastId podcastId,
     required EpisodeId episodeId,
   }) {
@@ -33,7 +33,7 @@ class EpisodePod extends _$EpisodePod {
 @riverpod
 class Episodes extends _$Episodes {
   @override
-  AsyncValue<(PodcastSearch, List<EpisodeWithStatus>)> build({
+  AsyncValue<(Podcast, List<EpisodeWithStatus>)> build({
     required PodcastId podcastId,
   }) {
     final podcast = ref.watch(podcastPodProvider(podcastId));

@@ -29,14 +29,14 @@ class PodcastsWithStatus extends _$PodcastsWithStatus {
   void _listenToTableChanges() {
     // Update on user podcast subscriptions change, such as when last_seen is updated
     // @TODO: Trigger reload only on the podcast to which the episode belongs
-    ref.listenChangeNotifier(
+    ref.listenListenable(
       _repository.userPodcastSubscriptionsChanges,
       ref.invalidateSelf,
     );
 
     // New episodes should trigger a reload
     // @TODO: Trigger reload only on the podcast to which the episode belongs
-    ref.listenChangeNotifier(_repository.episodesInserted, ref.invalidateSelf);
+    ref.listenListenable(_repository.episodesUpdated, ref.invalidateSelf);
 
     // @TODO: Trigger reload only on the podcast to which the episode belongs
     ref.listen(userEpisodeStatusPodProvider, (oldValue, newValue) {

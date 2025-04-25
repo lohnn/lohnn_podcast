@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:podcast_core/data/podcast_search.model.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/extensions/ref_extensions.dart';
 import 'package:podcast_core/helpers/equatable_list.dart';
 import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
@@ -41,7 +41,7 @@ class PodcastPod extends _$PodcastPod {
   late Repository _repository;
 
   @override
-  Future<PodcastSearch> build(PodcastId podcastId) async {
+  Future<Podcast> build(PodcastId podcastId) async {
     _repository = ref.watch(repositoryProvider);
     return ref.watch(
       podcastsProvider.selectAsync(
@@ -61,7 +61,7 @@ class Podcasts extends _$Podcasts {
   late Repository _repository;
 
   @override
-  Stream<EquatableList<PodcastSearch>> build() async* {
+  Stream<EquatableList<Podcast>> build() async* {
     _repository = ref.watch(repositoryProvider);
     final lifecycleState = ref.watch(appLifecycleStatePodProvider);
     if (lifecycleState != AppLifecycleState.resumed) return;
@@ -77,7 +77,7 @@ class Podcasts extends _$Podcasts {
   /// the user's subscriptions to podcasts. When the table is updated, the
   /// podcast list is updated.
   void keepUpToDateWithSubscriptions() {
-    ref.listenChangeNotifier(
+    ref.listenListenable(
       _repository.userPodcastSubscriptionsChanges,
       _syncWithRemote,
     );
@@ -89,11 +89,11 @@ class Podcasts extends _$Podcasts {
     return _repository.getPodcasts();
   }
 
-  Future<void> refresh(PodcastSearch podcast) {
+  Future<void> refresh(Podcast podcast) {
     return _repository.refreshPodcast(podcast);
   }
 
-  Future<void> subscribe(PodcastSearch podcast) async {
+  Future<void> subscribe(Podcast podcast) async {
     final oldState = state;
     state = const AsyncLoading();
     try {
@@ -105,7 +105,7 @@ class Podcasts extends _$Podcasts {
     }
   }
 
-  Future<void> unsubscribe(PodcastSearch podcast) {
+  Future<void> unsubscribe(Podcast podcast) {
     state = const AsyncLoading();
     return _repository.unsubscribeFromPodcast(podcast);
   }

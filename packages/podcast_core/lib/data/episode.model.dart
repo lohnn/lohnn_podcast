@@ -1,7 +1,7 @@
 // Your model definition can live anywhere in lib/**/* as long as it has the .model.dart suffix
 // Assume this file is saved at my_app/lib/src/users/user.model.dart
 
-import 'package:podcast_core/data/podcast_search.model.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/services/podcast_audio_handler.dart';
 
 extension type EpisodeId(int id) {}

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/data/play_queue_item.model.dart';
-import 'package:podcast_core/data/podcast_search.model.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/data/podcast_with_status.dart';
 import 'package:podcast_core/data/user_episode_status.model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -29,17 +29,17 @@ abstract class Repository {
 
   Stream<List<Episode>> watchEpisodesFor({required PodcastId podcastId});
 
-  Future<void> updateLastSeenPodcast(PodcastSearch podcast);
+  Future<void> updateLastSeenPodcast(Podcast podcast);
 
-  Future<List<PodcastSearch>> getPodcasts();
+  Future<List<Podcast>> getPodcasts();
 
-  Stream<List<PodcastSearch>> watchPodcasts();
+  Stream<List<Podcast>> watchPodcasts();
 
-  Future<void> subscribeToPodcast(PodcastSearch podcast);
+  Future<void> subscribeToPodcast(Podcast podcast);
 
-  Future<void> unsubscribeFromPodcast(PodcastSearch podcast);
+  Future<void> unsubscribeFromPodcast(Podcast podcast);
 
-  Future<void> refreshPodcast(PodcastSearch podcast);
+  Future<void> refreshPodcast(Podcast podcast);
 
   Future<List<PlayQueueItem>> getPlayQueue();
 
@@ -51,11 +51,11 @@ abstract class Repository {
 
   Future<void> deletePlayQueueItem(PlayQueueItem item);
 
-  ChangeNotifier get userPodcastSubscriptionsChanges;
+  Future<Listenable> get userPodcastSubscriptionsChanges;
 
-  ChangeNotifier get episodesInserted;
+  Future<Listenable> get episodesUpdated;
 
-  Future<List<PodcastSearch>> findPodcasts([String? searchTerm]);
+  Future<List<Podcast>> findPodcasts([String? searchTerm]);
 
   Future<List<PodcastWithStatus>> getPodcastsWithCount();
 }

@@ -10,7 +10,7 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(EpisodeImplAdapter());
     registerAdapter(EpisodeUserStatusAdapter());
     registerAdapter(PlayQueueItemAdapter());
-    registerAdapter(PodcastSearchAdapter());
+    registerAdapter(PodcastImplAdapter());
     registerAdapter(UserEpisodeStatusImplAdapter());
   }
 }

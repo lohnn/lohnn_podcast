@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:podcast_core/data/podcast_search.model.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/helpers/debouncer.dart';
 import 'package:podcast_core/providers/podcasts_provider.dart';
 import 'package:podcast_core/repository.dart';
@@ -14,7 +14,7 @@ class FindPodcast extends _$FindPodcast {
   late bool _mounted;
 
   @override
-  Future<List<PodcastSearch>> build() {
+  Future<List<Podcast>> build() {
     _mounted = true;
     ref.onDispose(() => _mounted = false);
     return (_repository = ref.watch(repositoryProvider)).findPodcasts();
@@ -36,11 +36,11 @@ class FindPodcast extends _$FindPodcast {
     });
   }
 
-  Future<void> subscribe(PodcastSearch podcast) {
+  Future<void> subscribe(Podcast podcast) {
     return ref.read(podcastsProvider.notifier).subscribe(podcast);
   }
 
-  Future<void> unsubscribe(PodcastSearch podcast) {
+  Future<void> unsubscribe(Podcast podcast) {
     return ref.read(podcastsProvider.notifier).unsubscribe(podcast);
   }
 }

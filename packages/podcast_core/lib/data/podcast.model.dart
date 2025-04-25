@@ -1,6 +1,6 @@
 extension type PodcastId(int id) {}
 
-abstract class PodcastSearch {
+abstract class Podcast {
   PodcastId get id;
 
   Uri get url;

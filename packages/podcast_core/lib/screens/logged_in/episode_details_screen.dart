@@ -3,7 +3,7 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
-import 'package:podcast_core/data/podcast_search.model.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/providers/color_scheme_from_remote_image_provider.dart';
 import 'package:podcast_core/providers/episodes_provider.dart';
 import 'package:podcast_core/screens/async_value_screen.dart';
@@ -14,7 +14,7 @@ import 'package:podcast_core/widgets/rounded_image.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class EpisodeDetailsScreen
-    extends AsyncValueWidget<(PodcastSearch, EpisodeWithStatus)> {
+    extends AsyncValueWidget<(Podcast, EpisodeWithStatus)> {
   final PodcastId podcastId;
   final EpisodeId episodeId;
 
@@ -32,7 +32,7 @@ class EpisodeDetailsScreen
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    (PodcastSearch, EpisodeWithStatus) data,
+    (Podcast, EpisodeWithStatus) data,
   ) {
     final (podcast, episodeWithStatus) = data;
     final episode = episodeWithStatus.episode;

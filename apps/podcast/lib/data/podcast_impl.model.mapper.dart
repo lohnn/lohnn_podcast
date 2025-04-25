@@ -4,55 +4,53 @@
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
-part of 'podcast_search.model.dart';
+part of 'podcast_impl.model.dart';
 
-class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
-  PodcastSearchMapper._();
+class PodcastImplMapper extends ClassMapperBase<PodcastImpl> {
+  PodcastImplMapper._();
 
-  static PodcastSearchMapper? _instance;
-  static PodcastSearchMapper ensureInitialized() {
+  static PodcastImplMapper? _instance;
+  static PodcastImplMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = PodcastSearchMapper._());
+      MapperContainer.globals.use(_instance = PodcastImplMapper._());
     }
     return _instance!;
   }
 
   @override
-  final String id = 'PodcastSearch';
+  final String id = 'PodcastImpl';
 
-  static int _$backingId(PodcastSearch v) => v.backingId;
-  static const Field<PodcastSearch, int> _f$backingId =
+  static int _$backingId(PodcastImpl v) => v.backingId;
+  static const Field<PodcastImpl, int> _f$backingId =
       Field('backingId', _$backingId, key: r'id');
-  static String _$backingUrl(PodcastSearch v) => v.backingUrl;
-  static const Field<PodcastSearch, String> _f$backingUrl =
+  static String _$backingUrl(PodcastImpl v) => v.backingUrl;
+  static const Field<PodcastImpl, String> _f$backingUrl =
       Field('backingUrl', _$backingUrl, key: r'url');
-  static String _$title(PodcastSearch v) => v.title;
-  static const Field<PodcastSearch, String> _f$title = Field('title', _$title);
-  static String _$description(PodcastSearch v) => v.description;
-  static const Field<PodcastSearch, String> _f$description =
+  static String _$title(PodcastImpl v) => v.title;
+  static const Field<PodcastImpl, String> _f$title = Field('title', _$title);
+  static String _$description(PodcastImpl v) => v.description;
+  static const Field<PodcastImpl, String> _f$description =
       Field('description', _$description);
-  static String _$backingArtwork(PodcastSearch v) => v.backingArtwork;
-  static const Field<PodcastSearch, String> _f$backingArtwork =
+  static String _$backingArtwork(PodcastImpl v) => v.backingArtwork;
+  static const Field<PodcastImpl, String> _f$backingArtwork =
       Field('backingArtwork', _$backingArtwork, key: r'artwork');
-  static String _$author(PodcastSearch v) => v.author;
-  static const Field<PodcastSearch, String> _f$author =
-      Field('author', _$author);
-  static int? _$newestItemPublishTime(PodcastSearch v) =>
-      v.newestItemPublishTime;
-  static const Field<PodcastSearch, int> _f$newestItemPublishTime =
+  static String _$author(PodcastImpl v) => v.author;
+  static const Field<PodcastImpl, String> _f$author = Field('author', _$author);
+  static int? _$newestItemPublishTime(PodcastImpl v) => v.newestItemPublishTime;
+  static const Field<PodcastImpl, int> _f$newestItemPublishTime =
       Field('newestItemPublishTime', _$newestItemPublishTime);
-  static int? _$lastUpdateTime(PodcastSearch v) => v.lastUpdateTime;
-  static const Field<PodcastSearch, int> _f$lastUpdateTime =
+  static int? _$lastUpdateTime(PodcastImpl v) => v.lastUpdateTime;
+  static const Field<PodcastImpl, int> _f$lastUpdateTime =
       Field('lastUpdateTime', _$lastUpdateTime);
-  static String _$language(PodcastSearch v) => v.language;
-  static const Field<PodcastSearch, String> _f$language =
+  static String _$language(PodcastImpl v) => v.language;
+  static const Field<PodcastImpl, String> _f$language =
       Field('language', _$language);
-  static Map<int, String> _$categories(PodcastSearch v) => v.categories;
-  static const Field<PodcastSearch, Map<int, String>> _f$categories =
+  static Map<int, String> _$categories(PodcastImpl v) => v.categories;
+  static const Field<PodcastImpl, Map<int, String>> _f$categories =
       Field('categories', _$categories, opt: true, def: const {});
 
   @override
-  final MappableFields<PodcastSearch> fields = const {
+  final MappableFields<PodcastImpl> fields = const {
     #backingId: _f$backingId,
     #backingUrl: _f$backingUrl,
     #title: _f$title,
@@ -65,8 +63,8 @@ class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
     #categories: _f$categories,
   };
 
-  static PodcastSearch _instantiate(DecodingData data) {
-    return PodcastSearch(
+  static PodcastImpl _instantiate(DecodingData data) {
+    return PodcastImpl(
         backingId: data.dec(_f$backingId),
         backingUrl: data.dec(_f$backingUrl),
         title: data.dec(_f$title),
@@ -82,55 +80,54 @@ class PodcastSearchMapper extends ClassMapperBase<PodcastSearch> {
   @override
   final Function instantiate = _instantiate;
 
-  static PodcastSearch fromMap(Map<String, dynamic> map) {
-    return ensureInitialized().decodeMap<PodcastSearch>(map);
+  static PodcastImpl fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<PodcastImpl>(map);
   }
 
-  static PodcastSearch fromJson(String json) {
-    return ensureInitialized().decodeJson<PodcastSearch>(json);
+  static PodcastImpl fromJson(String json) {
+    return ensureInitialized().decodeJson<PodcastImpl>(json);
   }
 }
 
-mixin PodcastSearchMappable {
+mixin PodcastImplMappable {
   String toJson() {
-    return PodcastSearchMapper.ensureInitialized()
-        .encodeJson<PodcastSearch>(this as PodcastSearch);
+    return PodcastImplMapper.ensureInitialized()
+        .encodeJson<PodcastImpl>(this as PodcastImpl);
   }
 
   Map<String, dynamic> toMap() {
-    return PodcastSearchMapper.ensureInitialized()
-        .encodeMap<PodcastSearch>(this as PodcastSearch);
+    return PodcastImplMapper.ensureInitialized()
+        .encodeMap<PodcastImpl>(this as PodcastImpl);
   }
 
-  PodcastSearchCopyWith<PodcastSearch, PodcastSearch, PodcastSearch>
-      get copyWith => _PodcastSearchCopyWithImpl<PodcastSearch, PodcastSearch>(
-          this as PodcastSearch, $identity, $identity);
+  PodcastImplCopyWith<PodcastImpl, PodcastImpl, PodcastImpl> get copyWith =>
+      _PodcastImplCopyWithImpl<PodcastImpl, PodcastImpl>(
+          this as PodcastImpl, $identity, $identity);
   @override
   String toString() {
-    return PodcastSearchMapper.ensureInitialized()
-        .stringifyValue(this as PodcastSearch);
+    return PodcastImplMapper.ensureInitialized()
+        .stringifyValue(this as PodcastImpl);
   }
 
   @override
   bool operator ==(Object other) {
-    return PodcastSearchMapper.ensureInitialized()
-        .equalsValue(this as PodcastSearch, other);
+    return PodcastImplMapper.ensureInitialized()
+        .equalsValue(this as PodcastImpl, other);
   }
 
   @override
   int get hashCode {
-    return PodcastSearchMapper.ensureInitialized()
-        .hashValue(this as PodcastSearch);
+    return PodcastImplMapper.ensureInitialized().hashValue(this as PodcastImpl);
   }
 }
 
-extension PodcastSearchValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, PodcastSearch, $Out> {
-  PodcastSearchCopyWith<$R, PodcastSearch, $Out> get $asPodcastSearch =>
-      $base.as((v, t, t2) => _PodcastSearchCopyWithImpl<$R, $Out>(v, t, t2));
+extension PodcastImplValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, PodcastImpl, $Out> {
+  PodcastImplCopyWith<$R, PodcastImpl, $Out> get $asPodcastImpl =>
+      $base.as((v, t, t2) => _PodcastImplCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class PodcastSearchCopyWith<$R, $In extends PodcastSearch, $Out>
+abstract class PodcastImplCopyWith<$R, $In extends PodcastImpl, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   MapCopyWith<$R, int, String, ObjectCopyWith<$R, String, String>>
       get categories;
@@ -145,17 +142,17 @@ abstract class PodcastSearchCopyWith<$R, $In extends PodcastSearch, $Out>
       int? lastUpdateTime,
       String? language,
       Map<int, String>? categories});
-  PodcastSearchCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  PodcastImplCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _PodcastSearchCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, PodcastSearch, $Out>
-    implements PodcastSearchCopyWith<$R, PodcastSearch, $Out> {
-  _PodcastSearchCopyWithImpl(super.value, super.then, super.then2);
+class _PodcastImplCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, PodcastImpl, $Out>
+    implements PodcastImplCopyWith<$R, PodcastImpl, $Out> {
+  _PodcastImplCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<PodcastSearch> $mapper =
-      PodcastSearchMapper.ensureInitialized();
+  late final ClassMapperBase<PodcastImpl> $mapper =
+      PodcastImplMapper.ensureInitialized();
   @override
   MapCopyWith<$R, int, String, ObjectCopyWith<$R, String, String>>
       get categories => MapCopyWith(
@@ -188,7 +185,7 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
         if (categories != null) #categories: categories
       }));
   @override
-  PodcastSearch $make(CopyWithData data) => PodcastSearch(
+  PodcastImpl $make(CopyWithData data) => PodcastImpl(
       backingId: data.get(#backingId, or: $value.backingId),
       backingUrl: data.get(#backingUrl, or: $value.backingUrl),
       title: data.get(#title, or: $value.title),
@@ -202,7 +199,7 @@ class _PodcastSearchCopyWithImpl<$R, $Out>
       categories: data.get(#categories, or: $value.categories));
 
   @override
-  PodcastSearchCopyWith<$R2, PodcastSearch, $Out2> $chain<$R2, $Out2>(
+  PodcastImplCopyWith<$R2, PodcastImpl, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PodcastSearchCopyWithImpl<$R2, $Out2>($value, $cast, t);
+      _PodcastImplCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
