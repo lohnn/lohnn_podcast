@@ -13,10 +13,7 @@ class PodcastDetails extends StatelessWidget {
 
   const PodcastDetails._({super.key, required this.podcast});
 
-  factory PodcastDetails.fromSearch({
-    Key? key,
-    required Podcast podcast,
-  }) {
+  factory PodcastDetails.fromSearch({Key? key, required Podcast podcast}) {
     return PodcastDetails._(key: key, podcast: podcast);
   }
 
@@ -106,8 +103,31 @@ class _SubscribeChip extends ConsumerWidget {
         .valueOrNull) {
       null => const Chip(label: Text('Loading...')),
       true => InputChip(
-        onPressed: () {
-          ref.read(findPodcastProvider.notifier).unsubscribe(podcast);
+        onPressed: () async {
+          final shouldDelete = await showDialog<bool>(
+            context: context,
+            builder:
+                (context) => AlertDialog(
+                  title: const Text('Are you sure you want to unsubscribe?'),
+                  actions: <Widget>[
+                    SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      child: const Text('Yes'),
+                    ),
+                    SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      child: const Text('No'),
+                    ),
+                  ],
+                ),
+          );
+          if (shouldDelete != true) return;
+          // Unsubscribe from the podcast
+          await ref.read(findPodcastProvider.notifier).unsubscribe(podcast);
         },
         label: const Row(
           mainAxisSize: MainAxisSize.min,
