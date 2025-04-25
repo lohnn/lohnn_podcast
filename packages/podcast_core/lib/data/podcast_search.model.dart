@@ -1,5 +1,7 @@
+extension type PodcastId(int id) {}
+
 abstract class PodcastSearch {
-  int get id;
+  PodcastId get id;
 
   Uri get url;
 

@@ -29,78 +29,80 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final episodeSnapshot = ref.watch(audioPlayerPodProvider);
 
-    return Shortcuts(
-      shortcuts: const {
-        SingleActivator(LogicalKeyboardKey.space): ChangePlayStateIntent(
-          MediaAction.playPause,
-        ),
-      },
-      child: SizedBox(
-        height: 85,
-        child: switch (episodeSnapshot) {
-          AsyncLoading() => const Center(
-            child: CircularProgressIndicator.adaptive(),
+    return Material(
+      child: Shortcuts(
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.space): ChangePlayStateIntent(
+            MediaAction.playPause,
           ),
-          AsyncError() => const Center(child: Text('Error loading episode')),
-          AsyncData(value: final episode) => switch (episode) {
-            null => const Center(child: Text('Nothing is playing right now')),
-            EpisodeWithStatus(:final episode) => InkWell(
-              onTap: () async {
-                final action =
-                    await showModalBottomSheet<EpisodePlayerModalResultAction>(
-                      context: context,
-                      isScrollControlled: true,
-                      useSafeArea: true,
-                      showDragHandle: true,
-                      builder: (context) => const EpisodePlayerModal(),
-                    );
-
-                switch (action) {
-                  case EpisodePlayerModalResultAction.showPlaylist:
-                    if (context.mounted) {
-                      unawaited(router.push('/playlist'));
-                    }
-                  case null:
-                }
-              },
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: RoundedImage(
-                            imageUri: episode.imageUrl,
-                            imageSize: 60,
-                          ),
-                        ),
-                        if (episodeSnapshot.valueOrNull
-                            case final episodeSnapshot?)
-                          SizedBox(
-                            width: 36,
-                            child: DownloadAnimation(
-                              episode: episodeSnapshot.episode,
+        },
+        child: SizedBox(
+          height: 85,
+          child: switch (episodeSnapshot) {
+            AsyncLoading() => const Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
+            AsyncError() => const Center(child: Text('Error loading episode')),
+            AsyncData(value: final episode) => switch (episode) {
+              null => const Center(child: Text('Nothing is playing right now')),
+              EpisodeWithStatus(:final episode) => InkWell(
+                onTap: () async {
+                  final action =
+                      await showModalBottomSheet<EpisodePlayerModalResultAction>(
+                        context: context,
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        showDragHandle: true,
+                        builder: (context) => const EpisodePlayerModal(),
+                      );
+      
+                  switch (action) {
+                    case EpisodePlayerModalResultAction.showPlaylist:
+                      if (context.mounted) {
+                        unawaited(router.push('/playlist'));
+                      }
+                    case null:
+                  }
+                },
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RoundedImage(
+                              imageUri: episode.imageUrl,
+                              imageSize: 60,
                             ),
                           ),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(episode.title)),
-                        if (showSkipButtons) MediaActionButton.back(),
-                        const PlayPauseButton(),
-                        if (showSkipButtons) MediaActionButton.forward(),
-                      ],
+                          if (episodeSnapshot.valueOrNull
+                              case final episodeSnapshot?)
+                            SizedBox(
+                              width: 36,
+                              child: DownloadAnimation(
+                                episode: episodeSnapshot.episode,
+                              ),
+                            ),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(episode.title)),
+                          if (showSkipButtons) MediaActionButton.back(),
+                          const PlayPauseButton(),
+                          if (showSkipButtons) MediaActionButton.forward(),
+                        ],
+                      ),
                     ),
-                  ),
-                  EpisodeProgressBar(episode, height: 4),
-                ],
+                    EpisodeProgressBar(episode, height: 4),
+                  ],
+                ),
               ),
-            ),
+            },
+            AsyncValue<EpisodeWithStatus?>() =>
+              throw UnimplementedError(
+                'This should not be a case, AsyncValue is just not sealed',
+              ),
           },
-          AsyncValue<EpisodeWithStatus?>() =>
-            throw UnimplementedError(
-              'This should not be a case, AsyncValue is just not sealed',
-            ),
-        },
+        ),
       ),
     );
   }

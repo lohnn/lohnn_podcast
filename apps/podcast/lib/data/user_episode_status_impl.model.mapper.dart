@@ -14,7 +14,6 @@ class UserEpisodeStatusImplMapper
   static UserEpisodeStatusImplMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = UserEpisodeStatusImplMapper._());
-      DurationModelMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -22,30 +21,29 @@ class UserEpisodeStatusImplMapper
   @override
   final String id = 'UserEpisodeStatusImpl';
 
-  static String _$episodeId(UserEpisodeStatusImpl v) => v.episodeId;
-  static const Field<UserEpisodeStatusImpl, String> _f$episodeId =
-      Field('episodeId', _$episodeId);
+  static int _$backingEpisodeId(UserEpisodeStatusImpl v) => v.backingEpisodeId;
+  static const Field<UserEpisodeStatusImpl, int> _f$backingEpisodeId =
+      Field('backingEpisodeId', _$backingEpisodeId);
   static bool _$isPlayed(UserEpisodeStatusImpl v) => v.isPlayed;
   static const Field<UserEpisodeStatusImpl, bool> _f$isPlayed =
       Field('isPlayed', _$isPlayed);
-  static DurationModel _$backingCurrentPosition(UserEpisodeStatusImpl v) =>
-      v.backingCurrentPosition;
-  static const Field<UserEpisodeStatusImpl, DurationModel>
-      _f$backingCurrentPosition =
-      Field('backingCurrentPosition', _$backingCurrentPosition);
+  static Duration _$currentPosition(UserEpisodeStatusImpl v) =>
+      v.currentPosition;
+  static const Field<UserEpisodeStatusImpl, Duration> _f$currentPosition =
+      Field('currentPosition', _$currentPosition);
 
   @override
   final MappableFields<UserEpisodeStatusImpl> fields = const {
-    #episodeId: _f$episodeId,
+    #backingEpisodeId: _f$backingEpisodeId,
     #isPlayed: _f$isPlayed,
-    #backingCurrentPosition: _f$backingCurrentPosition,
+    #currentPosition: _f$currentPosition,
   };
 
   static UserEpisodeStatusImpl _instantiate(DecodingData data) {
     return UserEpisodeStatusImpl(
-        episodeId: data.dec(_f$episodeId),
+        backingEpisodeId: data.dec(_f$backingEpisodeId),
         isPlayed: data.dec(_f$isPlayed),
-        backingCurrentPosition: data.dec(_f$backingCurrentPosition));
+        currentPosition: data.dec(_f$currentPosition));
   }
 
   @override
@@ -105,12 +103,7 @@ abstract class UserEpisodeStatusImplCopyWith<
     $R,
     $In extends UserEpisodeStatusImpl,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
-  DurationModelCopyWith<$R, DurationModel, DurationModel>
-      get backingCurrentPosition;
-  $R call(
-      {String? episodeId,
-      bool? isPlayed,
-      DurationModel? backingCurrentPosition});
+  $R call({int? backingEpisodeId, bool? isPlayed, Duration? currentPosition});
   UserEpisodeStatusImplCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -124,26 +117,18 @@ class _UserEpisodeStatusImplCopyWithImpl<$R, $Out>
   late final ClassMapperBase<UserEpisodeStatusImpl> $mapper =
       UserEpisodeStatusImplMapper.ensureInitialized();
   @override
-  DurationModelCopyWith<$R, DurationModel, DurationModel>
-      get backingCurrentPosition => $value.backingCurrentPosition.copyWith
-          .$chain((v) => call(backingCurrentPosition: v));
-  @override
-  $R call(
-          {String? episodeId,
-          bool? isPlayed,
-          DurationModel? backingCurrentPosition}) =>
+  $R call({int? backingEpisodeId, bool? isPlayed, Duration? currentPosition}) =>
       $apply(FieldCopyWithData({
-        if (episodeId != null) #episodeId: episodeId,
+        if (backingEpisodeId != null) #backingEpisodeId: backingEpisodeId,
         if (isPlayed != null) #isPlayed: isPlayed,
-        if (backingCurrentPosition != null)
-          #backingCurrentPosition: backingCurrentPosition
+        if (currentPosition != null) #currentPosition: currentPosition
       }));
   @override
   UserEpisodeStatusImpl $make(CopyWithData data) => UserEpisodeStatusImpl(
-      episodeId: data.get(#episodeId, or: $value.episodeId),
+      backingEpisodeId:
+          data.get(#backingEpisodeId, or: $value.backingEpisodeId),
       isPlayed: data.get(#isPlayed, or: $value.isPlayed),
-      backingCurrentPosition:
-          data.get(#backingCurrentPosition, or: $value.backingCurrentPosition));
+      currentPosition: data.get(#currentPosition, or: $value.currentPosition));
 
   @override
   UserEpisodeStatusImplCopyWith<$R2, UserEpisodeStatusImpl, $Out2>

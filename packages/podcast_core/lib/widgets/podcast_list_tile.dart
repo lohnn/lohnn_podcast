@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:podcast_core/data/podcast.model.dart';
+import 'package:podcast_core/data/podcast_search.model.dart';
 import 'package:podcast_core/widgets/rounded_image.dart';
 
 class PodcastListTile extends StatelessWidget {
@@ -19,7 +19,7 @@ class PodcastListTile extends StatelessWidget {
   });
 
   factory PodcastListTile.podcast(
-    Podcast podcast, {
+    PodcastSearch podcast, {
     Key? key,
     Widget? trailing,
     bool? showDot,
@@ -27,8 +27,8 @@ class PodcastListTile extends StatelessWidget {
   }) {
     return PodcastListTile(
       key: key,
-      imageUrl: podcast.imageUrl,
-      name: podcast.name,
+      imageUrl: podcast.artwork,
+      name: podcast.title,
       trailing: trailing,
       showDot: showDot ?? false,
       onTap: onTap,

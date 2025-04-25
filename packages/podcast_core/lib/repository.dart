@@ -1,8 +1,7 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/data/play_queue_item.model.dart';
-import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/data/podcast_search.model.dart';
 import 'package:podcast_core/data/podcast_with_status.dart';
 import 'package:podcast_core/data/user_episode_status.model.dart';
@@ -17,7 +16,7 @@ Repository repository(RepositoryRef ref) {
 }
 
 abstract class Repository {
-  Future<UserEpisodeStatus> getUserEpisodeStatus(String episodeId);
+  Future<UserEpisodeStatus> getUserEpisodeStatus(EpisodeId episodeId);
 
   Stream<List<UserEpisodeStatus>> watchUserEpisodeStatus();
 
@@ -28,19 +27,19 @@ abstract class Repository {
 
   Future<void> updateEpisodePosition(Episode episode, Duration position);
 
-  Stream<List<Episode>> watchEpisodesFor({required String podcastId});
+  Stream<List<Episode>> watchEpisodesFor({required PodcastId podcastId});
 
-  Future<void> updateLastSeenPodcast(Podcast podcast);
+  Future<void> updateLastSeenPodcast(PodcastSearch podcast);
 
-  Future<List<Podcast>> getPodcasts();
+  Future<List<PodcastSearch>> getPodcasts();
 
-  Stream<List<Podcast>> watchPodcasts();
+  Stream<List<PodcastSearch>> watchPodcasts();
 
-  Future<void> subscribeToPodcast(String rssUrl);
+  Future<void> subscribeToPodcast(PodcastSearch podcast);
 
-  Future<void> unsubscribeFromPodcast(String rssUrl);
+  Future<void> unsubscribeFromPodcast(PodcastSearch podcast);
 
-  Future<void> refreshPodcast(String rssUrl);
+  Future<void> refreshPodcast(PodcastSearch podcast);
 
   Future<List<PlayQueueItem>> getPlayQueue();
 
@@ -52,13 +51,11 @@ abstract class Repository {
 
   Future<void> deletePlayQueueItem(PlayQueueItem item);
 
-  ProviderListenable<Object?> get userPodcastSubscriptionsChangesProvider;
+  ChangeNotifier get userPodcastSubscriptionsChanges;
 
-  ProviderListenable<Object?> get episodesInsertedProvider;
+  ChangeNotifier get episodesInserted;
 
   Future<List<PodcastSearch>> findPodcasts([String? searchTerm]);
 
   Future<List<PodcastWithStatus>> getPodcastsWithCount();
-
-  Future<void> checkInUser();
 }

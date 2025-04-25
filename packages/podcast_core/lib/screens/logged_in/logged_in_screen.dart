@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:podcast_core/data/podcast_search.model.dart';
 import 'package:podcast_core/intents/play_pause_intent.dart';
 import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
@@ -73,15 +74,17 @@ class LoggedInScreen extends HookConsumerWidget {
                 path: '/:podcastId',
                 builder:
                     (context, state) => PodcastDetailsScreen(
-                      state.pathParameters['podcastId']!,
+                      PodcastId(int.parse(state.pathParameters['podcastId']!)),
                     ),
                 routes: [
                   GoRoute(
                     path: '/:episodeId',
                     builder:
                         (context, state) => EpisodeDetailsScreen(
-                          podcastId: state.pathParameters['podcastId']!,
-                          episodeId: state.pathParameters['episodeId']!,
+                          podcastId: PodcastId(
+                            int.parse(state.pathParameters['podcastId']!),
+                          ),
+                          episodeId: int.parse(state.pathParameters['episodeId']!),
                         ),
                   ),
                 ],

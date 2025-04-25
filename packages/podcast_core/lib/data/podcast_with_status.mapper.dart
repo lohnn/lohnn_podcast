@@ -20,8 +20,8 @@ class PodcastWithStatusMapper extends ClassMapperBase<PodcastWithStatus> {
   @override
   final String id = 'PodcastWithStatus';
 
-  static Podcast _$podcast(PodcastWithStatus v) => v.podcast;
-  static const Field<PodcastWithStatus, Podcast> _f$podcast =
+  static PodcastSearch _$podcast(PodcastWithStatus v) => v.podcast;
+  static const Field<PodcastWithStatus, PodcastSearch> _f$podcast =
       Field('podcast', _$podcast);
   static int? _$listenedEpisodes(PodcastWithStatus v) => v.listenedEpisodes;
   static const Field<PodcastWithStatus, int> _f$listenedEpisodes =
@@ -107,7 +107,7 @@ extension PodcastWithStatusValueCopy<$R, $Out>
 abstract class PodcastWithStatusCopyWith<$R, $In extends PodcastWithStatus,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {Podcast? podcast,
+      {PodcastSearch? podcast,
       int? listenedEpisodes,
       int? totalEpisodes,
       bool? hasUnseenEpisodes});
@@ -125,7 +125,7 @@ class _PodcastWithStatusCopyWithImpl<$R, $Out>
       PodcastWithStatusMapper.ensureInitialized();
   @override
   $R call(
-          {Podcast? podcast,
+          {PodcastSearch? podcast,
           int? listenedEpisodes,
           int? totalEpisodes,
           bool? hasUnseenEpisodes}) =>

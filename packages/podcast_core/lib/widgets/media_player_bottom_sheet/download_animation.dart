@@ -36,7 +36,7 @@ class DownloadAnimation extends HookConsumerWidget {
     }
 
     return RiveAnimation.asset(
-      'assets/animations/podcast.riv',
+      'packages/podcast_core/assets/animations/podcast.riv',
       artboard: 'Download',
       onInit: (artboard) {
         final controller =

@@ -5,5 +5,5 @@ abstract class PlayQueueItem {
 
   int get queueOrder;
 
-  String get episodeId => episode.id;
+  EpisodeId get episodeId => episode.id;
 }

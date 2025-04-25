@@ -1,34 +1,31 @@
-import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_supabase/brick_supabase.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:podcast/data/serdes/duration_model.dart';
+import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/user_episode_status.model.dart';
 
 part 'user_episode_status_impl.model.mapper.dart';
 
-@ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: 'user_episode_status'),
-)
 @MappableClass()
-class UserEpisodeStatusImpl extends OfflineFirstWithSupabaseModel
+class UserEpisodeStatusImpl
     with UserEpisodeStatusImplMappable
     implements UserEpisodeStatus {
-  @override
-  @Supabase(unique: true)
-  @Sqlite(unique: true)
-  final String episodeId;
+  final int backingEpisodeId;
   @override
   final bool isPlayed;
-  @Supabase(name: 'current_position')
-  final DurationModel backingCurrentPosition;
+  @override
+  final Duration currentPosition;
 
   UserEpisodeStatusImpl({
-    required this.episodeId,
+    required this.backingEpisodeId,
     required this.isPlayed,
-    required this.backingCurrentPosition,
+    required this.currentPosition,
   });
 
+  UserEpisodeStatusImpl.usingEpisodeId({
+    required EpisodeId episodeId,
+    required this.isPlayed,
+    required this.currentPosition,
+  }) : backingEpisodeId = episodeId.id;
+
   @override
-  Duration get currentPosition => backingCurrentPosition.duration;
+  EpisodeId get episodeId => EpisodeId(backingEpisodeId);
 }

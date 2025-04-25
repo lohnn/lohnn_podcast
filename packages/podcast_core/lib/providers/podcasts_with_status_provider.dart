@@ -1,4 +1,5 @@
 import 'package:podcast_core/data/podcast_with_status.dart';
+import 'package:podcast_core/extensions/ref_extensions.dart';
 import 'package:podcast_core/helpers/equatable_iterable.dart';
 import 'package:podcast_core/helpers/equatable_list.dart';
 import 'package:podcast_core/providers/podcasts_provider.dart';
@@ -28,21 +29,14 @@ class PodcastsWithStatus extends _$PodcastsWithStatus {
   void _listenToTableChanges() {
     // Update on user podcast subscriptions change, such as when last_seen is updated
     // @TODO: Trigger reload only on the podcast to which the episode belongs
-    ref.listen(_repository.userPodcastSubscriptionsChangesProvider, (
-      oldValue,
-      newValue,
-    ) {
-      if (newValue == null) return;
-      ref.invalidateSelf();
-    });
+    ref.listenChangeNotifier(
+      _repository.userPodcastSubscriptionsChanges,
+      ref.invalidateSelf,
+    );
 
     // New episodes should trigger a reload
     // @TODO: Trigger reload only on the podcast to which the episode belongs
-    ref.listen(_repository.episodesInsertedProvider, (oldValue, newValue) {
-      if (oldValue == null) return;
-      if (newValue == null) return;
-      ref.invalidateSelf();
-    });
+    ref.listenChangeNotifier(_repository.episodesInserted, ref.invalidateSelf);
 
     // @TODO: Trigger reload only on the podcast to which the episode belongs
     ref.listen(userEpisodeStatusPodProvider, (oldValue, newValue) {

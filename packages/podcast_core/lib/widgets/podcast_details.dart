@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/data/podcast_search.model.dart';
 import 'package:podcast_core/providers/find_podcast_provider.dart';
 import 'package:podcast_core/providers/podcasts_provider.dart';
@@ -9,24 +8,8 @@ import 'package:podcast_core/widgets/rounded_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class _PodcastDetailsInformation {
-  final String title;
-  final String description;
-  final Uri url;
-  final Uri artwork;
-  final Uri link;
-
-  const _PodcastDetailsInformation({
-    required this.title,
-    required this.description,
-    required this.url,
-    required this.artwork,
-    required this.link,
-  });
-}
-
 class PodcastDetails extends StatelessWidget {
-  final _PodcastDetailsInformation podcast;
+  final PodcastSearch podcast;
 
   const PodcastDetails._({super.key, required this.podcast});
 
@@ -34,30 +17,21 @@ class PodcastDetails extends StatelessWidget {
     Key? key,
     required PodcastSearch podcast,
   }) {
-    return PodcastDetails._(
-      key: key,
-      podcast: _PodcastDetailsInformation(
-        title: podcast.title,
-        description: podcast.description,
-        url: podcast.url,
-        artwork: podcast.artwork,
-        link: podcast.url,
-      ),
-    );
+    return PodcastDetails._(key: key, podcast: podcast);
   }
 
-  factory PodcastDetails.fromList({Key? key, required Podcast podcast}) {
-    return PodcastDetails._(
-      key: key,
-      podcast: _PodcastDetailsInformation(
-        title: podcast.name,
-        description: podcast.description,
-        url: podcast.rssUri,
-        artwork: podcast.imageUrl,
-        link: Uri.parse(podcast.link),
-      ),
-    );
-  }
+  // factory PodcastDetails.fromList({Key? key, required Podcast podcast}) {
+  //   return PodcastDetails._(
+  //     key: key,
+  //     podcast: _PodcastDetailsInformation(
+  //       title: podcast.name,
+  //       description: podcast.description,
+  //       url: podcast.rssUri,
+  //       artwork: podcast.imageUrl,
+  //       link: podcast.link?.let(Uri.parse),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,14 +55,15 @@ class PodcastDetails extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
-                    InkWell(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Text(podcast.link.toString()),
-                      ),
-                      onTap: () => launchUrl(podcast.link),
-                    ),
+                    // if (podcast.link case final link?)
+                    //   InkWell(
+                    //     child: Container(
+                    //       width: double.infinity,
+                    //       padding: const EdgeInsets.symmetric(vertical: 8),
+                    //       child: Text(podcast.link.toString()),
+                    //     ),
+                    //     onTap: () => launchUrl(link),
+                    //   ),
                     InkWell(
                       onTap: () => launchUrl(podcast.url),
                       child: const Padding(
@@ -120,21 +95,19 @@ class PodcastDetails extends StatelessWidget {
 }
 
 class _SubscribeChip extends ConsumerWidget {
-  final _PodcastDetailsInformation podcast;
+  final PodcastSearch podcast;
 
   const _SubscribeChip(this.podcast);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return switch (ref
-        .watch(subscribedPodcastProvider(rssUrl: podcast.url.toString()))
+        .watch(subscribedPodcastProvider(podcastId: podcast.id))
         .valueOrNull) {
       null => const Chip(label: Text('Loading...')),
       true => InputChip(
         onPressed: () {
-          ref
-              .read(findPodcastProvider.notifier)
-              .unsubscribe(podcast.url.toString());
+          ref.read(findPodcastProvider.notifier).unsubscribe(podcast);
         },
         label: const Row(
           mainAxisSize: MainAxisSize.min,
@@ -147,9 +120,7 @@ class _SubscribeChip extends ConsumerWidget {
       ),
       false => InputChip(
         onPressed: () {
-          ref
-              .read(findPodcastProvider.notifier)
-              .subscribe(podcast.url.toString());
+          ref.read(findPodcastProvider.notifier).subscribe(podcast);
         },
         label: const Row(
           mainAxisSize: MainAxisSize.min,

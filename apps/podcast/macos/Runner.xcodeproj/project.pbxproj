@@ -244,7 +244,6 @@
 				33CC110E2044A8840003C045 /* Bundle Framework */,
 				3399D490228B24CF009A79C7 /* ShellScript */,
 				6DC054D0AF12B4AA2051CBF7 /* [CP] Embed Pods Frameworks */,
-				BAD8C59FDB8D23687A604631 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -443,23 +442,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Name of the .plist file containing the CFBundleURLTypes\nURL_SCHEMES_PLIST=\"PodcastSecrets.plist\"\n\n# Path to the URL schemes plist file\nURL_SCHEMES_PLIST_PATH=\"${PROJECT_DIR}/Runner/${URL_SCHEMES_PLIST}\"\n\n# Path to the Info.plist file\nINFO_PLIST_PATH=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\n# Check if the URL schemes plist file exists\nif [ ! -f \"$URL_SCHEMES_PLIST_PATH\" ]; then\n  echo \"error: URL schemes plist file not found at $URL_SCHEMES_PLIST_PATH\"\n  exit 1\nfi\n\n# Merge the URL schemes from the separate plist into Info.plist\n/usr/libexec/PlistBuddy -x -c \"Merge $URL_SCHEMES_PLIST_PATH\" \"$INFO_PLIST_PATH\"\n\necho \"Successfully merged URL schemes into Info.plist\"\n";
-		};
-		BAD8C59FDB8D23687A604631 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 

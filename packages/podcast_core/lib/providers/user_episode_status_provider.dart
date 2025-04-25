@@ -1,3 +1,4 @@
+import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/data/user_episode_status.model.dart';
 import 'package:podcast_core/helpers/equatable_map.dart';
@@ -12,7 +13,7 @@ class UserEpisodeStatusPod extends _$UserEpisodeStatusPod {
   late Repository _repository;
 
   @override
-  Stream<EquatableMap<String, UserEpisodeStatus>> build() async* {
+  Stream<EquatableMap<EpisodeId, UserEpisodeStatus>> build() async* {
     _repository = ref.watch(repositoryProvider);
 
     final lifecycleState = ref.watch(appLifecycleStatePodProvider);

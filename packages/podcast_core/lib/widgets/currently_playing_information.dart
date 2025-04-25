@@ -56,7 +56,7 @@ class CurrentlyPlayingInformation extends ConsumerWidget {
                       );
 
                       if (!context.mounted) return;
-                      onNavigate('/${podcast.safeId}/${queue[index].safeId}');
+                      onNavigate('/${podcast.id}/${queue[index].id}');
                     },
                     flexWeights: [
                       1,
@@ -124,7 +124,7 @@ class _CarouselInformation extends ConsumerWidget {
               spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(podcast?.name ?? '', style: textTheme.titleMedium),
+                Text(podcast?.title ?? '', style: textTheme.titleMedium),
                 Text(episode.title, style: textTheme.titleMedium),
                 if (episode.pubDate case final pubDate?)
                   DefaultTextStyle(

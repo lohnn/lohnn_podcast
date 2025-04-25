@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
-import 'package:podcast_core/data/podcast.model.dart';
+import 'package:podcast_core/data/podcast_search.model.dart';
 import 'package:podcast_core/extensions/string_extensions.dart';
 import 'package:podcast_core/providers/episodes_provider.dart';
 import 'package:podcast_core/screens/async_value_screen.dart';
@@ -13,8 +13,8 @@ import 'package:podcast_core/widgets/queue_button.dart';
 import 'package:podcast_core/widgets/rounded_image.dart';
 
 class PodcastDetailsScreen
-    extends AsyncValueWidget<(Podcast, List<EpisodeWithStatus>)> {
-  final String podcastId;
+    extends AsyncValueWidget<(PodcastSearch, List<EpisodeWithStatus>)> {
+  final PodcastId podcastId;
 
   const PodcastDetailsScreen(this.podcastId, {super.key});
 
@@ -25,11 +25,11 @@ class PodcastDetailsScreen
   Widget buildWithData(
     BuildContext context,
     WidgetRef ref,
-    (Podcast, List<EpisodeWithStatus>) data,
+    (PodcastSearch, List<EpisodeWithStatus>) data,
   ) {
     final (podcast, episodes) = data;
     return Scaffold(
-      appBar: AppBar(title: Text(podcast.name)),
+      appBar: AppBar(title: Text(podcast.title)),
       body: RefreshIndicator(
         onRefresh: ref.read(provider.notifier).updateList,
         child: CustomScrollView(
@@ -37,7 +37,7 @@ class PodcastDetailsScreen
             SliverPadding(
               padding: const EdgeInsets.all(8.0),
               sliver: SliverToBoxAdapter(
-                child: PodcastDetails.fromList(podcast: podcast),
+                child: PodcastDetails.fromSearch(podcast: podcast),
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 8)),
@@ -51,7 +51,7 @@ class PodcastDetailsScreen
                   key: ValueKey(episodeWithStatus.episode.id),
                   onTap: () {
                     context.push(
-                      '/${podcast.safeId}/${episodeWithStatus.episode.safeId}',
+                      '/${podcast.id}/${episodeWithStatus.episode.id}',
                     );
                   },
                   leading: Tooltip(

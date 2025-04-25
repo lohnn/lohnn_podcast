@@ -6,18 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:podcast/brick/repository.dart';
-import 'package:podcast/providers/user_provider.dart';
-import 'package:podcast/screens/login_screen.dart';
-import 'package:podcast_core/helpers/platform_helpers.dart';
-import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
+import 'package:podcast/repository/repository_impl.dart';
 import 'package:podcast_core/repository.dart';
-import 'package:podcast_core/screens/async_value_screen.dart';
 import 'package:podcast_core/screens/logged_in/logged_in_screen.dart';
 import 'package:rive/rive.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,23 +31,10 @@ Future<void> main() async {
     });
   }
 
-  if (isWeb) {
-    // Change default factory on the web
-    databaseFactory = databaseFactoryFfiWeb;
-  } else if (isDesktop) {
-    databaseFactory = databaseFactoryFfi;
-  }
-
-  await RepositoryImpl.configure(databaseFactory);
-  try {
-    await RepositoryImpl().initialize();
-  } catch (e) {
-    // Okay, let's do a hail Mary, reset it all!
-    await RepositoryImpl().sqliteProvider.resetDb();
-    await RepositoryImpl().initialize();
-  }
-
-  const icon = AssetImage('assets/icons/app_icon.webp');
+  const icon = AssetImage(
+    'assets/icons/app_icon.webp',
+    package: 'podcast_core',
+  );
   final lightColorScheme = await ColorScheme.fromImageProvider(provider: icon);
   final darkColorScheme = await ColorScheme.fromImageProvider(
     provider: icon,
@@ -85,12 +64,12 @@ class EntryAnimationScreen extends HookWidget {
     return Stack(
       key: const ValueKey('EntryAnimationScreen.entryAnimation'),
       children: [
-        const MainApp(key: ValueKey('EntryAnimationScreen.mainApp')),
+        const LoggedInScreen(),
         if (!hasShownAnimation.value) ...[
           const Positioned.fill(
             child: RiveAnimation.asset(
               fit: BoxFit.cover,
-              'assets/animations/podcast_icon_background.riv',
+              'packages/podcast_core/assets/animations/podcast_icon_background.riv',
               animations: ['Enter'],
             ),
           ),
@@ -98,7 +77,7 @@ class EntryAnimationScreen extends HookWidget {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 300),
               child: RiveAnimation.asset(
-                'assets/animations/podcast_icon_foreground.riv',
+                'packages/podcast_core/assets/animations/podcast_icon_foreground.riv',
                 animations: const ['Enter'],
                 onInit: (artboard) {
                   final controller = StateMachineController.fromArtboard(
@@ -120,24 +99,5 @@ class EntryAnimationScreen extends HookWidget {
         ],
       ],
     );
-  }
-}
-
-class MainApp extends AsyncValueWidget<User?> {
-  const MainApp({super.key});
-
-  @override
-  ProviderBase<AsyncValue<User?>> get provider => userPodProvider;
-
-  @override
-  Widget buildWithData(BuildContext context, WidgetRef ref, User? data) {
-    useOnAppLifecycleStateChange((previous, current) {
-      // Open and close the socket connection based on the app lifecycle state
-      ref.read(appLifecycleStatePodProvider.notifier).lifecycleState = current;
-    });
-    return switch (data) {
-      null => const LoginScreen(),
-      _ => const LoggedInScreen(),
-    };
   }
 }

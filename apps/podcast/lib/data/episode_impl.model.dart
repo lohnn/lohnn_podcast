@@ -1,63 +1,55 @@
-import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_supabase/brick_supabase.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:podcast/data/serdes/duration_model.dart';
-import 'package:podcast/data/serdes/uri_model.dart';
 import 'package:podcast_core/data/episode.model.dart';
+import 'package:podcast_core/data/podcast_search.model.dart';
+import 'package:podcast_core/extensions/nullability_extensions.dart';
 import 'package:podcast_core/services/podcast_audio_handler.dart';
 
 part 'episode_impl.model.mapper.dart';
 
-@ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: 'episodes'),
-)
 @MappableClass()
-class EpisodeImpl extends OfflineFirstWithSupabaseModel
-    with EpisodeImplMappable
-    implements Episode {
+class EpisodeImpl with EpisodeImplMappable implements Episode {
   @override
-  @Supabase(unique: true)
-  @Sqlite(index: true, unique: true)
-  final String id;
-  @Supabase(name: 'url')
-  final UriModel backingUrl;
+  @MappableField(key: 'id')
+  final int backingId;
+  @MappableField(key: 'enclosureUrl')
+  final String backingUrl;
   @override
   final String title;
+  final int datePublished;
   @override
-  final DateTime? pubDate;
-  @override
-  final String? description;
-  @Supabase(name: 'image_url')
-  final UriModel backingImageUrl;
-  @Supabase(name: 'duration')
-  final DurationModel? backingDuration;
-  @override
-  @Supabase(foreignKey: 'podcast_id')
-  final String podcastId;
+  final String description;
+  @MappableField(key: 'image')
+  final String backingImageUrl;
+  @MappableField(key: 'duration')
+  final int? backingDuration;
+  @MappableField(key: 'podcastId')
+  final int backingPodcastId;
 
   EpisodeImpl({
-    required this.id,
+    required this.backingId,
     required this.backingUrl,
     required this.title,
-    this.pubDate,
-    this.description,
+    required this.datePublished,
+    required this.description,
     required this.backingImageUrl,
-    this.backingDuration,
-    required this.podcastId,
+    required this.backingDuration,
+    required this.backingPodcastId,
   });
 
   @override
-  @Supabase(ignore: true)
-  String get safeId => Uri.encodeComponent(id);
+  EpisodeId get id => EpisodeId(backingId);
+  
+  String get hiveId => id.toString();
 
   @override
-  @Supabase(ignore: true)
-  String get safePodcastId => Uri.encodeComponent(podcastId);
+  Uri get url => Uri.parse(backingUrl);
 
   @override
-  @Supabase(ignore: true)
-  String get localFilePath => '$safeId-${url.pathSegments.last}';
+  DateTime get pubDate =>
+      DateTime.fromMillisecondsSinceEpoch(datePublished * 1000);
+
+  @override
+  String get localFilePath => '$id-${url.pathSegments.last}';
 
   @override
   PodcastMediaItem mediaItem({
@@ -75,14 +67,12 @@ class EpisodeImpl extends OfflineFirstWithSupabaseModel
   }
 
   @override
-  @Supabase(ignore: true)
-  Uri get imageUrl => backingImageUrl.uri;
+  Uri get imageUrl => Uri.parse(backingImageUrl);
 
   @override
-  @Supabase(ignore: true)
-  Uri get url => backingUrl.uri;
+  Duration? get duration =>
+      backingDuration?.let((seconds) => Duration(seconds: seconds));
 
   @override
-  @Supabase(ignore: true)
-  Duration? get duration => backingDuration?.duration;
+  PodcastId get podcastId => PodcastId(backingPodcastId);
 }

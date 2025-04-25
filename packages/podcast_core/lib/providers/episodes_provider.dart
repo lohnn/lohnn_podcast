@@ -1,6 +1,6 @@
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
-import 'package:podcast_core/data/podcast.model.dart';
+import 'package:podcast_core/data/podcast_search.model.dart';
 import 'package:podcast_core/extensions/async_value_extensions.dart';
 import 'package:podcast_core/helpers/equatable_list.dart';
 import 'package:podcast_core/helpers/equatable_map.dart';
@@ -15,9 +15,9 @@ part 'episodes_provider.g.dart';
 @riverpod
 class EpisodePod extends _$EpisodePod {
   @override
-  AsyncValue<(Podcast, EpisodeWithStatus)> build({
-    required String podcastId,
-    required String episodeId,
+  AsyncValue<(PodcastSearch, EpisodeWithStatus)> build({
+    required PodcastId podcastId,
+    required int episodeId,
   }) {
     return ref.watch(episodesProvider(podcastId: podcastId)).whenData((pair) {
       final (podcast, episodes) = pair;
@@ -33,8 +33,8 @@ class EpisodePod extends _$EpisodePod {
 @riverpod
 class Episodes extends _$Episodes {
   @override
-  AsyncValue<(Podcast, List<EpisodeWithStatus>)> build({
-    required String podcastId,
+  AsyncValue<(PodcastSearch, List<EpisodeWithStatus>)> build({
+    required PodcastId podcastId,
   }) {
     final podcast = ref.watch(podcastPodProvider(podcastId));
 
@@ -84,7 +84,7 @@ class Episodes extends _$Episodes {
 }
 
 @riverpod
-Stream<List<Episode>> _episodesImpl(_EpisodesImplRef ref, String podcastId) {
+Stream<List<Episode>> _episodesImpl(_EpisodesImplRef ref, PodcastId podcastId) {
   final lifecycleState = ref.watch(appLifecycleStatePodProvider);
   if (lifecycleState != AppLifecycleState.resumed) return const Stream.empty();
 
