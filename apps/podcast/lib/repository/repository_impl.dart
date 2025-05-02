@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
@@ -44,7 +43,7 @@ class RepositoryImpl implements core.Repository {
 
   void init() {
     Hive
-      ..init(Directory.current.path)
+      // ..init(Directory.current.path)
       ..registerAdapters();
 
     episodeBox.then((box) {

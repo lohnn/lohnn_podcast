@@ -13,23 +13,23 @@ part 'podcasts_provider.g.dart';
 @riverpod
 Future<bool?> subscribedPodcast(
   SubscribedPodcastRef ref, {
-  required PodcastId podcastId,
+  required PodcastRssUrl rssUrl,
 }) async {
   return ref
-      .watch(_subscribedPodcastIdsProvider)
+      .watch(_subscribedPodcastRssUrlsProvider)
       .valueOrNull
-      ?.contains(podcastId);
+      ?.contains(rssUrl);
 }
 
 @riverpod
-Future<Iterable<PodcastId>?> _subscribedPodcastIds(
-  _SubscribedPodcastIdsRef ref,
+Future<Iterable<PodcastRssUrl>?> _subscribedPodcastRssUrls(
+  _SubscribedPodcastRssUrlsRef ref,
 ) async {
   return ref
       .watch(
         podcastsProvider.select(
           (state) => state.whenData(
-            (podcasts) => podcasts.map((podcast) => podcast.id),
+            (podcasts) => podcasts.map((podcast) => podcast.url),
           ),
         ),
       )
@@ -90,10 +90,10 @@ class Podcasts extends _$Podcasts {
   }
 
   Future<void> refresh(Podcast podcast) {
-    return _repository.refreshPodcast(podcast);
+    return _repository.refreshPodcast(podcast.url);
   }
 
-  Future<void> subscribe(Podcast podcast) async {
+  Future<void> subscribe(PodcastRssUrl podcast) async {
     final oldState = state;
     state = const AsyncLoading();
     try {
@@ -105,7 +105,7 @@ class Podcasts extends _$Podcasts {
     }
   }
 
-  Future<void> unsubscribe(Podcast podcast) {
+  Future<void> unsubscribe(PodcastRssUrl podcast) {
     state = const AsyncLoading();
     return _repository.unsubscribeFromPodcast(podcast);
   }

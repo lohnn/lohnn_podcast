@@ -105,18 +105,18 @@ class PodcastSearchScreen extends ConsumerWidget {
                       showDragHandle: true,
                       // @TODO: Eventually maybe show episode list here as well
                       builder:
-                          (context) => PodcastDetailsModal(podcast: podcast),
+                          (context) => PodcastSearchDetailsModal(podcast: podcast),
                     );
                   },
                   trailing: switch (ref
-                      .watch(subscribedPodcastProvider(podcastId: podcast.id))
+                      .watch(subscribedPodcastProvider(rssUrl: podcast.url))
                       .valueOrNull) {
                     null => null,
                     true => IconButton(
                       onPressed: () {
                         ref
                             .read(findPodcastProvider.notifier)
-                            .unsubscribe(podcast);
+                            .unsubscribe(podcast.url);
                       },
                       icon: const Icon(Icons.check),
                     ),
@@ -124,7 +124,7 @@ class PodcastSearchScreen extends ConsumerWidget {
                       onPressed: () {
                         ref
                             .read(findPodcastProvider.notifier)
-                            .subscribe(podcast);
+                            .subscribe(podcast.url);
                       },
                       icon: const Icon(Icons.add),
                     ),

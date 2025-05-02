@@ -75,18 +75,20 @@ class LoggedInScreen extends HookConsumerWidget {
                 path: '/:podcastId',
                 builder:
                     (context, state) => PodcastDetailsScreen(
-                      PodcastId(int.parse(state.pathParameters['podcastId']!)),
+                      PodcastId.fromPathParameter(
+                        state.pathParameters['podcastId']!,
+                      ),
                     ),
                 routes: [
                   GoRoute(
                     path: '/:episodeId',
                     builder:
                         (context, state) => EpisodeDetailsScreen(
-                          podcastId: PodcastId(
-                            int.parse(state.pathParameters['podcastId']!),
+                          podcastId: PodcastId.fromPathParameter(
+                            state.pathParameters['podcastId']!,
                           ),
-                          episodeId: EpisodeId(
-                            int.parse(state.pathParameters['episodeId']!),
+                          episodeId: EpisodeId.fromPathParameter(
+                            state.pathParameters['episodeId']!,
                           ),
                         ),
                   ),

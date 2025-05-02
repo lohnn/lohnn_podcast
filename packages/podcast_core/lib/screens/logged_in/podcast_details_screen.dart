@@ -37,7 +37,7 @@ class PodcastDetailsScreen
             SliverPadding(
               padding: const EdgeInsets.all(8.0),
               sliver: SliverToBoxAdapter(
-                child: PodcastDetails.fromSearch(podcast: podcast),
+                child: PodcastDetails.fromList(podcast: podcast),
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 8)),
@@ -51,7 +51,7 @@ class PodcastDetailsScreen
                   key: ValueKey(episodeWithStatus.episode.id),
                   onTap: () {
                     context.push(
-                      '/${podcast.id}/${episodeWithStatus.episode.id}',
+                      '/${podcast.id}/${episodeWithStatus.episode.id.safe}',
                     );
                   },
                   leading: Tooltip(

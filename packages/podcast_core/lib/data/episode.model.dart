@@ -4,7 +4,13 @@
 import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/services/podcast_audio_handler.dart';
 
-extension type EpisodeId(int id) {}
+extension type EpisodeId(String id) {
+  String get safe => Uri.encodeComponent(id);
+
+  factory EpisodeId.fromPathParameter(String pathParameter) {
+    return EpisodeId(Uri.decodeComponent(pathParameter));
+  }
+}
 
 abstract class Episode {
   EpisodeId get id;

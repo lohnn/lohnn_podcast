@@ -47,7 +47,7 @@ class PodcastListScreen extends AsyncValueWidget<List<PodcastWithStatus>> {
                   podcast,
                   showDot: hasUnseenEpisodes,
                   onTap: () {
-                    context.push('/${podcast.id}', extra: podcast);
+                    context.push('/${podcast.id.safe}', extra: podcast);
                   },
                   trailing: Text(
                     '${listenedEpisodes ?? '?'}/${totalEpisodes ?? '?'}',

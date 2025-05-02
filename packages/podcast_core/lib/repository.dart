@@ -3,6 +3,7 @@ import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/data/play_queue_item.model.dart';
 import 'package:podcast_core/data/podcast.model.dart';
+import 'package:podcast_core/data/podcast_search.model.dart';
 import 'package:podcast_core/data/podcast_with_status.dart';
 import 'package:podcast_core/data/user_episode_status.model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -35,11 +36,11 @@ abstract class Repository {
 
   Stream<List<Podcast>> watchPodcasts();
 
-  Future<void> subscribeToPodcast(Podcast podcast);
+  Future<void> subscribeToPodcast(PodcastRssUrl podcast);
 
-  Future<void> unsubscribeFromPodcast(Podcast podcast);
+  Future<void> unsubscribeFromPodcast(PodcastRssUrl podcast);
 
-  Future<void> refreshPodcast(Podcast podcast);
+  Future<void> refreshPodcast(PodcastRssUrl podcast);
 
   Future<List<PlayQueueItem>> getPlayQueue();
 
@@ -55,7 +56,7 @@ abstract class Repository {
 
   Listenable get episodesUpdated;
 
-  Future<List<Podcast>> findPodcasts([String? searchTerm]);
+  Future<List<PodcastSearch>> findPodcasts([String? searchTerm]);
 
   Future<List<PodcastWithStatus>> getPodcastsWithCount();
 }
