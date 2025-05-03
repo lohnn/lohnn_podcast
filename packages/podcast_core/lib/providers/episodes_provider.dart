@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/data/podcast.model.dart';
+import 'package:podcast_core/extensions/async_value_extensions.dart';
 import 'package:podcast_core/helpers/equatable_list.dart';
 import 'package:podcast_core/helpers/equatable_map.dart';
 import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
@@ -34,21 +35,18 @@ class EpisodePod extends _$EpisodePod {
 @riverpod
 class Episodes extends _$Episodes {
   @override
-  Future<(Podcast, List<EpisodeWithStatus>)> build({
+  AsyncValue<(Podcast, List<EpisodeWithStatus>)> build({
     required PodcastId podcastId,
-  }) async {
-    final podcast = await ref.watch(podcastPodProvider(podcastId).future);
-
-    // Opened the podcast screen, update the last seen timestamp
-    unawaited(updateLastSeen());
+  }) {
+    final podcast = ref.watch(podcastPodProvider(podcastId));
 
     final userEpisodeStatusList =
         ref.watch(userEpisodeStatusPodProvider).valueOrNull ??
         const EquatableMap.empty();
 
-    final episodes = await ref
-        .watch(_episodesImplProvider(podcast).future)
-        .then((episodes) {
+    final episodes = ref
+        .watch(_episodesImplProvider(podcastId))
+        .whenData((episodes) {
           return [
             for (final episode in episodes)
               EpisodeWithStatus(
@@ -57,8 +55,8 @@ class Episodes extends _$Episodes {
               ),
           ];
         })
-        .then(EquatableList.new);
-    return (podcast, episodes);
+        .whenData(EquatableList.new);
+    return (podcast, episodes).pack();
   }
 
   /// Update the last seen timestamp for the podcast
@@ -85,7 +83,7 @@ class Episodes extends _$Episodes {
 }
 
 @riverpod
-Stream<List<Episode>> _episodesImpl(_EpisodesImplRef ref, Podcast podcast) {
+Stream<List<Episode>> _episodesImpl(_EpisodesImplRef ref, PodcastId podcast) {
   final lifecycleState = ref.watch(appLifecycleStatePodProvider);
   if (lifecycleState != AppLifecycleState.resumed) return const Stream.empty();
 

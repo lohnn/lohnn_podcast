@@ -28,9 +28,9 @@ abstract class Repository {
 
   Future<void> updateEpisodePosition(Episode episode, Duration position);
 
-  Stream<List<Episode>> watchEpisodesFor({required Podcast podcast});
+  Stream<List<Episode>> watchEpisodesFor({required PodcastId podcast});
 
-  Future<void> updateLastSeenPodcast(Podcast podcast);
+  Future<void> updateLastSeenPodcast(PodcastId podcast);
 
   Future<List<Podcast>> getPodcasts();
 

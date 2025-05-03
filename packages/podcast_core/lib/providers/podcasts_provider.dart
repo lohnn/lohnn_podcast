@@ -52,7 +52,7 @@ class PodcastPod extends _$PodcastPod {
 
   Future<void> updateLastSeen() async {
     final podcast = await future;
-    return _repository.updateLastSeenPodcast(podcast);
+    return _repository.updateLastSeenPodcast(podcast.id);
   }
 }
 
