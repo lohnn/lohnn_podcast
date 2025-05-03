@@ -51,7 +51,7 @@ class PodcastDetailsScreen
                   key: ValueKey(episodeWithStatus.episode.id),
                   onTap: () {
                     context.push(
-                      '/${podcast.id}/${episodeWithStatus.episode.id.safe}',
+                      '/${podcast.id.safe}/${episodeWithStatus.episode.id.safe}',
                     );
                   },
                   leading: Tooltip(
