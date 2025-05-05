@@ -39,7 +39,7 @@ class PodcastImpl with PodcastImplMappable implements Podcast {
 
   factory PodcastImpl.fromRssPodcast(RssPodcast rssPodcast) {
     return PodcastImpl(
-      backingId: Uri.encodeComponent(rssPodcast.link.toString()),
+      backingId: rssPodcast.link.toString(),
       backingUrl: rssPodcast.link.toString(),
       title: rssPodcast.title,
       description: rssPodcast.description,
