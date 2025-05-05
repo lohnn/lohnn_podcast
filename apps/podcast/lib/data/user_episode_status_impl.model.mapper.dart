@@ -21,8 +21,9 @@ class UserEpisodeStatusImplMapper
   @override
   final String id = 'UserEpisodeStatusImpl';
 
-  static int _$backingEpisodeId(UserEpisodeStatusImpl v) => v.backingEpisodeId;
-  static const Field<UserEpisodeStatusImpl, int> _f$backingEpisodeId =
+  static String _$backingEpisodeId(UserEpisodeStatusImpl v) =>
+      v.backingEpisodeId;
+  static const Field<UserEpisodeStatusImpl, String> _f$backingEpisodeId =
       Field('backingEpisodeId', _$backingEpisodeId);
   static bool _$isPlayed(UserEpisodeStatusImpl v) => v.isPlayed;
   static const Field<UserEpisodeStatusImpl, bool> _f$isPlayed =
@@ -103,7 +104,8 @@ abstract class UserEpisodeStatusImplCopyWith<
     $R,
     $In extends UserEpisodeStatusImpl,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
-  $R call({int? backingEpisodeId, bool? isPlayed, Duration? currentPosition});
+  $R call(
+      {String? backingEpisodeId, bool? isPlayed, Duration? currentPosition});
   UserEpisodeStatusImplCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -117,7 +119,10 @@ class _UserEpisodeStatusImplCopyWithImpl<$R, $Out>
   late final ClassMapperBase<UserEpisodeStatusImpl> $mapper =
       UserEpisodeStatusImplMapper.ensureInitialized();
   @override
-  $R call({int? backingEpisodeId, bool? isPlayed, Duration? currentPosition}) =>
+  $R call(
+          {String? backingEpisodeId,
+          bool? isPlayed,
+          Duration? currentPosition}) =>
       $apply(FieldCopyWithData({
         if (backingEpisodeId != null) #backingEpisodeId: backingEpisodeId,
         if (isPlayed != null) #isPlayed: isPlayed,

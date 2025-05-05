@@ -15,10 +15,16 @@ class FindPodcast extends _$FindPodcast {
   late bool _mounted;
 
   @override
-  Future<List<PodcastSearch>> build() {
+  Future<List<PodcastSearch>> build() async {
     _mounted = true;
     ref.onDispose(() => _mounted = false);
-    return (_repository = ref.watch(repositoryProvider)).findPodcasts();
+    try {
+      return await (_repository = ref.watch(repositoryProvider)).findPodcasts();
+    } catch (e, stackTrace) {
+      debugPrint(e.toString());
+      debugPrintStack(stackTrace: stackTrace);
+      rethrow;
+    }
   }
 
   Future<void> search(String searchTerm) async {

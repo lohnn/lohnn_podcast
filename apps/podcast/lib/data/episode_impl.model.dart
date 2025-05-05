@@ -1,6 +1,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:podcast/data/podcast_impl.model.dart';
+import 'package:podcast_common/podcast_common.dart';
 import 'package:podcast_core/data/episode.model.dart';
+import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/extensions/nullability_extensions.dart';
 import 'package:podcast_core/services/podcast_audio_handler.dart';
 
@@ -8,21 +10,16 @@ part 'episode_impl.model.mapper.dart';
 
 @MappableClass()
 class EpisodeImpl with EpisodeImplMappable implements Episode {
-  @MappableField(key: 'id')
-  final int backingId;
-  @MappableField(key: 'enclosureUrl')
+  final String backingId;
   final String backingUrl;
   @override
   final String title;
   final int datePublished;
   @override
-  final String description;
-  @MappableField(key: 'image')
+  final String? description;
   final String backingImageUrl;
-  @MappableField(key: 'duration')
   final int? backingDuration;
-  @MappableField(key: 'podcastId')
-  final int backingPodcastId;
+  final String backingPodcastId;
 
   EpisodeImpl({
     required this.backingId,
@@ -37,8 +34,6 @@ class EpisodeImpl with EpisodeImplMappable implements Episode {
 
   @override
   EpisodeId get id => EpisodeId(backingId);
-
-  String get hiveId => id.toString();
 
   @override
   Uri get url => Uri.parse(backingUrl);
@@ -62,6 +57,23 @@ class EpisodeImpl with EpisodeImplMappable implements Episode {
       title: title,
       artUri: imageUrl,
       duration: actualDuration ?? duration,
+    );
+  }
+
+  factory EpisodeImpl.fromRssEpisode({
+    required RssEpisode rssEpisode,
+    required PodcastImpl podcast,
+  }) {
+    return EpisodeImpl(
+      backingId: Uri.encodeComponent(rssEpisode.guid),
+      backingUrl: rssEpisode.url.toString(),
+      title: rssEpisode.title,
+      datePublished: rssEpisode.pubDate.millisecondsSinceEpoch ~/ 1000,
+      description: rssEpisode.description,
+      backingImageUrl:
+          rssEpisode.imageUrl?.toString() ?? podcast.artwork.toString(),
+      backingDuration: rssEpisode.duration?.inSeconds,
+      backingPodcastId: podcast.backingId,
     );
   }
 

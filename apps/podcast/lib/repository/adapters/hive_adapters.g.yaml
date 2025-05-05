@@ -55,7 +55,7 @@ types:
         index: 3
   PodcastImpl:
     typeId: 6
-    nextIndex: 10
+    nextIndex: 11
     fields:
       backingId:
         index: 0
@@ -65,15 +65,11 @@ types:
         index: 2
       description:
         index: 3
-      author:
-        index: 4
       backingArtwork:
         index: 5
       language:
         index: 6
       categories:
         index: 7
-      newestItemPublishTime:
-        index: 8
-      lastUpdateTime:
-        index: 9
+      lastPublished:
+        index: 10

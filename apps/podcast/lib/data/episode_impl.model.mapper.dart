@@ -20,29 +20,29 @@ class EpisodeImplMapper extends ClassMapperBase<EpisodeImpl> {
   @override
   final String id = 'EpisodeImpl';
 
-  static int _$backingId(EpisodeImpl v) => v.backingId;
-  static const Field<EpisodeImpl, int> _f$backingId =
-      Field('backingId', _$backingId, key: r'id');
+  static String _$backingId(EpisodeImpl v) => v.backingId;
+  static const Field<EpisodeImpl, String> _f$backingId =
+      Field('backingId', _$backingId);
   static String _$backingUrl(EpisodeImpl v) => v.backingUrl;
   static const Field<EpisodeImpl, String> _f$backingUrl =
-      Field('backingUrl', _$backingUrl, key: r'enclosureUrl');
+      Field('backingUrl', _$backingUrl);
   static String _$title(EpisodeImpl v) => v.title;
   static const Field<EpisodeImpl, String> _f$title = Field('title', _$title);
   static int _$datePublished(EpisodeImpl v) => v.datePublished;
   static const Field<EpisodeImpl, int> _f$datePublished =
       Field('datePublished', _$datePublished);
-  static String _$description(EpisodeImpl v) => v.description;
+  static String? _$description(EpisodeImpl v) => v.description;
   static const Field<EpisodeImpl, String> _f$description =
       Field('description', _$description);
   static String _$backingImageUrl(EpisodeImpl v) => v.backingImageUrl;
   static const Field<EpisodeImpl, String> _f$backingImageUrl =
-      Field('backingImageUrl', _$backingImageUrl, key: r'image');
+      Field('backingImageUrl', _$backingImageUrl);
   static int? _$backingDuration(EpisodeImpl v) => v.backingDuration;
   static const Field<EpisodeImpl, int> _f$backingDuration =
-      Field('backingDuration', _$backingDuration, key: r'duration');
-  static int _$backingPodcastId(EpisodeImpl v) => v.backingPodcastId;
-  static const Field<EpisodeImpl, int> _f$backingPodcastId =
-      Field('backingPodcastId', _$backingPodcastId, key: r'podcastId');
+      Field('backingDuration', _$backingDuration);
+  static String _$backingPodcastId(EpisodeImpl v) => v.backingPodcastId;
+  static const Field<EpisodeImpl, String> _f$backingPodcastId =
+      Field('backingPodcastId', _$backingPodcastId);
 
   @override
   final MappableFields<EpisodeImpl> fields = const {
@@ -121,14 +121,14 @@ extension EpisodeImplValueCopy<$R, $Out>
 abstract class EpisodeImplCopyWith<$R, $In extends EpisodeImpl, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {int? backingId,
+      {String? backingId,
       String? backingUrl,
       String? title,
       int? datePublished,
       String? description,
       String? backingImageUrl,
       int? backingDuration,
-      int? backingPodcastId});
+      String? backingPodcastId});
   EpisodeImplCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -142,20 +142,20 @@ class _EpisodeImplCopyWithImpl<$R, $Out>
       EpisodeImplMapper.ensureInitialized();
   @override
   $R call(
-          {int? backingId,
+          {String? backingId,
           String? backingUrl,
           String? title,
           int? datePublished,
-          String? description,
+          Object? description = $none,
           String? backingImageUrl,
           Object? backingDuration = $none,
-          int? backingPodcastId}) =>
+          String? backingPodcastId}) =>
       $apply(FieldCopyWithData({
         if (backingId != null) #backingId: backingId,
         if (backingUrl != null) #backingUrl: backingUrl,
         if (title != null) #title: title,
         if (datePublished != null) #datePublished: datePublished,
-        if (description != null) #description: description,
+        if (description != $none) #description: description,
         if (backingImageUrl != null) #backingImageUrl: backingImageUrl,
         if (backingDuration != $none) #backingDuration: backingDuration,
         if (backingPodcastId != null) #backingPodcastId: backingPodcastId

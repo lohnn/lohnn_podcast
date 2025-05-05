@@ -8,7 +8,7 @@ part 'user_episode_status_impl.model.mapper.dart';
 class UserEpisodeStatusImpl
     with UserEpisodeStatusImplMappable
     implements UserEpisodeStatus {
-  final int backingEpisodeId;
+  final String backingEpisodeId;
   @override
   final bool isPlayed;
   @override

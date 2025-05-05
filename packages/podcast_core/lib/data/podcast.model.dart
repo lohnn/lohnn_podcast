@@ -6,7 +6,7 @@ extension type PodcastId(String id) {
   }
 }
 
-extension type PodcastRssUrl(Uri url) {
+extension type PodcastRssUrl(Uri url) implements Object {
   factory PodcastRssUrl.parse(String url) {
     return PodcastRssUrl(Uri.parse(url));
   }
@@ -38,5 +38,5 @@ abstract class Podcast {
   String? get language;
 
   /// The categories associated with the podcast.
-  Map<int, String> get categories;
+  Set<String> get categories;
 }

@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:podcast/data/mappers/uri_mapper.dart';
 import 'package:podcast/repository/repository_impl.dart';
 import 'package:podcast_core/repository.dart';
 import 'package:podcast_core/screens/logged_in/logged_in_screen.dart';
@@ -30,6 +32,8 @@ Future<void> main() async {
       );
     });
   }
+
+  MapperContainer.globals.use(const UriMapper());
 
   const icon = AssetImage(
     'assets/icons/app_icon.webp',

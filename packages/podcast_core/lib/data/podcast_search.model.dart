@@ -1,8 +1,6 @@
 import 'package:podcast_core/data/podcast.model.dart';
 
-extension type PodcastSearchId(int id) {
-  int get safe => id;
-}
+extension type PodcastSearchId(int id) implements Object {}
 
 abstract class PodcastSearch {
   PodcastSearchId get id;
@@ -17,7 +15,7 @@ abstract class PodcastSearch {
 
   Uri get artwork;
 
-  String get lastPublished;
+  DateTime get lastPublished;
 
   String get language;
 

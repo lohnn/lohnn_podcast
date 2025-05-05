@@ -25,7 +25,9 @@ class LoadingScreen extends StatelessWidget {
     final dialogContext = await completer.future;
     try {
       return await job;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      debugPrint(error.toString());
+      debugPrintStack(stackTrace: stackTrace);
       rethrow;
     } finally {
       if (dialogContext.mounted) {
