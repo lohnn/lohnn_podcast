@@ -28,7 +28,7 @@ class PodcastSearchImplMapper extends ClassMapperBase<PodcastSearchImpl> {
       Field('author', _$author);
   static Map<int, String> _$categories(PodcastSearchImpl v) => v.categories;
   static const Field<PodcastSearchImpl, Map<int, String>> _f$categories =
-      Field('categories', _$categories);
+      Field('categories', _$categories, opt: true, def: const {});
   static String _$description(PodcastSearchImpl v) => v.description;
   static const Field<PodcastSearchImpl, String> _f$description =
       Field('description', _$description);
@@ -38,9 +38,13 @@ class PodcastSearchImplMapper extends ClassMapperBase<PodcastSearchImpl> {
   static String _$language(PodcastSearchImpl v) => v.language;
   static const Field<PodcastSearchImpl, String> _f$language =
       Field('language', _$language);
-  static DateTime _$lastPublished(PodcastSearchImpl v) => v.lastPublished;
-  static const Field<PodcastSearchImpl, DateTime> _f$lastPublished =
-      Field('lastPublished', _$lastPublished, key: r'newestItemPublishTime');
+  static DateTime? _$lastUpdateTime(PodcastSearchImpl v) => v.lastUpdateTime;
+  static const Field<PodcastSearchImpl, DateTime> _f$lastUpdateTime =
+      Field('lastUpdateTime', _$lastUpdateTime, opt: true);
+  static DateTime? _$newestItemPublishTime(PodcastSearchImpl v) =>
+      v.newestItemPublishTime;
+  static const Field<PodcastSearchImpl, DateTime> _f$newestItemPublishTime =
+      Field('newestItemPublishTime', _$newestItemPublishTime, opt: true);
   static String _$title(PodcastSearchImpl v) => v.title;
   static const Field<PodcastSearchImpl, String> _f$title =
       Field('title', _$title);
@@ -56,7 +60,8 @@ class PodcastSearchImplMapper extends ClassMapperBase<PodcastSearchImpl> {
     #description: _f$description,
     #id: _f$id,
     #language: _f$language,
-    #lastPublished: _f$lastPublished,
+    #lastUpdateTime: _f$lastUpdateTime,
+    #newestItemPublishTime: _f$newestItemPublishTime,
     #title: _f$title,
     #url: _f$url,
   };
@@ -69,7 +74,8 @@ class PodcastSearchImplMapper extends ClassMapperBase<PodcastSearchImpl> {
         description: data.dec(_f$description),
         id: data.dec(_f$id),
         language: data.dec(_f$language),
-        lastPublished: data.dec(_f$lastPublished),
+        lastUpdateTime: data.dec(_f$lastUpdateTime),
+        newestItemPublishTime: data.dec(_f$newestItemPublishTime),
         title: data.dec(_f$title),
         url: data.dec(_f$url));
   }
@@ -139,7 +145,8 @@ abstract class PodcastSearchImplCopyWith<$R, $In extends PodcastSearchImpl,
       String? description,
       PodcastSearchId? id,
       String? language,
-      DateTime? lastPublished,
+      DateTime? lastUpdateTime,
+      DateTime? newestItemPublishTime,
       String? title,
       PodcastRssUrl? url});
   PodcastSearchImplCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
@@ -168,7 +175,8 @@ class _PodcastSearchImplCopyWithImpl<$R, $Out>
           String? description,
           PodcastSearchId? id,
           String? language,
-          DateTime? lastPublished,
+          Object? lastUpdateTime = $none,
+          Object? newestItemPublishTime = $none,
           String? title,
           PodcastRssUrl? url}) =>
       $apply(FieldCopyWithData({
@@ -178,7 +186,9 @@ class _PodcastSearchImplCopyWithImpl<$R, $Out>
         if (description != null) #description: description,
         if (id != null) #id: id,
         if (language != null) #language: language,
-        if (lastPublished != null) #lastPublished: lastPublished,
+        if (lastUpdateTime != $none) #lastUpdateTime: lastUpdateTime,
+        if (newestItemPublishTime != $none)
+          #newestItemPublishTime: newestItemPublishTime,
         if (title != null) #title: title,
         if (url != null) #url: url
       }));
@@ -190,7 +200,9 @@ class _PodcastSearchImplCopyWithImpl<$R, $Out>
       description: data.get(#description, or: $value.description),
       id: data.get(#id, or: $value.id),
       language: data.get(#language, or: $value.language),
-      lastPublished: data.get(#lastPublished, or: $value.lastPublished),
+      lastUpdateTime: data.get(#lastUpdateTime, or: $value.lastUpdateTime),
+      newestItemPublishTime:
+          data.get(#newestItemPublishTime, or: $value.newestItemPublishTime),
       title: data.get(#title, or: $value.title),
       url: data.get(#url, or: $value.url));
 

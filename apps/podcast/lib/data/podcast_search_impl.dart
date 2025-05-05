@@ -29,9 +29,11 @@ class PodcastSearchImpl
   @override
   final String language;
 
+  final DateTime? newestItemPublishTime;
+  final DateTime? lastUpdateTime;
+
   @override
-  @MappableField(key: 'newestItemPublishTime')
-  final DateTime lastPublished;
+  DateTime get lastPublished => newestItemPublishTime ?? lastUpdateTime!;
 
   @override
   final String title;
@@ -39,13 +41,13 @@ class PodcastSearchImpl
   PodcastSearchImpl({
     required this.artwork,
     required this.author,
-    required this.categories,
+    this.categories = const {},
     required this.description,
     required this.id,
     required this.language,
-    required this.lastPublished,
+    this.lastUpdateTime,
+    this.newestItemPublishTime,
     required this.title,
     required this.url,
   });
 }
-
