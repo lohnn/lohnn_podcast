@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -82,8 +83,10 @@ class RepositoryImpl implements core.Repository {
 
     final {'feeds': List<dynamic> feeds} = response.data!;
     final podcasts = feeds
-        .map((feed) =>
-        PodcastSearchImplMapper.fromMap(feed as Map<String, dynamic>))
+        .map(
+          (feed) =>
+              PodcastSearchImplMapper.fromMap(feed as Map<String, dynamic>),
+        )
         .toList(growable: false);
 
     return podcasts;
@@ -105,7 +108,7 @@ class RepositoryImpl implements core.Repository {
   Future<PlayQueueItem> getPlayQueueItem(Episode episode) async {
     final box = await queueItemBox;
     return box.values.firstWhere(
-          (queueItem) => queueItem.episodeId == episode.id,
+      (queueItem) => queueItem.episodeId == episode.id,
     );
   }
 
@@ -123,8 +126,7 @@ class RepositoryImpl implements core.Repository {
   @override
   Future<List<PodcastImpl>> getPodcasts() async {
     final box = await podcastBox;
-    return box.values.toList()
-      ..sortedBy((podcast) => podcast.title);
+    return box.values.toList()..sortedBy((podcast) => podcast.title);
   }
 
   @override
@@ -139,23 +141,19 @@ class RepositoryImpl implements core.Repository {
       for (final podcast in podcastBox.values)
         if (episodeBox.values.where(
               (episode) => episode.podcastId == podcast.id,
-        )
-        case final episodesForPodcast)
+            )
+            case final episodesForPodcast)
           PodcastWithStatus(
             podcast: podcast,
             listenedEpisodes:
-            episodesForPodcast
-                .map((episode) => userEpisodeStatusBox.get(episode.id))
-                .nonNulls
-                .length,
+                episodesForPodcast
+                    .map((episode) => userEpisodeStatusBox.get(episode.id))
+                    .nonNulls
+                    .length,
             totalEpisodes: episodesForPodcast.length,
             hasUnseenEpisodes:
-            // TODO: Reimplement
-            false,
-            // lastSeenBox
-            //     .get(podcast.id)
-            //     ?.isBefore(podcast.lastPublishedDateTime) ??
-            // true,
+                lastSeenBox.get(podcast.id)?.isBefore(podcast.lastPublished) ??
+                true,
           ),
     ];
   }
@@ -189,15 +187,14 @@ class RepositoryImpl implements core.Repository {
     final podcastImpl = PodcastImpl.fromRssPodcast(rssPodcast);
 
     final episodes =
-    rssPodcast.episodes
-        .map(
-          (item) =>
-          EpisodeImpl.fromRssEpisode(
-            rssEpisode: item,
-            podcast: podcastImpl,
-          ),
-    )
-        .toList();
+        rssPodcast.episodes
+            .map(
+              (item) => EpisodeImpl.fromRssEpisode(
+                rssEpisode: item,
+                podcast: podcastImpl,
+              ),
+            )
+            .toList();
 
     final podcastBox = await this.podcastBox;
     final episodeBox = await this.episodeBox;
@@ -243,7 +240,7 @@ class RepositoryImpl implements core.Repository {
         .sortedByCompare(
           (episode) => episode.datePublished,
           (a, b) => b.compareTo(a),
-    );
+        );
     yield episodes;
 
     await for (final values in box.stream()) {
@@ -253,7 +250,7 @@ class RepositoryImpl implements core.Repository {
           .sortedByCompare(
             (episode) => episode.datePublished,
             (a, b) => b.compareTo(a),
-      );
+          );
     }
   }
 
@@ -293,28 +290,28 @@ class RepositoryImpl implements core.Repository {
   }
 
   @override
-  Future<void> markEpisodeListened(EpisodeWithStatus episodeWithStatus, {
+  Future<void> markEpisodeListened(
+    EpisodeWithStatus episodeWithStatus, {
     bool isPlayed = true,
   }) async {
     final box = await userEpisodeStatusBox;
 
     final newStatus = switch (episodeWithStatus.status) {
       UserEpisodeStatus(
-          :final episodeId,
-          :final currentPosition,
-          :final isPlayed,
+        :final episodeId,
+        :final currentPosition,
+        :final isPlayed,
       ) =>
-          UserEpisodeStatusImpl.usingEpisodeId(
-            episodeId: episodeId,
-            currentPosition: currentPosition,
-            isPlayed: isPlayed,
-          ),
-      null =>
-          UserEpisodeStatusImpl.usingEpisodeId(
-            episodeId: episodeWithStatus.episode.id,
-            isPlayed: false,
-            currentPosition: Duration.zero,
-          ),
+        UserEpisodeStatusImpl.usingEpisodeId(
+          episodeId: episodeId,
+          currentPosition: currentPosition,
+          isPlayed: isPlayed,
+        ),
+      null => UserEpisodeStatusImpl.usingEpisodeId(
+        episodeId: episodeWithStatus.episode.id,
+        isPlayed: false,
+        currentPosition: Duration.zero,
+      ),
     };
     await box.put(newStatus.episodeHiveId, newStatus);
   }
@@ -330,8 +327,10 @@ class RepositoryImpl implements core.Repository {
   }
 
   @override
-  Future<void> updatePlayQueueItemPosition(covariant EpisodeImpl episode,
-      int position,) async {
+  Future<void> updatePlayQueueItemPosition(
+    covariant EpisodeImpl episode,
+    int position,
+  ) async {
     final box = await queueItemBox;
     final queueItem = PlayQueueItem(episode: episode, queueOrder: position);
     await box.put(queueItem.episodeHiveId, queueItem);

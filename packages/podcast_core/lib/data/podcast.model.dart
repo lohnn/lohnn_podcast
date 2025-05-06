@@ -32,7 +32,7 @@ abstract class Podcast {
   Uri get artwork;
 
   /// The date when the podcast was last published.
-  String? get lastPublished;
+  DateTime? get lastPublished;
 
   /// The language of the podcast.
   String? get language;

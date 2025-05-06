@@ -1,6 +1,7 @@
 import 'package:podcast_common/src/extensions/nullability_extensions.dart';
 import 'package:podcast_common/src/extensions/xml_element_extension.dart';
 import 'package:podcast_common/src/rss_episode.dart';
+import 'package:collection/collection.dart';
 import 'package:xml/xml.dart';
 
 class RssPodcast {
@@ -10,7 +11,7 @@ class RssPodcast {
   final Uri artwork;
   final Set<String> categories;
   final String? language;
-  final String? lastPublished;
+  final DateTime? lastPublished;
   final String? copyright;
   final String? generator;
   final List<RssEpisode> episodes;
@@ -56,7 +57,6 @@ class RssPodcast {
 
     // Optional fields
     final language = channel.getElementContent('language');
-    final lastBuildDate = channel.getElementContent('lastBuildDate');
     final copyright = channel.getElementContent('copyright');
     final generator = channel.getElementContent('generator');
 
@@ -65,6 +65,10 @@ class RssPodcast {
         .findAllElements('item')
         .map(RssEpisode.fromXml)
         .toList(growable: false);
+
+    final lastBuildDate =
+        channel.getElementContent('lastBuildDate')?.let(DateTime.tryParse) ??
+        episodes.firstOrNull?.pubDate;
 
     return RssPodcast(
       title: name,
