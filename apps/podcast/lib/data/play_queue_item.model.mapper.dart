@@ -13,7 +13,7 @@ class PlayQueueItemMapper extends ClassMapperBase<PlayQueueItem> {
   static PlayQueueItemMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PlayQueueItemMapper._());
-      EpisodeMapper.ensureInitialized();
+      EpisodeImplMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -21,8 +21,8 @@ class PlayQueueItemMapper extends ClassMapperBase<PlayQueueItem> {
   @override
   final String id = 'PlayQueueItem';
 
-  static Episode _$episode(PlayQueueItem v) => v.episode;
-  static const Field<PlayQueueItem, Episode> _f$episode =
+  static EpisodeImpl _$episode(PlayQueueItem v) => v.episode;
+  static const Field<PlayQueueItem, EpisodeImpl> _f$episode =
       Field('episode', _$episode);
   static int _$queueOrder(PlayQueueItem v) => v.queueOrder;
   static const Field<PlayQueueItem, int> _f$queueOrder =
@@ -92,8 +92,8 @@ extension PlayQueueItemValueCopy<$R, $Out>
 
 abstract class PlayQueueItemCopyWith<$R, $In extends PlayQueueItem, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  EpisodeCopyWith<$R, Episode, Episode> get episode;
-  $R call({Episode? episode, int? queueOrder});
+  EpisodeImplCopyWith<$R, EpisodeImpl, EpisodeImpl> get episode;
+  $R call({EpisodeImpl? episode, int? queueOrder});
   PlayQueueItemCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -106,10 +106,10 @@ class _PlayQueueItemCopyWithImpl<$R, $Out>
   late final ClassMapperBase<PlayQueueItem> $mapper =
       PlayQueueItemMapper.ensureInitialized();
   @override
-  EpisodeCopyWith<$R, Episode, Episode> get episode =>
+  EpisodeImplCopyWith<$R, EpisodeImpl, EpisodeImpl> get episode =>
       $value.episode.copyWith.$chain((v) => call(episode: v));
   @override
-  $R call({Episode? episode, int? queueOrder}) => $apply(FieldCopyWithData({
+  $R call({EpisodeImpl? episode, int? queueOrder}) => $apply(FieldCopyWithData({
         if (episode != null) #episode: episode,
         if (queueOrder != null) #queueOrder: queueOrder
       }));

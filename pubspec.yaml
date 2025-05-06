@@ -1,6 +1,8 @@
 name: lohnn_podcast_workspace
 workspace:
   - apps/podcast
+  - packages/podcast_core
+  - packages/podcast_common
 
 environment:
   sdk: ">=3.7.0 <4.0.0"
@@ -12,7 +14,7 @@ dependencies:
   pubspec_parse: ^1.5.0
 
 dev_dependencies:
-  melos: ^7.0.0-dev.7
+  melos: ^7.0.0-dev.8
 
 melos:
   command:
@@ -22,8 +24,8 @@ melos:
     bootstrap:
       environment:
         sdk: '>=3.7.0 <4.0.0'
-        flutter: 3.29.1
-            
+        flutter: 3.29.3
+  
   scripts:
     generate:
       exec: dart run build_runner build -d

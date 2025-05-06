@@ -13,7 +13,6 @@ class EpisodeUserStatusMapper extends ClassMapperBase<EpisodeUserStatus> {
   static EpisodeUserStatusMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = EpisodeUserStatusMapper._());
-      DurationModelMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -30,9 +29,8 @@ class EpisodeUserStatusMapper extends ClassMapperBase<EpisodeUserStatus> {
   static bool _$listened(EpisodeUserStatus v) => v.listened;
   static const Field<EpisodeUserStatus, bool> _f$listened =
       Field('listened', _$listened);
-  static DurationModel _$currentPosition(EpisodeUserStatus v) =>
-      v.currentPosition;
-  static const Field<EpisodeUserStatus, DurationModel> _f$currentPosition =
+  static Duration _$currentPosition(EpisodeUserStatus v) => v.currentPosition;
+  static const Field<EpisodeUserStatus, Duration> _f$currentPosition =
       Field('currentPosition', _$currentPosition);
 
   @override
@@ -107,12 +105,11 @@ extension EpisodeUserStatusValueCopy<$R, $Out>
 
 abstract class EpisodeUserStatusCopyWith<$R, $In extends EpisodeUserStatus,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
-  DurationModelCopyWith<$R, DurationModel, DurationModel> get currentPosition;
   $R call(
       {String? userId,
       String? episodeId,
       bool? listened,
-      DurationModel? currentPosition});
+      Duration? currentPosition});
   EpisodeUserStatusCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -126,14 +123,11 @@ class _EpisodeUserStatusCopyWithImpl<$R, $Out>
   late final ClassMapperBase<EpisodeUserStatus> $mapper =
       EpisodeUserStatusMapper.ensureInitialized();
   @override
-  DurationModelCopyWith<$R, DurationModel, DurationModel> get currentPosition =>
-      $value.currentPosition.copyWith.$chain((v) => call(currentPosition: v));
-  @override
   $R call(
           {String? userId,
           String? episodeId,
           bool? listened,
-          DurationModel? currentPosition}) =>
+          Duration? currentPosition}) =>
       $apply(FieldCopyWithData({
         if (userId != null) #userId: userId,
         if (episodeId != null) #episodeId: episodeId,
