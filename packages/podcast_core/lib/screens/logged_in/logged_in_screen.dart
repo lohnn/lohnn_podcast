@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/podcast.model.dart';
+import 'package:podcast_core/extensions/nullability_extensions.dart';
 import 'package:podcast_core/intents/play_pause_intent.dart';
 import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
@@ -21,7 +22,9 @@ import 'package:podcast_core/widgets/media_player_bottom_sheet/small_media_playe
 import 'package:podcast_core/widgets/podcast_actions.dart';
 
 class LoggedInScreen extends HookConsumerWidget {
-  const LoggedInScreen({super.key});
+  final WidgetBuilder? podcastListScreenBuilder;
+
+  const LoggedInScreen({super.key, this.podcastListScreenBuilder});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -61,7 +64,12 @@ class LoggedInScreen extends HookConsumerWidget {
               return false;
             },
             path: '/',
-            builder: (context, state) => const PodcastListScreen(),
+            builder:
+                (context, state) =>
+                    podcastListScreenBuilder?.let(
+                      (builder) => builder(context),
+                    ) ??
+                    const PodcastListScreen(),
             routes: [
               GoRoute(
                 path: '/search',
