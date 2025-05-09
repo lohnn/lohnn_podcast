@@ -34,8 +34,8 @@ class PodcastImplMapper extends ClassMapperBase<PodcastImpl> {
   static String _$backingArtwork(PodcastImpl v) => v.backingArtwork;
   static const Field<PodcastImpl, String> _f$backingArtwork =
       Field('backingArtwork', _$backingArtwork);
-  static String? _$lastPublished(PodcastImpl v) => v.lastPublished;
-  static const Field<PodcastImpl, String> _f$lastPublished =
+  static DateTime _$lastPublished(PodcastImpl v) => v.lastPublished;
+  static const Field<PodcastImpl, DateTime> _f$lastPublished =
       Field('lastPublished', _$lastPublished);
   static String? _$language(PodcastImpl v) => v.language;
   static const Field<PodcastImpl, String> _f$language =
@@ -126,7 +126,7 @@ abstract class PodcastImplCopyWith<$R, $In extends PodcastImpl, $Out>
       String? title,
       String? description,
       String? backingArtwork,
-      String? lastPublished,
+      DateTime? lastPublished,
       String? language,
       Set<String>? categories});
   PodcastImplCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
@@ -147,7 +147,7 @@ class _PodcastImplCopyWithImpl<$R, $Out>
           String? title,
           String? description,
           String? backingArtwork,
-          Object? lastPublished = $none,
+          DateTime? lastPublished,
           Object? language = $none,
           Set<String>? categories}) =>
       $apply(FieldCopyWithData({
@@ -156,7 +156,7 @@ class _PodcastImplCopyWithImpl<$R, $Out>
         if (title != null) #title: title,
         if (description != null) #description: description,
         if (backingArtwork != null) #backingArtwork: backingArtwork,
-        if (lastPublished != $none) #lastPublished: lastPublished,
+        if (lastPublished != null) #lastPublished: lastPublished,
         if (language != $none) #language: language,
         if (categories != null) #categories: categories
       }));

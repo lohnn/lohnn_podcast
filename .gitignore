@@ -47,8 +47,6 @@ app.*.map.json
 /lib/firebase_options.dart
 /macos/Runner/GoogleService-Info.plist
 **/GoogleService-Info.plist
-**.g.dart
-**.freezed.dart
 
 # Podcast app specific files
 project_setup_config*.json
