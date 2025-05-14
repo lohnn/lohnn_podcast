@@ -1,7 +1,6 @@
 import 'package:podcast_common/src/extensions/nullability_extensions.dart';
 import 'package:podcast_common/src/extensions/xml_element_extension.dart';
 import 'package:podcast_common/src/rss_episode.dart';
-import 'package:collection/collection.dart';
 import 'package:xml/xml.dart';
 
 class RssPodcast {
