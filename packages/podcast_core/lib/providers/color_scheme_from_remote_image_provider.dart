@@ -7,7 +7,7 @@ part 'color_scheme_from_remote_image_provider.g.dart';
 
 @riverpod
 Future<ColorScheme?> colorSchemeFromRemoteImage(
-  ColorSchemeFromRemoteImageRef ref,
+  Ref ref,
   Uri imageUri,
   Brightness brightness,
 ) {

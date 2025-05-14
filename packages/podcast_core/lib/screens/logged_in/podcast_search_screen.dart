@@ -68,7 +68,7 @@ class PodcastSearchScreen extends ConsumerWidget {
                 ),
               ),
             )
-          else if (state.valueOrNull case final data?)
+          else if (state.value case final data?)
             SliverList(
               delegate: SliverChildBuilderDelegate(childCount: data.length, (
                 context,
@@ -110,7 +110,7 @@ class PodcastSearchScreen extends ConsumerWidget {
                   },
                   trailing: switch (ref
                       .watch(subscribedPodcastProvider(rssUrl: podcast.url))
-                      .valueOrNull) {
+                      .value) {
                     null => null,
                     true => IconButton(
                       onPressed: () {

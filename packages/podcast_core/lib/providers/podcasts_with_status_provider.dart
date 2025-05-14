@@ -40,8 +40,8 @@ class PodcastsWithStatus extends _$PodcastsWithStatus {
 
     // @TODO: Trigger reload only on the podcast to which the episode belongs
     ref.listen(userEpisodeStatusPodProvider, (oldValue, newValue) {
-      final oldStatus = oldValue?.valueOrNull;
-      final newStatus = newValue.valueOrNull;
+      final oldStatus = oldValue?.value;
+      final newStatus = newValue.value;
       if (oldStatus == null) return;
       if (newStatus == null) return;
       if (oldStatus == newStatus) return;
@@ -62,8 +62,8 @@ class PodcastsWithStatus extends _$PodcastsWithStatus {
       oldValue,
       newValue,
     ) async {
-      final oldPodcasts = oldValue?.valueOrNull;
-      final newPodcasts = newValue.valueOrNull;
+      final oldPodcasts = oldValue?.value;
+      final newPodcasts = newValue.value;
 
       // If there is no podcasts in new value, we can just skip this
       if (newPodcasts == null) return;

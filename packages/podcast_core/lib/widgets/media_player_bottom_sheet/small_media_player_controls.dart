@@ -76,7 +76,7 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
                               imageSize: 60,
                             ),
                           ),
-                          if (episodeSnapshot.valueOrNull
+                          if (episodeSnapshot.value
                               case final episodeSnapshot?)
                             SizedBox(
                               width: 36,

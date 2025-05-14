@@ -41,7 +41,7 @@ class Episodes extends _$Episodes {
     final podcast = ref.watch(podcastPodProvider(podcastId));
 
     final userEpisodeStatusList =
-        ref.watch(userEpisodeStatusPodProvider).valueOrNull ??
+        ref.watch(userEpisodeStatusPodProvider).value ??
         const EquatableMap.empty();
 
     final episodes = ref
@@ -83,7 +83,7 @@ class Episodes extends _$Episodes {
 }
 
 @riverpod
-Stream<List<Episode>> _episodesImpl(_EpisodesImplRef ref, PodcastId podcast) {
+Stream<List<Episode>> _episodesImpl(Ref ref, PodcastId podcast) {
   final lifecycleState = ref.watch(appLifecycleStatePodProvider);
   if (lifecycleState != AppLifecycleState.resumed) return const Stream.empty();
 

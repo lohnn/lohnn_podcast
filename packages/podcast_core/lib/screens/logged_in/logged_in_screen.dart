@@ -115,7 +115,7 @@ class LoggedInScreen extends HookConsumerWidget {
                 Theme.of(context).brightness,
               ),
             )
-            .valueOrNull;
+            .value;
 
     return AnimatedTheme(
       key: const ValueKey('LoggedInScreen.theme'),

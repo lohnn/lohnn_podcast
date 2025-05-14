@@ -1,4 +1,4 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/misc.dart';
 
 extension KeepAliveLinkExtension on KeepAliveLink {
   /// Allows for easy handling of automatically closing a [KeepAliveLink] if a

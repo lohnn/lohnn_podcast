@@ -17,10 +17,6 @@ analyzer:
     prefer_const_constructors: warning
     prefer_const_constructors_in_immutables: warning
     unused_element: ignore
-    # Ignore until Riverpod 3.0 is released
-    deprecated_member_use_from_same_package: ignore
-    # Ignore until Riverpod 3.0 is released
-    functional_ref: ignore
     require_trailing_commas: ignore
 
 linter:

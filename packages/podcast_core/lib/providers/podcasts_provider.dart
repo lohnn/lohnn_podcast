@@ -12,18 +12,18 @@ part 'podcasts_provider.g.dart';
 
 @riverpod
 Future<bool?> subscribedPodcast(
-  SubscribedPodcastRef ref, {
+  Ref ref, {
   required PodcastRssUrl rssUrl,
 }) async {
   return ref
       .watch(_subscribedPodcastRssUrlsProvider)
-      .valueOrNull
+      .value
       ?.contains(rssUrl);
 }
 
 @riverpod
 Future<Iterable<PodcastRssUrl>?> _subscribedPodcastRssUrls(
-  _SubscribedPodcastRssUrlsRef ref,
+  Ref ref,
 ) async {
   return ref
       .watch(
@@ -33,7 +33,7 @@ Future<Iterable<PodcastRssUrl>?> _subscribedPodcastRssUrls(
           ),
         ),
       )
-      .valueOrNull;
+      .value;
 }
 
 @riverpod

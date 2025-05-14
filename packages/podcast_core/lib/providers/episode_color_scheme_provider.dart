@@ -7,10 +7,10 @@ part 'episode_color_scheme_provider.g.dart';
 
 @riverpod
 Future<ColorScheme?> currentPlayingEpisodeColorScheme(
-  CurrentPlayingEpisodeColorSchemeRef ref,
+  Ref ref,
   Brightness brightness,
 ) async {
-  final episode = ref.watch(audioPlayerPodProvider).valueOrNull;
+  final episode = ref.watch(audioPlayerPodProvider).value;
   if (episode case final episode?) {
     return ref
         .watch(
@@ -19,7 +19,7 @@ Future<ColorScheme?> currentPlayingEpisodeColorScheme(
             brightness,
           ),
         )
-        .valueOrNull;
+        .value;
   }
   return null;
 }

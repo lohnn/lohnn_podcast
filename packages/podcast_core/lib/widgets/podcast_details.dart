@@ -129,7 +129,7 @@ class _SubscribeChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return switch (ref
         .watch(subscribedPodcastProvider(rssUrl: rssUrl))
-        .valueOrNull) {
+        .value) {
       null => const Chip(label: Text('Loading...')),
       true => InputChip(
         onPressed: () async {
