@@ -6,169 +6,100 @@ part of 'episode_loader_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$episodeLoaderHash() => r'2dbf4f608e0ef43d41b83e3da86423ab545a8c70';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$EpisodeLoader
-    extends BuildlessAutoDisposeAsyncNotifier<EpisodeFileResponse> {
-  late final Episode episode;
-
-  FutureOr<EpisodeFileResponse> build(Episode episode);
-}
-
-/// See also [EpisodeLoader].
 @ProviderFor(EpisodeLoader)
-const episodeLoaderProvider = EpisodeLoaderFamily();
+const episodeLoaderProvider = EpisodeLoaderFamily._();
 
-/// See also [EpisodeLoader].
-class EpisodeLoaderFamily extends Family<AsyncValue<EpisodeFileResponse>> {
-  /// See also [EpisodeLoader].
-  const EpisodeLoaderFamily();
+final class EpisodeLoaderProvider
+    extends $AsyncNotifierProvider<EpisodeLoader, EpisodeFileResponse> {
+  const EpisodeLoaderProvider._({
+    required EpisodeLoaderFamily super.from,
+    required Episode super.argument,
+  }) : super(
+         retry: null,
+         name: r'episodeLoaderProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
-  /// See also [EpisodeLoader].
-  EpisodeLoaderProvider call(Episode episode) {
-    return EpisodeLoaderProvider(episode);
+  @override
+  String debugGetCreateSourceHash() => _$episodeLoaderHash();
+
+  @override
+  String toString() {
+    return r'episodeLoaderProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  EpisodeLoaderProvider getProviderOverride(
-    covariant EpisodeLoaderProvider provider,
-  ) {
-    return call(provider.episode);
-  }
+  EpisodeLoader create() => EpisodeLoader();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
+  @$internal
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'episodeLoaderProvider';
-}
-
-/// See also [EpisodeLoader].
-class EpisodeLoaderProvider
-    extends
-        AutoDisposeAsyncNotifierProviderImpl<
-          EpisodeLoader,
-          EpisodeFileResponse
-        > {
-  /// See also [EpisodeLoader].
-  EpisodeLoaderProvider(Episode episode)
-    : this._internal(
-        () => EpisodeLoader()..episode = episode,
-        from: episodeLoaderProvider,
-        name: r'episodeLoaderProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$episodeLoaderHash,
-        dependencies: EpisodeLoaderFamily._dependencies,
-        allTransitiveDependencies:
-            EpisodeLoaderFamily._allTransitiveDependencies,
-        episode: episode,
-      );
-
-  EpisodeLoaderProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.episode,
-  }) : super.internal();
-
-  final Episode episode;
-
-  @override
-  FutureOr<EpisodeFileResponse> runNotifierBuild(
-    covariant EpisodeLoader notifier,
-  ) {
-    return notifier.build(episode);
-  }
-
-  @override
-  Override overrideWith(EpisodeLoader Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: EpisodeLoaderProvider._internal(
-        () => create()..episode = episode,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        episode: episode,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<EpisodeLoader, EpisodeFileResponse>
-  createElement() {
-    return _EpisodeLoaderProviderElement(this);
-  }
+  $AsyncNotifierProviderElement<EpisodeLoader, EpisodeFileResponse>
+  $createElement($ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
-    return other is EpisodeLoaderProvider && other.episode == episode;
+    return other is EpisodeLoaderProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, episode.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin EpisodeLoaderRef
-    on AutoDisposeAsyncNotifierProviderRef<EpisodeFileResponse> {
-  /// The parameter `episode` of this provider.
-  Episode get episode;
-}
+String _$episodeLoaderHash() => r'2dbf4f608e0ef43d41b83e3da86423ab545a8c70';
 
-class _EpisodeLoaderProviderElement
-    extends
-        AutoDisposeAsyncNotifierProviderElement<
+final class EpisodeLoaderFamily extends $Family
+    with
+        $ClassFamilyOverride<
           EpisodeLoader,
-          EpisodeFileResponse
-        >
-    with EpisodeLoaderRef {
-  _EpisodeLoaderProviderElement(super.provider);
+          AsyncValue<EpisodeFileResponse>,
+          EpisodeFileResponse,
+          FutureOr<EpisodeFileResponse>,
+          Episode
+        > {
+  const EpisodeLoaderFamily._()
+    : super(
+        retry: null,
+        name: r'episodeLoaderProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  EpisodeLoaderProvider call(Episode episode) =>
+      EpisodeLoaderProvider._(argument: episode, from: this);
 
   @override
-  Episode get episode => (origin as EpisodeLoaderProvider).episode;
+  String toString() => r'episodeLoaderProvider';
+}
+
+abstract class _$EpisodeLoader extends $AsyncNotifier<EpisodeFileResponse> {
+  late final _$args = ref.$arg as Episode;
+  Episode get episode => _$args;
+
+  FutureOr<EpisodeFileResponse> build(Episode episode);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(_$args);
+    final ref = this.ref as $Ref<AsyncValue<EpisodeFileResponse>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<EpisodeFileResponse>>,
+              AsyncValue<EpisodeFileResponse>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

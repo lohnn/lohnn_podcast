@@ -18,7 +18,7 @@ part 'audio_player_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 Future<PodcastAudioHandler> _podcastAudioHandler(
-  _PodcastAudioHandlerRef ref,
+  Ref ref,
 ) async {
   final audioSession = await AudioSession.instance;
   await audioSession.configure(const AudioSessionConfiguration.speech());
@@ -74,7 +74,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
       // Initial setup of the queue
       ref.listen(playlistPodProvider, (oldState, newState) {
-        final queue = newState.valueOrNull ?? [];
+        final queue = newState.value ?? [];
         updateQueue(queue);
       });
       // ref.read(playlistPodProvider.future).then(updateQueue);
@@ -237,13 +237,13 @@ class AudioPlayerPod extends _$AudioPlayerPod {
 
 @riverpod
 Stream<({Duration position, Duration buffered, Duration? duration})>
-currentPosition(CurrentPositionRef ref) async* {
+currentPosition(Ref ref) async* {
   final audioPlayer = await ref.watch(_audioServicePodProvider.future);
   yield* audioPlayer.positionStream;
 }
 
 @riverpod
-Stream<PlaybackState> audioState(AudioStateRef ref) async* {
+Stream<PlaybackState> audioState(Ref ref) async* {
   final audioPlayer = await ref.watch(_audioServicePodProvider.future);
   yield* audioPlayer.playbackState;
 }

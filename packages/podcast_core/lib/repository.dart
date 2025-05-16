@@ -12,7 +12,7 @@ part 'repository.g.dart';
 
 // This needs to be overridden by the app to provide a concrete implementation
 @riverpod
-Repository repository(RepositoryRef ref) {
+Repository repository(Ref ref) {
   throw UnimplementedError();
 }
 

@@ -21,7 +21,7 @@ class PodcastSearchDetailsModal extends ConsumerWidget {
                     Theme.of(context).brightness,
                   ),
                 )
-                .valueOrNull,
+                .value,
       ),
       key: const Key('EpisodeDetailsScreen.theme'),
       child: SingleChildScrollView(

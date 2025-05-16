@@ -17,7 +17,7 @@ class DownloadAnimation extends HookConsumerWidget {
     final progress = ref.watch(
       episodeLoaderProvider(
         episode,
-      ).select((e) => e.valueOrNull?.currentDownloadProgress),
+      ).select((e) => e.value?.currentDownloadProgress),
     );
 
     useEffect(() {
@@ -49,7 +49,7 @@ class DownloadAnimation extends HookConsumerWidget {
         final currentDownloadProgress = ref.read(
           episodeLoaderProvider(
             episode,
-          ).select((e) => e.valueOrNull?.currentDownloadProgress),
+          ).select((e) => e.value?.currentDownloadProgress),
         );
         if (currentDownloadProgress != null) {
           controller.getNumberInput('Progress')!.value =

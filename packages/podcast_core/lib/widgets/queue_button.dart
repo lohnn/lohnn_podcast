@@ -11,7 +11,7 @@ class QueueButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // @TODO: Verify why provider is rebuilding multiple times
-    final queue = ref.watch(playlistPodProvider).valueOrNull ?? [];
+    final queue = ref.watch(playlistPodProvider).value ?? [];
 
     if (queue.contains(episode)) {
       return IconButton(

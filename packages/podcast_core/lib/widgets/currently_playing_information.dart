@@ -16,7 +16,7 @@ class CurrentlyPlayingInformation extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final queue = ref.watch(playlistPodProvider).valueOrNull;
+    final queue = ref.watch(playlistPodProvider).value;
 
     if (queue == null) {
       return const Center(child: ParticleLoading());
@@ -103,7 +103,7 @@ class _CarouselInformation extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final podcast =
-        ref.watch(podcastPodProvider(episode.podcastId)).valueOrNull;
+        ref.watch(podcastPodProvider(episode.podcastId)).value;
 
     final textTheme = Theme.of(context).textTheme;
     return OverflowBox(

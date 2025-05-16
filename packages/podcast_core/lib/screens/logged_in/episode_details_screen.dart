@@ -44,12 +44,12 @@ class EpisodeDetailsScreen
           colorScheme:
               ref
                   .watch(
-                    ColorSchemeFromRemoteImageProvider(
+                    colorSchemeFromRemoteImageProvider(
                       episode.imageUrl,
                       Theme.of(context).brightness,
                     ),
                   )
-                  .valueOrNull,
+                  .value,
         ),
         key: const Key('EpisodeDetailsScreen.theme'),
         child: SelectableRegion(

@@ -6,26 +6,65 @@ part of 'podcasts_with_status_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(PodcastsWithStatus)
+const podcastsWithStatusProvider = PodcastsWithStatusProvider._();
+
+final class PodcastsWithStatusProvider
+    extends
+        $AsyncNotifierProvider<
+          PodcastsWithStatus,
+          EquatableList<PodcastWithStatus>
+        > {
+  const PodcastsWithStatusProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'podcastsWithStatusProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$podcastsWithStatusHash();
+
+  @$internal
+  @override
+  PodcastsWithStatus create() => PodcastsWithStatus();
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<
+    PodcastsWithStatus,
+    EquatableList<PodcastWithStatus>
+  >
+  $createElement($ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(pointer);
+}
+
 String _$podcastsWithStatusHash() =>
     r'ea7411fa455f3b18d69b639bbf1c878fe3dcda9b';
 
-/// See also [PodcastsWithStatus].
-@ProviderFor(PodcastsWithStatus)
-final podcastsWithStatusProvider = AutoDisposeAsyncNotifierProvider<
-  PodcastsWithStatus,
-  EquatableList<PodcastWithStatus>
->.internal(
-  PodcastsWithStatus.new,
-  name: r'podcastsWithStatusProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$podcastsWithStatusHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$PodcastsWithStatus
+    extends $AsyncNotifier<EquatableList<PodcastWithStatus>> {
+  FutureOr<EquatableList<PodcastWithStatus>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<EquatableList<PodcastWithStatus>>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<EquatableList<PodcastWithStatus>>>,
+              AsyncValue<EquatableList<PodcastWithStatus>>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$PodcastsWithStatus =
-    AutoDisposeAsyncNotifier<EquatableList<PodcastWithStatus>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

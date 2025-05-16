@@ -47,15 +47,16 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
               null => const Center(child: Text('Nothing is playing right now')),
               EpisodeWithStatus(:final episode) => InkWell(
                 onTap: () async {
-                  final action =
-                      await showModalBottomSheet<EpisodePlayerModalResultAction>(
-                        context: context,
-                        isScrollControlled: true,
-                        useSafeArea: true,
-                        showDragHandle: true,
-                        builder: (context) => const EpisodePlayerModal(),
-                      );
-      
+                  final action = await showModalBottomSheet<
+                    EpisodePlayerModalResultAction
+                  >(
+                    context: context,
+                    isScrollControlled: true,
+                    useSafeArea: true,
+                    showDragHandle: true,
+                    builder: (context) => const EpisodePlayerModal(),
+                  );
+
                   switch (action) {
                     case EpisodePlayerModalResultAction.showPlaylist:
                       if (context.mounted) {
@@ -76,8 +77,7 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
                               imageSize: 60,
                             ),
                           ),
-                          if (episodeSnapshot.valueOrNull
-                              case final episodeSnapshot?)
+                          if (episodeSnapshot.value case final episodeSnapshot?)
                             SizedBox(
                               width: 36,
                               child: DownloadAnimation(
@@ -97,10 +97,6 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
                 ),
               ),
             },
-            AsyncValue<EpisodeWithStatus?>() =>
-              throw UnimplementedError(
-                'This should not be a case, AsyncValue is just not sealed',
-              ),
           },
         ),
       ),

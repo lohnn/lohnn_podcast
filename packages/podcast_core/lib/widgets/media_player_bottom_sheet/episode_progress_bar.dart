@@ -11,7 +11,7 @@ class EpisodeProgressBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final durations = ref.watch(currentPositionProvider).valueOrNull;
+    final durations = ref.watch(currentPositionProvider).value;
 
     final colorScheme = Theme.of(context).colorScheme;
 

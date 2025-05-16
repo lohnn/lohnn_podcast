@@ -16,8 +16,8 @@ class EpisodePlayerModal extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final episode = ref.watch(audioPlayerPodProvider).valueOrNull?.episode;
-    final durations = ref.watch(currentPositionProvider).valueOrNull;
+    final episode = ref.watch(audioPlayerPodProvider).value?.episode;
+    final durations = ref.watch(currentPositionProvider).value;
 
     useEffect(() {
       if (episode == null) Navigator.pop(context);

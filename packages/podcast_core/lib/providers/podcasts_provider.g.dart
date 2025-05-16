@@ -6,315 +6,262 @@ part of 'podcasts_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$subscribedPodcastHash() => r'ecb0a3c5b886df5f3533ff457f662dfdcf86a3c9';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [subscribedPodcast].
 @ProviderFor(subscribedPodcast)
-const subscribedPodcastProvider = SubscribedPodcastFamily();
+const subscribedPodcastProvider = SubscribedPodcastFamily._();
 
-/// See also [subscribedPodcast].
-class SubscribedPodcastFamily extends Family<AsyncValue<bool?>> {
-  /// See also [subscribedPodcast].
-  const SubscribedPodcastFamily();
+final class SubscribedPodcastProvider
+    extends $FunctionalProvider<AsyncValue<bool?>, FutureOr<bool?>>
+    with $FutureModifier<bool?>, $FutureProvider<bool?> {
+  const SubscribedPodcastProvider._({
+    required SubscribedPodcastFamily super.from,
+    required PodcastRssUrl super.argument,
+  }) : super(
+         retry: null,
+         name: r'subscribedPodcastProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
-  /// See also [subscribedPodcast].
-  SubscribedPodcastProvider call({required PodcastRssUrl rssUrl}) {
-    return SubscribedPodcastProvider(rssUrl: rssUrl);
+  @override
+  String debugGetCreateSourceHash() => _$subscribedPodcastHash();
+
+  @override
+  String toString() {
+    return r'subscribedPodcastProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  SubscribedPodcastProvider getProviderOverride(
-    covariant SubscribedPodcastProvider provider,
-  ) {
-    return call(rssUrl: provider.rssUrl);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  $FutureProviderElement<bool?> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'subscribedPodcastProvider';
-}
-
-/// See also [subscribedPodcast].
-class SubscribedPodcastProvider extends AutoDisposeFutureProvider<bool?> {
-  /// See also [subscribedPodcast].
-  SubscribedPodcastProvider({required PodcastRssUrl rssUrl})
-    : this._internal(
-        (ref) => subscribedPodcast(ref as SubscribedPodcastRef, rssUrl: rssUrl),
-        from: subscribedPodcastProvider,
-        name: r'subscribedPodcastProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$subscribedPodcastHash,
-        dependencies: SubscribedPodcastFamily._dependencies,
-        allTransitiveDependencies:
-            SubscribedPodcastFamily._allTransitiveDependencies,
-        rssUrl: rssUrl,
-      );
-
-  SubscribedPodcastProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.rssUrl,
-  }) : super.internal();
-
-  final PodcastRssUrl rssUrl;
-
-  @override
-  Override overrideWith(
-    FutureOr<bool?> Function(SubscribedPodcastRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: SubscribedPodcastProvider._internal(
-        (ref) => create(ref as SubscribedPodcastRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        rssUrl: rssUrl,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeFutureProviderElement<bool?> createElement() {
-    return _SubscribedPodcastProviderElement(this);
+  FutureOr<bool?> create(Ref ref) {
+    final argument = this.argument as PodcastRssUrl;
+    return subscribedPodcast(ref, rssUrl: argument);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is SubscribedPodcastProvider && other.rssUrl == rssUrl;
+    return other is SubscribedPodcastProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, rssUrl.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin SubscribedPodcastRef on AutoDisposeFutureProviderRef<bool?> {
-  /// The parameter `rssUrl` of this provider.
-  PodcastRssUrl get rssUrl;
-}
+String _$subscribedPodcastHash() => r'ecb0a3c5b886df5f3533ff457f662dfdcf86a3c9';
 
-class _SubscribedPodcastProviderElement
-    extends AutoDisposeFutureProviderElement<bool?>
-    with SubscribedPodcastRef {
-  _SubscribedPodcastProviderElement(super.provider);
+final class SubscribedPodcastFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<bool?>, PodcastRssUrl> {
+  const SubscribedPodcastFamily._()
+    : super(
+        retry: null,
+        name: r'subscribedPodcastProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  SubscribedPodcastProvider call({required PodcastRssUrl rssUrl}) =>
+      SubscribedPodcastProvider._(argument: rssUrl, from: this);
 
   @override
-  PodcastRssUrl get rssUrl => (origin as SubscribedPodcastProvider).rssUrl;
+  String toString() => r'subscribedPodcastProvider';
+}
+
+@ProviderFor(_subscribedPodcastRssUrls)
+const _subscribedPodcastRssUrlsProvider = _SubscribedPodcastRssUrlsProvider._();
+
+final class _SubscribedPodcastRssUrlsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Iterable<PodcastRssUrl>?>,
+          FutureOr<Iterable<PodcastRssUrl>?>
+        >
+    with
+        $FutureModifier<Iterable<PodcastRssUrl>?>,
+        $FutureProvider<Iterable<PodcastRssUrl>?> {
+  const _SubscribedPodcastRssUrlsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'_subscribedPodcastRssUrlsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$subscribedPodcastRssUrlsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<Iterable<PodcastRssUrl>?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<Iterable<PodcastRssUrl>?> create(Ref ref) {
+    return _subscribedPodcastRssUrls(ref);
+  }
 }
 
 String _$subscribedPodcastRssUrlsHash() =>
     r'0555924743455e102991354daa73b5b68e0ab199';
 
-/// See also [_subscribedPodcastRssUrls].
-@ProviderFor(_subscribedPodcastRssUrls)
-final _subscribedPodcastRssUrlsProvider =
-    AutoDisposeFutureProvider<Iterable<PodcastRssUrl>?>.internal(
-      _subscribedPodcastRssUrls,
-      name: r'_subscribedPodcastRssUrlsProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$subscribedPodcastRssUrlsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef _SubscribedPodcastRssUrlsRef =
-    AutoDisposeFutureProviderRef<Iterable<PodcastRssUrl>?>;
-String _$podcastPodHash() => r'77f981421c3d7c1a388b2fade47aae2598a341ca';
-
-abstract class _$PodcastPod extends BuildlessAutoDisposeAsyncNotifier<Podcast> {
-  late final PodcastId podcastId;
-
-  FutureOr<Podcast> build(PodcastId podcastId);
-}
-
-/// See also [PodcastPod].
 @ProviderFor(PodcastPod)
-const podcastPodProvider = PodcastPodFamily();
+const podcastPodProvider = PodcastPodFamily._();
 
-/// See also [PodcastPod].
-class PodcastPodFamily extends Family<AsyncValue<Podcast>> {
-  /// See also [PodcastPod].
-  const PodcastPodFamily();
+final class PodcastPodProvider
+    extends $AsyncNotifierProvider<PodcastPod, Podcast> {
+  const PodcastPodProvider._({
+    required PodcastPodFamily super.from,
+    required PodcastId super.argument,
+  }) : super(
+         retry: null,
+         name: r'podcastPodProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
-  /// See also [PodcastPod].
-  PodcastPodProvider call(PodcastId podcastId) {
-    return PodcastPodProvider(podcastId);
+  @override
+  String debugGetCreateSourceHash() => _$podcastPodHash();
+
+  @override
+  String toString() {
+    return r'podcastPodProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  PodcastPodProvider getProviderOverride(
-    covariant PodcastPodProvider provider,
-  ) {
-    return call(provider.podcastId);
-  }
+  PodcastPod create() => PodcastPod();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
+  @$internal
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'podcastPodProvider';
-}
-
-/// See also [PodcastPod].
-class PodcastPodProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<PodcastPod, Podcast> {
-  /// See also [PodcastPod].
-  PodcastPodProvider(PodcastId podcastId)
-    : this._internal(
-        () => PodcastPod()..podcastId = podcastId,
-        from: podcastPodProvider,
-        name: r'podcastPodProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$podcastPodHash,
-        dependencies: PodcastPodFamily._dependencies,
-        allTransitiveDependencies: PodcastPodFamily._allTransitiveDependencies,
-        podcastId: podcastId,
-      );
-
-  PodcastPodProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.podcastId,
-  }) : super.internal();
-
-  final PodcastId podcastId;
-
-  @override
-  FutureOr<Podcast> runNotifierBuild(covariant PodcastPod notifier) {
-    return notifier.build(podcastId);
-  }
-
-  @override
-  Override overrideWith(PodcastPod Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PodcastPodProvider._internal(
-        () => create()..podcastId = podcastId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        podcastId: podcastId,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<PodcastPod, Podcast> createElement() {
-    return _PodcastPodProviderElement(this);
-  }
+  $AsyncNotifierProviderElement<PodcastPod, Podcast> $createElement(
+    $ProviderPointer pointer,
+  ) => $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
-    return other is PodcastPodProvider && other.podcastId == podcastId;
+    return other is PodcastPodProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, podcastId.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PodcastPodRef on AutoDisposeAsyncNotifierProviderRef<Podcast> {
-  /// The parameter `podcastId` of this provider.
-  PodcastId get podcastId;
-}
+String _$podcastPodHash() => r'77f981421c3d7c1a388b2fade47aae2598a341ca';
 
-class _PodcastPodProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<PodcastPod, Podcast>
-    with PodcastPodRef {
-  _PodcastPodProviderElement(super.provider);
+final class PodcastPodFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          PodcastPod,
+          AsyncValue<Podcast>,
+          Podcast,
+          FutureOr<Podcast>,
+          PodcastId
+        > {
+  const PodcastPodFamily._()
+    : super(
+        retry: null,
+        name: r'podcastPodProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  PodcastPodProvider call(PodcastId podcastId) =>
+      PodcastPodProvider._(argument: podcastId, from: this);
 
   @override
-  PodcastId get podcastId => (origin as PodcastPodProvider).podcastId;
+  String toString() => r'podcastPodProvider';
+}
+
+abstract class _$PodcastPod extends $AsyncNotifier<Podcast> {
+  late final _$args = ref.$arg as PodcastId;
+  PodcastId get podcastId => _$args;
+
+  FutureOr<Podcast> build(PodcastId podcastId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(_$args);
+    final ref = this.ref as $Ref<AsyncValue<Podcast>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<Podcast>>,
+              AsyncValue<Podcast>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(Podcasts)
+const podcastsProvider = PodcastsProvider._();
+
+final class PodcastsProvider
+    extends $StreamNotifierProvider<Podcasts, EquatableList<Podcast>> {
+  const PodcastsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'podcastsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$podcastsHash();
+
+  @$internal
+  @override
+  Podcasts create() => Podcasts();
+
+  @$internal
+  @override
+  $StreamNotifierProviderElement<Podcasts, EquatableList<Podcast>>
+  $createElement($ProviderPointer pointer) =>
+      $StreamNotifierProviderElement(pointer);
 }
 
 String _$podcastsHash() => r'5d4410738e357e7c7ad4f9b15fb1e3025dbe6fb3';
 
-/// See also [Podcasts].
-@ProviderFor(Podcasts)
-final podcastsProvider = AutoDisposeStreamNotifierProvider<
-  Podcasts,
-  EquatableList<Podcast>
->.internal(
-  Podcasts.new,
-  name: r'podcastsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$podcastsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$Podcasts extends $StreamNotifier<EquatableList<Podcast>> {
+  Stream<EquatableList<Podcast>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<EquatableList<Podcast>>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<EquatableList<Podcast>>>,
+              AsyncValue<EquatableList<Podcast>>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$Podcasts = AutoDisposeStreamNotifier<EquatableList<Podcast>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

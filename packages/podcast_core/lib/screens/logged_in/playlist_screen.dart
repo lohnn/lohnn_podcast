@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/misc.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/extensions/string_extensions.dart';
 import 'package:podcast_core/providers/playlist_pod_provider.dart';
@@ -33,7 +34,7 @@ class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
           final episode = data[index];
 
           final valueOrNull2 =
-              ref.read(userEpisodeStatusPodProvider).valueOrNull;
+              ref.read(userEpisodeStatusPodProvider).value;
           return ListTile(
             key: ValueKey(episode),
             onTap: () {
