@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/data/podcast.model.dart';
@@ -7,6 +8,7 @@ import 'package:podcast_core/extensions/async_value_extensions.dart';
 import 'package:podcast_core/helpers/equatable_list.dart';
 import 'package:podcast_core/helpers/equatable_map.dart';
 import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
+import 'package:podcast_core/providers/episodes_filter_provider.dart';
 import 'package:podcast_core/providers/podcasts_provider.dart';
 import 'package:podcast_core/providers/user_episode_status_provider.dart';
 import 'package:podcast_core/repository.dart';
@@ -38,6 +40,8 @@ class Episodes extends _$Episodes {
   AsyncValue<(Podcast, List<EpisodeWithStatus>)> build({
     required PodcastId podcastId,
   }) {
+    final filterState = ref.watch(episodesFilterProvider);
+
     final podcast = ref.watch(podcastPodProvider(podcastId));
 
     final userEpisodeStatusList =
@@ -47,15 +51,22 @@ class Episodes extends _$Episodes {
     final episodes = ref
         .watch(_episodesImplProvider(podcastId))
         .whenData((episodes) {
-          return [
-            for (final episode in episodes)
-              EpisodeWithStatus(
-                episode: episode,
-                status: userEpisodeStatusList[episode.id],
-              ),
-          ];
+          return episodes.map(
+            (episode) => EpisodeWithStatus(
+              episode: episode,
+              status: userEpisodeStatusList[episode.id],
+            ),
+          );
         })
+        .whenData((episodes) {
+          if (filterState.hideListenedEpisodes) {
+            return episodes.whereNot((episode) => episode.isPlayed);
+          }
+          return episodes;
+        })
+        .whenData((episodes) => episodes.toList(growable: false))
         .whenData(EquatableList.new);
+
     return (podcast, episodes).pack();
   }
 
