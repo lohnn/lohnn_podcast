@@ -60,6 +60,7 @@ class FilterEpisodesPopup extends ConsumerWidget {
                   tween: Tween<double>(
                     end: filterState.sortAscending ? -1.0 : 1.0,
                   ),
+                  curve: Curves.easeOutBack,
                   duration: const Duration(milliseconds: 200),
                   builder: (
                     BuildContext context,
