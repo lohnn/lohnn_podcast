@@ -39,6 +39,7 @@ class PodcastDetailsScreen
 
     final episodesFilterState = ref.watch(episodesFilterProvider);
 
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(podcast.title)),
       body: RefreshIndicator(
@@ -60,6 +61,21 @@ class PodcastDetailsScreen
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     MenuAnchor(
+                      style: MenuStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          theme.colorScheme.surfaceContainerHigh,
+                        ),
+                        fixedSize: const WidgetStatePropertyAll(
+                          Size.fromWidth(400),
+                        ),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      consumeOutsideTap: true,
+                      crossAxisUnconstrained: false,
                       controller: filterMenuController,
                       menuChildren: const [FilterEpisodesPopup()],
                       child: IconButton(
@@ -71,7 +87,7 @@ class PodcastDetailsScreen
                             color:
                                 episodesFilterState.isDefault
                                     ? null
-                                    : Theme.of(context).colorScheme.primary,
+                                    : theme.colorScheme.primary,
                           ),
                         ),
                         onPressed: () {
