@@ -74,7 +74,6 @@ class PodcastDetailsScreen
                           ),
                         ),
                       ),
-                      consumeOutsideTap: true,
                       crossAxisUnconstrained: false,
                       controller: filterMenuController,
                       menuChildren: const [FilterEpisodesPopup()],
