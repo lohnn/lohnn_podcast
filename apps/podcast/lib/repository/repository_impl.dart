@@ -300,7 +300,6 @@ class RepositoryImpl implements core.Repository {
       UserEpisodeStatus(
         :final episodeId,
         :final currentPosition,
-        :final isPlayed,
       ) =>
         UserEpisodeStatusImpl.usingEpisodeId(
           episodeId: episodeId,
@@ -309,7 +308,7 @@ class RepositoryImpl implements core.Repository {
         ),
       null => UserEpisodeStatusImpl.usingEpisodeId(
         episodeId: episodeWithStatus.episode.id,
-        isPlayed: false,
+        isPlayed: isPlayed,
         currentPosition: Duration.zero,
       ),
     };

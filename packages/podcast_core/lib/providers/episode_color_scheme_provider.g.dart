@@ -60,7 +60,7 @@ final class CurrentPlayingEpisodeColorSchemeProvider
 }
 
 String _$currentPlayingEpisodeColorSchemeHash() =>
-    r'6f6fa6ec031859294a953c6467a577132058435c';
+    r'20ae3a98a51845aad49d549c59d87db4182e2b3d';
 
 final class CurrentPlayingEpisodeColorSchemeFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<ColorScheme?>, Brightness> {

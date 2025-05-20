@@ -191,7 +191,7 @@ final class EpisodesProvider
   }
 }
 
-String _$episodesHash() => r'c6b6c9f057336d490ab62c3780ca72d52d330d53';
+String _$episodesHash() => r'1c5d9e5e3055d081de6664a53ad674cbedf842dc';
 
 final class EpisodesFamily extends $Family
     with
@@ -295,7 +295,7 @@ final class _EpisodesImplProvider
   }
 }
 
-String _$episodesImplHash() => r'cec3aea222607a6c77b62b6b5a2d530a77371897';
+String _$episodesImplHash() => r'0351da9b9b7baf6c3df189267fd7ad18b659811e';
 
 final class _EpisodesImplFamily extends $Family
     with $FunctionalFamilyOverride<Stream<List<Episode>>, PodcastId> {

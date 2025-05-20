@@ -45,7 +45,7 @@ final class RepositoryProvider
   }
 }
 
-String _$repositoryHash() => r'fe3914a3cbe181a4e52cb0727e374ef6073375c8';
+String _$repositoryHash() => r'81b4f8c65d0d9f4c512d6619224b4af300589097';
 
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
