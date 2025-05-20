@@ -44,7 +44,10 @@ class EpisodeListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DefaultTextStyle(
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w200),
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              fontSize: 11,
+              fontWeight: FontWeight.w200,
+            ),
             child: Row(
               children: [
                 if (episodeWithStatus.episode.pubDate case final pubDate?)
