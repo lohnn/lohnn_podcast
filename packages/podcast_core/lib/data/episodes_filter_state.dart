@@ -50,7 +50,8 @@ final class EpisodesFilterState {
 enum SortBy {
   date('Date'),
   title('Title'),
-  duration('Duration');
+  duration('Duration'),
+  listened('Listened');
 
   final String name;
 
@@ -73,6 +74,18 @@ enum SortBy {
         (episode) => episode.episode.duration ?? Duration.zero,
         _sortedComparable<Duration>(sortAscending),
       ),
+      SortBy.listened => SortBy.date
+          .sortEpisodes(filteredEpisodes, sortAscending: sortAscending)
+          .sortedByCompare((episode) => episode.status?.isPlayed ?? false, (
+            a,
+            b,
+          ) {
+            if (sortAscending) {
+              return a.compareValue(b);
+            } else {
+              return b.compareValue(a);
+            }
+          }),
     };
   }
 }
@@ -85,3 +98,11 @@ int _compareAscendingComparable<T extends Comparable<T>>(T a, T b) =>
 
 int _compareDescendingComparable<T extends Comparable<T>>(T a, T b) =>
     b.compareTo(a);
+
+extension on bool {
+  // ignore: avoid_positional_boolean_parameters
+  int compareValue(bool other) {
+    if (this == other) return 0;
+    return this ? 1 : -1;
+  }
+}
