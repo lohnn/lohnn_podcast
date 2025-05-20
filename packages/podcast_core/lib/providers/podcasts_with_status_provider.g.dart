@@ -44,7 +44,7 @@ final class PodcastsWithStatusProvider
 }
 
 String _$podcastsWithStatusHash() =>
-    r'ea7411fa455f3b18d69b639bbf1c878fe3dcda9b';
+    r'8093847d9c9165b1c45eb0607fb4de2b9cabccfa';
 
 abstract class _$PodcastsWithStatus
     extends $AsyncNotifier<EquatableList<PodcastWithStatus>> {

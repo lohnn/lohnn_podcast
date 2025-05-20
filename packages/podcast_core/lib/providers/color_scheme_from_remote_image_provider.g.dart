@@ -59,7 +59,7 @@ final class ColorSchemeFromRemoteImageProvider
 }
 
 String _$colorSchemeFromRemoteImageHash() =>
-    r'de359ec8c754f411b7c5ac69c47f182302ecc0a8';
+    r'29d453a1e083950ba3a1ec34ecd04885f74d4b2a';
 
 final class ColorSchemeFromRemoteImageFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<ColorScheme?>, (Uri, Brightness)> {

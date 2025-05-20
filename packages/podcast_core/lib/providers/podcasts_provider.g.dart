@@ -55,7 +55,7 @@ final class SubscribedPodcastProvider
   }
 }
 
-String _$subscribedPodcastHash() => r'ecb0a3c5b886df5f3533ff457f662dfdcf86a3c9';
+String _$subscribedPodcastHash() => r'5f80849651ddef8fb949a0704dd6b2fd0b4b2a61';
 
 final class SubscribedPodcastFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<bool?>, PodcastRssUrl> {
@@ -114,7 +114,7 @@ final class _SubscribedPodcastRssUrlsProvider
 }
 
 String _$subscribedPodcastRssUrlsHash() =>
-    r'0555924743455e102991354daa73b5b68e0ab199';
+    r'5c45b5aa5f10dfdfbcedd7d02ca3b862f90691bc';
 
 @ProviderFor(PodcastPod)
 const podcastPodProvider = PodcastPodFamily._();

@@ -45,7 +45,7 @@ final class _PodcastAudioHandlerProvider
 }
 
 String _$podcastAudioHandlerHash() =>
-    r'545ef76ec173df0bc0b5219479c753a0db76cf04';
+    r'23325c1f6e7e8c1f8f10c4ede1a5c82491cc4e77';
 
 @ProviderFor(_AudioServicePod)
 const _audioServicePodProvider = _AudioServicePodProvider._();
@@ -128,7 +128,7 @@ final class AudioPlayerPodProvider
       $AsyncNotifierProviderElement(pointer);
 }
 
-String _$audioPlayerPodHash() => r'c0328c89cba5b8bf3ff94879743788d1d505e7d0';
+String _$audioPlayerPodHash() => r'46df1739a28825d0a670a78b41d77d1936f2653f';
 
 abstract class _$AudioPlayerPod extends $AsyncNotifier<EpisodeWithStatus?> {
   FutureOr<EpisodeWithStatus?> build();
@@ -196,7 +196,7 @@ final class CurrentPositionProvider
   }
 }
 
-String _$currentPositionHash() => r'54fa2877ec735ded3e29a57c8269a0d349e41e1b';
+String _$currentPositionHash() => r'121418eca53c2cdd41fafe65950495adc61300eb';
 
 @ProviderFor(audioState)
 const audioStateProvider = AudioStateProvider._();
@@ -231,7 +231,7 @@ final class AudioStateProvider
   }
 }
 
-String _$audioStateHash() => r'1ad26b0abde246b65b7eeb42254e59bde8054739';
+String _$audioStateHash() => r'8f700801439f1fd64e400b937b16182b7ea75bd8';
 
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

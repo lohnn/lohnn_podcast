@@ -9,6 +9,7 @@ import 'package:podcast_core/hooks/menu_controller_hook.dart';
 import 'package:podcast_core/providers/episodes_provider.dart';
 import 'package:podcast_core/screens/async_value_screen.dart';
 import 'package:podcast_core/widgets/episode_list_item.dart';
+import 'package:podcast_core/widgets/filter_episodes_popup.dart';
 import 'package:podcast_core/widgets/podcast_details.dart';
 
 class PodcastDetailsScreen
@@ -57,46 +58,7 @@ class PodcastDetailsScreen
                   children: [
                     MenuAnchor(
                       controller: filterMenuController,
-                      menuChildren: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Filter episodes',
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                ),
-                                ListTile(
-                                  title: const Text('Show listened episodes'),
-                                  trailing: Switch(
-                                    value: true,
-                                    onChanged: (value) {},
-                                  ),
-                                ),
-                                ListTile(
-                                  title: const Text('Sort by'),
-                                  trailing: DropdownButton(
-                                    value: 'Date',
-                                    items: const [
-                                      DropdownMenuItem(
-                                        value: 'Date',
-                                        child: Text('Date'),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 'Title',
-                                        child: Text('Title'),
-                                      ),
-                                    ],
-                                    onChanged: (value) {},
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                      menuChildren: const [FilterEpisodesPopup()],
                       child: IconButton(
                         icon: const Icon(Icons.filter_list),
                         onPressed: () {
