@@ -55,7 +55,7 @@ class FilterEpisodesPopup extends ConsumerWidget {
                 DropdownMenuItem(value: sortBy, child: Text(sortBy.name)),
             ],
           ),
-          // TODO: Add a better icon for this
+          // @TODO: Add a better icon for this
           trailing: IconButton(
             onPressed: filterStateNotifier.reverseSortOrder,
             tooltip: 'Change sort order',
