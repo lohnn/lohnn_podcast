@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/hooks/menu_controller_hook.dart';
+import 'package:podcast_core/providers/episodes_filter_provider.dart';
 import 'package:podcast_core/providers/episodes_provider.dart';
 import 'package:podcast_core/screens/async_value_screen.dart';
 import 'package:podcast_core/widgets/episode_list_item.dart';
@@ -36,6 +37,8 @@ class PodcastDetailsScreen
 
     final filterMenuController = useMenuController();
 
+    final episodesFilterState = ref.watch(episodesFilterProvider);
+
     return Scaffold(
       appBar: AppBar(title: Text(podcast.title)),
       body: RefreshIndicator(
@@ -60,7 +63,17 @@ class PodcastDetailsScreen
                       controller: filterMenuController,
                       menuChildren: const [FilterEpisodesPopup()],
                       child: IconButton(
-                        icon: const Icon(Icons.filter_list),
+                        icon: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: Icon(
+                            Icons.filter_list,
+                            key: ValueKey(episodesFilterState.isDefault),
+                            color:
+                                episodesFilterState.isDefault
+                                    ? null
+                                    : Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
                         onPressed: () {
                           if (filterMenuController.isOpen) {
                             filterMenuController.close();
