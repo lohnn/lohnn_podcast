@@ -36,6 +36,11 @@ class FilterEpisodesPopup extends ConsumerWidget {
             const Divider(),
             ListTile(
               title: const Text('Hide listened episodes'),
+              onTap: () {
+                filterStateNotifier.setHideListened(
+                  !filterState.hideListenedEpisodes,
+                );
+              },
               trailing: Switch(
                 value: filterState.hideListenedEpisodes,
                 onChanged: filterStateNotifier.setHideListened,
