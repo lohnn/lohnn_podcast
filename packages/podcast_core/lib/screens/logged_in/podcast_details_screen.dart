@@ -86,7 +86,7 @@ class PodcastDetailsScreen
                             key: ValueKey(episodesFilterState.isDefault),
                             color:
                                 episodesFilterState.isDefault
-                                    ? null
+                                    ? theme.colorScheme.primary.withValues(alpha: 0.6)
                                     : theme.colorScheme.primary,
                           ),
                         ),
