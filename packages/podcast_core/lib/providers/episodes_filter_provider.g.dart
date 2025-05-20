@@ -17,7 +17,7 @@ final class EpisodesFilterProvider
         argument: null,
         retry: null,
         name: r'episodesFilterProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -44,7 +44,7 @@ final class EpisodesFilterProvider
   }
 }
 
-String _$episodesFilterHash() => r'6bbc59073f2f711dc50f370a658869ec29dcd510';
+String _$episodesFilterHash() => r'65e59f9a63535544fe63bbe5d51b1f06feaeb9e4';
 
 abstract class _$EpisodesFilter extends $Notifier<EpisodesFilterState> {
   EpisodesFilterState build();

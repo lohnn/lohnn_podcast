@@ -1,4 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:podcast_core/data/episode_with_status.dart';
 
 @immutable
 final class EpisodesFilterState {
@@ -37,6 +39,12 @@ final class EpisodesFilterState {
 
   @override
   int get hashCode => Object.hash(hideListenedEpisodes, sortBy, sortAscending);
+
+  List<EpisodeWithStatus> sortEpisodes(
+    Iterable<EpisodeWithStatus> filteredEpisodes,
+  ) {
+    return sortBy.sortEpisodes(filteredEpisodes, sortAscending: sortAscending);
+  }
 }
 
 enum SortBy {
@@ -47,4 +55,33 @@ enum SortBy {
   final String name;
 
   const SortBy(this.name);
+
+  List<EpisodeWithStatus> sortEpisodes(
+    Iterable<EpisodeWithStatus> filteredEpisodes, {
+    required bool sortAscending,
+  }) {
+    return switch (this) {
+      SortBy.date => filteredEpisodes.sortedByCompare(
+        (episode) => episode.episode.pubDate ?? DateTime(0),
+        _sortedComparable<DateTime>(sortAscending),
+      ),
+      SortBy.title => filteredEpisodes.sortedByCompare(
+        (episode) => episode.episode.title,
+        _sortedComparable<String>(sortAscending),
+      ),
+      SortBy.duration => filteredEpisodes.sortedByCompare(
+        (episode) => episode.episode.duration ?? Duration.zero,
+        _sortedComparable<Duration>(sortAscending),
+      ),
+    };
+  }
 }
+
+Comparator<T> _sortedComparable<T extends Comparable<T>>(bool ascending) =>
+    ascending ? _compareAscendingComparable : _compareDescendingComparable;
+
+int _compareAscendingComparable<T extends Comparable<T>>(T a, T b) =>
+    a.compareTo(b);
+
+int _compareDescendingComparable<T extends Comparable<T>>(T a, T b) =>
+    b.compareTo(a);

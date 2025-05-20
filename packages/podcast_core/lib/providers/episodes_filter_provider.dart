@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'episodes_filter_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class EpisodesFilter extends _$EpisodesFilter {
   @override
   EpisodesFilterState build() {

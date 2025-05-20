@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
+import 'package:podcast_core/extensions/duration_extensions.dart';
 import 'package:podcast_core/extensions/string_extensions.dart';
 import 'package:podcast_core/widgets/play_episode_button.dart';
 import 'package:podcast_core/widgets/pub_date_text.dart';
@@ -42,11 +43,23 @@ class EpisodeListItem extends StatelessWidget {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (episodeWithStatus.episode.pubDate case final pubDate?)
-            DefaultTextStyle(
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w200),
-              child: PubDateText(pubDate),
+          DefaultTextStyle(
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w200),
+            child: Row(
+              children: [
+                if (episodeWithStatus.episode.pubDate case final pubDate?)
+                  PubDateText(pubDate),
+                if (episodeWithStatus.episode.duration case final duration?)
+                  Text(
+                    ' • ${duration.prettyPrint()}',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w200,
+                    ),
+                  ),
+              ],
             ),
+          ),
           Text(episodeWithStatus.episode.title),
         ],
       ),

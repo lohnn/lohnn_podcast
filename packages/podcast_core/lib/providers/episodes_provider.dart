@@ -59,12 +59,15 @@ class Episodes extends _$Episodes {
           );
         })
         .whenData((episodes) {
-          if (filterState.hideListenedEpisodes) {
-            return episodes.whereNot((episode) => episode.isPlayed);
-          }
-          return episodes;
+          // Filtering and sorting
+
+          final filteredEpisodes = switch (filterState.hideListenedEpisodes) {
+            true => episodes.whereNot((episode) => episode.isPlayed),
+            false => episodes,
+          };
+
+          return filterState.sortEpisodes(filteredEpisodes);
         })
-        .whenData((episodes) => episodes.toList(growable: false))
         .whenData(EquatableList.new);
 
     return (podcast, episodes).pack();

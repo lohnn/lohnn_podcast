@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:podcast_core/extensions/duration_extensions.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
 import 'package:podcast_core/widgets/media_player_bottom_sheet/media_action_button.dart';
 import 'package:podcast_core/widgets/media_player_bottom_sheet/play_pause_button.dart';
@@ -74,15 +75,5 @@ class EpisodePlayerModal extends HookConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-extension on Duration {
-  String prettyPrint() {
-    // final negativeSign = isNegative ? '-' : '';
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final twoDigitMinutes = twoDigits(inMinutes.remainder(60).abs());
-    final twoDigitSeconds = twoDigits(inSeconds.remainder(60).abs());
-    return '${twoDigits(inHours)}:$twoDigitMinutes:$twoDigitSeconds';
   }
 }
