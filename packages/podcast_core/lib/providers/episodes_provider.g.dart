@@ -191,7 +191,7 @@ final class EpisodesProvider
   }
 }
 
-String _$episodesHash() => r'1c5d9e5e3055d081de6664a53ad674cbedf842dc';
+String _$episodesHash() => r'4549065ed14d288296483c43dcde5c744d2aedbc';
 
 final class EpisodesFamily extends $Family
     with

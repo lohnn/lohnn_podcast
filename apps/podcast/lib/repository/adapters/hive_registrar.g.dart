@@ -14,3 +14,13 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(UserEpisodeStatusImplAdapter());
   }
 }
+
+extension IsolatedHiveRegistrar on IsolatedHiveInterface {
+  void registerAdapters() {
+    registerAdapter(EpisodeImplAdapter());
+    registerAdapter(EpisodeUserStatusAdapter());
+    registerAdapter(PlayQueueItemAdapter());
+    registerAdapter(PodcastImplAdapter());
+    registerAdapter(UserEpisodeStatusImplAdapter());
+  }
+}
