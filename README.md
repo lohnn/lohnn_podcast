@@ -6,7 +6,6 @@ An open-source podcast player. It's the open-source version of the app available
 
 *   Play podcasts
 *   Search for podcasts from a public index
-*   User login
 *   Cross-platform support (Android, iOS, macOS, web)
 
 ## Getting Started
@@ -18,7 +17,7 @@ An open-source podcast player. It's the open-source version of the app available
 ### Clone Repository
 
 ```bash
-git clone https://github.com/your-username/oss-player.git # Replace with the actual repository URL
+git clone https://github.com/lohnn/oss_player.git
 cd oss-player
 ```
 
@@ -31,7 +30,7 @@ dart bin/setup_project.dart
 ```
 
 This script will guide you through setting up your API credentials interactively:
-1.  When you run the script, it will first print instructions on how to obtain your API Key and Secret from Podcast Index, including a link to their developer signup page (https://podcastindex.org/developers/signup).
+1.  When you run the script, it will first print instructions on how to obtain your API Key and Secret from Podcast Index, including a link to their developer signup page (https://api.podcastindex.org/signup).
 2.  The script will then prompt you to enter your Podcast Index API Key directly into the terminal.
 3.  Next, it will prompt you to enter your Podcast Index API Secret directly into the terminal.
 4.  Once you provide the keys, the script will automatically create the `apps/podcast/lib/secrets.dart` file and populate it with the credentials you entered.
@@ -53,8 +52,8 @@ Select your desired device or platform when prompted by Flutter.
 This project is a monorepo managed with [Melos](https://melos.invertase.dev/).
 
 *   `apps/podcast`: Contains the main Flutter application.
-*   `packages/podcast_common`: Houses common utilities, widgets, and themes shared across the project.
-*   `packages/podcast_core`: Includes core functionalities, business logic, and services like API interaction and state management.
+*   `packages/podcast_common`: Houses common utilities and data classes shared across both Flutter and Dart projects.
+*   `packages/podcast_core`: Includes core functionalities, business logic, and services like abstracted API interaction and state management.
 
 ## Contributing
 
@@ -77,4 +76,4 @@ This project is licensed under the Apache License, Version 2.0 - see the `LICENS
 ## Contact/Links
 
 *   **Web Version:** [https://podcast.lohnn.se/](https://podcast.lohnn.se/)
-*   **Issue Tracker:** [https://github.com/your-username/oss-player/issues](https://github.com/your-username/oss-player/issues) # Please replace with the actual link to the GitHub issues page
+*   **Issue Tracker:** [https://github.com/lohnn/oss_player/issues](https://github.com/lohnn/oss_player/issues)
