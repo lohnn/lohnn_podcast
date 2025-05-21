@@ -18,7 +18,7 @@ An open-source podcast player. It's the open-source version of the app available
 
 ```bash
 git clone https://github.com/lohnn/oss_player.git
-cd oss-player
+cd oss_player
 ```
 
 ### Setup Project
