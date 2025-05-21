@@ -46,11 +46,10 @@ class Secrets {
 
   try {
     // Ensure the directory exists
-    final directoryPath = Directory(filePath).parent.path;
-    final dir = Directory(directoryPath);
+    final dir = Directory(filePath).parent;
     if (!dir.existsSync()) {
       await dir.create(recursive: true);
-      stdout.writeln('Created directory: $directoryPath');
+      stdout.writeln('Created directory: ${dir.path}');
     }
 
     // Write the file
