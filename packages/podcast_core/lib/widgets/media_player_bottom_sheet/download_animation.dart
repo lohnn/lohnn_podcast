@@ -39,11 +39,8 @@ class DownloadAnimation extends HookConsumerWidget {
       'packages/podcast_core/assets/animations/podcast.riv',
       artboard: 'Download',
       onInit: (artboard) {
-        final controller =
-            downloadRiveController.value = StateMachineController.fromArtboard(
-              artboard,
-              'Download',
-            );
+        final controller = downloadRiveController.value =
+            StateMachineController.fromArtboard(artboard, 'Download');
         artboard.addController(controller!);
 
         final currentDownloadProgress = ref.read(

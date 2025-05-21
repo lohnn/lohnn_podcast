@@ -47,12 +47,11 @@ class RssPodcast {
         channel.getElement('image')?.getElementContent('url') ??
         channel.getElement('itunes:image')!.getAttribute('href')!;
 
-    final categories =
-        channel
-            .findAllElements('itunes:category')
-            .map((e) => e.getAttribute('text'))
-            .nonNulls
-            .toSet();
+    final categories = channel
+        .findAllElements('itunes:category')
+        .map((e) => e.getAttribute('text'))
+        .nonNulls
+        .toSet();
 
     // Optional fields
     final language = channel.getElementContent('language');

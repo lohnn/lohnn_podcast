@@ -80,19 +80,18 @@ class EpisodeListItem extends StatelessWidget {
         ],
       ),
       trailing: PopupMenuButton<_PopupActions>(
-        itemBuilder:
-            (context) => [
-              if (episodeWithStatus.isPlayed)
-                const PopupMenuItem(
-                  value: _PopupActions.markUnlistened,
-                  child: Text('Mark unlistened'),
-                )
-              else
-                const PopupMenuItem(
-                  value: _PopupActions.markListened,
-                  child: Text('Mark listened'),
-                ),
-            ],
+        itemBuilder: (context) => [
+          if (episodeWithStatus.isPlayed)
+            const PopupMenuItem(
+              value: _PopupActions.markUnlistened,
+              child: Text('Mark unlistened'),
+            )
+          else
+            const PopupMenuItem(
+              value: _PopupActions.markListened,
+              child: Text('Mark listened'),
+            ),
+        ],
         icon: const Icon(Icons.more_vert),
         onSelected: (value) {
           switch (value) {

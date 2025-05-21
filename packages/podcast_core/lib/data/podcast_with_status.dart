@@ -18,7 +18,7 @@ class PodcastWithStatus with PodcastWithStatusMappable {
   });
 
   const PodcastWithStatus.notListened({required this.podcast})
-      : totalEpisodes = null,
-        listenedEpisodes = null,
-        hasUnseenEpisodes = null;
+    : totalEpisodes = null,
+      listenedEpisodes = null,
+      hasUnseenEpisodes = null;
 }

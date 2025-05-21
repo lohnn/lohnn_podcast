@@ -288,10 +288,12 @@ class ParticleSpherePainter extends CustomPainter {
       // final double displacementFactor = 1.0 - (noiseValue.abs() * 0.3).clamp(0.0, 0.5);
 
       final finalOpacity = depthOpacity.clamp(0.0, 1.0);
-      final finalSize = (particle.pointSize *
-              particle.scale *
-              (0.5 + depthOpacity * 0.5))
-          .clamp(0.5, particle.pointSize * 1.5); // Size also affected by depth
+      final finalSize =
+          (particle.pointSize * particle.scale * (0.5 + depthOpacity * 0.5))
+              .clamp(
+                0.5,
+                particle.pointSize * 1.5,
+              ); // Size also affected by depth
 
       // 7. Draw particle if it's roughly in front
       if (particle.z > -particle.originalRadius * 0.8) {

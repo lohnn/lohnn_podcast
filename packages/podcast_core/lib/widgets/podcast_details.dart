@@ -127,32 +127,29 @@ class _SubscribeChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return switch (ref
-        .watch(subscribedPodcastProvider(rssUrl: rssUrl))
-        .value) {
+    return switch (ref.watch(subscribedPodcastProvider(rssUrl: rssUrl)).value) {
       null => const Chip(label: Text('Loading...')),
       true => InputChip(
         onPressed: () async {
           final shouldDelete = await showDialog<bool>(
             context: context,
-            builder:
-                (context) => AlertDialog(
-                  title: const Text('Are you sure you want to unsubscribe?'),
-                  actions: <Widget>[
-                    SimpleDialogOption(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-                      },
-                      child: const Text('Yes'),
-                    ),
-                    SimpleDialogOption(
-                      onPressed: () {
-                        Navigator.pop(context, false);
-                      },
-                      child: const Text('No'),
-                    ),
-                  ],
+            builder: (context) => AlertDialog(
+              title: const Text('Are you sure you want to unsubscribe?'),
+              actions: <Widget>[
+                SimpleDialogOption(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: const Text('Yes'),
                 ),
+                SimpleDialogOption(
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                  child: const Text('No'),
+                ),
+              ],
+            ),
           );
           if (shouldDelete != true) return;
           // Unsubscribe from the podcast

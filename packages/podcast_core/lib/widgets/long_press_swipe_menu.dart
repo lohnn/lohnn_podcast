@@ -77,8 +77,9 @@ class _LongPressSwipeMenuState<T> extends State<LongPressSwipeMenu<T>>
     const overlap = 0.2;
     // Effective count of intervals to fit within the duration
     final effectiveCount = 1.0 + (count - 1) * (1.0 - overlap);
-    final singleDuration =
-        (count > 1 && effectiveCount > 0) ? (1.0 / effectiveCount) : 1.0;
+    final singleDuration = (count > 1 && effectiveCount > 0)
+        ? (1.0 / effectiveCount)
+        : 1.0;
 
     for (var i = 0; i < count; i++) {
       final start = (i * singleDuration * (1.0 - overlap)).clamp(0.0, 1.0);
@@ -141,8 +142,9 @@ class _LongPressSwipeMenuState<T> extends State<LongPressSwipeMenu<T>>
                     vertical: 4.0,
                   ),
                   decoration: BoxDecoration(
-                    color:
-                        isHovered ? theme.highlightColor : Colors.transparent,
+                    color: isHovered
+                        ? theme.highlightColor
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(4.0),
                   ),
                   child: Icon(option.icon, color: theme.colorScheme.primary),

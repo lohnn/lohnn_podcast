@@ -145,11 +145,10 @@ class RepositoryImpl implements core.Repository {
             case final episodesForPodcast)
           PodcastWithStatus(
             podcast: podcast,
-            listenedEpisodes:
-                episodesForPodcast
-                    .map((episode) => userEpisodeStatusBox.get(episode.id))
-                    .nonNulls
-                    .length,
+            listenedEpisodes: episodesForPodcast
+                .map((episode) => userEpisodeStatusBox.get(episode.id))
+                .nonNulls
+                .length,
             totalEpisodes: episodesForPodcast.length,
             hasUnseenEpisodes:
                 lastSeenBox.get(podcast.id)?.isBefore(podcast.lastPublished) ??
@@ -186,15 +185,14 @@ class RepositoryImpl implements core.Repository {
 
     final podcastImpl = PodcastImpl.fromRssPodcast(rssPodcast);
 
-    final episodes =
-        rssPodcast.episodes
-            .map(
-              (item) => EpisodeImpl.fromRssEpisode(
-                rssEpisode: item,
-                podcast: podcastImpl,
-              ),
-            )
-            .toList();
+    final episodes = rssPodcast.episodes
+        .map(
+          (item) => EpisodeImpl.fromRssEpisode(
+            rssEpisode: item,
+            podcast: podcastImpl,
+          ),
+        )
+        .toList();
 
     final podcastBox = await this.podcastBox;
     final episodeBox = await this.episodeBox;
@@ -297,10 +295,7 @@ class RepositoryImpl implements core.Repository {
     final box = await userEpisodeStatusBox;
 
     final newStatus = switch (episodeWithStatus.status) {
-      UserEpisodeStatus(
-        :final episodeId,
-        :final currentPosition,
-      ) =>
+      UserEpisodeStatus(:final episodeId, :final currentPosition) =>
         UserEpisodeStatusImpl.usingEpisodeId(
           episodeId: episodeId,
           currentPosition: currentPosition,

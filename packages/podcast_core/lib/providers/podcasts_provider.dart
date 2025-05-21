@@ -15,16 +15,11 @@ Future<bool?> subscribedPodcast(
   Ref ref, {
   required PodcastRssUrl rssUrl,
 }) async {
-  return ref
-      .watch(_subscribedPodcastRssUrlsProvider)
-      .value
-      ?.contains(rssUrl);
+  return ref.watch(_subscribedPodcastRssUrlsProvider).value?.contains(rssUrl);
 }
 
 @riverpod
-Future<Iterable<PodcastRssUrl>?> _subscribedPodcastRssUrls(
-  Ref ref,
-) async {
+Future<Iterable<PodcastRssUrl>?> _subscribedPodcastRssUrls(Ref ref) async {
   return ref
       .watch(
         podcastsProvider.select(

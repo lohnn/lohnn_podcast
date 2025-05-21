@@ -74,18 +74,19 @@ enum SortBy {
         (episode) => episode.episode.duration ?? Duration.zero,
         _sortedComparable<Duration>(sortAscending),
       ),
-      SortBy.listened => SortBy.date
-          .sortEpisodes(filteredEpisodes, sortAscending: sortAscending)
-          .sortedByCompare((episode) => episode.status?.isPlayed ?? false, (
-            a,
-            b,
-          ) {
-            if (sortAscending) {
-              return a.compareValue(b);
-            } else {
-              return b.compareValue(a);
-            }
-          }),
+      SortBy.listened =>
+        SortBy.date
+            .sortEpisodes(filteredEpisodes, sortAscending: sortAscending)
+            .sortedByCompare((episode) => episode.status?.isPlayed ?? false, (
+              a,
+              b,
+            ) {
+              if (sortAscending) {
+                return a.compareValue(b);
+              } else {
+                return b.compareValue(a);
+              }
+            }),
     };
   }
 }

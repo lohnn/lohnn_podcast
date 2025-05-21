@@ -83,10 +83,11 @@ class PodcastDetailsScreen
                           child: Icon(
                             Icons.filter_list,
                             key: ValueKey(episodesFilterState.isDefault),
-                            color:
-                                episodesFilterState.isDefault
-                                    ? theme.colorScheme.primary.withValues(alpha: 0.6)
-                                    : theme.colorScheme.primary,
+                            color: episodesFilterState.isDefault
+                                ? theme.colorScheme.primary.withValues(
+                                    alpha: 0.6,
+                                  )
+                                : theme.colorScheme.primary,
                           ),
                         ),
                         onPressed: () {

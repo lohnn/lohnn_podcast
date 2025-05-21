@@ -47,15 +47,16 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
               null => const Center(child: Text('Nothing is playing right now')),
               EpisodeWithStatus(:final episode) => InkWell(
                 onTap: () async {
-                  final action = await showModalBottomSheet<
-                    EpisodePlayerModalResultAction
-                  >(
-                    context: context,
-                    isScrollControlled: true,
-                    useSafeArea: true,
-                    showDragHandle: true,
-                    builder: (context) => const EpisodePlayerModal(),
-                  );
+                  final action =
+                      await showModalBottomSheet<
+                        EpisodePlayerModalResultAction
+                      >(
+                        context: context,
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        showDragHandle: true,
+                        builder: (context) => const EpisodePlayerModal(),
+                      );
 
                   switch (action) {
                     case EpisodePlayerModalResultAction.showPlaylist:
