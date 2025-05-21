@@ -30,6 +30,14 @@ Run the following command from the root of the repository to set up the project:
 dart bin/setup_project.dart
 ```
 
+This script will guide you through setting up your API credentials interactively:
+1.  When you run the script, it will first print instructions on how to obtain your API Key and Secret from Podcast Index, including a link to their developer signup page (https://podcastindex.org/developers/signup).
+2.  The script will then prompt you to enter your Podcast Index API Key directly into the terminal.
+3.  Next, it will prompt you to enter your Podcast Index API Secret directly into the terminal.
+4.  Once you provide the keys, the script will automatically create the `apps/podcast/lib/secrets.dart` file and populate it with the credentials you entered.
+
+You no longer need to manually edit this file with your keys; the script handles it for you.
+
 ### Running the App
 
 To run the application, navigate to the `apps/podcast` directory and use the `flutter run` command:
