@@ -33,8 +33,7 @@ class PlaylistScreen extends AsyncValueWidget<List<Episode>> {
         itemBuilder: (context, index) {
           final episode = data[index];
 
-          final valueOrNull2 =
-              ref.read(userEpisodeStatusPodProvider).value;
+          final valueOrNull2 = ref.read(userEpisodeStatusPodProvider).value;
           return ListTile(
             key: ValueKey(episode),
             onTap: () {

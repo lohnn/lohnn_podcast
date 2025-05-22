@@ -102,8 +102,7 @@ class _CarouselInformation extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final podcast =
-        ref.watch(podcastPodProvider(episode.podcastId)).value;
+    final podcast = ref.watch(podcastPodProvider(episode.podcastId)).value;
 
     final textTheme = Theme.of(context).textTheme;
     return OverflowBox(

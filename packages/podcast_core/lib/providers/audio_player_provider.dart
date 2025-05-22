@@ -17,9 +17,7 @@ import 'package:rxdart/rxdart.dart';
 part 'audio_player_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-Future<PodcastAudioHandler> _podcastAudioHandler(
-  Ref ref,
-) async {
+Future<PodcastAudioHandler> _podcastAudioHandler(Ref ref) async {
   final audioSession = await AudioSession.instance;
   await audioSession.configure(const AudioSessionConfiguration.speech());
   return PodcastAudioHandler(

@@ -250,11 +250,10 @@ class EpisodeCacheManager {
 
     // The get function is closing the sink
     // ignore: close_sinks
-    final subject =
-        _downloads[episode] = episodeFileService.get(
-          episode,
-          await _fileFromEpisode(episode),
-        );
+    final subject = _downloads[episode] = episodeFileService.get(
+      episode,
+      await _fileFromEpisode(episode),
+    );
 
     yield* subject.stream;
   }

@@ -9,8 +9,8 @@ class SearchHeadersInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final apiHeaderTime =
-        (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString();
+    final apiHeaderTime = (DateTime.now().millisecondsSinceEpoch ~/ 1000)
+        .toString();
 
     final hash = sha1.convert(
       utf8.encode(

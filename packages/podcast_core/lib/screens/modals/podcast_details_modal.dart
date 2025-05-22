@@ -13,15 +13,14 @@ class PodcastSearchDetailsModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AnimatedTheme(
       data: Theme.of(context).copyWith(
-        colorScheme:
-            ref
-                .watch(
-                  colorSchemeFromRemoteImageProvider(
-                    podcast.artwork,
-                    Theme.of(context).brightness,
-                  ),
-                )
-                .value,
+        colorScheme: ref
+            .watch(
+              colorSchemeFromRemoteImageProvider(
+                podcast.artwork,
+                Theme.of(context).brightness,
+              ),
+            )
+            .value,
       ),
       key: const Key('EpisodeDetailsScreen.theme'),
       child: SingleChildScrollView(

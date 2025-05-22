@@ -104,8 +104,8 @@ class PodcastSearchScreen extends ConsumerWidget {
                       useSafeArea: true,
                       showDragHandle: true,
                       // @TODO: Eventually maybe show episode list here as well
-                      builder:
-                          (context) => PodcastSearchDetailsModal(podcast: podcast),
+                      builder: (context) =>
+                          PodcastSearchDetailsModal(podcast: podcast),
                     );
                   },
                   trailing: switch (ref

@@ -46,10 +46,12 @@ class PodcastsWithStatus extends _$PodcastsWithStatus {
       if (newStatus == null) return;
       if (oldStatus == newStatus) return;
 
-      final oldListenedStatus =
-          oldStatus.values.map((value) => value.isPlayed).equatable;
-      final newListenedStatus =
-          newStatus.values.map((value) => value.isPlayed).equatable;
+      final oldListenedStatus = oldStatus.values
+          .map((value) => value.isPlayed)
+          .equatable;
+      final newListenedStatus = newStatus.values
+          .map((value) => value.isPlayed)
+          .equatable;
 
       if (oldListenedStatus != newListenedStatus) {
         ref.invalidateSelf();

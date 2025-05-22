@@ -41,15 +41,14 @@ class EpisodeDetailsScreen
       appBar: AppBar(),
       body: AnimatedTheme(
         data: Theme.of(context).copyWith(
-          colorScheme:
-              ref
-                  .watch(
-                    colorSchemeFromRemoteImageProvider(
-                      episode.imageUrl,
-                      Theme.of(context).brightness,
-                    ),
-                  )
-                  .value,
+          colorScheme: ref
+              .watch(
+                colorSchemeFromRemoteImageProvider(
+                  episode.imageUrl,
+                  Theme.of(context).brightness,
+                ),
+              )
+              .value,
         ),
         key: const Key('EpisodeDetailsScreen.theme'),
         child: SelectableRegion(

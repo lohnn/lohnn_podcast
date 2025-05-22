@@ -64,12 +64,9 @@ class LoggedInScreen extends HookConsumerWidget {
               return false;
             },
             path: '/',
-            builder:
-                (context, state) =>
-                    podcastListScreenBuilder?.let(
-                      (builder) => builder(context),
-                    ) ??
-                    const PodcastListScreen(),
+            builder: (context, state) =>
+                podcastListScreenBuilder?.let((builder) => builder(context)) ??
+                const PodcastListScreen(),
             routes: [
               GoRoute(
                 path: '/search',
@@ -81,24 +78,22 @@ class LoggedInScreen extends HookConsumerWidget {
               ),
               GoRoute(
                 path: '/:podcastId',
-                builder:
-                    (context, state) => PodcastDetailsScreen(
-                      PodcastId.fromPathParameter(
-                        state.pathParameters['podcastId']!,
-                      ),
-                    ),
+                builder: (context, state) => PodcastDetailsScreen(
+                  PodcastId.fromPathParameter(
+                    state.pathParameters['podcastId']!,
+                  ),
+                ),
                 routes: [
                   GoRoute(
                     path: '/:episodeId',
-                    builder:
-                        (context, state) => EpisodeDetailsScreen(
-                          podcastId: PodcastId.fromPathParameter(
-                            state.pathParameters['podcastId']!,
-                          ),
-                          episodeId: EpisodeId.fromPathParameter(
-                            state.pathParameters['episodeId']!,
-                          ),
-                        ),
+                    builder: (context, state) => EpisodeDetailsScreen(
+                      podcastId: PodcastId.fromPathParameter(
+                        state.pathParameters['podcastId']!,
+                      ),
+                      episodeId: EpisodeId.fromPathParameter(
+                        state.pathParameters['episodeId']!,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -108,14 +103,13 @@ class LoggedInScreen extends HookConsumerWidget {
       ),
     );
 
-    final colorScheme =
-        ref
-            .watch(
-              currentPlayingEpisodeColorSchemeProvider(
-                Theme.of(context).brightness,
-              ),
-            )
-            .value;
+    final colorScheme = ref
+        .watch(
+          currentPlayingEpisodeColorSchemeProvider(
+            Theme.of(context).brightness,
+          ),
+        )
+        .value;
 
     return AnimatedTheme(
       key: const ValueKey('LoggedInScreen.theme'),
@@ -123,18 +117,14 @@ class LoggedInScreen extends HookConsumerWidget {
       child: PodcastActions(
         child: Shortcuts(
           shortcuts: const {
-            SingleActivator(
-              LogicalKeyboardKey.mediaPlayPause,
-            ): ChangePlayStateIntent(MediaAction.playPause),
-            SingleActivator(
-              LogicalKeyboardKey.mediaPlay,
-            ): ChangePlayStateIntent(MediaAction.play),
-            SingleActivator(
-              LogicalKeyboardKey.mediaPause,
-            ): ChangePlayStateIntent(MediaAction.pause),
-            SingleActivator(
-              LogicalKeyboardKey.mediaStop,
-            ): ChangePlayStateIntent(MediaAction.pause),
+            SingleActivator(LogicalKeyboardKey.mediaPlayPause):
+                ChangePlayStateIntent(MediaAction.playPause),
+            SingleActivator(LogicalKeyboardKey.mediaPlay):
+                ChangePlayStateIntent(MediaAction.play),
+            SingleActivator(LogicalKeyboardKey.mediaPause):
+                ChangePlayStateIntent(MediaAction.pause),
+            SingleActivator(LogicalKeyboardKey.mediaStop):
+                ChangePlayStateIntent(MediaAction.pause),
           },
           child: AdaptiveLayout(
             bodyRatio: 0.7,
@@ -142,16 +132,15 @@ class LoggedInScreen extends HookConsumerWidget {
               config: {
                 Breakpoints.smallAndUp: SlotLayout.from(
                   key: const Key('LoggedInScreen.SmallMediaPlayerControls'),
-                  builder:
-                      (context) => SmallMediaPlayerControls(router: router),
+                  builder: (context) =>
+                      SmallMediaPlayerControls(router: router),
                 ),
                 Breakpoints.mediumAndUp: SlotLayout.from(
                   key: const Key('LoggedInScreen.SmallMediaPlayerControls'),
-                  builder:
-                      (context) => SmallMediaPlayerControls(
-                        router: router,
-                        showSkipButtons: true,
-                      ),
+                  builder: (context) => SmallMediaPlayerControls(
+                    router: router,
+                    showSkipButtons: true,
+                  ),
                 ),
               },
             ),
@@ -159,15 +148,13 @@ class LoggedInScreen extends HookConsumerWidget {
               config: {
                 Breakpoints.smallAndUp: SlotLayout.from(
                   key: const Key('LoggedInScreen.Body'),
-                  builder:
-                      (context) => Router<Object>(
-                        restorationScopeId: 'router',
-                        routeInformationProvider:
-                            router.routeInformationProvider,
-                        routeInformationParser: router.routeInformationParser,
-                        routerDelegate: router.routerDelegate,
-                        backButtonDispatcher: router.backButtonDispatcher,
-                      ),
+                  builder: (context) => Router<Object>(
+                    restorationScopeId: 'router',
+                    routeInformationProvider: router.routeInformationProvider,
+                    routeInformationParser: router.routeInformationParser,
+                    routerDelegate: router.routerDelegate,
+                    backButtonDispatcher: router.backButtonDispatcher,
+                  ),
                 ),
               },
             ),
@@ -175,9 +162,8 @@ class LoggedInScreen extends HookConsumerWidget {
               config: {
                 Breakpoints.mediumLargeAndUp: SlotLayout.from(
                   key: const Key('LoggedInScreen.SecondaryBody'),
-                  builder:
-                      (context) =>
-                          CurrentlyPlayingInformation(onNavigate: router.go),
+                  builder: (context) =>
+                      CurrentlyPlayingInformation(onNavigate: router.go),
                 ),
               },
             ),
