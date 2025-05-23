@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/podcast.model.dart';
@@ -107,6 +108,71 @@ class PodcastDetails extends StatelessWidget {
           const SizedBox(height: 12),
           _SubscribeChip(podcast.url),
           const SizedBox(height: 12),
+          _ExpansibleHtmlWidget(podcast: podcast),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExpansibleHtmlWidget extends HookWidget {
+  final _PodcastDetailsInformation podcast;
+
+  const _ExpansibleHtmlWidget({required this.podcast});
+
+  @override
+  Widget build(BuildContext context) {
+    // @TODO: If child is smaller than 100px, don't show it as expansible
+    final isExpanded = useState(CrossFadeState.showFirst);
+
+    return AnimatedCrossFade(
+      crossFadeState: isExpanded.value,
+      firstChild: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 100),
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: HtmlWidget(podcast.description),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: 24,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Theme.of(context).scaffoldBackgroundColor,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          InkWell(
+            onTap: () {
+              isExpanded.value = CrossFadeState.showSecond;
+            },
+            child: Text(
+              'Show more',
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            ),
+          ),
+        ],
+      ),
+      secondChild: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           HtmlWidget(
             podcast.description,
             onTapUrl: (url) {
@@ -114,8 +180,18 @@ class PodcastDetails extends StatelessWidget {
               return true;
             },
           ),
+          InkWell(
+            onTap: () {
+              isExpanded.value = CrossFadeState.showFirst;
+            },
+            child: Text(
+              'Show less',
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            ),
+          ),
         ],
       ),
+      duration: const Duration(milliseconds: 300),
     );
   }
 }
@@ -127,9 +203,11 @@ class _SubscribeChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
     return switch (ref.watch(subscribedPodcastProvider(rssUrl: rssUrl)).value) {
       null => const Chip(label: Text('Loading...')),
-      true => InputChip(
+      true => ActionChip(
+        backgroundColor: colors.errorContainer,
         onPressed: () async {
           final shouldDelete = await showDialog<bool>(
             context: context,
@@ -155,22 +233,32 @@ class _SubscribeChip extends ConsumerWidget {
           // Unsubscribe from the podcast
           await ref.read(findPodcastProvider.notifier).unsubscribe(rssUrl);
         },
-        label: const Row(
-          mainAxisSize: MainAxisSize.min,
+        label: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Remove podcast'),
-            SizedBox(width: 8),
-            Icon(Icons.remove),
+            Icon(Icons.remove_circle_outline, color: colors.onErrorContainer),
+            const SizedBox(width: 8),
+            Text(
+              'Unsubscribe',
+              style: TextStyle(color: colors.onErrorContainer),
+            ),
           ],
         ),
       ),
-      false => InputChip(
+      false => ActionChip(
+        backgroundColor: colors.errorContainer,
         onPressed: () {
           ref.read(findPodcastProvider.notifier).subscribe(rssUrl);
         },
-        label: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [Text('Add podcast'), SizedBox(width: 8), Icon(Icons.add)],
+        label: Row(
+          children: [
+            Icon(Icons.add, color: colors.onErrorContainer),
+            const SizedBox(width: 8),
+            Text(
+              'Add podcast',
+              style: TextStyle(color: colors.onErrorContainer),
+            ),
+          ],
         ),
       ),
     };
