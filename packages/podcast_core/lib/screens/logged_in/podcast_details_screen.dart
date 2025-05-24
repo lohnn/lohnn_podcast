@@ -53,13 +53,29 @@ class PodcastDetailsScreen
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 8)),
+            const SliverToBoxAdapter(child: Divider()),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
-                child: Flex(
-                  direction: Axis.horizontal,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Episodes ',
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          TextSpan(
+                            text: '(${episodes.length})',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     MenuAnchor(
                       style: MenuStyle(
                         backgroundColor: WidgetStatePropertyAll(
@@ -103,7 +119,6 @@ class PodcastDetailsScreen
                 ),
               ),
             ),
-            const SliverToBoxAdapter(child: Divider()),
             const SliverToBoxAdapter(child: SizedBox(height: 8)),
             SliverList.builder(
               itemCount: episodes.length,

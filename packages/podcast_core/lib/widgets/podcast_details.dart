@@ -62,6 +62,8 @@ class PodcastDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SelectableRegion(
       selectionControls: materialTextSelectionControls,
       child: Column(
@@ -80,8 +82,8 @@ class PodcastDetails extends StatelessWidget {
                       podcast.title,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium,
                     ),
-                    const SizedBox(height: 8),
                     // if (podcast.link case final link?)
                     //   InkWell(
                     //     child: Container(
@@ -93,10 +95,27 @@ class PodcastDetails extends StatelessWidget {
                     //   ),
                     InkWell(
                       onTap: () => launchUrl(podcast.url.url),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Row(
-                          children: [Text('Rss feed'), Icon(Icons.rss_feed)],
+                          spacing: 6,
+                          children: [
+                            Text(
+                              'Rss feed',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.6,
+                                ),
+                              ),
+                            ),
+                            Icon(
+                              Icons.rss_feed,
+                              size: 12,
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.6,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
