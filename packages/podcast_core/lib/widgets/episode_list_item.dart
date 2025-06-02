@@ -24,7 +24,7 @@ class EpisodeListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       key: ValueKey(episodeWithStatus.episode.id),
-      margin: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: InkWell(
         onTap: () {
           context.push(
@@ -34,6 +34,7 @@ class EpisodeListItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8,
             children: [
               Tooltip(
@@ -76,6 +77,15 @@ class EpisodeListItem extends StatelessWidget {
                       ),
                     ),
                     Text(episodeWithStatus.episode.title),
+                    if (episodeWithStatus.episode.description
+                        case final description?)
+                      Text(description.removeHtmlTags(), maxLines: 2),
+                    Row(
+                      children: [
+                        PlayEpisodeButton(episodeWithStatus.episode),
+                        QueueButton(episode: episodeWithStatus.episode),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -109,22 +119,6 @@ class EpisodeListItem extends StatelessWidget {
     );
     return ListTile(
       key: ValueKey(episodeWithStatus.episode.id),
-      onTap: () {
-        context.push(
-          '/${episodeWithStatus.episode.podcastId.safe}/${episodeWithStatus.episode.id.safe}',
-        );
-      },
-      leading: Tooltip(
-        message: switch (episodeWithStatus.isPlayed) {
-          true => 'Played episode',
-          false => 'Unplayed episode',
-        },
-        child: RoundedImage(
-          imageUri: episodeWithStatus.episode.imageUrl,
-          showDot: !episodeWithStatus.isPlayed,
-          imageSize: 40,
-        ),
-      ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -163,29 +157,6 @@ class EpisodeListItem extends StatelessWidget {
             ],
           ),
         ],
-      ),
-      trailing: PopupMenuButton<_PopupActions>(
-        itemBuilder: (context) => [
-          if (episodeWithStatus.isPlayed)
-            const PopupMenuItem(
-              value: _PopupActions.markUnlistened,
-              child: Text('Mark unlistened'),
-            )
-          else
-            const PopupMenuItem(
-              value: _PopupActions.markListened,
-              child: Text('Mark listened'),
-            ),
-        ],
-        icon: const Icon(Icons.more_vert),
-        onSelected: (value) {
-          switch (value) {
-            case _PopupActions.markListened:
-              onMarkListenedPressed();
-            case _PopupActions.markUnlistened:
-              onMarkUnlistenedPressed();
-          }
-        },
       ),
     );
   }

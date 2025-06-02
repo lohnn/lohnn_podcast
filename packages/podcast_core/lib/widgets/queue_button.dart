@@ -13,22 +13,34 @@ class QueueButton extends ConsumerWidget {
     // @TODO: Verify why provider is rebuilding multiple times
     final queue = ref.watch(playlistPodProvider).value ?? [];
 
-    if (queue.contains(episode)) {
-      return IconButton(
-        tooltip: 'Remove from queue',
-        onPressed: () {
-          ref.read(playlistPodProvider.notifier).removeFromQueue(episode);
-        },
-        icon: const Icon(Icons.playlist_remove),
-      );
-    } else {
-      return IconButton(
-        tooltip: 'Add to queue',
-        onPressed: () {
-          ref.read(playlistPodProvider.notifier).addToBottomOfQueue(episode);
-        },
-        icon: const Icon(Icons.playlist_add),
-      );
-    }
+    final onPressed = switch (queue.contains(episode)) {
+      true => () {
+        ref.read(playlistPodProvider.notifier).removeFromQueue(episode);
+      },
+      false => () {
+        ref.read(playlistPodProvider.notifier).addToBottomOfQueue(episode);
+      },
+    };
+
+    final icon = switch (queue.contains(episode)) {
+      true => const Icon(Icons.playlist_remove, key: Key('Remove icon')),
+      false => const Icon(Icons.playlist_add, key: Key('Add icon')),
+    };
+
+    final tooltip = switch (queue.contains(episode)) {
+      true => 'Remove from queue',
+      false => 'Add to queue',
+    };
+
+    return Tooltip(
+      message: tooltip,
+      child: FilledButton.tonal(
+        onPressed: onPressed,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: icon,
+        ),
+      ),
+    );
   }
 }
