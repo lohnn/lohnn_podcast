@@ -11,6 +11,7 @@ import 'package:podcast/data/mappers/uri_mapper.dart';
 import 'package:podcast/repository/repository_impl.dart';
 import 'package:podcast_core/repository.dart';
 import 'package:podcast_core/screens/logged_in/logged_in_screen.dart';
+import 'package:podcast_core/widgets/podcast_app.dart';
 import 'package:rive/rive.dart';
 
 Future<void> main() async {
@@ -35,25 +36,10 @@ Future<void> main() async {
 
   MapperContainer.globals.use(const UriMapper());
 
-  const icon = AssetImage(
-    'assets/icons/app_icon.webp',
-    package: 'podcast_core',
-  );
-  final lightColorScheme = await ColorScheme.fromImageProvider(provider: icon);
-  final darkColorScheme = await ColorScheme.fromImageProvider(
-    provider: icon,
-    brightness: Brightness.dark,
-  );
-
   runApp(
     ProviderScope(
       overrides: [repositoryProvider.overrideWith((ref) => RepositoryImpl())],
-      child: MaterialApp(
-        theme: ThemeData.light().copyWith(colorScheme: lightColorScheme),
-        darkTheme: ThemeData.dark().copyWith(colorScheme: darkColorScheme),
-        debugShowCheckedModeBanner: false,
-        home: const EntryAnimationScreen(),
-      ),
+      child: const PodcastApp(child: EntryAnimationScreen()),
     ),
   );
 }
