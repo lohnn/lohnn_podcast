@@ -29,49 +29,61 @@ class EpisodePlayerModal extends HookConsumerWidget {
 
     final episodeDuration = durations?.duration ?? episode.duration;
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 40, right: 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RoundedImage(imageUri: episode.imageUrl),
-            Text(episode.title),
-            if ((durations?.position, episodeDuration) case (
-              final currentPosition?,
-              final episodeDuration?,
-            )) ...[
-              Slider(
-                value: min(
-                  currentPosition.inMilliseconds.toDouble(),
-                  episodeDuration.inMilliseconds.toDouble(),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          colors: [
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.35),
+            Colors.transparent,
+          ],
+          center: Alignment.bottomCenter,
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 40, right: 40),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // AspectRatio(aspectRatio: 1),
+              RoundedImage(imageUri: episode.imageUrl),
+              Text(episode.title),
+              if ((durations?.position, episodeDuration) case (
+                final currentPosition?,
+                final episodeDuration?,
+              )) ...[
+                Slider(
+                  value: min(
+                    currentPosition.inMilliseconds.toDouble(),
+                    episodeDuration.inMilliseconds.toDouble(),
+                  ),
+                  max: episodeDuration.inMilliseconds.toDouble(),
+                  onChanged: (value) {
+                    ref
+                        .read(audioPlayerPodProvider.notifier)
+                        .setPosition(value.toInt());
+                  },
                 ),
-                max: episodeDuration.inMilliseconds.toDouble(),
-                onChanged: (value) {
-                  ref
-                      .read(audioPlayerPodProvider.notifier)
-                      .setPosition(value.toInt());
-                },
-              ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(currentPosition.prettyPrint()),
+                    Text((currentPosition - episodeDuration).prettyPrint()),
+                  ],
+                ),
+              ],
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(currentPosition.prettyPrint()),
-                  Text((currentPosition - episodeDuration).prettyPrint()),
+                  const ShowPlaylistButton(),
+                  MediaActionButton.back(),
+                  const PlayPauseButton(),
+                  MediaActionButton.forward(),
                 ],
               ),
+              const SizedBox(height: 16),
             ],
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const ShowPlaylistButton(),
-                MediaActionButton.back(),
-                const PlayPauseButton(),
-                MediaActionButton.forward(),
-              ],
-            ),
-            const SizedBox(height: 16),
-          ],
+          ),
         ),
       ),
     );
