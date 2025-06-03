@@ -20,7 +20,7 @@ class UserEpisodeStatusPod extends _$UserEpisodeStatusPod {
     if (lifecycleState != AppLifecycleState.resumed) return;
 
     ref.keepAlive();
-    await for (final status in _repository.watchUserEpisodeStatus()) {
+    await for (final status in _repository.watchUserEpisodeStatuses()) {
       yield {for (final status in status) status.episodeId: status}.equatable;
     }
   }
