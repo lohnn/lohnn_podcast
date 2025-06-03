@@ -12,7 +12,7 @@ class PlayEpisodeButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Tooltip(
       message: 'Play episode ${episode.title}',
-      child: FilledButton.tonal(
+      child: FilledButton(
         onPressed: () {
           ref.read(audioPlayerPodProvider.notifier).playEpisode(episode);
         },
