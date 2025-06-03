@@ -33,8 +33,8 @@ class PodcastApp extends HookConsumerWidget {
 
     if (colorScheme ?? iconColorScheme case final colorScheme?) {
       return MaterialApp(
-        theme: ThemeData.light().copyWith(colorScheme: colorScheme),
-        darkTheme: ThemeData.dark().copyWith(colorScheme: colorScheme),
+        theme: ThemeData.light().applyPodcastTheme(colorScheme),
+        darkTheme: ThemeData.dark().applyPodcastTheme(colorScheme),
         debugShowCheckedModeBanner: false,
         home: child,
       );
@@ -42,5 +42,19 @@ class PodcastApp extends HookConsumerWidget {
 
     // If the color scheme is not loaded yet, return an empty container
     return Container();
+  }
+}
+
+extension on ThemeData {
+  ThemeData applyPodcastTheme(ColorScheme colorScheme) {
+    return copyWith(
+      colorScheme: colorScheme,
+      filledButtonTheme: const FilledButtonThemeData(
+        style: ButtonStyle(
+          minimumSize: WidgetStatePropertyAll(Size.zero),
+          padding: WidgetStatePropertyAll(EdgeInsets.all(16)),
+        ),
+      ),
+    );
   }
 }

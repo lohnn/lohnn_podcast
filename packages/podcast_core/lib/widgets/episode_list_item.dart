@@ -22,6 +22,8 @@ class EpisodeListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
       key: ValueKey(episodeWithStatus.id),
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -50,10 +52,11 @@ class EpisodeListItem extends StatelessWidget {
               ),
               Expanded(
                 child: Column(
+                  spacing: 6,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DefaultTextStyle(
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      style: theme.textTheme.bodySmall!.copyWith(
                         fontSize: 11,
                         fontWeight: FontWeight.w200,
                       ),
@@ -74,9 +77,17 @@ class EpisodeListItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(episodeWithStatus.title),
+                    Text(
+                      episodeWithStatus.title,
+                      style: theme.textTheme.titleSmall,
+                    ),
                     if (episodeWithStatus.description case final description?)
-                      Text(description.removeHtmlTags(), maxLines: 2),
+                      Text(
+                        description.removeHtmlTags(),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall,
+                      ),
                     Row(
                       spacing: 8,
                       children: [
