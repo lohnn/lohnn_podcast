@@ -56,8 +56,7 @@ class FilterEpisodesPopup extends ConsumerWidget {
                 DropdownMenuItem(value: sortBy, child: Text(sortBy.name)),
             ],
           ),
-          // @TODO: Add a better icon for this
-          trailing: InkWell(
+          trailing: InkResponse(
             onTap: filterStateNotifier.reverseSortOrder,
             child: SizedBox(
               width: 24,

@@ -36,7 +36,7 @@ class PodcastAnimation extends HookWidget {
     }
 
     useEffect(() {
-      if (riveAnimationControllervalue case final controller?) {
+      if (riveAnimationController.value case final controller?) {
         updateControllerInputs(controller, params);
       }
       return null;
@@ -51,7 +51,10 @@ class PodcastAnimation extends HookWidget {
       artboard: artboard.name,
       onInit: (artboard) {
         final controller = riveAnimationController.value =
-            StateMachineController.fromArtboard(artboard, 'Download');
+            StateMachineController.fromArtboard(
+              artboard,
+              this.artboard.stateMachineName,
+            );
         artboard.addController(controller!);
 
         updateControllerInputs(controller, params);
@@ -61,10 +64,14 @@ class PodcastAnimation extends HookWidget {
 }
 
 enum PodcastAnimationArtboard {
-  download('Download'),
+  download('Download', 'Download'),
   sortOrder('Sort order');
 
   final String name;
+  final String stateMachineName;
 
-  const PodcastAnimationArtboard(this.name);
+  const PodcastAnimationArtboard(
+    this.name, [
+    this.stateMachineName = 'State Machine 1',
+  ]);
 }
