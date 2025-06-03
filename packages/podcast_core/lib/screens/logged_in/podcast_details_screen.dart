@@ -125,17 +125,35 @@ class PodcastDetailsScreen
               itemBuilder: (context, index) {
                 final episodeWithStatus = episodes[index];
                 return EpisodeListItem(
-                  episodeWithStatus: episodeWithStatus,
-                  onMarkListenedPressed: () async {
-                    await ref
-                        .read(provider.notifier)
-                        .markListened(episodeWithStatus);
-                  },
-                  onMarkUnlistenedPressed: () async {
-                    await ref
-                        .read(provider.notifier)
-                        .markUnlistened(episodeWithStatus);
-                  },
+                  episodeWithStatus: episodeWithStatus.episode,
+                  isPlayed: episodeWithStatus.isPlayed,
+                  trailing: PopupMenuButton<_PopupActions>(
+                    itemBuilder: (context) => [
+                      if (episodeWithStatus.isPlayed)
+                        const PopupMenuItem(
+                          value: _PopupActions.markUnlistened,
+                          child: Text('Mark unlistened'),
+                        )
+                      else
+                        const PopupMenuItem(
+                          value: _PopupActions.markListened,
+                          child: Text('Mark listened'),
+                        ),
+                    ],
+                    icon: const Icon(Icons.more_vert),
+                    onSelected: (value) async {
+                      switch (value) {
+                        case _PopupActions.markListened:
+                          await ref
+                              .read(provider.notifier)
+                              .markListened(episodeWithStatus);
+                        case _PopupActions.markUnlistened:
+                          await ref
+                              .read(provider.notifier)
+                              .markUnlistened(episodeWithStatus);
+                      }
+                    },
+                  ),
                 );
               },
             ),
@@ -145,3 +163,5 @@ class PodcastDetailsScreen
     );
   }
 }
+
+enum _PopupActions { markListened, markUnlistened }
