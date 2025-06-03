@@ -17,7 +17,7 @@ import 'package:podcast_core/screens/logged_in/podcast_details_screen.dart';
 import 'package:podcast_core/screens/logged_in/podcast_list_screen.dart';
 import 'package:podcast_core/screens/logged_in/podcast_search_screen.dart';
 import 'package:podcast_core/widgets/currently_playing_information.dart';
-import 'package:podcast_core/widgets/media_player_bottom_sheet/small_media_player_controls.dart';
+import 'package:podcast_core/widgets/small_media_player/small_media_player_controls.dart';
 import 'package:podcast_core/widgets/podcast_actions.dart';
 
 class LoggedInScreen extends HookConsumerWidget {

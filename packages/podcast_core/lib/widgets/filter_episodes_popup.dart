@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episodes_filter_state.dart';
 import 'package:podcast_core/providers/episodes_filter_provider.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation.dart';
 
 class FilterEpisodesPopup extends ConsumerWidget {
   const FilterEpisodesPopup({super.key});
@@ -56,21 +57,14 @@ class FilterEpisodesPopup extends ConsumerWidget {
             ],
           ),
           // @TODO: Add a better icon for this
-          trailing: IconButton(
-            onPressed: filterStateNotifier.reverseSortOrder,
-            tooltip: 'Change sort order',
-            icon: TweenAnimationBuilder<double>(
-              tween: Tween<double>(end: filterState.sortAscending ? -1.0 : 1.0),
-              curve: Curves.easeOutBack,
-              duration: const Duration(milliseconds: 200),
-              builder: (BuildContext context, double scaleY, Widget? child) {
-                return Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.identity()..scale(1.0, scaleY),
-                  child: child,
-                );
-              },
-              child: const Icon(Icons.sort),
+          trailing: InkWell(
+            onTap: filterStateNotifier.reverseSortOrder,
+            child: SizedBox(
+              width: 24,
+              child: PodcastAnimation(
+                artboard: PodcastAnimationArtboard.sortOrder,
+                params: {'Reversed': filterState.sortAscending},
+              ),
             ),
           ),
         ),

@@ -9,11 +9,11 @@ import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/intents/play_pause_intent.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
 import 'package:podcast_core/screens/modals/episode_player_modal.dart';
-import 'package:podcast_core/widgets/media_player_bottom_sheet/download_animation.dart';
-import 'package:podcast_core/widgets/media_player_bottom_sheet/episode_progress_bar.dart';
-import 'package:podcast_core/widgets/media_player_bottom_sheet/media_action_button.dart';
-import 'package:podcast_core/widgets/media_player_bottom_sheet/play_pause_button.dart';
 import 'package:podcast_core/widgets/rounded_image.dart';
+import 'package:podcast_core/widgets/small_media_player/download_animation.dart';
+import 'package:podcast_core/widgets/small_media_player/episode_progress_bar.dart';
+import 'package:podcast_core/widgets/small_media_player/media_action_button.dart';
+import 'package:podcast_core/widgets/small_media_player/play_pause_button.dart';
 
 class SmallMediaPlayerControls extends HookConsumerWidget {
   final GoRouter router;

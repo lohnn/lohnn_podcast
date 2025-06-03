@@ -5,10 +5,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/extensions/duration_extensions.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
-import 'package:podcast_core/widgets/media_player_bottom_sheet/media_action_button.dart';
-import 'package:podcast_core/widgets/media_player_bottom_sheet/play_pause_button.dart';
-import 'package:podcast_core/widgets/media_player_bottom_sheet/show_playlist_button.dart';
 import 'package:podcast_core/widgets/rounded_image.dart';
+import 'package:podcast_core/widgets/small_media_player/media_action_button.dart';
+import 'package:podcast_core/widgets/small_media_player/play_pause_button.dart';
+import 'package:podcast_core/widgets/small_media_player/show_playlist_button.dart';
 
 enum EpisodePlayerModalResultAction { showPlaylist }
 
