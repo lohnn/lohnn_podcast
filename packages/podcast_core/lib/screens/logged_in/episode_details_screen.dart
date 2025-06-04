@@ -36,7 +36,6 @@ class EpisodeDetailsScreen
     WidgetRef ref,
     (Podcast, EpisodeWithStatus) data,
   ) {
-    GoRouter.of(context).replace('location');
     final (podcast, episodeWithStatus) = data;
     final episode = episodeWithStatus.episode;
 
