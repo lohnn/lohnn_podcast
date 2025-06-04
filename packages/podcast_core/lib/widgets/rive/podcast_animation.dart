@@ -13,27 +13,29 @@ class PodcastAnimation extends HookWidget {
     this.params = const {},
   });
 
+  void updateControllerInputs(
+    StateMachineController controller,
+    Map<String, dynamic> params,
+  ) {
+    for (final (key, value) in params.records) {
+      switch (value) {
+        case final double value:
+          controller.getNumberInput(key)?.value = value;
+        case final bool value:
+          controller.getBoolInput(key)?.value = value;
+        default:
+          continue;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final riveAnimationController = useState<StateMachineController?>(null);
-
-    void updateControllerInputs(
-      StateMachineController controller,
-      Map<String, dynamic> params,
-    ) {
-      for (final (key, value) in params.records) {
-        switch (value) {
-          case final double value:
-            controller.findInput<double>(key)?.value = value;
-          case final int value:
-            controller.findInput<int>(key)?.value = value;
-          case final bool value:
-            controller.findInput<bool>(key)?.value = value;
-          default:
-            continue;
-        }
-      }
-    }
+    // Disposing the controller when the widget is disposed
+    useEffect(() => riveAnimationController.value?.dispose, [
+      riveAnimationController.value,
+    ]);
 
     useEffect(() {
       if (riveAnimationController.value case final controller?) {
@@ -42,10 +44,6 @@ class PodcastAnimation extends HookWidget {
       return null;
     }, [riveAnimationController.value, ...params.records]);
 
-    // Disposing the controller when the widget is disposed
-    if (riveAnimationController.value case final controller?) {
-      useEffect(() => controller.dispose, [controller]);
-    }
     return RiveAnimation.asset(
       'packages/podcast_core/assets/animations/podcast.riv',
       artboard: artboard.name,
