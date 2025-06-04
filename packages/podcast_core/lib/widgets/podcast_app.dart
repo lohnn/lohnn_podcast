@@ -48,6 +48,7 @@ class PodcastApp extends HookConsumerWidget {
 extension on ThemeData {
   ThemeData applyPodcastTheme(ColorScheme colorScheme) {
     return copyWith(
+      splashFactory: InkSparkle.splashFactory,
       colorScheme: colorScheme,
       filledButtonTheme: const FilledButtonThemeData(
         style: ButtonStyle(
