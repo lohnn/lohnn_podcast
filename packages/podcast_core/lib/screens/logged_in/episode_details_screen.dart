@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/data/podcast.model.dart';
+import 'package:podcast_core/extensions/text_style_extensions.dart';
 import 'package:podcast_core/providers/color_scheme_from_remote_image_provider.dart';
 import 'package:podcast_core/providers/episodes_provider.dart';
 import 'package:podcast_core/screens/async_value_screen.dart';
@@ -37,15 +39,16 @@ class EpisodeDetailsScreen
     final (podcast, episodeWithStatus) = data;
     final episode = episodeWithStatus.episode;
 
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(),
       body: AnimatedTheme(
-        data: Theme.of(context).copyWith(
+        data: theme.copyWith(
           colorScheme: ref
               .watch(
                 colorSchemeFromRemoteImageProvider(
                   episode.imageUrl,
-                  Theme.of(context).brightness,
+                  theme.brightness,
                 ),
               )
               .value,
@@ -55,8 +58,9 @@ class EpisodeDetailsScreen
           selectionControls: materialTextSelectionControls,
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
+                spacing: 16,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -72,27 +76,34 @@ class EpisodeDetailsScreen
                               podcast.title,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleLarge,
                             ),
                             Text(
                               episode.title,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleMedium?.withOpacity(),
                             ),
+                            if (episode.pubDate case final pubDate?)
+                              DefaultTextStyle(
+                                style: theme.textTheme.titleSmall!.withOpacity(
+                                  0.6,
+                                ),
+                                child: PubDateText(pubDate),
+                              ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  if (episode.pubDate case final pubDate?) PubDateText(pubDate),
                   Row(
+                    spacing: 8,
                     children: [
-                      PlayEpisodeButton(episode),
-                      QueueButton(episode: episode),
+                      Expanded(child: PlayEpisodeButton(episode)),
+                      Expanded(child: QueueButton(episode: episode)),
                     ],
                   ),
                   if (episode.description case final description?) ...[
-                    const SizedBox(height: 16),
                     HtmlWidget(
                       description,
                       onTapUrl: (url) {

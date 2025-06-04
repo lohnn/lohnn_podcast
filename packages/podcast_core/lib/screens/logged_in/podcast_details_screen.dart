@@ -53,13 +53,29 @@ class PodcastDetailsScreen
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 8)),
+            const SliverToBoxAdapter(child: Divider()),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
-                child: Flex(
-                  direction: Axis.horizontal,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Episodes ',
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          TextSpan(
+                            text: '(${episodes.length})',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     MenuAnchor(
                       style: MenuStyle(
                         backgroundColor: WidgetStatePropertyAll(
@@ -103,24 +119,41 @@ class PodcastDetailsScreen
                 ),
               ),
             ),
-            const SliverToBoxAdapter(child: Divider()),
             const SliverToBoxAdapter(child: SizedBox(height: 8)),
             SliverList.builder(
               itemCount: episodes.length,
               itemBuilder: (context, index) {
                 final episodeWithStatus = episodes[index];
                 return EpisodeListItem(
-                  episodeWithStatus: episodeWithStatus,
-                  onMarkListenedPressed: () async {
-                    await ref
-                        .read(provider.notifier)
-                        .markListened(episodeWithStatus);
-                  },
-                  onMarkUnlistenedPressed: () async {
-                    await ref
-                        .read(provider.notifier)
-                        .markUnlistened(episodeWithStatus);
-                  },
+                  episodeWithStatus: episodeWithStatus.episode,
+                  isPlayed: episodeWithStatus.isPlayed,
+                  trailing: PopupMenuButton<_PopupActions>(
+                    itemBuilder: (context) => [
+                      if (episodeWithStatus.isPlayed)
+                        const PopupMenuItem(
+                          value: _PopupActions.markUnlistened,
+                          child: Text('Mark unlistened'),
+                        )
+                      else
+                        const PopupMenuItem(
+                          value: _PopupActions.markListened,
+                          child: Text('Mark listened'),
+                        ),
+                    ],
+                    icon: const Icon(Icons.more_vert),
+                    onSelected: (value) async {
+                      switch (value) {
+                        case _PopupActions.markListened:
+                          await ref
+                              .read(provider.notifier)
+                              .markListened(episodeWithStatus);
+                        case _PopupActions.markUnlistened:
+                          await ref
+                              .read(provider.notifier)
+                              .markUnlistened(episodeWithStatus);
+                      }
+                    },
+                  ),
                 );
               },
             ),
@@ -130,3 +163,5 @@ class PodcastDetailsScreen
     );
   }
 }
+
+enum _PopupActions { markListened, markUnlistened }

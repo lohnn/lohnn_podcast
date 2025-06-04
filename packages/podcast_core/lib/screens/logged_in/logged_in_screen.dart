@@ -11,14 +11,13 @@ import 'package:podcast_core/extensions/nullability_extensions.dart';
 import 'package:podcast_core/intents/play_pause_intent.dart';
 import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
-import 'package:podcast_core/providers/episode_color_scheme_provider.dart';
 import 'package:podcast_core/screens/logged_in/episode_details_screen.dart';
 import 'package:podcast_core/screens/logged_in/playlist_screen.dart';
 import 'package:podcast_core/screens/logged_in/podcast_details_screen.dart';
 import 'package:podcast_core/screens/logged_in/podcast_list_screen.dart';
 import 'package:podcast_core/screens/logged_in/podcast_search_screen.dart';
 import 'package:podcast_core/widgets/currently_playing_information.dart';
-import 'package:podcast_core/widgets/media_player_bottom_sheet/small_media_player_controls.dart';
+import 'package:podcast_core/widgets/small_media_player/small_media_player_controls.dart';
 import 'package:podcast_core/widgets/podcast_actions.dart';
 
 class LoggedInScreen extends HookConsumerWidget {
@@ -103,70 +102,60 @@ class LoggedInScreen extends HookConsumerWidget {
       ),
     );
 
-    final colorScheme = ref
-        .watch(
-          currentPlayingEpisodeColorSchemeProvider(
-            Theme.of(context).brightness,
+    return PodcastActions(
+      child: Shortcuts(
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.mediaPlayPause):
+              ChangePlayStateIntent(MediaAction.playPause),
+          SingleActivator(LogicalKeyboardKey.mediaPlay): ChangePlayStateIntent(
+            MediaAction.play,
           ),
-        )
-        .value;
-
-    return AnimatedTheme(
-      key: const ValueKey('LoggedInScreen.theme'),
-      data: Theme.of(context).copyWith(colorScheme: colorScheme),
-      child: PodcastActions(
-        child: Shortcuts(
-          shortcuts: const {
-            SingleActivator(LogicalKeyboardKey.mediaPlayPause):
-                ChangePlayStateIntent(MediaAction.playPause),
-            SingleActivator(LogicalKeyboardKey.mediaPlay):
-                ChangePlayStateIntent(MediaAction.play),
-            SingleActivator(LogicalKeyboardKey.mediaPause):
-                ChangePlayStateIntent(MediaAction.pause),
-            SingleActivator(LogicalKeyboardKey.mediaStop):
-                ChangePlayStateIntent(MediaAction.pause),
-          },
-          child: AdaptiveLayout(
-            bodyRatio: 0.7,
-            bottomNavigation: SlotLayout(
-              config: {
-                Breakpoints.smallAndUp: SlotLayout.from(
-                  key: const Key('LoggedInScreen.SmallMediaPlayerControls'),
-                  builder: (context) =>
-                      SmallMediaPlayerControls(router: router),
+          SingleActivator(LogicalKeyboardKey.mediaPause): ChangePlayStateIntent(
+            MediaAction.pause,
+          ),
+          SingleActivator(LogicalKeyboardKey.mediaStop): ChangePlayStateIntent(
+            MediaAction.pause,
+          ),
+        },
+        child: AdaptiveLayout(
+          bodyRatio: 0.7,
+          bottomNavigation: SlotLayout(
+            config: {
+              Breakpoints.smallAndUp: SlotLayout.from(
+                key: const Key('LoggedInScreen.SmallMediaPlayerControls'),
+                builder: (context) => SmallMediaPlayerControls(router: router),
+              ),
+              Breakpoints.mediumAndUp: SlotLayout.from(
+                key: const Key('LoggedInScreen.SmallMediaPlayerControls'),
+                builder: (context) => SmallMediaPlayerControls(
+                  router: router,
+                  showSkipButtons: true,
                 ),
-                Breakpoints.mediumAndUp: SlotLayout.from(
-                  key: const Key('LoggedInScreen.SmallMediaPlayerControls'),
-                  builder: (context) => SmallMediaPlayerControls(
-                    router: router,
-                    showSkipButtons: true,
-                  ),
+              ),
+            },
+          ),
+          body: SlotLayout(
+            config: {
+              Breakpoints.smallAndUp: SlotLayout.from(
+                key: const Key('LoggedInScreen.Body'),
+                builder: (context) => Router<Object>(
+                  restorationScopeId: 'router',
+                  routeInformationProvider: router.routeInformationProvider,
+                  routeInformationParser: router.routeInformationParser,
+                  routerDelegate: router.routerDelegate,
+                  backButtonDispatcher: router.backButtonDispatcher,
                 ),
-              },
-            ),
-            body: SlotLayout(
-              config: {
-                Breakpoints.smallAndUp: SlotLayout.from(
-                  key: const Key('LoggedInScreen.Body'),
-                  builder: (context) => Router<Object>(
-                    restorationScopeId: 'router',
-                    routeInformationProvider: router.routeInformationProvider,
-                    routeInformationParser: router.routeInformationParser,
-                    routerDelegate: router.routerDelegate,
-                    backButtonDispatcher: router.backButtonDispatcher,
-                  ),
-                ),
-              },
-            ),
-            secondaryBody: SlotLayout(
-              config: {
-                Breakpoints.mediumLargeAndUp: SlotLayout.from(
-                  key: const Key('LoggedInScreen.SecondaryBody'),
-                  builder: (context) =>
-                      CurrentlyPlayingInformation(onNavigate: router.go),
-                ),
-              },
-            ),
+              ),
+            },
+          ),
+          secondaryBody: SlotLayout(
+            config: {
+              Breakpoints.mediumLargeAndUp: SlotLayout.from(
+                key: const Key('LoggedInScreen.SecondaryBody'),
+                builder: (context) =>
+                    CurrentlyPlayingInformation(onNavigate: router.go),
+              ),
+            },
           ),
         ),
       ),

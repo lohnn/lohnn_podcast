@@ -277,7 +277,7 @@ class RepositoryImpl implements core.Repository {
   }
 
   @override
-  Stream<List<UserEpisodeStatus>> watchUserEpisodeStatus() async* {
+  Stream<List<UserEpisodeStatus>> watchUserEpisodeStatuses() async* {
     final box = await userEpisodeStatusBox;
     yield box.values.toList(growable: false);
 
