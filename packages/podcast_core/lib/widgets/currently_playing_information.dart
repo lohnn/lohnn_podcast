@@ -56,7 +56,7 @@ class CurrentlyPlayingInformation extends ConsumerWidget {
                       );
 
                       if (!context.mounted) return;
-                      onNavigate('/${podcast.id}/${queue[index].id}');
+                      onNavigate('/${podcast.id.safe}/${queue[index].id.safe}');
                     },
                     flexWeights: [
                       1,
