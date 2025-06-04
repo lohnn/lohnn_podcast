@@ -16,7 +16,10 @@ class PlayEpisodeButton extends ConsumerWidget {
         onPressed: () {
           ref.read(audioPlayerPodProvider.notifier).playEpisode(episode);
         },
-        child: const Icon(Icons.play_arrow),
+        child: Semantics(
+          label: 'Play episode',
+          child: const Icon(Icons.play_arrow),
+        ),
       ),
     );
   }

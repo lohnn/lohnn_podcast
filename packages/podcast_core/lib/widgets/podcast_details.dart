@@ -84,15 +84,15 @@ class PodcastDetails extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium,
                     ),
-                    // if (podcast.link case final link?)
-                    //   InkWell(
-                    //     child: Container(
-                    //       width: double.infinity,
-                    //       padding: const EdgeInsets.symmetric(vertical: 8),
-                    //       child: Text(podcast.link.toString()),
-                    //     ),
-                    //     onTap: () => launchUrl(link),
-                    //   ),
+                    if (podcast.link case final link?)
+                      InkWell(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Text(podcast.link.toString()),
+                        ),
+                        onTap: () => launchUrl(link),
+                      ),
                     InkWell(
                       onTap: () => launchUrl(podcast.url.url),
                       child: Padding(
