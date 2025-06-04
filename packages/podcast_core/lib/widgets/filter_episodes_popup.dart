@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episodes_filter_state.dart';
+import 'package:podcast_core/extensions/text_style_extensions.dart';
 import 'package:podcast_core/providers/episodes_filter_provider.dart';
 import 'package:podcast_core/widgets/rive/podcast_animation.dart';
 
@@ -12,14 +13,12 @@ class FilterEpisodesPopup extends ConsumerWidget {
     final filterState = ref.watch(episodesFilterProvider);
     final filterStateNotifier = ref.read(episodesFilterProvider.notifier);
 
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
-          title: Text(
-            'Filter episodes',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          title: Text('Filter episodes', style: theme.textTheme.titleLarge),
           trailing: IconButton(
             icon: AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
@@ -46,24 +45,50 @@ class FilterEpisodesPopup extends ConsumerWidget {
           ),
         ),
         ListTile(
-          title: const Text('Sort by'),
-          subtitle: DropdownButton(
-            isExpanded: true,
-            onChanged: filterStateNotifier.changeSortBy,
-            value: filterState.sortBy,
-            items: [
-              for (final sortBy in SortBy.values)
-                DropdownMenuItem(value: sortBy, child: Text(sortBy.name)),
-            ],
+          title: Text(
+            'Sort by',
+            style: theme.textTheme.bodySmall?.withOpacity(),
           ),
-          trailing: InkResponse(
-            onTap: filterStateNotifier.reverseSortOrder,
-            child: SizedBox(
-              width: 24,
-              child: PodcastAnimation(
-                artboard: PodcastAnimationArtboard.sortOrder,
-                params: {'Reversed': filterState.sortAscending},
-              ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField(
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: theme.colorScheme.surfaceContainerHighest,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onChanged: filterStateNotifier.changeSortBy,
+                    value: filterState.sortBy,
+                    items: [
+                      for (final sortBy in SortBy.values)
+                        DropdownMenuItem(
+                          value: sortBy,
+                          child: Text(sortBy.name),
+                        ),
+                    ],
+                  ),
+                ),
+                InkResponse(
+                  onTap: filterStateNotifier.reverseSortOrder,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: PodcastAnimation(
+                        artboard: PodcastAnimationArtboard.sortOrder,
+                        params: {'Reversed': filterState.sortAscending},
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
