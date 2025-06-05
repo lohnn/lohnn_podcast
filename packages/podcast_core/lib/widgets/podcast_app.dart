@@ -39,7 +39,10 @@ class PodcastApp extends HookConsumerWidget {
         darkTheme: ThemeData.dark().applyPodcastTheme(colorScheme),
         debugShowCheckedModeBanner: false,
         builder: kDebugMode
-            ? (_, child) => AccessibilityTools(child: child)
+            ? (_, child) => AccessibilityTools(
+                buttonsAlignment: ButtonsAlignment.bottomLeft,
+                child: child,
+              )
             : null,
         home: child,
       );
