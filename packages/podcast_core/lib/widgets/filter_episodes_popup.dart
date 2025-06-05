@@ -106,7 +106,11 @@ class FilterEpisodesPopup extends ConsumerWidget {
                             height: 24,
                             child: PodcastAnimation(
                               artboard: PodcastAnimationArtboard.sortOrder,
-                              params: {'Reversed': filterState.sortAscending},
+                              params: {
+                                'Reversed': filterState.sortAscending,
+                                'Dark mode':
+                                    theme.brightness == Brightness.dark,
+                              },
                             ),
                           ),
                         ),
