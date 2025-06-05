@@ -170,13 +170,16 @@ class _ExpansibleHtmlWidget extends HookWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           HtmlWidget('$clippedDescription...'),
-          InkWell(
-            onTap: () {
+          TextButton(
+            onPressed: () {
               isExpanded.value = CrossFadeState.showSecond;
             },
-            child: Text(
-              'Show more',
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            child: Semantics(
+              label: 'Show more',
+              child: Text(
+                'Expand description',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
             ),
           ),
         ],
@@ -191,13 +194,16 @@ class _ExpansibleHtmlWidget extends HookWidget {
               return true;
             },
           ),
-          InkWell(
-            onTap: () {
+          TextButton(
+            onPressed: () {
               isExpanded.value = CrossFadeState.showFirst;
             },
-            child: Text(
-              'Show less',
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            child: Semantics(
+              label: 'Collapse description',
+              child: Text(
+                'Show less',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
             ),
           ),
         ],
