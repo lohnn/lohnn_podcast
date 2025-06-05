@@ -72,7 +72,11 @@ class PodcastDetails extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RoundedImage(imageUri: podcast.artwork, imageSize: 100),
+              RoundedImage(
+                semanticLabel: 'Podcast image',
+                imageUri: podcast.artwork,
+                imageSize: 100,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -84,15 +88,14 @@ class PodcastDetails extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium,
                     ),
-                    if (podcast.link case final link?)
-                      InkWell(
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text(podcast.link.toString()),
-                        ),
-                        onTap: () => launchUrl(link),
+                    InkWell(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(podcast.link.toString()),
                       ),
+                      onTap: () => launchUrl(podcast.link),
+                    ),
                     InkWell(
                       onTap: () => launchUrl(podcast.url.url),
                       child: Padding(

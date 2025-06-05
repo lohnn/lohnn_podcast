@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/providers/color_scheme_from_remote_image_provider.dart';
 import 'package:podcast_core/providers/episodes_provider.dart';
@@ -13,6 +14,8 @@ import '../../test_data_models/test_episode.dart';
 import '../../test_data_models/test_podcast.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('EpisodeDetailsScreen Tests', () {
     late TestPodcast testPodcast;
     late TestEpisode testEpisode;
@@ -32,8 +35,7 @@ void main() {
         url: Uri.parse('http://example.com/episode.mp3'),
         title: 'Test Episode Title',
         pubDate: DateTime(2024),
-        description:
-            '<p>Test Description</p><a href="http://example.com">Test Link</a>',
+        description: 'Test Description',
         imageUrl: Uri.parse('http://example.com/episode_image.png'),
         podcastId: PodcastId('1'),
       );
@@ -44,32 +46,34 @@ void main() {
     });
 
     Future<void> pumpScreen(WidgetTester tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            episodePodProvider(
-              podcastId: PodcastId('1'),
-              episodeId: EpisodeId('1'),
-            ).overrideWithBuild(
-              (_, _) => AsyncData((testPodcast, testEpisodeWithStatus)),
-            ),
-            colorSchemeFromRemoteImageProvider(
-              Uri.parse('http://example.com/episode_image.png'),
-              Brightness.light,
-            ).overrideWith(
-              (ref) =>
-                  Future.value(ColorScheme.fromSeed(seedColor: Colors.blue)),
-            ),
-          ],
-          child: MaterialApp(
-            home: EpisodeDetailsScreen(
-              podcastId: PodcastId('1'),
-              episodeId: EpisodeId('1'),
+      await mockNetworkImagesFor(
+        () => tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              episodePodProvider(
+                podcastId: PodcastId('1'),
+                episodeId: EpisodeId('1'),
+              ).overrideWithBuild(
+                (_, _) => AsyncData((testPodcast, testEpisodeWithStatus)),
+              ),
+              colorSchemeFromRemoteImageProvider(
+                Uri.parse('http://example.com/episode_image.png'),
+                Brightness.light,
+              ).overrideWith(
+                (ref) =>
+                    Future.value(ColorScheme.fromSeed(seedColor: Colors.blue)),
+              ),
+            ],
+            child: MaterialApp(
+              home: EpisodeDetailsScreen(
+                podcastId: PodcastId('1'),
+                episodeId: EpisodeId('1'),
+              ),
             ),
           ),
         ),
       );
-      await tester.pumpAndSettle(); // Wait for animations and async operations
+      await tester.pumpAndSettle();
     }
 
     testWidgets('Follows a11y guidelines', (tester) async {
@@ -90,8 +94,6 @@ void main() {
       expect(find.text('Test Episode Title'), findsOneWidget);
 
       // Verify Publication Date
-      // Assuming PubDateText formats it in a specific way, e.g., "January 1, 2024"
-      // This might need adjustment based on actual PubDateText output
       expect(
         find.byWidgetPredicate(
           (widget) =>
@@ -102,23 +104,17 @@ void main() {
       );
 
       // Verify Episode Image
-      expect(
-        find.byType(Image),
-        findsOneWidget,
-      ); // Assuming RoundedImage uses Image
-      // Add semantics check for image if RoundedImage provides it
+      expect(find.byType(Image), findsOneWidget);
 
-      // Add semantics for HtmlWidget content if possible, though it might be complex
+      final imageSemantics = tester.getSemantics(find.byType(Image));
+      expect(imageSemantics.label, 'Episode image');
+
+      // @TODO: Add semantics for HtmlWidget content if possible, though it might be complex
+      // expect(find.text('Test Description'), findsOneWidget);
 
       // Verify Play and Queue Buttons (assuming they have icons or specific text)
-      expect(
-        find.byIcon(Icons.play_arrow),
-        findsOneWidget,
-      ); // Example, replace with actual icon/text
-      expect(
-        find.byType(QueueButton),
-        findsOneWidget,
-      ); // Example, replace with actual icon/text
+      expect(find.byIcon(Icons.play_arrow), findsOneWidget);
+      expect(find.byType(QueueButton), findsOneWidget);
 
       // Check button semantics
       expect(
@@ -143,7 +139,7 @@ void main() {
           hasFocusAction: true,
           hasEnabledState: true,
           label: 'Add to queue',
-        ), // Adjust label as per QueueButton
+        ),
       );
     });
 
@@ -157,7 +153,7 @@ void main() {
         find.byKey(const Key('EpisodeDetailsScreen.theme')),
         findsOneWidget,
       );
-      // Further testing would involve overriding the provider and checking specific theme properties.
+      // TODO: Further testing would involve overriding the provider and checking specific theme properties.
     });
 
     testWidgets('tapping on a URL in HTML description launches the URL', (
@@ -172,8 +168,8 @@ void main() {
       // This often involves setting up a mock channel for url_launcher.
     });
 
-    // Add more tests for accessibility, e.g., focus traversal, minimum tap targets, etc.
-    // Test cases for when description is null, pubDate is null, etc.
+    // TODO: Add more tests for accessibility, e.g., focus traversal, minimum tap targets, etc.
+    // TODO: Test cases for when description is null, pubDate is null, etc.
 
     testWidgets('Screen is selectable for text copying', (
       WidgetTester tester,

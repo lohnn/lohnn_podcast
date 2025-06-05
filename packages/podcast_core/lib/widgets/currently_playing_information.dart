@@ -113,6 +113,7 @@ class _CarouselInformation extends ConsumerWidget {
         spacing: 8,
         children: [
           RoundedImage(
+            semanticLabel: 'Episode image',
             radius: 28,
             imageUri: episode.imageUrl,
             fit: BoxFit.cover,

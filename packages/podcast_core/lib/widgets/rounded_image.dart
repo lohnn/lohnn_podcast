@@ -8,10 +8,12 @@ class RoundedImage extends StatelessWidget {
   final double? imageSize;
   final BoxFit? fit;
   final double? radius;
+  final String semanticLabel;
 
   const RoundedImage({
     super.key,
     required this.imageUri,
+    required this.semanticLabel,
     this.showDot = false,
     this.imageSize,
     this.fit,
@@ -38,6 +40,7 @@ class RoundedImage extends StatelessWidget {
                   (uri) => ClipRRect(
                     borderRadius: BorderRadius.circular(radius ?? 8),
                     child: PotentiallyCachedImage(
+                      semanticLabel: semanticLabel,
                       uri.toString(),
                       width: imageSize,
                       height: imageSize,

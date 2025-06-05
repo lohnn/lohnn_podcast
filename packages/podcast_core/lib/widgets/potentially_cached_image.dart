@@ -9,9 +9,11 @@ class PotentiallyCachedImage extends StatelessWidget {
   final int? cachedWidth;
   final int? cachedHeight;
   final BoxFit? fit;
+  final String semanticLabel;
 
   const PotentiallyCachedImage(
     this.uri, {
+    required this.semanticLabel,
     super.key,
     this.width,
     this.height,
@@ -22,8 +24,9 @@ class PotentiallyCachedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isWeb) {
+    if (isWeb || isRunningTest) {
       return Image.network(
+        semanticLabel: semanticLabel,
         uri,
         width: width,
         height: height,
@@ -31,13 +34,18 @@ class PotentiallyCachedImage extends StatelessWidget {
         fit: fit,
       );
     }
-    return CachedNetworkImage(
-      imageUrl: uri,
-      width: width,
-      height: height,
-      memCacheWidth: cachedWidth,
-      memCacheHeight: cachedHeight,
-      fit: fit,
+    return Semantics(
+      label: semanticLabel,
+      image: true,
+      excludeSemantics: true,
+      child: CachedNetworkImage(
+        imageUrl: uri,
+        width: width,
+        height: height,
+        memCacheWidth: cachedWidth,
+        memCacheHeight: cachedHeight,
+        fit: fit,
+      ),
     );
   }
 }

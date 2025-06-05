@@ -45,6 +45,7 @@ class EpisodeListItem extends StatelessWidget {
                   false => 'Unplayed episode',
                 },
                 child: RoundedImage(
+                  semanticLabel: 'Episode image',
                   imageUri: episodeWithStatus.imageUrl,
                   showDot: !isPlayed,
                   imageSize: 40,
