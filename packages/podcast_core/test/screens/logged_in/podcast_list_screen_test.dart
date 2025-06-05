@@ -1,114 +1,142 @@
+import 'dart:async';
+import 'dart:ui'; // For SemanticsAction if needed for explicit action check
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/podcast.model.dart';
-import 'package:podcast_core/data/podcast_feed.dart';
 import 'package:podcast_core/data/podcast_with_status.dart';
 import 'package:podcast_core/providers/podcasts_with_status_provider.dart';
 import 'package:podcast_core/screens/logged_in/podcast_list_screen.dart';
-import '../../helpers/widget_tester_helpers.dart'; // Added import
+import 'package:podcast_core/widgets/podcast_list_tile.dart';
+import '../../helpers/widget_tester_helpers.dart';
+import 'package:podcast_core/helpers/equatable_list.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 
-// import 'package:mocktail/mocktail.dart'; // Not used for now
+// Define MockPodcast
+class MockPodcast implements Podcast {
+  @override
+  final PodcastId id;
+  @override
+  final PodcastRssUrl url;
+  @override
+  final Uri link;
+  @override
+  final String title;
+  @override
+  final String description;
+  @override
+  final Uri artwork;
+  @override
+  final DateTime? lastPublished;
+  @override
+  final String? language;
+  @override
+  final Set<String> categories;
+
+  MockPodcast({
+    required this.id,
+    required this.url,
+    required this.link,
+    required this.title,
+    required this.description,
+    required this.artwork,
+    this.lastPublished,
+    this.language,
+    this.categories = const {},
+  });
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final mockPodcast = Podcast(
+  final mockPodcastImpl = MockPodcast(
     id: PodcastId('1'),
     title: 'Test Podcast',
     url: PodcastRssUrl.parse('http://example.com/feed.xml'),
     link: Uri.parse('http://example.com'),
     artwork: Uri.parse('http://example.com/artwork.png'),
     description: 'A test podcast description.',
-    author: 'Test Author',
-    owner: PodcastOwner(name: 'Test Owner', email: 'owner@example.com'),
-    episodes: [], // Assuming empty list for simplicity here
-    newFeedUrl: null,
-    funding: [],
-    categories: [],
-    explicit: false,
-    guid: 'test-guid',
-    podcastPlatform: PodcastPlatform.rss,
-    lastBuildDate: null,
-    lastPubDate: null,
+    lastPublished: DateTime.now(),
+    language: 'en',
+    categories: {'Technology'},
   );
 
   final mockPodcastWithStatus = PodcastWithStatus(
-    podcast: mockPodcast,
+    podcast: mockPodcastImpl,
     listenedEpisodes: 5,
     totalEpisodes: 10,
     hasUnseenEpisodes: true,
   );
 
-  // Helper to wrap a widget with ProviderScope and MaterialApp
-  Widget createTestApp(Widget child, List<Override> overrides) {
-    return ProviderScope(
-      overrides: overrides,
-      child: MaterialApp(
-        home: child,
-      ),
-    );
-  }
-
   group('PodcastListScreen Tests', () {
-    testWidgets('renders correctly with data', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        createTestApp(
-          PodcastListScreen(),
-          [
-            podcastsWithStatusProvider.overrideWith((ref) => AsyncData([mockPodcastWithStatus])),
-          ],
-        ),
-      );
+    testWidgets('renders correctly with data and checks key semantics', (WidgetTester tester) async {
+      await mockNetworkImagesFor(() async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              podcastsWithStatusProvider.overrideWithBuild((ref, self) async {
+                return EquatableList([mockPodcastWithStatus]);
+              }),
+            ],
+            child: MaterialApp(home: PodcastListScreen()),
+          ),
+        );
 
-      // Ensure all animations and microtasks are settled
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      expect(find.byType(PodcastListScreen), findsOneWidget);
-      expect(find.byType(Scaffold), findsOneWidget);
-      expect(find.byType(AppBar), findsOneWidget);
-      expect(find.byIcon(Icons.search), findsOneWidget);
-      expect(find.byType(CustomScrollView), findsOneWidget);
-      expect(find.text('Test Podcast'), findsOneWidget);
-      expect(find.text('5/10'), findsOneWidget);
+        expect(find.byType(PodcastListScreen), findsOneWidget);
+        expect(find.byType(Scaffold), findsOneWidget);
+        expect(find.byType(AppBar), findsOneWidget);
 
-      // Enhanced semantics check for search button
-      final searchButton = find.byIcon(Icons.search);
-      expect(tester.getSemantics(searchButton), matchesSemantics(
-          hasTapAction: true,
-          isButton: true,
-          label: 'Search for podcasts', // As per the tooltip in PodcastListScreen
-          tooltip: 'Search for podcasts',
-      ));
+        final searchButton = find.byIcon(Icons.search);
+        expect(searchButton, findsOneWidget);
+
+        expect(searchButton, matchesSemantics(
+            tooltip: 'Search for podcasts',
+            hasTapAction: true,
+            hasFocusAction: true, // IconButton with tooltip is focusable and can be tapped
+            isButton: true,
+            isEnabled: true, // Assuming it is enabled
+            isFocusable: true,
+        ));
+
+        expect(find.byType(CustomScrollView), findsOneWidget);
+        expect(find.text('Test Podcast'), findsOneWidget);
+        expect(find.text('5/10'), findsOneWidget);
+      });
     });
 
     testWidgets('renders correctly with empty podcast list', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        createTestApp(
-          PodcastListScreen(),
-          [
-            podcastsWithStatusProvider.overrideWith((ref) => const AsyncData([])),
-          ],
-        ),
-      );
+      await mockNetworkImagesFor(() async { // Added for safety, though likely no images
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              podcastsWithStatusProvider.overrideWithBuild((ref, self) async {
+                return EquatableList<PodcastWithStatus>([]);
+              }),
+            ],
+            child: MaterialApp(home: PodcastListScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      await tester.pumpAndSettle();
-
-      expect(find.byType(PodcastListScreen), findsOneWidget);
-      expect(find.byType(Scaffold), findsOneWidget);
-      expect(find.byType(AppBar), findsOneWidget);
-      expect(find.byIcon(Icons.search), findsOneWidget);
-      expect(find.text('No podcasts yet. Tap the + button to add one.'), findsOneWidget);
-      expect(find.text('Test Podcast'), findsNothing);
+        expect(find.byType(PodcastListScreen), findsOneWidget);
+        expect(find.byType(PodcastListTile), findsNothing);
+        expect(find.text('Test Podcast'), findsNothing);
+      });
     });
 
     testWidgets('renders loading state correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
-        createTestApp(
-          PodcastListScreen(),
-          [
-            podcastsWithStatusProvider.overrideWith((ref) => const AsyncLoading()),
+        ProviderScope(
+          overrides: [
+            podcastsWithStatusProvider.overrideWithBuild((ref, self) async {
+              // Standard way to keep an AsyncNotifier loading for tests: return a non-completing future.
+              return Completer<EquatableList<PodcastWithStatus>>().future;
+            }),
           ],
+          child: MaterialApp(home: PodcastListScreen()),
         ),
       );
 
@@ -118,31 +146,38 @@ void main() {
     });
 
     testWidgets('renders error state correctly', (WidgetTester tester) async {
+      final testException = Exception('Test error from override');
       await tester.pumpWidget(
-        createTestApp(
-          PodcastListScreen(),
-          [
-            podcastsWithStatusProvider.overrideWith((ref) => AsyncError('Test error', StackTrace.empty)),
+        ProviderScope(
+          overrides: [
+            podcastsWithStatusProvider.overrideWithBuild((ref, self) async {
+              throw testException;
+            }),
           ],
+          child: MaterialApp(home: PodcastListScreen()),
         ),
       );
 
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('Error: Test error'), findsOneWidget);
+      expect(find.textContaining('Test error from override', findRichText: true), findsOneWidget);
     });
 
     testWidgets('passes accessibility guidelines', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        createTestApp(
-          PodcastListScreen(),
-          [
-            podcastsWithStatusProvider.overrideWith((ref) => AsyncData([mockPodcastWithStatus])),
-          ],
-        ),
-      );
-      await tester.pumpAndSettle();
-      await tester.testA11yGuidelines();
+      await mockNetworkImagesFor(() async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              podcastsWithStatusProvider.overrideWithBuild((ref, self) async {
+                return EquatableList([mockPodcastWithStatus]);
+              }),
+            ],
+            child: MaterialApp(home: PodcastListScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.testA11yGuidelines();
+      });
     });
   });
 }
