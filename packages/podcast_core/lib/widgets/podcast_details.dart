@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
@@ -144,43 +146,30 @@ class _ExpansibleHtmlWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // @TODO: If child is smaller than 100px, don't show it as expansible
     final isExpanded = useState(CrossFadeState.showFirst);
+
+    final clippedDescription = podcast.description.substring(
+      0,
+      // Limit to 300 characters
+      min(podcast.description.length, 300),
+    );
+
+    if (clippedDescription == podcast.description) {
+      return HtmlWidget(
+        podcast.description,
+        onTapUrl: (url) {
+          launchUrlString(url);
+          return true;
+        },
+      );
+    }
 
     return AnimatedCrossFade(
       crossFadeState: isExpanded.value,
       firstChild: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 100),
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: HtmlWidget(podcast.description),
-                ),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: 24,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Theme.of(context).scaffoldBackgroundColor,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          HtmlWidget('$clippedDescription...'),
           InkWell(
             onTap: () {
               isExpanded.value = CrossFadeState.showSecond;
