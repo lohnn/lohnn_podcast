@@ -1,3 +1,5 @@
+import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -36,6 +38,12 @@ class PodcastApp extends HookConsumerWidget {
         theme: ThemeData.light().applyPodcastTheme(colorScheme),
         darkTheme: ThemeData.dark().applyPodcastTheme(colorScheme),
         debugShowCheckedModeBanner: false,
+        builder: kDebugMode
+            ? (_, child) => AccessibilityTools(
+                buttonsAlignment: ButtonsAlignment.bottomLeft,
+                child: child,
+              )
+            : null,
         home: child,
       );
     }

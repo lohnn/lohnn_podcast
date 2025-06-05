@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
@@ -72,7 +74,11 @@ class PodcastDetails extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RoundedImage(imageUri: podcast.artwork, imageSize: 100),
+              RoundedImage(
+                semanticLabel: 'Podcast image',
+                imageUri: podcast.artwork,
+                imageSize: 100,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -84,15 +90,14 @@ class PodcastDetails extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium,
                     ),
-                    // if (podcast.link case final link?)
-                    //   InkWell(
-                    //     child: Container(
-                    //       width: double.infinity,
-                    //       padding: const EdgeInsets.symmetric(vertical: 8),
-                    //       child: Text(podcast.link.toString()),
-                    //     ),
-                    //     onTap: () => launchUrl(link),
-                    //   ),
+                    InkWell(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(podcast.link.toString()),
+                      ),
+                      onTap: () => launchUrl(podcast.link),
+                    ),
                     InkWell(
                       onTap: () => launchUrl(podcast.url.url),
                       child: Padding(
@@ -141,50 +146,40 @@ class _ExpansibleHtmlWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // @TODO: If child is smaller than 100px, don't show it as expansible
     final isExpanded = useState(CrossFadeState.showFirst);
+
+    final clippedDescription = podcast.description.substring(
+      0,
+      // Limit to 300 characters
+      min(podcast.description.length, 300),
+    );
+
+    if (clippedDescription == podcast.description) {
+      return HtmlWidget(
+        podcast.description,
+        onTapUrl: (url) {
+          launchUrlString(url);
+          return true;
+        },
+      );
+    }
 
     return AnimatedCrossFade(
       crossFadeState: isExpanded.value,
       firstChild: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 100),
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: HtmlWidget(podcast.description),
-                ),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: 24,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Theme.of(context).scaffoldBackgroundColor,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          InkWell(
-            onTap: () {
+          HtmlWidget('$clippedDescription...'),
+          TextButton(
+            onPressed: () {
               isExpanded.value = CrossFadeState.showSecond;
             },
-            child: Text(
-              'Show more',
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            child: Semantics(
+              label: 'Show more',
+              child: Text(
+                'Expand description',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
             ),
           ),
         ],
@@ -199,13 +194,16 @@ class _ExpansibleHtmlWidget extends HookWidget {
               return true;
             },
           ),
-          InkWell(
-            onTap: () {
+          TextButton(
+            onPressed: () {
               isExpanded.value = CrossFadeState.showFirst;
             },
-            child: Text(
-              'Show less',
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            child: Semantics(
+              label: 'Collapse description',
+              child: Text(
+                'Show less',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
             ),
           ),
         ],

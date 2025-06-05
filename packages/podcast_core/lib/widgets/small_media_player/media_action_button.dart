@@ -61,18 +61,27 @@ class MediaActionButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final positionKey = useMemoized(GlobalKey.new);
-    return LongPressSwipeMenu<Duration>(
-      key: positionKey,
-      options: options,
-      onOptionPressed: (duration) {
-        ref.read(audioPlayerPodProvider.notifier).seekRelative(duration);
-      },
-      onPressed: () {
-        ref.read(audioPlayerPodProvider.notifier).triggerMediaAction(action);
-      },
-      initialIcon: icon,
+    final theme = Theme.of(context);
+    return IconButton(
       tooltip: tooltip,
+      onPressed: () =>
+          ref.read(audioPlayerPodProvider.notifier).triggerMediaAction(action),
+      icon: Icon(icon, color: theme.colorScheme.primary),
     );
+
+    // @TODO: Improve this to use LongPressSwipeMenu and start using it
+    // final positionKey = useMemoized(GlobalKey.new);
+    // return LongPressSwipeMenu<Duration>(
+    //   key: positionKey,
+    //   options: options,
+    //   onOptionPressed: (duration) {
+    //     ref.read(audioPlayerPodProvider.notifier).seekRelative(duration);
+    //   },
+    //   onPressed: () {
+    //     ref.read(audioPlayerPodProvider.notifier).triggerMediaAction(action);
+    //   },
+    //   initialIcon: icon,
+    //   tooltip: tooltip,
+    // );
   }
 }

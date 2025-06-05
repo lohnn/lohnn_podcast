@@ -97,6 +97,7 @@ class PodcastDetailsScreen
                         icon: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
                           child: Icon(
+                            semanticLabel: 'Filter episodes',
                             Icons.filter_list,
                             key: ValueKey(episodesFilterState.isDefault),
                             color: episodesFilterState.isDefault

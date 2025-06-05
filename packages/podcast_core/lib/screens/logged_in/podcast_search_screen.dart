@@ -79,6 +79,7 @@ class PodcastSearchScreen extends ConsumerWidget {
                   titleAlignment: ListTileTitleAlignment.titleHeight,
                   key: ValueKey(podcast),
                   leading: RoundedImage(
+                    semanticLabel: 'Podcast artwork',
                     imageUri: podcast.artwork,
                     imageSize: 40,
                   ),

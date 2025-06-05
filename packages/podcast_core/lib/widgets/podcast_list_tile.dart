@@ -40,6 +40,7 @@ class PodcastListTile extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       leading: RoundedImage(
+        semanticLabel: 'Podcast image',
         imageUri: imageUrl,
         showDot: showDot,
         imageSize: 40,

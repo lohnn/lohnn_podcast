@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
@@ -66,7 +65,11 @@ class EpisodeDetailsScreen
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      RoundedImage(imageUri: episode.imageUrl, imageSize: 100),
+                      RoundedImage(
+                        semanticLabel: 'Episode image',
+                        imageUri: episode.imageUrl,
+                        imageSize: 100,
+                      ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
@@ -87,7 +90,7 @@ class EpisodeDetailsScreen
                             if (episode.pubDate case final pubDate?)
                               DefaultTextStyle(
                                 style: theme.textTheme.titleSmall!.withOpacity(
-                                  0.6,
+                                  0.65,
                                 ),
                                 child: PubDateText(pubDate),
                               ),

@@ -36,9 +36,12 @@ class QueueButton extends ConsumerWidget {
       message: tooltip,
       child: FilledButton.tonal(
         onPressed: onPressed,
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: icon,
+        child: Semantics(
+          label: tooltip,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: icon,
+          ),
         ),
       ),
     );

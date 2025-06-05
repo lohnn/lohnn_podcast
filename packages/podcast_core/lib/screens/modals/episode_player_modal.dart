@@ -45,8 +45,10 @@ class EpisodePlayerModal extends HookConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // AspectRatio(aspectRatio: 1),
-              RoundedImage(imageUri: episode.imageUrl),
+              RoundedImage(
+                semanticLabel: 'Episode image',
+                imageUri: episode.imageUrl,
+              ),
               Text(episode.title),
               if ((durations?.position, episodeDuration) case (
                 final currentPosition?,

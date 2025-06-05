@@ -74,6 +74,7 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: RoundedImage(
+                              semanticLabel: 'Episode image',
                               imageUri: episode.imageUrl,
                               imageSize: 60,
                             ),

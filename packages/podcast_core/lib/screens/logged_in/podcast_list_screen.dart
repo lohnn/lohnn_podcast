@@ -24,6 +24,7 @@ class PodcastListScreen extends AsyncValueWidget<List<PodcastWithStatus>> {
       appBar: AppBar(
         actions: [
           IconButton(
+            tooltip: 'Search for podcasts',
             onPressed: () => context.push('/search'),
             icon: const Icon(Icons.search),
           ),
