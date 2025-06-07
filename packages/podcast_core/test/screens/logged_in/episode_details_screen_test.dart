@@ -3,11 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:flutter/semantics.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/providers/color_scheme_from_remote_image_provider.dart';
 import 'package:podcast_core/providers/episodes_provider.dart';
 import 'package:podcast_core/screens/logged_in/episode_details_screen.dart';
+import 'package:podcast_core/widgets/play_episode_button.dart';
 import 'package:podcast_core/widgets/queue_button.dart';
+import 'package:podcast_core/widgets/rounded_image.dart';
 
 import '../../helpers/widget_tester_helpers.dart';
 import '../../test_data_models/test_episode.dart';
@@ -103,22 +106,51 @@ void main() {
         findsOneWidget,
       );
 
-      // Verify Episode Image
-      expect(find.byType(Image), findsOneWidget);
+      // Verify Podcast Title accessibility
+      expect(find.text('Test Podcast Title'), findsOneWidget);
+      expect(
+        tester.getSemantics(find.text('Test Podcast Title')),
+        matchesSemantics(label: 'Test Podcast Title', isInSemanticTree: true),
+      );
 
-      final imageSemantics = tester.getSemantics(find.byType(Image));
-      expect(imageSemantics.label, 'Episode image');
+      // Verify Episode Title accessibility
+      expect(find.text('Test Episode Title'), findsOneWidget);
+      expect(
+        tester.getSemantics(find.text('Test Episode Title')),
+        matchesSemantics(label: 'Test Episode Title', isInSemanticTree: true),
+      );
 
-      // @TODO: Add semantics for HtmlWidget content if possible, though it might be complex
-      // expect(find.text('Test Description'), findsOneWidget);
+      // Verify Episode Image (RoundedImage)
+      expect(find.byType(RoundedImage), findsOneWidget);
+      final imageSemantics = tester.getSemantics(find.byType(RoundedImage));
+      expect(imageSemantics.label, 'Episode image'); // Assuming RoundedImage forwards this or has its own.
+                                                    // This might need adjustment based on RoundedImage implementation.
 
-      // Verify Play and Queue Buttons (assuming they have icons or specific text)
-      expect(find.byIcon(Icons.play_arrow), findsOneWidget);
+      // Verify HtmlWidget content accessibility (basic check)
+      // This checks if any text from the description is found in the semantics tree.
+      // A more robust test might involve checking specific text nodes if the HTML structure is known.
+      expect(find.byType(HtmlWidget), findsOneWidget);
+      final htmlWidgetSemantics = tester.getSemantics(find.byType(HtmlWidget));
+      // Check that it has some text content. The exact label might be a concatenation of text nodes.
+      expect(htmlWidgetSemantics.value, contains('Test Description'));
+      expect(htmlWidgetSemantics.isInSemanticTree, isTrue);
+
+
+      // Verify Play and Queue Buttons
+      expect(find.byType(PlayEpisodeButton), findsOneWidget);
       expect(find.byType(QueueButton), findsOneWidget);
+
+      // Check button tap target sizes
+      final playButton = find.byType(PlayEpisodeButton);
+      final queueButton = find.byType(QueueButton);
+      expect(tester.getSize(playButton).width, greaterThanOrEqualTo(48.0));
+      expect(tester.getSize(playButton).height, greaterThanOrEqualTo(48.0));
+      expect(tester.getSize(queueButton).width, greaterThanOrEqualTo(48.0));
+      expect(tester.getSize(queueButton).height, greaterThanOrEqualTo(48.0));
 
       // Check button semantics
       expect(
-        tester.getSemantics(find.byIcon(Icons.play_arrow)),
+        tester.getSemantics(playButton),
         matchesSemantics(
           isButton: true,
           hasTapAction: true,
@@ -126,11 +158,11 @@ void main() {
           isFocusable: true,
           hasFocusAction: true,
           hasEnabledState: true,
-          label: 'Play episode',
+          label: 'Play episode', // This label should come from PlayEpisodeButton's Semantics
         ),
       );
       expect(
-        tester.getSemantics(find.byIcon(Icons.playlist_add)),
+        tester.getSemantics(queueButton),
         matchesSemantics(
           isButton: true,
           hasTapAction: true,
@@ -138,7 +170,7 @@ void main() {
           isFocusable: true,
           hasFocusAction: true,
           hasEnabledState: true,
-          label: 'Add to queue',
+          label: 'Add to queue', // This label should come from QueueButton's Semantics
         ),
       );
     });
@@ -168,7 +200,6 @@ void main() {
       // This often involves setting up a mock channel for url_launcher.
     });
 
-    // TODO: Add more tests for accessibility, e.g., focus traversal, minimum tap targets, etc.
     // TODO: Test cases for when description is null, pubDate is null, etc.
 
     testWidgets('Screen is selectable for text copying', (

@@ -92,38 +92,40 @@ void main() {
 
         final listTileFinder = find.byType(ListTile);
         expect(listTileFinder, findsOneWidget);
-        final listTileSemantics = tester.getSemantics(listTileFinder);
+
+        // Tap Target Size
+        expect(tester.getSize(listTileFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(listTileFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        // Semantic Label and Tappable State
         expect(
-          listTileSemantics,
+          tester.getSemantics(listTileFinder),
           matchesSemantics(
-            hasTapAction: true,
-            isFocusable:
-                true, // ListTile itself is focusable if it has an onTap
-            label: mockName,
+            isTappable: true,
+            label: mockName, // When showDot is false, label is just the name
           ),
-        );
-        // Check that the name is indeed part of the ListTile's primary content for semantics
-        expect(
-          find.descendant(of: listTileFinder, matching: find.text(mockName)),
-          findsOneWidget,
         );
 
         final roundedImageFinder = find.byType(RoundedImage);
         expect(roundedImageFinder, findsOneWidget);
+        // General size check for RoundedImage
+        expect(tester.getSize(roundedImageFinder).width, greaterThanOrEqualTo(24.0)); // Example reasonable min size
+        expect(tester.getSize(roundedImageFinder).height, greaterThanOrEqualTo(24.0));
         final roundedImage = tester.widget<RoundedImage>(roundedImageFinder);
         expect(roundedImage.showDot, isFalse);
         expect(roundedImage.imageUri, mockImageUrl);
 
         final roundedImageSemantics = tester.getSemantics(roundedImageFinder);
         expect(roundedImageSemantics.label, 'Podcast image');
-        expect(roundedImageSemantics.tooltip, isEmpty);
+        expect(roundedImageSemantics.tooltip, isEmpty); // No tooltip when showDot is false
 
         final listTileWidget = tester.widget<ListTile>(listTileFinder);
         expect(listTileWidget.trailing, isNull);
+        await tester.testA11yGuidelines(label: "PodcastListTile Basic State");
       });
     });
 
-    testWidgets('renders correctly with showDot true', (
+    testWidgets('renders correctly with showDot true and checks semantics', (
       WidgetTester tester,
     ) async {
       await mockNetworkImagesFor(() async {
@@ -136,36 +138,65 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        final roundedImage = tester.widget<RoundedImage>(
-          find.byType(RoundedImage),
+        final listTileFinder = find.byType(ListTile);
+        expect(listTileFinder, findsOneWidget);
+        // Tap Target Size
+        expect(tester.getSize(listTileFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(listTileFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        // Semantic Label includes "New episodes" hint when showDot is true
+        expect(
+          tester.getSemantics(listTileFinder),
+          matchesSemantics(
+            isTappable: true,
+            label: '$mockName, New episodes', // Enhanced label for showDot
+          ),
         );
+
+        final roundedImage = tester.widget<RoundedImage>(find.byType(RoundedImage));
         expect(roundedImage.showDot, isTrue);
-        // No change in semantic label or tooltip for RoundedImage based on showDot in PodcastListTile
-        final roundedImageSemantics = tester.getSemantics(
-          find.byType(RoundedImage),
-        );
+
+        // RoundedImage semantics: still no tooltip directly on it, info is on parent ListTile
+        final roundedImageSemantics = tester.getSemantics(find.byType(RoundedImage));
         expect(roundedImageSemantics.label, 'Podcast image');
         expect(roundedImageSemantics.tooltip, isEmpty);
+        // Alternative: Add tooltip to RoundedImage if ListTile label enhancement is not desired
+        // expect(roundedImageSemantics.tooltip, 'New episodes');
+
+        await tester.testA11yGuidelines(label: "PodcastListTile with showDot true");
       });
     });
 
-    testWidgets('renders correctly with trailing widget', (
+    testWidgets('renders correctly with trailing widget and checks accessibility', (
       WidgetTester tester,
     ) async {
       await mockNetworkImagesFor(() async {
-        final mockTrailingWidget = Icon(Icons.arrow_forward, key: UniqueKey());
+        const mockTrailingText = Text('Trailing Info');
         await pumpWidget(
           tester,
           imageUrl: mockImageUrl,
           name: mockName,
           onTap: mockOnTap,
-          trailing: mockTrailingWidget,
+          trailing: mockTrailingText,
         );
         await tester.pumpAndSettle();
 
-        expect(find.byIcon(Icons.arrow_forward), findsOneWidget);
-        final listTile = tester.widget<ListTile>(find.byType(ListTile));
-        expect(listTile.trailing, isNotNull);
+        expect(find.text('Trailing Info'), findsOneWidget);
+        final listTileFinder = find.byType(ListTile);
+        expect(listTileFinder, findsOneWidget);
+        // Tap Target Size
+        expect(tester.getSize(listTileFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(listTileFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        // Semantic label includes trailing text
+        expect(
+          tester.getSemantics(listTileFinder),
+          matchesSemantics(
+            isTappable: true,
+            label: '$mockName, Trailing Info', // Label includes non-interactive trailing text
+          ),
+        );
+        await tester.testA11yGuidelines(label: "PodcastListTile with Trailing Widget");
       });
     });
 
@@ -190,86 +221,89 @@ void main() {
       'renders correctly using .podcast factory and checks key semantics',
       (WidgetTester tester) async {
         await mockNetworkImagesFor(() async {
-          const trailingText = Text('Factory Trailing A11y');
+          const trailingTextWidget = Text('Factory Trailing A11y');
           await pumpFactoryWidget(
             tester,
             podcast: mockPodcastFromFactory,
             onTap: mockOnTap,
-            showDot: true,
-            trailing: trailingText,
+            showDot: true, // showDot is true
+            trailing: trailingTextWidget,
           );
           await tester.pumpAndSettle();
 
           final listTileFinder = find.byType(ListTile);
           expect(listTileFinder, findsOneWidget);
-          final listTileSemantics = tester.getSemantics(listTileFinder);
+          // Tap Target Size
+          expect(tester.getSize(listTileFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+          expect(tester.getSize(listTileFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+          // Semantic Label and Tappable State
+          // Includes title, "New episodes" (from showDot), and trailing text
           expect(
-            listTileSemantics,
+            tester.getSemantics(listTileFinder),
             matchesSemantics(
-              hasTapAction: true,
-              isFocusable: true,
-              label: mockPodcastFromFactory.title,
+              isTappable: true,
+              // Example: "Factory Podcast Title A11y, New episodes, Factory Trailing A11y"
+              // The exact order and separators depend on how ListTile merges semantics.
+              // We'll check for presence of all parts.
+              label: allOf(
+                contains(mockPodcastFromFactory.title),
+                contains('New episodes'),
+                contains('Factory Trailing A11y')
+              ),
             ),
           );
-          expect(
-            listTileSemantics.label,
-            contains('Factory Trailing A11y'),
-          ); // Trailing text also part of label
 
           expect(find.text(mockPodcastFromFactory.title), findsOneWidget);
           expect(find.text('Factory Trailing A11y'), findsOneWidget);
 
-          final roundedImage = tester.widget<RoundedImage>(
-            find.byType(RoundedImage),
-          );
+          final roundedImage = tester.widget<RoundedImage>(find.byType(RoundedImage));
           expect(roundedImage.showDot, isTrue);
           expect(roundedImage.imageUri, mockPodcastFromFactory.artwork);
 
-          final roundedImageSemantics = tester.getSemantics(
-            find.byType(RoundedImage),
-          );
-          expect(
-            roundedImageSemantics.label,
-            'Podcast image',
-          ); // Semantic label is static
-          expect(roundedImageSemantics.tooltip, isEmpty);
+          final roundedImageSemantics = tester.getSemantics(find.byType(RoundedImage));
+          expect(roundedImageSemantics.label, 'Podcast image');
+          expect(roundedImageSemantics.tooltip, isEmpty); // Info conveyed by parent ListTile
 
           await tester.tap(find.byType(PodcastListTile));
           await tester.pump();
           verify(() => mockOnTap()).called(1);
+          await tester.testA11yGuidelines(label: "PodcastListTile.podcast Factory");
         });
       },
     );
 
-    testWidgets('passes accessibility guidelines', (WidgetTester tester) async {
-      await mockNetworkImagesFor(() async {
-        await pumpWidget(
-          tester,
-          imageUrl: mockImageUrl,
-          name: mockName,
-          onTap: mockOnTap,
-          showDot: false,
-        );
-        await tester.pumpAndSettle();
-        await tester.testA11yGuidelines();
-      });
-    });
+    // Removed standalone 'passes accessibility guidelines' tests as they are now integrated
+    // into the specific state tests (basic, showDot, trailing, factory).
+    // testWidgets('passes accessibility guidelines', (WidgetTester tester) async {
+    //   await mockNetworkImagesFor(() async {
+    //     await pumpWidget(
+    //       tester,
+    //       imageUrl: mockImageUrl,
+    //       name: mockName,
+    //       onTap: mockOnTap,
+    //       showDot: false,
+    //     );
+    //     await tester.pumpAndSettle();
+    //     await tester.testA11yGuidelines();
+    //   });
+    // });
 
-    testWidgets('passes accessibility guidelines for .podcast factory', (
-      WidgetTester tester,
-    ) async {
-      await mockNetworkImagesFor(() async {
-        const trailingText = Text('Factory A11y Check');
-        await pumpFactoryWidget(
-          tester,
-          podcast: mockPodcastFromFactory,
-          onTap: mockOnTap,
-          showDot: true,
-          trailing: trailingText,
-        );
-        await tester.pumpAndSettle();
-        await tester.testA11yGuidelines();
-      });
-    });
+    // testWidgets('passes accessibility guidelines for .podcast factory', (
+    //   WidgetTester tester,
+    // ) async {
+    //   await mockNetworkImagesFor(() async {
+    //     const trailingText = Text('Factory A11y Check');
+        // await pumpFactoryWidget(
+        //   tester,
+        //   podcast: mockPodcastFromFactory,
+        //   onTap: mockOnTap,
+        //   showDot: true,
+        //   trailing: trailingText,
+        // );
+        // await tester.pumpAndSettle();
+        // await tester.testA11yGuidelines();
+      // });
+    // });
   });
 }

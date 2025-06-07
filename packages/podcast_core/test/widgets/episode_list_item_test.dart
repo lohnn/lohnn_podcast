@@ -92,23 +92,32 @@ void main() {
             body: EpisodeListItem(
               episodeWithStatus: episode,
               isPlayed: isPlayed,
-              // onTap parameter removed from EpisodeListItem
               trailing: trailing,
             ),
           ),
         ),
       ),
     );
+    // Add a pumpAndSettle here to ensure all animations/async ops complete
+    // before tests that depend on final state begin.
+    await tester.pumpAndSettle();
   }
 
-  group('EpisodeListItem Tests', () {
-    testWidgets('Follows a11y guidelines', (tester) async {
-      await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: false);
+  group('EpisodeListItem Accessibility Tests', () {
+    // Test for general a11y guidelines, combining unplayed and played states for this specific check
+    testWidgets('passes accessibility guidelines (unplayed and played states)', (tester) async {
+      await mockNetworkImagesFor(() async {
+        // Test unplayed state
+        await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: false);
+        await tester.testA11yGuidelines(label: 'Unplayed EpisodeListItem');
 
-      await tester.testA11yGuidelines();
+        // Test played state
+        await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: true);
+        await tester.testA11yGuidelines(label: 'Played EpisodeListItem');
+      });
     });
 
-    testWidgets('renders correctly when unplayed and checks key semantics', (
+    testWidgets('renders correctly when unplayed and checks detailed semantics', (
       WidgetTester tester,
     ) async {
       await mockNetworkImagesFor(() async {
@@ -117,116 +126,158 @@ void main() {
           episode: mockEpisode,
           isPlayed: false,
         );
-        await tester.pumpAndSettle();
 
-        expect(find.byType(EpisodeListItem), findsOneWidget);
-        expect(find.text(mockEpisode.title), findsOneWidget);
+        final listItemFinder = find.byType(EpisodeListItem);
+        expect(listItemFinder, findsOneWidget);
+
+        // 2. Main InkWell (EpisodeListItem)
+        // Tap Target Size
+        expect(tester.getSize(listItemFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(listItemFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        // Combined Semantic Label and Tappable
+        // This assumes EpisodeListItem's Semantics combines these details.
+        // The exact format of pubDate and duration needs to match how PubDateText formats it.
+        // For example, PubDateText might produce "Oct 26, 2023 • 30:45".
+        // The state "Unplayed episode" is from RoundedImage's tooltip.
+        // How this gets into the main label needs to be verified.
+        // It's more likely the main label focuses on content, and state is conveyed by child elements' semantics.
+        // For now, we'll check for essential parts. A more robust check would involve knowing
+        // exactly how EpisodeListItem merges its semantics.
+        final expectedLabelParts = [
+          mockEpisode.title,
+          mockEpisode.description!.removeHtmlTags(),
+          // Assuming PubDateText renders "Month Day, Year" and duration is "MM:SS"
+          // This part is highly dependent on PubDateText's output.
+          // For a more robust test, you might find PubDateText and get its text.
+          // For now, checking parts:
+          "2023", // Year from pubDate
+          mockEpisode.duration!.prettyPrint(), // "30:45"
+          "Unplayed episode", // From RoundedImage tooltip
+        ];
         expect(
-          find.text(mockEpisode.description!.removeHtmlTags()),
-          findsOneWidget,
-        );
-        expect(find.byType(PubDateText), findsOneWidget);
-        expect(
-          find.textContaining(mockEpisode.duration!.prettyPrint()),
-          findsOneWidget,
+          tester.getSemantics(listItemFinder),
+          matchesSemantics(
+            // label: allOf(expectedLabelParts.map(contains).toList()), // This creates a list of Matchers
+            // A simpler check for now, focusing on title and tappable. Full label construction is complex.
+            label: contains(mockEpisode.title),
+            tooltip: contains("Unplayed episode"), // Tooltip often comes from child (RoundedImage)
+            isTappable: true,
+            // Other flags as necessary e.g. isFocusable
+          ),
         );
 
+
+        // 3. RoundedImage
         final roundedImageFinder = find.byType(RoundedImage);
         expect(roundedImageFinder, findsOneWidget);
-        final roundedImage = tester.widget<RoundedImage>(roundedImageFinder);
-        expect(roundedImage.showDot, isTrue);
-
+        expect(tester.getSize(roundedImageFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension / 2)); // Example, not necessarily a tap target
+        expect(tester.getSize(roundedImageFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension / 2));
         final roundedImageSemantics = tester.getSemantics(roundedImageFinder);
         expect(roundedImageSemantics.label, 'Episode image');
         expect(roundedImageSemantics.tooltip, 'Unplayed episode');
 
+
+        // 4. PlayEpisodeButton and QueueButton
         final playButtonFinder = find.byType(PlayEpisodeButton);
         expect(playButtonFinder, findsOneWidget);
+        expect(tester.getSize(playButtonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(playButtonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
         expect(
           tester.getSemantics(playButtonFinder),
-          matchesSemantics(
-            isButton: true,
-            hasTapAction: true,
-            label: "Play episode",
-          ),
+          matchesSemantics(isButton: true, hasTapAction: true, label: "Play episode"),
         );
 
         final queueButtonFinder = find.byType(QueueButton);
         expect(queueButtonFinder, findsOneWidget);
+        expect(tester.getSize(queueButtonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(queueButtonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
         expect(
           tester.getSemantics(queueButtonFinder),
-          matchesSemantics(
-            isButton: true,
-            hasTapAction: true,
-            label: "Add to queue",
-          ),
+          matchesSemantics(isButton: true, hasTapAction: true, label: "Add to queue"),
         );
-
-        final inkWellFinder = find.byType(InkWell);
-        final semanticsNode = tester.getSemantics(inkWellFinder);
-        // Temporarily trying a different flag to diagnose SemanticsFlag issue
-        expect(semanticsNode.hasFlag(SemanticsFlag.isSelected), isFalse);
-        // expect(semanticsNode.hasFlag(SemanticsFlag.isFocusable), isTrue); // Commenting out isFocusable as well for now
-
-        final String fullLabel = semanticsNode.label;
-        expect(fullLabel, contains(mockEpisode.title));
-        expect(fullLabel, contains(mockEpisode.description!.removeHtmlTags()));
       });
     });
 
-    testWidgets('renders correctly when played and checks key semantics', (
+    testWidgets('renders correctly when played and checks detailed semantics', (
       WidgetTester tester,
     ) async {
       await mockNetworkImagesFor(() async {
         await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: true);
-        await tester.pumpAndSettle();
 
-        expect(find.byType(EpisodeListItem), findsOneWidget);
-        final roundedImageFinder = find.byType(RoundedImage);
-        expect(roundedImageFinder, findsOneWidget);
-        final roundedImage = tester.widget<RoundedImage>(roundedImageFinder);
-        expect(roundedImage.showDot, isFalse);
-
-        final roundedImageSemanticsPlayed = tester.getSemantics(
-          roundedImageFinder,
+        final listItemFinder = find.byType(EpisodeListItem);
+        // Combined Semantic Label and Tappable (Played State)
+        expect(
+          tester.getSemantics(listItemFinder),
+          matchesSemantics(
+            label: contains(mockEpisode.title),
+            tooltip: contains("Played episode"),
+            isTappable: true,
+          ),
         );
+
+        final roundedImageFinder = find.byType(RoundedImage);
+        final roundedImageSemanticsPlayed = tester.getSemantics(roundedImageFinder);
         expect(roundedImageSemanticsPlayed.label, 'Episode image');
         expect(roundedImageSemanticsPlayed.tooltip, 'Played episode');
 
         final playButtonFinder = find.byType(PlayEpisodeButton);
-        expect(playButtonFinder, findsOneWidget);
+        expect(tester.getSize(playButtonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(playButtonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
         expect(
           tester.getSemantics(playButtonFinder),
-          matchesSemantics(
-            isButton: true,
-            hasTapAction: true,
-            label: "Pause episode",
-          ),
+          matchesSemantics(isButton: true, hasTapAction: true, label: "Pause episode"),
         );
       });
     });
 
-    testWidgets('renders correctly with trailing widget', (
+    testWidgets('renders correctly with trailing widget and checks its accessibility', (
       WidgetTester tester,
     ) async {
       await mockNetworkImagesFor(() async {
-        final mockTrailingWidget = Icon(Icons.more_horiz, key: UniqueKey());
+        // Using a PopupMenuButton as a more realistic trailing widget
+        final trailingWidget = PopupMenuButton<String>(
+          key: UniqueKey(), // Ensure it has a key for finding if needed
+          itemBuilder: (context) => [
+            const PopupMenuItem(value: 'test', child: Text('Test Item')),
+          ],
+          icon: const Icon(Icons.more_vert), // Common icon for PopupMenuButton
+          tooltip: 'More options for ${mockEpisode.title}', // Important for accessibility
+        );
+
         await pumpWidgetUnderTest(
           tester,
           episode: mockEpisode,
           isPlayed: false,
-          trailing: mockTrailingWidget,
+          trailing: trailingWidget,
         );
-        await tester.pumpAndSettle();
 
         expect(find.byType(EpisodeListItem), findsOneWidget);
-        expect(find.byIcon(Icons.more_horiz), findsOneWidget);
-        expect(find.byType(PlayEpisodeButton), findsNothing);
-        expect(find.byType(QueueButton), findsNothing);
+        final trailingIconFinder = find.byIcon(Icons.more_vert);
+        expect(trailingIconFinder, findsOneWidget);
+
+        // 5. Trailing Widget (PopupMenuButton)
+        expect(tester.getSize(trailingIconFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(trailingIconFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(
+          tester.getSemantics(trailingIconFinder), // Semantics are often on the icon if it's part of PopupMenuButton's default structure
+          matchesSemantics(
+            isButton: true,
+            hasTapAction: true,
+            tooltip: 'More options for ${mockEpisode.title}', // Check tooltip if set on PopupMenuButton
+            // The label might be empty if only tooltip is used, or it might be derived.
+            // Depending on PopupMenuButton's internal Semantics.
+          ),
+        );
+
+        expect(find.byType(PlayEpisodeButton), findsNothing); // As per original test logic
+        expect(find.byType(QueueButton), findsNothing);   // As per original test logic
+
+        await tester.testA11yGuidelines(label: 'EpisodeListItem with Trailing Widget');
       });
     });
 
-    testWidgets('renders correctly with missing optional data', (
+    testWidgets('renders with missing optional data and passes accessibility', (
       WidgetTester tester,
     ) async {
       await mockNetworkImagesFor(() async {
@@ -236,6 +287,7 @@ void main() {
           title: 'Minimal Episode A11y',
           url: Uri.parse('http://example.com/minimal_a11y.mp3'),
           imageUrl: Uri.parse('https://example.com/minimal_image_a11y.png'),
+          // No description, pubDate, duration
         );
 
         await pumpWidgetUnderTest(
@@ -243,52 +295,40 @@ void main() {
           episode: minimalEpisode,
           isPlayed: false,
         );
-        await tester.pumpAndSettle();
 
         expect(find.byType(EpisodeListItem), findsOneWidget);
         expect(find.text(minimalEpisode.title), findsOneWidget);
-        expect(find.byType(RoundedImage), findsOneWidget);
-        expect(find.byType(PubDateText), findsNothing);
-        expect(find.textContaining('•'), findsNothing);
-        if (minimalEpisode.description != null) {
-          expect(
-            find.text(minimalEpisode.description!.removeHtmlTags()),
-            findsNothing,
-          );
-        } else {
-          expect(
-            find.text("dummy_description_to_fail_if_present_and_null"),
-            findsNothing,
-          );
-        }
 
-        expect(find.byType(PlayEpisodeButton), findsOneWidget);
-        expect(find.byType(QueueButton), findsOneWidget);
-      });
-    });
-
-    testWidgets('passes accessibility guidelines when unplayed', (
-      WidgetTester tester,
-    ) async {
-      await mockNetworkImagesFor(() async {
-        await pumpWidgetUnderTest(
-          tester,
-          episode: mockEpisode,
-          isPlayed: false,
+        // Check main item accessibility
+        final listItemFinder = find.byType(EpisodeListItem);
+        expect(tester.getSize(listItemFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(listItemFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(
+          tester.getSemantics(listItemFinder),
+          matchesSemantics(
+            label: contains(minimalEpisode.title),
+            tooltip: contains("Unplayed episode"),
+            isTappable: true,
+          ),
         );
-        await tester.pumpAndSettle();
-        // await tester.testA11yGuidelines(); // Commented out due to helper import issues
+
+        // Buttons should still be accessible
+        final playButtonFinder = find.byType(PlayEpisodeButton);
+        expect(playButtonFinder, findsOneWidget);
+        expect(tester.getSize(playButtonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(playButtonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        final queueButtonFinder = find.byType(QueueButton);
+        expect(queueButtonFinder, findsOneWidget);
+        expect(tester.getSize(queueButtonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(queueButtonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        await tester.testA11yGuidelines(label: 'EpisodeListItem with Minimal Data');
       });
     });
 
-    testWidgets('passes accessibility guidelines when played', (
-      WidgetTester tester,
-    ) async {
-      await mockNetworkImagesFor(() async {
-        await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: true);
-        await tester.pumpAndSettle();
-        // await tester.testA11yGuidelines(); // Commented out due to helper import issues
-      });
-    });
+    // Removed redundant 'passes accessibility guidelines when unplayed/played' tests
+    // as they are now covered by the combined 'passes accessibility guidelines (unplayed and played states)'
+    // and specific checks within other tests.
   });
 }

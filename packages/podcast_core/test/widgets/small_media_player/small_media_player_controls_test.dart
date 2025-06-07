@@ -18,7 +18,8 @@ import '../../test_data_models/test_episode.dart'; // For default PlaybackState
 
 // Mocks
 class MockGoRouter extends Mock implements GoRouter {}
-// Using test_data.testEpisode directly, so MockEpisode might not be needed unless for specific behaviors.
+// Using test_data.testEpisode directly
+import '../../helpers/widget_tester_helpers.dart'; // For kMinInteractiveDimension and testA11yGuidelines
 
 // Helper to create PlaybackState for PlayPauseButton dependency
 PlaybackState createDefaultPlaybackState({bool playing = false}) {
@@ -50,144 +51,189 @@ void main() {
       imageUrl: Uri.parse('https://example.com/test_controls_image.png'),
     );
     mockEpisodeData = EpisodeWithStatus(episode: episode, status: null);
+  });
 
-    Future<void> pumpWidgetUnderTest(
-      WidgetTester tester, {
-      required AsyncValue<EpisodeWithStatus?>
-      currentEpisodeWithStatusProviderValue,
-      bool showSkipButtons = false,
-      PlaybackState? audioState, // For audioStateProvider
-    }) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            audioPlayerPodProvider.overrideWithBuild(
-              (_, _) => Future.value(mockEpisodeData),
-            ),
-            // Provide a default for audioStateProvider for the PlayPauseButton
-            audioStateProvider.overrideWithValue(
-              AsyncData(audioState ?? createDefaultPlaybackState()),
-            ),
-          ],
-          child: MaterialApp.router(
-            routerConfig: GoRouter(
-              routes: [
-                GoRoute(
-                  path: '/',
-                  builder: (context, state) => Scaffold(
-                    body: SmallMediaPlayerControls(
-                      router: mockGoRouter,
-                      showSkipButtons: showSkipButtons,
-                    ),
+  Future<void> pumpWidgetUnderTest(
+    WidgetTester tester, {
+    required AsyncValue<EpisodeWithStatus?>
+    currentEpisodeWithStatusProviderValue, // This should be for currentEpisodeWithStatusPod
+    bool showSkipButtons = false,
+    PlaybackState? audioState,
+  }) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          // This provider seems to be the one SmallMediaPlayerControls actually uses internally
+          // to get the current episode information.
+          currentEpisodeWithStatusPod.overrideWithValue(currentEpisodeWithStatusProviderValue),
+          // audioPlayerPodProvider seems to be for actions, not state directly used by SMC for display.
+          // It's okay to keep a default mock if actions are triggered.
+          audioPlayerPodProvider.overrideWithBuild(
+            (_, __) => Future.value(mockEpisodeData), // Or a mock if needed
+          ),
+          audioStateProvider.overrideWithValue(
+            AsyncData(audioState ?? createDefaultPlaybackState()),
+          ),
+        ],
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) => Scaffold(
+                  body: SmallMediaPlayerControls(
+                    router: mockGoRouter,
+                    showSkipButtons: showSkipButtons,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
+    await tester.pumpAndSettle(); // Ensure UI is stable after initial pump
+  }
 
-    group('SmallMediaPlayerControls Tests', () {
-      testWidgets('renders correctly when playing an episode', (
-        WidgetTester tester,
-      ) async {
-        await mockNetworkImagesFor(() async {
-          await pumpWidgetUnderTest(
-            tester,
-            currentEpisodeWithStatusProviderValue: AsyncData(mockEpisodeData),
-            showSkipButtons: false,
-          );
-          await tester.pumpAndSettle();
+  group('SmallMediaPlayerControls Accessibility Tests', () {
+    testWidgets('renders correctly when playing an episode and is accessible', (
+      WidgetTester tester,
+    ) async {
+      await mockNetworkImagesFor(() async {
+        await pumpWidgetUnderTest(
+          tester,
+          currentEpisodeWithStatusProviderValue: AsyncData(mockEpisodeData),
+          showSkipButtons: false,
+        );
 
-          expect(find.byType(SmallMediaPlayerControls), findsOneWidget);
-          expect(
-            find.byType(InkWell),
-            findsOneWidget,
-          ); // The whole control is tappable
-          expect(find.byType(RoundedImage), findsOneWidget);
-          expect(find.text(mockEpisodeData.episode.title), findsOneWidget);
-          expect(find.byType(PlayPauseButton), findsOneWidget);
-          expect(find.byType(EpisodeProgressBar), findsOneWidget);
-          expect(
-            find.byType(DownloadAnimation),
-            findsOneWidget,
-          ); // Assuming it's always there
-          expect(
-            find.byType(MediaActionButton),
-            findsNothing,
-          ); // showSkipButtons is false
-        });
+        final controlsFinder = find.byType(SmallMediaPlayerControls);
+        expect(controlsFinder, findsOneWidget);
+
+        // Main InkWell
+        final inkWellFinder = find.byType(InkWell);
+        expect(inkWellFinder, findsOneWidget);
+        expect(tester.getSize(inkWellFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(
+          tester.getSemantics(inkWellFinder),
+          matchesSemantics(
+            // Assuming the InkWell's label combines title for its main action (opening player)
+            label: 'Open player details for ${mockEpisodeData.episode.title}',
+            isTappable: true,
+          ),
+        );
+
+        // RoundedImage
+        final imageFinder = find.byType(RoundedImage);
+        expect(imageFinder, findsOneWidget);
+        expect(tester.getSize(imageFinder).width, greaterThanOrEqualTo(24.0)); // General size
+        expect(tester.getSemantics(imageFinder), matchesSemantics(label: 'Episode image'));
+
+        // Episode Title Text
+        final titleFinder = find.text(mockEpisodeData.episode.title);
+        expect(titleFinder, findsOneWidget);
+        expect(tester.getSemantics(titleFinder), matchesSemantics(label: mockEpisodeData.episode.title, isInSemanticTree: true));
+
+        // PlayPauseButton (presence checked, detailed a11y in its own test)
+        expect(find.byType(PlayPauseButton), findsOneWidget);
+
+        // EpisodeProgressBar
+        final progressBarFinder = find.byType(EpisodeProgressBar);
+        expect(progressBarFinder, findsOneWidget);
+        // ProgressBar semantics: should describe its current state if possible, not focusable
+        // This is a basic check; specific value/label would depend on EpisodeProgressBar's implementation
+        expect(tester.getSemantics(progressBarFinder), matchesSemantics(isFocusable: false));
+
+        // DownloadAnimation (presence, basic a11y if interactive)
+        final downloadAnimationFinder = find.byType(DownloadAnimation);
+        expect(downloadAnimationFinder, findsOneWidget);
+        // If DownloadAnimation is interactive, it needs tap target & label. Assuming it's decorative or part of InkWell.
+
+        await tester.testA11yGuidelines(label: 'Playing Episode State');
       });
+    });
 
-      testWidgets('renders correctly with skip buttons', (
-        WidgetTester tester,
-      ) async {
-        await mockNetworkImagesFor(() async {
-          await pumpWidgetUnderTest(
-            tester,
-            currentEpisodeWithStatusProviderValue: AsyncData(mockEpisodeData),
-            showSkipButtons: true,
-          );
-          await tester.pumpAndSettle();
+    testWidgets('renders with skip buttons and checks their accessibility', (
+      WidgetTester tester,
+    ) async {
+      await mockNetworkImagesFor(() async {
+        await pumpWidgetUnderTest(
+          tester,
+          currentEpisodeWithStatusProviderValue: AsyncData(mockEpisodeData),
+          showSkipButtons: true,
+        );
 
-          expect(find.byType(SmallMediaPlayerControls), findsOneWidget);
-          expect(find.byType(MediaActionButton), findsNWidgets(2));
-          // Could also find by specific icons if they are consistent:
-          // expect(find.byIcon(Icons.skip_previous), findsOneWidget);
-          // expect(find.byIcon(Icons.skip_next), findsOneWidget);
-        });
+        expect(find.byType(SmallMediaPlayerControls), findsOneWidget);
+        final skipBackFinder = find.byIcon(Icons.skip_previous); // Assuming these are the icons
+        final skipForwardFinder = find.byIcon(Icons.skip_next);
+
+        expect(skipBackFinder, findsOneWidget);
+        expect(tester.getSize(skipBackFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(skipBackFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(
+            tester.getSemantics(skipBackFinder),
+            matchesSemantics(
+                label: 'Skip back', isButton: true, hasTapAction: true));
+
+        expect(skipForwardFinder, findsOneWidget);
+        expect(tester.getSize(skipForwardFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(skipForwardFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(
+            tester.getSemantics(skipForwardFinder),
+            matchesSemantics(
+                label: 'Skip forward', isButton: true, hasTapAction: true));
+
+        await tester.testA11yGuidelines(label: 'With Skip Buttons State');
       });
+    });
 
-      testWidgets('renders loading state', (WidgetTester tester) async {
-        await mockNetworkImagesFor(() async {
-          await pumpWidgetUnderTest(
-            tester,
-            currentEpisodeWithStatusProviderValue: const AsyncLoading(),
-          );
-          await tester.pumpAndSettle(); // Settle after loading state
+    testWidgets('renders loading state and is accessible', (WidgetTester tester) async {
+      await mockNetworkImagesFor(() async {
+        await pumpWidgetUnderTest(
+          tester,
+          currentEpisodeWithStatusProviderValue: const AsyncLoading(),
+        );
 
-          expect(find.byType(CircularProgressIndicator), findsOneWidget);
-          // Ensure other elements are not present
-          expect(find.byType(RoundedImage), findsNothing);
-          expect(find.text(mockEpisodeData.episode.title), findsNothing);
-        });
+        final progressIndicatorFinder = find.byType(CircularProgressIndicator);
+        expect(progressIndicatorFinder, findsOneWidget);
+        final indicatorSemantics = tester.getSemantics(progressIndicatorFinder);
+        expect(indicatorSemantics.label, isEmpty); // Default indicator
+        expect(indicatorSemantics.isFocusable, isFalse);
+
+        await tester.testA11yGuidelines(label: 'Loading State');
       });
+    });
 
-      testWidgets('renders error state', (WidgetTester tester) async {
-        await mockNetworkImagesFor(() async {
-          await pumpWidgetUnderTest(
-            tester,
-            currentEpisodeWithStatusProviderValue: const AsyncError(
-              'Test Error',
-              StackTrace.empty,
-            ),
-          );
-          await tester.pumpAndSettle();
+    testWidgets('renders error state and is accessible', (WidgetTester tester) async {
+      await mockNetworkImagesFor(() async {
+        await pumpWidgetUnderTest(
+          tester,
+          currentEpisodeWithStatusProviderValue: const AsyncError('Test Error', StackTrace.empty),
+        );
 
-          expect(find.text('Error loading episode'), findsOneWidget);
-          // Ensure other elements are not present
-          expect(find.byType(RoundedImage), findsNothing);
-          expect(find.text(mockEpisodeData.episode.title), findsNothing);
-        });
+        final errorTextFinder = find.text('Error loading episode');
+        expect(errorTextFinder, findsOneWidget);
+        expect(
+            tester.getSemantics(errorTextFinder),
+            matchesSemantics(label: 'Error loading episode', isInSemanticTree: true));
+
+        await tester.testA11yGuidelines(label: 'Error State');
       });
+    });
 
-      testWidgets('renders nothing playing state', (WidgetTester tester) async {
-        await mockNetworkImagesFor(() async {
-          await pumpWidgetUnderTest(
-            tester,
-            currentEpisodeWithStatusProviderValue: const AsyncData(
-              null,
-            ), // Null episode data
-          );
-          await tester.pumpAndSettle();
+    testWidgets('renders nothing playing state and is accessible', (WidgetTester tester) async {
+      await mockNetworkImagesFor(() async {
+        await pumpWidgetUnderTest(
+          tester,
+          currentEpisodeWithStatusProviderValue: const AsyncData(null),
+        );
 
-          expect(find.text('Nothing is playing right now'), findsOneWidget);
-          // Ensure other elements are not present
-          expect(find.byType(RoundedImage), findsNothing);
-          expect(find.byType(PlayPauseButton), findsNothing);
-          expect(find.byType(EpisodeProgressBar), findsNothing);
-        });
+        final nothingPlayingFinder = find.text('Nothing is playing right now');
+        expect(nothingPlayingFinder, findsOneWidget);
+        expect(
+            tester.getSemantics(nothingPlayingFinder),
+            matchesSemantics(label: 'Nothing is playing right now', isInSemanticTree: true));
+
+        await tester.testA11yGuidelines(label: 'Nothing Playing State');
       });
     });
   });

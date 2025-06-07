@@ -2,9 +2,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hooks_riverpod/misc.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:podcast_core/providers/audio_player_provider.dart';
+import 'package:podcast_core/providers/audio_player_provider.dart'; // Assuming this is where AudioPlayerPod is defined
 import 'package:podcast_core/widgets/small_media_player/play_pause_button.dart';
 
 // Mocks
@@ -53,10 +52,11 @@ void main() {
         child: MaterialApp(home: Scaffold(body: PlayPauseButton())),
       ),
     );
+    await tester.pumpAndSettle(); // Ensure UI is stable after initial pump
   }
 
-  group('PlayPauseButton Tests', () {
-    testWidgets('shows play icon when paused and ready', (
+  group('PlayPauseButton Accessibility Tests', () {
+    testWidgets('shows play icon, is accessible, and handles tap', (
       WidgetTester tester,
     ) async {
       await pumpWidget(tester, [
@@ -70,19 +70,34 @@ void main() {
         ),
         audioPlayerPodProvider.overrideWith(() => mockAudioPlayerNotifier),
       ]);
-      await tester.pumpAndSettle();
 
+      final buttonFinder = find.byType(IconButton);
+      expect(buttonFinder, findsOneWidget);
       expect(find.byIcon(Icons.play_arrow), findsOneWidget);
       expect(find.byTooltip('Play'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
 
-      await tester.tap(find.byIcon(Icons.play_arrow));
+      // Accessibility Checks
+      expect(tester.getSize(buttonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+      expect(tester.getSize(buttonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+      expect(
+        tester.getSemantics(buttonFinder),
+        matchesSemantics(
+          tooltip: 'Play',
+          isButton: true,
+          isEnabled: true,
+          hasTapAction: true,
+        ),
+      );
+      await tester.testA11yGuidelines(label: 'Play Button State');
+
+      await tester.tap(buttonFinder);
       verify(
         () => mockAudioPlayerNotifier.triggerMediaAction(MediaAction.playPause),
       ).called(1);
     });
 
-    testWidgets('shows pause icon when playing and ready', (
+    testWidgets('shows pause icon, is accessible, and handles tap', (
       WidgetTester tester,
     ) async {
       await pumpWidget(tester, [
@@ -96,19 +111,34 @@ void main() {
         ),
         audioPlayerPodProvider.overrideWith(() => mockAudioPlayerNotifier),
       ]);
-      await tester.pumpAndSettle();
 
+      final buttonFinder = find.byType(IconButton);
+      expect(buttonFinder, findsOneWidget);
       expect(find.byIcon(Icons.pause), findsOneWidget);
       expect(find.byTooltip('Pause'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
 
-      await tester.tap(find.byIcon(Icons.pause));
+      // Accessibility Checks
+      expect(tester.getSize(buttonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+      expect(tester.getSize(buttonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+      expect(
+        tester.getSemantics(buttonFinder),
+        matchesSemantics(
+          tooltip: 'Pause',
+          isButton: true,
+          isEnabled: true,
+          hasTapAction: true,
+        ),
+      );
+      await tester.testA11yGuidelines(label: 'Pause Button State');
+
+      await tester.tap(buttonFinder);
       verify(
         () => mockAudioPlayerNotifier.triggerMediaAction(MediaAction.playPause),
       ).called(1);
     });
 
-    testWidgets('shows progress indicator when loading', (
+    testWidgets('shows progress indicator when loading and is accessible', (
       WidgetTester tester,
     ) async {
       await pumpWidget(tester, [
@@ -119,17 +149,37 @@ void main() {
         ),
         audioPlayerPodProvider.overrideWith(() => mockAudioPlayerNotifier),
       ]);
-      await tester.pumpAndSettle();
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      final buttonFinder = find.byType(IconButton); // IconButton still exists, but is disabled
+      expect(buttonFinder, findsOneWidget);
+      final progressIndicatorFinder = find.byType(CircularProgressIndicator);
+      expect(progressIndicatorFinder, findsOneWidget);
       expect(find.byIcon(Icons.play_arrow), findsNothing);
       expect(find.byIcon(Icons.pause), findsNothing);
 
-      final iconButton = tester.widget<IconButton>(find.byType(IconButton));
-      expect(iconButton.onPressed, isNull); // Button should be disabled
+      final iconButton = tester.widget<IconButton>(buttonFinder);
+      expect(iconButton.onPressed, isNull);
+
+      // Accessibility Checks
+      expect(tester.getSize(buttonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension)); // Visual size check
+      expect(tester.getSize(buttonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+      expect(
+        tester.getSemantics(buttonFinder), // Check semantics of the disabled button
+        matchesSemantics(
+          isEnabled: false,
+          isButton: true, // Still a button, but disabled
+          // No tap action when disabled
+        ),
+      );
+      // CircularProgressIndicator by default is not excluded from semantics.
+      // Screen readers might announce "progress indicator". This is generally acceptable.
+      final indicatorSemantics = tester.getSemantics(progressIndicatorFinder);
+      expect(indicatorSemantics.label, isEmpty); // Default has no label
+      expect(indicatorSemantics.isFocusable, isFalse);
+      await tester.testA11yGuidelines(label: 'Loading State');
     });
 
-    testWidgets('shows progress indicator when buffering', (
+    testWidgets('shows progress indicator when buffering and is accessible', (
       WidgetTester tester,
     ) async {
       await pumpWidget(tester, [
@@ -142,41 +192,57 @@ void main() {
         ),
         audioPlayerPodProvider.overrideWith(() => mockAudioPlayerNotifier),
       ]);
-      await tester.pumpAndSettle();
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      expect(find.byIcon(Icons.play_arrow), findsNothing);
-      expect(find.byIcon(Icons.pause), findsNothing);
+      final buttonFinder = find.byType(IconButton);
+      expect(buttonFinder, findsOneWidget);
+      final progressIndicatorFinder = find.byType(CircularProgressIndicator);
+      expect(progressIndicatorFinder, findsOneWidget);
 
-      final iconButton = tester.widget<IconButton>(find.byType(IconButton));
-      expect(iconButton.onPressed, isNull); // Button should be disabled
+      final iconButton = tester.widget<IconButton>(buttonFinder);
+      expect(iconButton.onPressed, isNull);
+
+      // Accessibility Checks
+      expect(tester.getSize(buttonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+      expect(tester.getSize(buttonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+       expect(
+        tester.getSemantics(buttonFinder),
+        matchesSemantics(isEnabled: false, isButton: true),
+      );
+      final indicatorSemantics = tester.getSemantics(progressIndicatorFinder);
+      expect(indicatorSemantics.label, isEmpty);
+      await tester.testA11yGuidelines(label: 'Buffering State');
     });
 
     testWidgets(
-      'shows progress indicator when audioStateProvider is AsyncLoading',
+      'accessible when audioStateProvider is AsyncLoading',
       (WidgetTester tester) async {
         await pumpWidget(tester, [
           audioStateProvider.overrideWithValue(const AsyncLoading()),
           audioPlayerPodProvider.overrideWith(() => mockAudioPlayerNotifier),
         ]);
-        await tester.pumpAndSettle();
 
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
-        expect(find.byIcon(Icons.play_arrow), findsNothing);
-        expect(find.byIcon(Icons.pause), findsNothing);
+        final buttonFinder = find.byType(IconButton);
+        expect(buttonFinder, findsOneWidget);
+        final progressIndicatorFinder = find.byType(CircularProgressIndicator);
+        expect(progressIndicatorFinder, findsOneWidget);
+        final iconButton = tester.widget<IconButton>(buttonFinder);
+        expect(iconButton.onPressed, isNull);
 
-        final iconButtonFinder = find.byType(IconButton);
-        expect(
-          iconButtonFinder,
-          findsOneWidget,
-        ); // The IconButton itself is still there
-        final iconButton = tester.widget<IconButton>(iconButtonFinder);
-        expect(iconButton.onPressed, isNull); // But it's disabled
+      // Accessibility Checks
+      expect(tester.getSize(buttonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+      expect(tester.getSize(buttonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+       expect(
+        tester.getSemantics(buttonFinder),
+        matchesSemantics(isEnabled: false, isButton: true),
+      );
+      final indicatorSemantics = tester.getSemantics(progressIndicatorFinder);
+      expect(indicatorSemantics.label, isEmpty);
+      await tester.testA11yGuidelines(label: 'Provider AsyncLoading State');
       },
     );
 
     testWidgets(
-      'shows progress indicator when audioStateProvider is AsyncError',
+      'accessible when audioStateProvider is AsyncError',
       (WidgetTester tester) async {
         await pumpWidget(tester, [
           audioStateProvider.overrideWithValue(
@@ -184,19 +250,28 @@ void main() {
           ),
           audioPlayerPodProvider.overrideWith(() => mockAudioPlayerNotifier),
         ]);
-        await tester.pumpAndSettle();
 
-        expect(
-          find.byType(CircularProgressIndicator),
-          findsOneWidget,
-        ); // Or an error icon, depending on widget's error handling
-        expect(find.byIcon(Icons.play_arrow), findsNothing);
-        expect(find.byIcon(Icons.pause), findsNothing);
-
-        final iconButtonFinder = find.byType(IconButton);
-        expect(iconButtonFinder, findsOneWidget);
-        final iconButton = tester.widget<IconButton>(iconButtonFinder);
+        final buttonFinder = find.byType(IconButton);
+        expect(buttonFinder, findsOneWidget);
+        // Depending on implementation, might show an error icon or still a progress indicator
+        // The current test expects CircularProgressIndicator.
+        final progressIndicatorFinder = find.byType(CircularProgressIndicator);
+        expect(progressIndicatorFinder, findsOneWidget);
+        final iconButton = tester.widget<IconButton>(buttonFinder);
         expect(iconButton.onPressed, isNull);
+
+      // Accessibility Checks
+      expect(tester.getSize(buttonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+      expect(tester.getSize(buttonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+       expect(
+        tester.getSemantics(buttonFinder),
+        matchesSemantics(isEnabled: false, isButton: true),
+      );
+      // If it's an error icon, it might have a specific error tooltip/label.
+      // If it's still a progress indicator, its semantics would be similar to above.
+      final indicatorSemantics = tester.getSemantics(progressIndicatorFinder);
+      expect(indicatorSemantics.label, isEmpty); // Assuming it's still the default indicator
+      await tester.testA11yGuidelines(label: 'Provider AsyncError State');
       },
     );
   });

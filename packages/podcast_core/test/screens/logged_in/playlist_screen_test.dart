@@ -129,12 +129,20 @@ void main() {
         expect(find.byType(PlaylistScreen), findsOneWidget);
         expect(find.byType(AppBar), findsOneWidget);
         expect(find.text('Playlist'), findsOneWidget);
-        expect(find.text('Your playlist is empty.'), findsOneWidget);
+
+        // Verify empty playlist message accessibility
+        final emptyMessageFinder = find.text('Your playlist is empty.');
+        expect(emptyMessageFinder, findsOneWidget);
+        expect(
+          tester.getSemantics(emptyMessageFinder),
+          matchesSemantics(label: 'Your playlist is empty.', isInSemanticTree: true),
+        );
+
         expect(find.byType(EpisodeListItem), findsNothing);
       });
     });
 
-    testWidgets('passes accessibility guidelines', (WidgetTester tester) async {
+    testWidgets('passes accessibility guidelines and checks specific elements', (WidgetTester tester) async {
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
           createTestApp(const PlaylistScreen(), [
@@ -142,12 +150,69 @@ void main() {
               yield [mockEpisode1, mockEpisode2];
             }),
             userEpisodeStatusPodProvider.overrideWithBuild((_, _) async* {
-              yield {mockEpisode1.id: mockStatus1}.equatable;
+              yield {
+                mockEpisode1.id: mockStatus1,
+                // mockEpisode2 has no specific status, so it won't be "Played"
+              }.equatable;
             }),
           ]),
         );
         await tester.pumpAndSettle();
+
+        // 1. General A11y guidelines
         await tester.testA11yGuidelines();
+
+        // 2. AppBar Title Semantics
+        final appBarTitleFinder = find.descendant(
+          of: find.byType(AppBar),
+          matching: find.text('Playlist'),
+        );
+        expect(appBarTitleFinder, findsOneWidget);
+        expect(
+          tester.getSemantics(appBarTitleFinder),
+          matchesSemantics(label: 'Playlist', isHeader: true, isInSemanticTree: true),
+        );
+
+        // 3. EpisodeListItem Checks
+        final episodeListItem1Finder = find.widgetWithText(EpisodeListItem, mockEpisode1.title);
+        expect(episodeListItem1Finder, findsOneWidget);
+
+        // Tap target size for EpisodeListItem 1
+        final Size episodeListItem1Size = tester.getSize(episodeListItem1Finder);
+        expect(episodeListItem1Size.width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(episodeListItem1Size.height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        // Semantic label and actions for EpisodeListItem 1 (Played)
+        // Note: The exact label might depend on how EpisodeListItem constructs its semantics.
+        // This is an example assuming it combines title and status.
+        // It also implicitly checks for tappable as matchesSemantics would look for tap actions by default if any.
+        expect(
+          tester.getSemantics(episodeListItem1Finder),
+          matchesSemantics(
+            label: '${mockEpisode1.title}, Played', // Adjusted expected label
+            isTappable: true, // ReorderableListView items are inherently tappable for dragging
+            // Other flags like isFocusable might also be relevant depending on implementation
+          ),
+        );
+
+        final episodeListItem2Finder = find.widgetWithText(EpisodeListItem, mockEpisode2.title);
+        expect(episodeListItem2Finder, findsOneWidget);
+
+        // Tap target size for EpisodeListItem 2
+        final Size episodeListItem2Size = tester.getSize(episodeListItem2Finder);
+        expect(episodeListItem2Size.width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(episodeListItem2Size.height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        // Semantic label and actions for EpisodeListItem 2 (Not played)
+        expect(
+          tester.getSemantics(episodeListItem2Finder),
+          matchesSemantics(
+            label: mockEpisode2.title, // No status suffix if not played/no status
+            isTappable: true,
+          ),
+        );
+
+        // 4. No other interactive elements specified to check for now.
       });
     });
   });

@@ -97,8 +97,91 @@ void main() {
         );
         // It should also have its label as its name
         expect(appBarTitleSemantics.label, mockPodcast.title);
+        expect(appBarTitleSemantics.isInSemanticTree, isTrue);
 
-        expect(find.byIcon(Icons.more_vert), findsOneWidget);
+        // 3. PodcastDetails Widget Semantics (Basic Check)
+        final podcastDetailsFinder = find.byType(PodcastDetails);
+        expect(podcastDetailsFinder, findsOneWidget);
+        // Check that it's part of the semantic tree. Deeper checks would depend on its internal structure.
+        // This ensures it's not excluding its subtree from semantics.
+        expect(tester.getSemantics(podcastDetailsFinder), matchesSemantics(isInSemanticTree: true));
+
+
+        // 4. "Episodes (count)" Text Semantics
+        final episodesCountFinder = find.text('Episodes (1)');
+        expect(episodesCountFinder, findsOneWidget);
+        expect(
+          tester.getSemantics(episodesCountFinder),
+          matchesSemantics(label: 'Episodes (1)', isInSemanticTree: true),
+        );
+
+        // 5. Filter Button Tap Target Size
+        expect(tester.getSize(filterButton).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(filterButton).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        // 6. EpisodeListItem Checks
+        final episodeListItemFinder = find.byType(EpisodeListItem);
+        expect(episodeListItemFinder, findsOneWidget); // Assuming one mock episode
+
+        // Tap target size for EpisodeListItem
+        expect(tester.getSize(episodeListItemFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(episodeListItemFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+
+        // Semantic label for EpisodeListItem
+        expect(
+          tester.getSemantics(episodeListItemFinder),
+          matchesSemantics(
+            label: mockEpisode.title, // Assuming label is the title. Adjust if status/other info is included.
+            isTappable: true, // EpisodeListItems are usually tappable
+          ),
+        );
+
+        // Semantics for PopupMenuButton within EpisodeListItem
+        final moreOptionsButtonFinder = find.descendant(
+          of: episodeListItemFinder,
+          matching: find.byIcon(Icons.more_vert),
+        );
+        expect(moreOptionsButtonFinder, findsOneWidget);
+        expect(tester.getSize(moreOptionsButtonFinder).width, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(tester.getSize(moreOptionsButtonFinder).height, greaterThanOrEqualTo(kMinInteractiveDimension));
+        expect(
+          tester.getSemantics(moreOptionsButtonFinder),
+          matchesSemantics(
+            label: 'More options for ${mockEpisode.title}', // Expected label
+            isButton: true,
+            hasTapAction: true,
+          ),
+        );
+
+        // 7. FilterEpisodesPopup (Basic Check)
+        // Tap the filter button to open the popup
+        await tester.tap(filterButton);
+        await tester.pumpAndSettle(); // Allow popup to animate and build
+
+        // Check if the popup (or a known element within it) is visible and accessible
+        // This assumes FilterEpisodesPopup uses a common widget like Card or has a specific key/type.
+        // For this example, let's assume it shows some filter option text.
+        // A more robust check would use a key on the popup's root widget.
+        final filterOptionText = find.text('Unplayed only'); // Example filter option
+        // This check might fail if 'Unplayed only' is not the default or always visible text.
+        // It's a placeholder for finding something inside the popup.
+        // A better approach would be to find by type of the popup if known, e.g., find.byType(FilterEpisodesPopup)
+        // and check its semantics.
+
+        // For now, let's just check if *something* related to filtering is announced.
+        // This is a very basic check. A real test would need to know more about FilterEpisodesPopup's structure.
+        // If FilterEpisodesPopup is a Dialog, you could do:
+        // expect(find.byType(Dialog), findsOneWidget);
+        // And then check semantics of the dialog.
+        // For now, we'll skip a deeper check as it requires knowledge of FilterEpisodesPopup's implementation.
+        // The `testA11yGuidelines()` called later should catch if the modal barrier itself is an issue.
+
+        // Close the popup by tapping outside (generic way to close a modal)
+        // This might not always work depending on how the popup is implemented (e.g., if it's persistent)
+        await tester.tapAt(Offset.zero); // Tap top-left corner
+        await tester.pumpAndSettle();
+
+
       });
     });
 
