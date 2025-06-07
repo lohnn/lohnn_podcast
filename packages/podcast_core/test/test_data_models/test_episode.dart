@@ -37,13 +37,38 @@ class TestEpisode implements Episode {
   String get localFilePath => '$id-${url.pathSegments.last}';
 
   @override
-  PodcastMediaItem mediaItem({Duration? actualDuration, bool? isPlayingFromDownloaded}) {
+  PodcastMediaItem mediaItem({
+    Duration? actualDuration,
+    bool? isPlayingFromDownloaded,
+  }) {
     return PodcastMediaItem(
       episode: this,
       id: id.safe,
       title: title,
       artUri: imageUrl,
       duration: actualDuration ?? duration,
+    );
+  }
+
+  factory TestEpisode.mocked({
+    String id = 'test_episode_id',
+    String podcastId = 'test_podcast_id',
+    String title = 'Test Episode Title',
+    Uri? imageUrl,
+    Uri? url,
+    DateTime? pubDate,
+    String? description,
+    Duration? duration,
+  }) {
+    return TestEpisode(
+      id: EpisodeId(id),
+      url: url ?? Uri.parse('https://example.com/episode.mp3'),
+      title: title,
+      pubDate: pubDate ?? DateTime.now(),
+      description: description ?? 'Test Description',
+      imageUrl: imageUrl ?? Uri.parse('https://example.com/episode_image.png'),
+      duration: duration ?? const Duration(minutes: 30),
+      podcastId: PodcastId(podcastId),
     );
   }
 }

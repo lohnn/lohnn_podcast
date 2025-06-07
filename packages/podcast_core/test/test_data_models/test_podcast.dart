@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:podcast_core/data/podcast.model.dart';
+
 export 'package:podcast_core/data/podcast.model.dart';
 
 class TestPodcast implements Podcast {
@@ -20,6 +22,27 @@ class TestPodcast implements Podcast {
   final String? language;
   @override
   final Set<String> categories;
+
+  @visibleForTesting
+  factory TestPodcast.mocked({
+    String id = '1',
+    String url = 'http://example.com/feed.xml',
+    String link = 'http://example.com',
+    String title = 'Test Podcast Title',
+    String description = 'Test Podcast Description',
+    String artwork = 'http://example.com/podcast_image.png',
+    DateTime? lastPublished,
+    String? language,
+    Set<String> categories = const {},
+  }) => TestPodcast(
+    id: PodcastId(id),
+    url: PodcastRssUrl.parse(url),
+    link: Uri.parse(link),
+    title: title,
+    description: description,
+    artwork: Uri.parse(artwork),
+    lastPublished: lastPublished,
+  );
 
   TestPodcast({
     required this.id,

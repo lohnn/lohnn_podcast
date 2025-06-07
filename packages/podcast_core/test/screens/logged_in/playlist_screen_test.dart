@@ -2,20 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/user_episode_status.model.dart';
+import 'package:podcast_core/helpers/equatable_map.dart';
 import 'package:podcast_core/providers/playlist_pod_provider.dart';
 import 'package:podcast_core/providers/user_episode_status_provider.dart';
 import 'package:podcast_core/screens/logged_in/playlist_screen.dart';
 import 'package:podcast_core/widgets/episode_list_item.dart';
-import '../../test_data_models/test_episode.dart'; // Using existing mock
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import '../../helpers/widget_tester_helpers.dart'; // Added import
+import '../../test_data_models/test_episode.dart'; // Using existing mock
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final mockEpisode1 = testEpisode.copyWith(id: 'ep1', title: 'Playlist Episode 1 for A11y', podcastId: 'podcast1');
-  final mockEpisode2 = testEpisode.copyWith(id: 'ep2', title: 'Playlist Episode 2 for A11y', podcastId: 'podcast2');
+  final mockEpisode1 = TestEpisode.mocked(
+    id: 'ep1',
+    title: 'Playlist Episode 1 for A11y',
+    podcastId: 'podcast1',
+  );
+  final mockEpisode2 = TestEpisode.mocked(
+    id: 'ep2',
+    title: 'Playlist Episode 2 for A11y',
+    podcastId: 'podcast2',
+  );
 
   final mockStatus1 = UserEpisodeStatus(
     episodeId: mockEpisode1.id,
@@ -33,9 +43,7 @@ void main() {
   Widget createTestApp(Widget child, List<Override> overrides) {
     return ProviderScope(
       overrides: overrides,
-      child: MaterialApp(
-        home: child,
-      ),
+      child: MaterialApp(home: child),
     );
   }
 
@@ -43,13 +51,14 @@ void main() {
     testWidgets('renders correctly with data', (WidgetTester tester) async {
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
-          createTestApp(
-            PlaylistScreen(),
-            [
-              playlistPodProvider.overrideWith((ref) => AsyncData([mockEpisode1, mockEpisode2])),
-              userEpisodeStatusPodProvider.overrideWith((ref) => AsyncData({mockEpisode1.id: mockStatus1})),
-            ],
-          ),
+          createTestApp(const PlaylistScreen(), [
+            playlistPodProvider.overrideWithBuild((_, _) async* {
+              yield [mockEpisode1, mockEpisode2];
+            }),
+            userEpisodeStatusPodProvider.overrideWithBuild((_, _) async* {
+              yield {mockEpisode1.id: mockStatus1}.equatable;
+            }),
+          ]),
         );
 
         await tester.pumpAndSettle();
@@ -67,13 +76,12 @@ void main() {
     testWidgets('renders loading state correctly', (WidgetTester tester) async {
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
-          createTestApp(
-            PlaylistScreen(),
-            [
-              playlistPodProvider.overrideWith((ref) => const AsyncLoading()),
-              userEpisodeStatusPodProvider.overrideWith((ref) => AsyncData({})),
-            ],
-          ),
+          createTestApp(const PlaylistScreen(), [
+            playlistPodProvider.overrideWithBuild((_, _) async* {}),
+            userEpisodeStatusPodProvider.overrideWithBuild((_, _) async* {
+              yield <EpisodeId, UserEpisodeStatus>{}.equatable;
+            }),
+          ]),
         );
 
         await tester.pump();
@@ -85,13 +93,14 @@ void main() {
     testWidgets('renders error state correctly', (WidgetTester tester) async {
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
-          createTestApp(
-            PlaylistScreen(),
-            [
-              playlistPodProvider.overrideWith((ref) => AsyncError('Test error', StackTrace.empty)),
-              userEpisodeStatusPodProvider.overrideWith((ref) => AsyncData({})),
-            ],
-          ),
+          createTestApp(const PlaylistScreen(), [
+            playlistPodProvider.overrideWithBuild((_, _) async* {
+              throw 'Test error';
+            }),
+            userEpisodeStatusPodProvider.overrideWithBuild((_, _) async* {
+              yield <EpisodeId, UserEpisodeStatus>{}.equatable;
+            }),
+          ]),
         );
 
         await tester.pumpAndSettle();
@@ -100,16 +109,19 @@ void main() {
       });
     });
 
-    testWidgets('renders correctly with empty playlist', (WidgetTester tester) async {
+    testWidgets('renders correctly with empty playlist', (
+      WidgetTester tester,
+    ) async {
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
-          createTestApp(
-            PlaylistScreen(),
-            [
-              playlistPodProvider.overrideWith((ref) => const AsyncData([])),
-              userEpisodeStatusPodProvider.overrideWith((ref) => AsyncData({})),
-            ],
-          ),
+          createTestApp(const PlaylistScreen(), [
+            playlistPodProvider.overrideWithBuild((_, _) async* {
+              yield [];
+            }),
+            userEpisodeStatusPodProvider.overrideWithBuild((_, _) async* {
+              yield <EpisodeId, UserEpisodeStatus>{}.equatable;
+            }),
+          ]),
         );
 
         await tester.pumpAndSettle();
@@ -125,13 +137,14 @@ void main() {
     testWidgets('passes accessibility guidelines', (WidgetTester tester) async {
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
-          createTestApp(
-            PlaylistScreen(),
-            [
-              playlistPodProvider.overrideWith((ref) => AsyncData([mockEpisode1, mockEpisode2])),
-              userEpisodeStatusPodProvider.overrideWith((ref) => AsyncData({mockEpisode1.id: mockStatus1})),
-            ],
-          ),
+          createTestApp(const PlaylistScreen(), [
+            playlistPodProvider.overrideWithBuild((_, _) async* {
+              yield [mockEpisode1, mockEpisode2];
+            }),
+            userEpisodeStatusPodProvider.overrideWithBuild((_, _) async* {
+              yield {mockEpisode1.id: mockStatus1}.equatable;
+            }),
+          ]),
         );
         await tester.pumpAndSettle();
         await tester.testA11yGuidelines();

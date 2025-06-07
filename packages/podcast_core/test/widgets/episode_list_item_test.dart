@@ -1,21 +1,23 @@
 import 'dart:ui'; // For SemanticsFlag
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/podcast.model.dart'; // Added for PodcastId
-import 'package:podcast_core/services/podcast_audio_handler.dart'; // Added for PodcastMediaItem
-import 'package:podcast_core/extensions/string_extensions.dart';
 import 'package:podcast_core/extensions/duration_extensions.dart';
+import 'package:podcast_core/extensions/string_extensions.dart';
+import 'package:podcast_core/services/podcast_audio_handler.dart'; // Added for PodcastMediaItem
 import 'package:podcast_core/widgets/episode_list_item.dart';
 import 'package:podcast_core/widgets/play_episode_button.dart';
+import 'package:podcast_core/widgets/pub_date_text.dart';
 import 'package:podcast_core/widgets/queue_button.dart';
 import 'package:podcast_core/widgets/rounded_image.dart';
-import 'package:podcast_core/widgets/pub_date_text.dart';
+
 // Assuming test_episode.dart provides a concrete TestEpisode or similar, not used directly for mockEpisode now
 // import '../test_data_models/test_episode.dart';
-import '../../helpers/widget_tester_helpers.dart'; // Corrected relative path
+import '../helpers/widget_tester_helpers.dart'; // Corrected relative path
 
 // Define MockEpisode as a concrete implementation of Episode for tests
 class MockEpisode implements Episode {
@@ -56,7 +58,9 @@ class MockEpisode implements Episode {
     bool? isPlayingFromDownloaded,
   }) {
     // Throw UnimplementedError as PodcastMediaItem definition is missing
-    throw UnimplementedError('PodcastMediaItem definition is missing or its constructor is unknown.');
+    throw UnimplementedError(
+      'PodcastMediaItem definition is missing or its constructor is unknown.',
+    );
   }
 }
 
@@ -98,16 +102,34 @@ void main() {
   }
 
   group('EpisodeListItem Tests', () {
-    testWidgets('renders correctly when unplayed and checks key semantics', (WidgetTester tester) async {
+    testWidgets('Follows a11y guidelines', (tester) async {
+      await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: false);
+
+      await tester.testA11yGuidelines();
+    });
+
+    testWidgets('renders correctly when unplayed and checks key semantics', (
+      WidgetTester tester,
+    ) async {
       await mockNetworkImagesFor(() async {
-        await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: false);
+        await pumpWidgetUnderTest(
+          tester,
+          episode: mockEpisode,
+          isPlayed: false,
+        );
         await tester.pumpAndSettle();
 
         expect(find.byType(EpisodeListItem), findsOneWidget);
         expect(find.text(mockEpisode.title), findsOneWidget);
-        expect(find.text(mockEpisode.description!.removeHtmlTags()), findsOneWidget);
+        expect(
+          find.text(mockEpisode.description!.removeHtmlTags()),
+          findsOneWidget,
+        );
         expect(find.byType(PubDateText), findsOneWidget);
-        expect(find.textContaining(mockEpisode.duration!.prettyPrint()), findsOneWidget);
+        expect(
+          find.textContaining(mockEpisode.duration!.prettyPrint()),
+          findsOneWidget,
+        );
 
         final roundedImageFinder = find.byType(RoundedImage);
         expect(roundedImageFinder, findsOneWidget);
@@ -120,19 +142,25 @@ void main() {
 
         final playButtonFinder = find.byType(PlayEpisodeButton);
         expect(playButtonFinder, findsOneWidget);
-        expect(tester.getSemantics(playButtonFinder), matchesSemantics(
+        expect(
+          tester.getSemantics(playButtonFinder),
+          matchesSemantics(
             isButton: true,
             hasTapAction: true,
             label: "Play episode",
-        ));
+          ),
+        );
 
         final queueButtonFinder = find.byType(QueueButton);
         expect(queueButtonFinder, findsOneWidget);
-        expect(tester.getSemantics(queueButtonFinder), matchesSemantics(
+        expect(
+          tester.getSemantics(queueButtonFinder),
+          matchesSemantics(
             isButton: true,
             hasTapAction: true,
             label: "Add to queue",
-        ));
+          ),
+        );
 
         final inkWellFinder = find.byType(InkWell);
         final semanticsNode = tester.getSemantics(inkWellFinder);
@@ -146,7 +174,9 @@ void main() {
       });
     });
 
-    testWidgets('renders correctly when played and checks key semantics', (WidgetTester tester) async {
+    testWidgets('renders correctly when played and checks key semantics', (
+      WidgetTester tester,
+    ) async {
       await mockNetworkImagesFor(() async {
         await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: true);
         await tester.pumpAndSettle();
@@ -157,21 +187,28 @@ void main() {
         final roundedImage = tester.widget<RoundedImage>(roundedImageFinder);
         expect(roundedImage.showDot, isFalse);
 
-        final roundedImageSemanticsPlayed = tester.getSemantics(roundedImageFinder);
+        final roundedImageSemanticsPlayed = tester.getSemantics(
+          roundedImageFinder,
+        );
         expect(roundedImageSemanticsPlayed.label, 'Episode image');
         expect(roundedImageSemanticsPlayed.tooltip, 'Played episode');
 
         final playButtonFinder = find.byType(PlayEpisodeButton);
         expect(playButtonFinder, findsOneWidget);
-         expect(tester.getSemantics(playButtonFinder), matchesSemantics(
+        expect(
+          tester.getSemantics(playButtonFinder),
+          matchesSemantics(
             isButton: true,
             hasTapAction: true,
             label: "Pause episode",
-        ));
+          ),
+        );
       });
     });
 
-    testWidgets('renders correctly with trailing widget', (WidgetTester tester) async {
+    testWidgets('renders correctly with trailing widget', (
+      WidgetTester tester,
+    ) async {
       await mockNetworkImagesFor(() async {
         final mockTrailingWidget = Icon(Icons.more_horiz, key: UniqueKey());
         await pumpWidgetUnderTest(
@@ -189,7 +226,9 @@ void main() {
       });
     });
 
-    testWidgets('renders correctly with missing optional data', (WidgetTester tester) async {
+    testWidgets('renders correctly with missing optional data', (
+      WidgetTester tester,
+    ) async {
       await mockNetworkImagesFor(() async {
         final minimalEpisode = MockEpisode(
           id: EpisodeId('minimal-ep-id-a11y'),
@@ -199,7 +238,11 @@ void main() {
           imageUrl: Uri.parse('https://example.com/minimal_image_a11y.png'),
         );
 
-        await pumpWidgetUnderTest(tester, episode: minimalEpisode, isPlayed: false);
+        await pumpWidgetUnderTest(
+          tester,
+          episode: minimalEpisode,
+          isPlayed: false,
+        );
         await tester.pumpAndSettle();
 
         expect(find.byType(EpisodeListItem), findsOneWidget);
@@ -208,9 +251,15 @@ void main() {
         expect(find.byType(PubDateText), findsNothing);
         expect(find.textContaining('•'), findsNothing);
         if (minimalEpisode.description != null) {
-          expect(find.text(minimalEpisode.description!.removeHtmlTags()), findsNothing);
+          expect(
+            find.text(minimalEpisode.description!.removeHtmlTags()),
+            findsNothing,
+          );
         } else {
-           expect(find.text("dummy_description_to_fail_if_present_and_null"), findsNothing);
+          expect(
+            find.text("dummy_description_to_fail_if_present_and_null"),
+            findsNothing,
+          );
         }
 
         expect(find.byType(PlayEpisodeButton), findsOneWidget);
@@ -218,15 +267,23 @@ void main() {
       });
     });
 
-    testWidgets('passes accessibility guidelines when unplayed', (WidgetTester tester) async {
+    testWidgets('passes accessibility guidelines when unplayed', (
+      WidgetTester tester,
+    ) async {
       await mockNetworkImagesFor(() async {
-        await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: false);
+        await pumpWidgetUnderTest(
+          tester,
+          episode: mockEpisode,
+          isPlayed: false,
+        );
         await tester.pumpAndSettle();
         // await tester.testA11yGuidelines(); // Commented out due to helper import issues
       });
     });
 
-    testWidgets('passes accessibility guidelines when played', (WidgetTester tester) async {
+    testWidgets('passes accessibility guidelines when played', (
+      WidgetTester tester,
+    ) async {
       await mockNetworkImagesFor(() async {
         await pumpWidgetUnderTest(tester, episode: mockEpisode, isPlayed: true);
         await tester.pumpAndSettle();
