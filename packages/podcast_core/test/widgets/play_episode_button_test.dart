@@ -6,45 +6,13 @@ import 'package:mocktail/mocktail.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
 import 'package:podcast_core/widgets/play_episode_button.dart';
-import 'package:podcast_core/services/podcast_audio_handler.dart'; // For PodcastMediaItem
+// For PodcastMediaItem - already imported via TestEpisode if TestEpisode includes it, or may not be needed directly in this file
+// import 'package:podcast_core/services/podcast_audio_handler.dart';
 import '../helpers/widget_tester_helpers.dart'; // For kMinInteractiveDimension etc.
+import '../../test_data_models/test_episode.dart'; // Import TestEpisode
 
 // --- Mocks ---
-class MockEpisode extends Mock implements Episode {
-  // Provide default non-null values for getters if not specified by 'when'
-  @override
-  EpisodeId get id => EpisodeId('mock_episode_id');
-  @override
-  PodcastId get podcastId => PodcastId('mock_podcast_id');
-  @override
-  String get title => 'Mock Episode Title';
-  @override
-  Uri get url => Uri.parse('http://example.com/mock.mp3');
-  @override
-  Uri get imageUrl => Uri.parse('http://example.com/mock_image.png');
-  @override
-  String get localFilePath => 'mock_file_path';
-  @override
-  PodcastMediaItem mediaItem({
-    Duration? actualDuration,
-    bool? isPlayingFromDownloaded,
-  }) {
-    return PodcastMediaItem(
-      id: id.id,
-      album: podcastId.id,
-      title: title,
-      artist: podcastId.id, // Assuming podcastId can serve as artist
-      duration: actualDuration ?? const Duration(minutes: 10),
-      artUri: imageUrl,
-      extras: {
-        'url': url.toString(),
-        'downloaded': isPlayingFromDownloaded ?? false,
-        'episodeId': id.id,
-        'podcastId': podcastId.id,
-      },
-    );
-  }
-}
+// MockEpisode class definition removed
 
 class MockAudioPlayerPod extends Mock implements AudioPlayerPod {}
 
@@ -68,14 +36,19 @@ PlaybackState createPlaybackState({
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late MockEpisode mockEpisode;
+  late TestEpisode mockEpisode; // Changed type from MockEpisode to TestEpisode
   late MockAudioPlayerPod mockAudioPlayerNotifier;
 
   setUp(() {
-    mockEpisode = MockEpisode();
+    // Initialize with TestEpisode.mocked()
+    mockEpisode = TestEpisode.mocked(
+      id: 'default_ep_id',
+      podcastId: 'default_pd_id',
+      title: 'Default Test Episode'
+    );
     mockAudioPlayerNotifier = MockAudioPlayerPod();
 
-    // Default stubs
+    // Default stubs for AudioPlayerPod methods
     when(() => mockAudioPlayerNotifier.playEpisode(any())).thenAnswer((_) async {});
     when(() => mockAudioPlayerNotifier.play()).thenAnswer((_) async {});
     when(() => mockAudioPlayerNotifier.pause()).thenAnswer((_) async {});
@@ -92,6 +65,13 @@ void main() {
     when(() => mockAudioPlayerNotifier.currentlyPlayingEpisodeId)
         .thenReturn(currentPlayingEpisodeId);
 
+    // Use the episode passed to the button, which is the global mockEpisode for most tests,
+    // or a locally defined one for specific ID checks.
+    final episodeForButton = currentPlayingEpisodeId == mockEpisode.id
+                             ? mockEpisode
+                             : TestEpisode.mocked(id: currentPlayingEpisodeId?.id ?? 'temp_id');
+
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -100,6 +80,7 @@ void main() {
         ],
         child: MaterialApp(
           home: Scaffold(
+            // Pass the episode that this button instance is supposed to represent
             body: PlayEpisodeButton(mockEpisode),
           ),
         ),
@@ -112,10 +93,11 @@ void main() {
     testWidgets(
         'Paused state (different/no episode playing): shows play, correct semantics, a11y',
         (tester) async {
+      // mockEpisode is already set up with id 'default_ep_id'
       await pumpPlayEpisodeButton(
         tester,
         playbackState: createPlaybackState(playing: false),
-        currentPlayingEpisodeId: EpisodeId('other_episode'), // Not this episode
+        currentPlayingEpisodeId: EpisodeId('other_episode'), // Simulate another episode is current, or none
       );
 
       final buttonFinder = find.byType(IconButton);
@@ -143,11 +125,14 @@ void main() {
     testWidgets(
         'Playing state (this episode is playing): shows pause, correct semantics, a11y',
         (tester) async {
-      when(() => mockEpisode.id).thenReturn(EpisodeId('this_episode_playing'));
+      // For this test, mockEpisode (global one) IS the one playing
+      // Re-initialize mockEpisode for this specific test scenario to ensure its ID is what we need.
+      mockEpisode = TestEpisode.mocked(id: 'this_episode_playing', podcastId: 'pd1');
+
       await pumpPlayEpisodeButton(
         tester,
         playbackState: createPlaybackState(playing: true),
-        currentPlayingEpisodeId: EpisodeId('this_episode_playing'),
+        currentPlayingEpisodeId: mockEpisode.id, // This episode is playing
       );
 
       final buttonFinder = find.byType(IconButton);
@@ -175,11 +160,12 @@ void main() {
     testWidgets(
         'Paused state (this episode is current but paused): shows play, correct semantics, a11y',
         (tester) async {
-      when(() => mockEpisode.id).thenReturn(EpisodeId('this_episode_paused'));
+      // mockEpisode IS the one current, but paused
+      mockEpisode = TestEpisode.mocked(id: 'this_episode_paused', podcastId: 'pd1');
       await pumpPlayEpisodeButton(
         tester,
         playbackState: createPlaybackState(playing: false),
-        currentPlayingEpisodeId: EpisodeId('this_episode_paused'),
+        currentPlayingEpisodeId: mockEpisode.id, // This episode is current but paused
       );
 
       final buttonFinder = find.byType(IconButton);
@@ -206,13 +192,14 @@ void main() {
 
 
     testWidgets('Loading state: shows indicator, disabled, correct semantics, a11y', (tester) async {
+      // Use the global mockEpisode, its ID will be 'default_ep_id'
       await pumpPlayEpisodeButton(
         tester,
         playbackState: createPlaybackState(processingState: AudioProcessingState.loading),
-        currentPlayingEpisodeId: mockEpisode.id, // Loading this episode
+        currentPlayingEpisodeId: mockEpisode.id, // Loading this episode (default_ep_id)
       );
 
-      final buttonFinder = find.byType(PlayEpisodeButton); // Find by actual widget type
+      final buttonFinder = find.byType(PlayEpisodeButton);
       expect(buttonFinder, findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       // Ensure IconButton is there but content is the indicator
@@ -240,10 +227,11 @@ void main() {
     });
 
     testWidgets('Buffering state: shows indicator, disabled, correct semantics, a11y', (tester) async {
+      // Use the global mockEpisode
       await pumpPlayEpisodeButton(
         tester,
         playbackState: createPlaybackState(processingState: AudioProcessingState.buffering),
-        currentPlayingEpisodeId: mockEpisode.id, // Buffering this episode
+        currentPlayingEpisodeId: mockEpisode.id, // Buffering this episode (default_ep_id)
       );
 
       final buttonFinder = find.byType(PlayEpisodeButton);
@@ -274,6 +262,7 @@ void main() {
           ],
           child: MaterialApp(
             home: Scaffold(
+              // Use the global mockEpisode for the button instance
               body: PlayEpisodeButton(mockEpisode),
             ),
           ),

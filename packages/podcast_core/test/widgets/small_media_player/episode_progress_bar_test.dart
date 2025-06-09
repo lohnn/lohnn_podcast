@@ -5,64 +5,13 @@ import 'package:audio_service/audio_service.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
 import 'package:podcast_core/widgets/small_media_player/episode_progress_bar.dart';
-import 'package:podcast_core/services/podcast_audio_handler.dart'; // For PodcastMediaItem
+// For PodcastMediaItem - TestEpisode handles this.
+// import 'package:podcast_core/services/podcast_audio_handler.dart';
 import '../../helpers/widget_tester_helpers.dart'; // For kMinInteractiveDimension etc.
+import '../../../test_data_models/test_episode.dart'; // Import TestEpisode
 
 // --- Mocks ---
-class MockEpisode implements Episode {
-  @override
-  final EpisodeId id;
-  @override
-  final PodcastId podcastId;
-  @override
-  final String title;
-  @override
-  final Uri url;
-  @override
-  final Uri imageUrl;
-  @override
-  final String? description; // Made nullable
-  @override
-  final DateTime? pubDate; // Made nullable
-  @override
-  final Duration? duration; // Crucial for progress calculation
-
-  MockEpisode({
-    required String id,
-    required String podcastId,
-    this.title = 'Mock Episode Title',
-    String url = 'http://example.com/mock.mp3',
-    String imageUrl = 'http://example.com/mock_image.png',
-    this.description,
-    this.pubDate,
-    this.duration,
-  })  : id = EpisodeId(id),
-        podcastId = PodcastId(podcastId),
-        url = Uri.parse(url),
-        imageUrl = Uri.parse(imageUrl);
-
-  @override
-  String get localFilePath => '${id.id}-${url.pathSegments.last}';
-
-  @override
-  PodcastMediaItem mediaItem(
-      {Duration? actualDuration, bool? isPlayingFromDownloaded}) {
-    return PodcastMediaItem(
-      id: id.id,
-      album: podcastId.id,
-      title: title,
-      artist: podcastId.id,
-      duration: actualDuration ?? duration ?? const Duration(minutes: 10),
-      artUri: imageUrl,
-      extras: {
-        'url': url.toString(),
-        'downloaded': isPlayingFromDownloaded ?? false,
-        'episodeId': id.id,
-        'podcastId': podcastId.id,
-      },
-    );
-  }
-}
+// MockEpisode class definition removed
 
 // Helper to create PlaybackState
 PlaybackState createPlaybackStateWithPosition(
@@ -116,9 +65,9 @@ void main() {
   group('EpisodeProgressBar Accessibility Tests', () {
     testWidgets('0% progress: correct visuals, semantics, and a11y',
         (tester) async {
-      final mockEpisode = MockEpisode(id: 'ep1', podcastId: 'pd1', duration: const Duration(minutes: 10));
+      final testEpisode = TestEpisode.mocked(id: 'ep1', podcastId: 'pd1', duration: const Duration(minutes: 10));
       final playbackState = createPlaybackStateWithPosition(Duration.zero, mediaId: 'ep1');
-      await pumpEpisodeProgressBar(tester, episode: mockEpisode, playbackState: playbackState);
+      await pumpEpisodeProgressBar(tester, episode: testEpisode, playbackState: playbackState);
 
       final progressBarFinder = find.byType(LinearProgressIndicator);
       expect(progressBarFinder, findsOneWidget);
@@ -141,9 +90,9 @@ void main() {
 
     testWidgets('50% progress: correct visuals, semantics, and a11y',
         (tester) async {
-      final mockEpisode = MockEpisode(id: 'ep1', podcastId: 'pd1', duration: const Duration(minutes: 10));
+      final testEpisode = TestEpisode.mocked(id: 'ep1', podcastId: 'pd1', duration: const Duration(minutes: 10));
       final playbackState = createPlaybackStateWithPosition(const Duration(minutes: 5), mediaId: 'ep1');
-      await pumpEpisodeProgressBar(tester, episode: mockEpisode, playbackState: playbackState);
+      await pumpEpisodeProgressBar(tester, episode: testEpisode, playbackState: playbackState);
 
       final progressBarFinder = find.byType(LinearProgressIndicator);
       expect(progressBarFinder, findsOneWidget);
@@ -163,9 +112,9 @@ void main() {
 
     testWidgets('100% progress: correct visuals, semantics, and a11y',
         (tester) async {
-      final mockEpisode = MockEpisode(id: 'ep1', podcastId: 'pd1', duration: const Duration(minutes: 10));
+      final testEpisode = TestEpisode.mocked(id: 'ep1', podcastId: 'pd1', duration: const Duration(minutes: 10));
       final playbackState = createPlaybackStateWithPosition(const Duration(minutes: 10), mediaId: 'ep1');
-      await pumpEpisodeProgressBar(tester, episode: mockEpisode, playbackState: playbackState);
+      await pumpEpisodeProgressBar(tester, episode: testEpisode, playbackState: playbackState);
 
       final progressBarFinder = find.byType(LinearProgressIndicator);
       expect(progressBarFinder, findsOneWidget);
@@ -185,10 +134,10 @@ void main() {
 
     testWidgets('No duration (live stream): handles gracefully, semantics, a11y',
         (tester) async {
-      final mockEpisode = MockEpisode(id: 'ep1', podcastId: 'pd1', duration: null); // No duration
+      final testEpisode = TestEpisode.mocked(id: 'ep1', podcastId: 'pd1', duration: null); // No duration
       // For a live stream, position might still update, but total duration is unknown.
       final playbackState = createPlaybackStateWithPosition(const Duration(minutes: 5), mediaId: 'ep1');
-      await pumpEpisodeProgressBar(tester, episode: mockEpisode, playbackState: playbackState);
+      await pumpEpisodeProgressBar(tester, episode: testEpisode, playbackState: playbackState);
 
       final progressBarFinder = find.byType(LinearProgressIndicator);
       expect(progressBarFinder, findsOneWidget);
@@ -211,15 +160,15 @@ void main() {
     });
 
     testWidgets('Episode not currently playing: shows 0% progress, semantics, a11y', (tester) async {
-      final mockEpisode = MockEpisode(id: 'ep1', podcastId: 'pd1', duration: const Duration(minutes: 10));
+      final testEpisode = TestEpisode.mocked(id: 'ep1', podcastId: 'pd1', duration: const Duration(minutes: 10));
       // PlaybackState is for a *different* episode or nothing
       final playbackState = createPlaybackStateWithPosition(const Duration(minutes: 2), mediaId: 'ep2_another_episode');
 
       await pumpEpisodeProgressBar(
         tester,
-        episode: mockEpisode, // We are testing the progress bar for 'ep1'
+        episode: testEpisode, // We are testing the progress bar for 'ep1'
         playbackState: playbackState,
-        // Explicitly ensure currentlyPlayingEpisodeIdProvider does not match mockEpisode.id
+        // Explicitly ensure currentlyPlayingEpisodeIdProvider does not match testEpisode.id
         currentlyPlayingEpisodeIdOverride: EpisodeId('ep2_another_episode')
       );
 

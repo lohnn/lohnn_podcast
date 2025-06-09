@@ -5,63 +5,31 @@ import 'package:mocktail/mocktail.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/providers/playlist_pod_provider.dart';
 import 'package:podcast_core/widgets/queue_button.dart';
-import 'package:podcast_core/services/podcast_audio_handler.dart'; // For PodcastMediaItem if needed by MockEpisode
+// For PodcastMediaItem if needed by MockEpisode - TestEpisode handles its own mediaItem
+// import 'package:podcast_core/services/podcast_audio_handler.dart';
 import '../helpers/widget_tester_helpers.dart'; // For kMinInteractiveDimension etc.
+import '../../test_data_models/test_episode.dart'; // Import TestEpisode
 
 // --- Mocks ---
-class MockEpisode extends Mock implements Episode {
-  @override
-  EpisodeId get id => EpisodeId('mock_episode_id'); // Default
-  @override
-  PodcastId get podcastId => PodcastId('mock_podcast_id'); // Default
-  @override
-  String get title => 'Mock Episode Title'; // Default
-
-  // Add stubs for other Episode getters if QueueButton uses them,
-  // though it likely only needs 'id'.
-  @override
-  Uri get url => Uri.parse('http://example.com/mock.mp3');
-  @override
-  Uri get imageUrl => Uri.parse('http://example.com/mock_image.png');
-  @override
-  String get localFilePath => 'mock_file_path';
-
-  @override
-  PodcastMediaItem mediaItem({
-    Duration? actualDuration,
-    bool? isPlayingFromDownloaded,
-  }) {
-    // Return a basic PodcastMediaItem if needed for some reason, though QueueButton shouldn't call this.
-    return PodcastMediaItem(
-      id: id.id,
-      album: podcastId.id,
-      title: title,
-      artist: podcastId.id,
-      duration: actualDuration ?? const Duration(minutes: 10),
-      artUri: imageUrl,
-      extras: {
-        'url': url.toString(),
-        'downloaded': isPlayingFromDownloaded ?? false,
-        'episodeId': id.id,
-        'podcastId': podcastId.id,
-      },
-    );
-  }
-}
+// MockEpisode class definition removed
 
 class MockPlaylistPod extends Mock implements PlaylistPod {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late MockEpisode mockEpisode;
+  late TestEpisode mockEpisode; // Changed type to TestEpisode
   late MockPlaylistPod mockPlaylistNotifier;
 
   setUp(() {
-    mockEpisode = MockEpisode();
+    // Initialize with TestEpisode.mocked()
+    mockEpisode = TestEpisode.mocked(
+        id: 'q_ep_default',
+        podcastId: 'q_pd_default',
+        title: 'Default Queue Test Episode');
     mockPlaylistNotifier = MockPlaylistPod();
 
-    // Default stubs for actions (can be overridden in tests if specific return values are needed)
+    // Default stubs for actions
     when(() => mockPlaylistNotifier.addToQueue(any())).thenAnswer((_) async {});
     when(() => mockPlaylistNotifier.removeFromQueue(any())).thenAnswer((_) async {});
   });

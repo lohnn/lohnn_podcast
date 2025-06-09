@@ -7,53 +7,29 @@ import 'package:podcast_core/data/download_task_status.dart';
 import 'package:podcast_core/providers/download_queue_pod.dart';
 import 'package:podcast_core/providers/download_tasks_provider.dart';
 import 'package:podcast_core/widgets/small_media_player/download_animation.dart';
-import 'package:podcast_core/services/podcast_audio_handler.dart'; // For PodcastMediaItem if needed by MockEpisode
+// For PodcastMediaItem - TestEpisode handles its own mediaItem
+// import 'package:podcast_core/services/podcast_audio_handler.dart';
 
+import '../../../test_data_models/test_episode.dart'; // Corrected path for TestEpisode
 import '../../helpers/widget_tester_helpers.dart'; // For kMinInteractiveDimension etc.
 
 // --- Mocks ---
-class MockEpisode extends Mock implements Episode {
-  @override
-  EpisodeId get id => EpisodeId('mock_episode_id'); // Default
-  @override
-  PodcastId get podcastId => PodcastId('mock_podcast_id'); // Default
-  @override
-  String get title => 'Mock Episode Title'; // Default
-  @override
-  Uri get url => Uri.parse('http://example.com/mock.mp3');
-  @override
-  Uri get imageUrl => Uri.parse('http://example.com/mock_image.png');
-  @override
-  String get localFilePath => 'mock_file_path';
-  @override
-  PodcastMediaItem mediaItem(
-      {Duration? actualDuration, bool? isPlayingFromDownloaded}) {
-    return PodcastMediaItem(
-        id: id.id,
-        album: podcastId.id,
-        title: title,
-        artist: podcastId.id,
-        duration: actualDuration ?? const Duration(minutes: 10),
-        artUri: imageUrl,
-        extras: {
-          'url': url.toString(),
-          'downloaded': isPlayingFromDownloaded ?? false,
-          'episodeId': id.id,
-          'podcastId': podcastId.id
-        });
-  }
-}
+// MockEpisode class definition removed
 
 class MockDownloadQueuePod extends Mock implements DownloadQueuePod {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late MockEpisode mockEpisode;
+  late TestEpisode mockEpisode; // Changed type to TestEpisode
   late MockDownloadQueuePod mockDownloadQueueNotifier;
 
   setUp(() {
-    mockEpisode = MockEpisode();
+    // Initialize with TestEpisode.mocked()
+    mockEpisode = TestEpisode.mocked(
+        id: 'dl_ep_default',
+        podcastId: 'dl_pd_default',
+        title: 'Default Download Test Episode');
     mockDownloadQueueNotifier = MockDownloadQueuePod();
 
     // Default stubs for actions
