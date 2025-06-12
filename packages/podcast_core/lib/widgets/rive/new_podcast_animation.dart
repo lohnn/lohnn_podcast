@@ -51,24 +51,29 @@ class NewPodcastAnimation extends HookWidget {
     );
     final file = useFuture(fileFuture).data;
 
+    final stateMachinePainter = useMemoized(
+      () => StateMachinePainter(
+        withStateMachine: (stateMachine) {
+          unawaited(
+            Future(() {
+              riveStateMachine.value = stateMachine;
+            }),
+          );
+          updateControllerInputs(stateMachine);
+        },
+        stateMachineName: artboard.stateMachineName,
+      ),
+    );
+
     if (file == null) return Container();
+
+    useEffect(() => file.dispose);
 
     return RiveFileWidget(
       key: Key(artboard.name),
       file: file,
       artboardName: artboard.name,
-      painter: StateMachinePainter(
-        
-        // withStateMachine: (stateMachine) {
-        //   unawaited(
-        //     Future(() {
-        //       riveStateMachine.value = stateMachine;
-        //     }),
-        //   );
-        //   updateControllerInputs(stateMachine);
-        // },
-        stateMachineName: artboard.stateMachineName,
-      ),
+      painter: stateMachinePainter,
     );
   }
 }
