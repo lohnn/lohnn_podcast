@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episodes_filter_state.dart';
 import 'package:podcast_core/extensions/text_style_extensions.dart';
 import 'package:podcast_core/providers/episodes_filter_provider.dart';
-import 'package:podcast_core/widgets/rive/new_podcast_animation.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation.dart';
 
 class FilterEpisodesPopup extends ConsumerWidget {
   const FilterEpisodesPopup({super.key});
@@ -104,7 +104,7 @@ class FilterEpisodesPopup extends ConsumerWidget {
                           child: SizedBox(
                             width: 24,
                             height: 24,
-                            child: NewPodcastAnimation(
+                            child: PodcastAnimation(
                               artboard: PodcastAnimationArtboard.sortOrder,
                               params: {
                                 'Reversed': filterState.sortAscending,
