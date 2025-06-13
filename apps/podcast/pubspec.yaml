@@ -22,7 +22,7 @@ dependencies:
   logging: ^1.3.0
   podcast_common: any
   podcast_core: any
-  rive: ^0.13.20
+  rive_native: ^0.0.2
   riverpod_annotation: ^3.0.0-dev.15
   rxdart: ^0.28.0
   xml: ^6.5.0

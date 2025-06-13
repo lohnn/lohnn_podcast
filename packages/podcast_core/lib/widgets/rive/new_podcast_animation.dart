@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podcast_core/extensions/map_extensions.dart';
-import 'package:podcast_core/widgets/rive/podcast_animation.dart';
 import 'package:rive_native/rive_native.dart' as rive show File;
 import 'package:rive_native/rive_native.dart';
 
@@ -68,6 +67,7 @@ class NewPodcastAnimation extends HookWidget {
     if (file == null) return Container();
 
     useEffect(() => file.dispose);
+    useEffect(() => riveStateMachine.value?.dispose);
 
     return RiveFileWidget(
       key: Key(artboard.name),
@@ -76,4 +76,17 @@ class NewPodcastAnimation extends HookWidget {
       painter: stateMachinePainter,
     );
   }
+}
+
+enum PodcastAnimationArtboard {
+  download('Download', 'Download'),
+  sortOrder('Sort order');
+
+  final String name;
+  final String stateMachineName;
+
+  const PodcastAnimationArtboard(
+    this.name, [
+    this.stateMachineName = 'State Machine 1',
+  ]);
 }
