@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podcast_core/extensions/map_extensions.dart';
-import 'package:rive_native/rive_native.dart' as rive show File;
+import 'package:podcast_core/hooks/use_rive_file.dart';
 import 'package:rive_native/rive_native.dart';
 
 class NewPodcastAnimation extends HookWidget {
@@ -42,13 +42,7 @@ class NewPodcastAnimation extends HookWidget {
       return null;
     }, [riveStateMachine.value, ...params.records]);
 
-    final fileFuture = useMemoized(
-      () => rive.File.asset(
-        'packages/podcast_core/assets/animations/podcast.riv',
-        riveFactory: Factory.rive,
-      ),
-    );
-    final file = useFuture(fileFuture).data;
+    final file = useRiveAssetFile();
 
     final stateMachinePainter = useMemoized(
       () => StateMachinePainter(
@@ -66,8 +60,7 @@ class NewPodcastAnimation extends HookWidget {
 
     if (file == null) return Container();
 
-    useEffect(() => file.dispose);
-    useEffect(() => riveStateMachine.value?.dispose);
+    useEffect(() => riveStateMachine.value?.dispose, [riveStateMachine.value]);
 
     return RiveFileWidget(
       key: Key(artboard.name),

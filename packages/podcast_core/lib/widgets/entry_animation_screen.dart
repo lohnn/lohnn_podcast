@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:rive_native/rive_native.dart' as rive show File;
+import 'package:podcast_core/hooks/use_rive_file.dart';
 import 'package:rive_native/rive_native.dart';
 
 class EntryAnimationScreen extends HookWidget {
@@ -12,13 +12,8 @@ class EntryAnimationScreen extends HookWidget {
   Widget build(BuildContext context) {
     final hasShownAnimation = useState(false);
 
-    final fileFuture = useMemoized(
-      () => rive.File.asset(
-        'packages/podcast_core/assets/animations/podcast.riv',
-        riveFactory: Factory.rive,
-      ),
-    );
-    final file = useFuture(fileFuture).data;
+    final file = useRiveAssetFile();
+
     if (file == null) return Container();
 
     final stateMachinePainter = useMemoized(
