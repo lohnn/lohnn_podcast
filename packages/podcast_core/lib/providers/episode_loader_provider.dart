@@ -75,17 +75,20 @@ class EpisodeLoader extends _$EpisodeLoader {
   @override
   Future<EpisodeFileResponse> build(Episode episode) async {
     ref.keepAlive();
-    if (isWeb) {
+    // @TODO: We need to rebuild this whole thing with better stability in the future
+    if (isWeb || true) {
       return RemoteEpisodeFile(remoteUri: episode.url);
     }
 
-    final localFile = await _cacheManager.getFileFromCache(episode);
-    if (localFile != null) {
-      return localFile;
-    } else {
-      return _cacheManager.getCurrentStatus(episode) ??
-          RemoteEpisodeFile(remoteUri: episode.url);
-    }
+    // @TODO: Keeping this commented out for now, for reference in the future
+    //   when we want to implement caching again
+    // final localFile = await _cacheManager.getFileFromCache(episode);
+    // if (localFile != null) {
+    //   return localFile;
+    // } else {
+    //   return _cacheManager.getCurrentStatus(episode) ??
+    //       RemoteEpisodeFile(remoteUri: episode.url);
+    // }
   }
 
   /// Downloads the episode and returns the URI to the file.
