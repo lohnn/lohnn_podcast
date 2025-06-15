@@ -2,9 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:podcast_core/hooks/use_rive_setup.dart';
 import 'package:podcast_core/widgets/rive/podcast_animation.dart';
 import 'package:rive_native/rive_native.dart';
+
+final class RiveHookException implements Exception {
+  final String message;
+
+  const RiveHookException(this.message);
+
+  @override
+  String toString() {
+    return 'RiveHookException{message: $message}';
+  }
+}
 
 (Artboard, StateMachinePainter, ViewModelInstance?)? useStateMachinePainter(
   PodcastAnimationArtboard artboard,
@@ -52,7 +62,6 @@ class _RiveStateMachinePainterHookState
     }
 
     stateMachinePainter = RivePainter.stateMachine(
-      stateMachineName: hook.artboard.stateMachineName,
       withStateMachine: (stateMachine) {
         final viewModel = riveFile.defaultArtboardViewModel(artboard);
         if (viewModel == null) return;

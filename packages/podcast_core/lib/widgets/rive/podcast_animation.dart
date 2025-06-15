@@ -50,7 +50,6 @@ class PodcastAnimation extends HookWidget {
 
     final (artboard, stateMachinePainter, viewModel) = response;
 
-    // TODO: The widget is not rebuilt when the hook is disposed. (such as when the screen is wider/narrower)
     useEffect(
       () {
         if (viewModel case final viewModel?) {
@@ -82,7 +81,6 @@ enum PodcastAnimationArtboard {
   playPause('PlayPause');
 
   final String name;
-  final String? stateMachineName;
 
-  const PodcastAnimationArtboard(this.name, [this.stateMachineName]);
+  const PodcastAnimationArtboard(this.name);
 }
