@@ -103,8 +103,10 @@ class _RiveStateMachinePainterHookState
 
   @override
   void dispose() {
-    artboard?.dispose();
     stateMachinePainter?.dispose();
+    viewModelInstance?.dispose();
+    artboard?.dispose();
+    riveFile?.dispose();
     super.dispose();
   }
 }
