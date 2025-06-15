@@ -628,10 +628,10 @@ packages:
     dependency: transitive
     description:
       name: just_audio
-      sha256: d449d6b01ace3343dd8ca7f910db871994942dc58752d2765db35694f9ffe7e2
+      sha256: "679637a3ec5b6e00f36472f5a3663667df00ee4822cbf5dafca0f568c710960a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.3"
+    version: "0.10.4"
   just_audio_platform_interface:
     dependency: transitive
     description:
@@ -904,22 +904,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
-  rive:
+  rive_native:
     dependency: transitive
     description:
-      name: rive
-      sha256: "2551a44fa766a7ed3f52aa2b94feda6d18d00edc25dee5f66e72e9b365bb6d6c"
+      name: rive_native
+      sha256: "97d3fd0c7a4e78b3227a5703841b9455da40632fc8abe1e66cc40ea3d3d9889c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.20"
-  rive_common:
-    dependency: transitive
-    description:
-      name: rive_common
-      sha256: "2ba42f80d37a4efd0696fb715787c4785f8a13361e8aea9227c50f1e78cf763a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.15"
+    version: "0.0.2"
   riverpod:
     dependency: transitive
     description:

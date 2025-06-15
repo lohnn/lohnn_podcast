@@ -12,9 +12,11 @@ import 'package:podcast_core/repository.dart';
 import 'package:podcast_core/screens/logged_in/logged_in_screen.dart';
 import 'package:podcast_core/widgets/entry_animation_screen.dart';
 import 'package:podcast_core/widgets/podcast_app.dart';
+import 'package:rive_native/rive_native.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await RiveNative.init();
 
   if (kDebugMode) {
     hierarchicalLoggingEnabled = true;

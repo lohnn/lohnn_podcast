@@ -1,28 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podcast_core/extensions/map_extensions.dart';
-import 'package:rive/rive.dart';
+import 'package:podcast_core/hooks/use_state_machine_painter.dart';
+import 'package:rive_native/rive_native.dart';
 
 class PodcastAnimation extends HookWidget {
-  final PodcastAnimationArtboard artboard;
+  final PodcastAnimationArtboard animationArtboard;
   final Map<String, dynamic> params;
 
   const PodcastAnimation({
     super.key,
-    required this.artboard,
+    required this.animationArtboard,
     this.params = const {},
   });
 
-  void updateControllerInputs(
-    StateMachineController controller,
-    Map<String, dynamic> params,
-  ) {
+  void updateControllerInputsViewModel(ViewModelInstance viewModel) {
     for (final (key, value) in params.records) {
       switch (value) {
         case final double value:
-          controller.getNumberInput(key)?.value = value;
+          viewModel.number(key)?.value = value;
         case final bool value:
-          controller.getBoolInput(key)?.value = value;
+          viewModel.boolean(key)?.value = value;
+        case final Color value:
+          viewModel.color(key)?.value = value;
+        default:
+          continue;
+      }
+    }
+  }
+
+  void updateControllerInputsStateMachine(StateMachine stateMachine) {
+    for (final (key, value) in params.records) {
+      switch (value) {
+        case final double value:
+          stateMachine.number(key)?.value = value;
+        case final bool value:
+          stateMachine.boolean(key)?.value = value;
         default:
           continue;
       }
@@ -31,45 +44,44 @@ class PodcastAnimation extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final riveAnimationController = useState<StateMachineController?>(null);
-    // Disposing the controller when the widget is disposed
-    useEffect(() => riveAnimationController.value?.dispose, [
-      riveAnimationController.value,
-    ]);
+    final response = useStateMachinePainter(animationArtboard);
 
-    useEffect(() {
-      if (riveAnimationController.value case final controller?) {
-        updateControllerInputs(controller, params);
-      }
-      return null;
-    }, [riveAnimationController.value, ...params.records]);
+    if (response == null) return Container();
 
-    return RiveAnimation.asset(
-      'packages/podcast_core/assets/animations/podcast.riv',
-      artboard: artboard.name,
-      onInit: (artboard) {
-        final controller = riveAnimationController.value =
-            StateMachineController.fromArtboard(
-              artboard,
-              this.artboard.stateMachineName,
-            );
-        artboard.addController(controller!);
+    final (artboard, stateMachinePainter, viewModel) = response;
 
-        updateControllerInputs(controller, params);
+    useEffect(
+      () {
+        if (viewModel case final viewModel?) {
+          updateControllerInputsViewModel(viewModel);
+        }
+        if (stateMachinePainter.stateMachine case final stateMachine?) {
+          updateControllerInputsStateMachine(stateMachine);
+        }
+        // This seems to be necessary to ensure the inputs are updated.
+        // Preferably, this should be done in the state machine's update method.
+        stateMachinePainter.scheduleRepaint();
+        return null;
       },
+      [
+        artboard,
+        stateMachinePainter,
+        stateMachinePainter.stateMachine,
+        viewModel,
+        ...params.records,
+      ],
     );
+
+    return RiveArtboardWidget(artboard: artboard, painter: stateMachinePainter);
   }
 }
 
 enum PodcastAnimationArtboard {
-  download('Download', 'Download'),
-  sortOrder('Sort order');
+  download('Download'),
+  sortOrder('Sort order'),
+  playPause('PlayPause');
 
   final String name;
-  final String stateMachineName;
 
-  const PodcastAnimationArtboard(
-    this.name, [
-    this.stateMachineName = 'State Machine 1',
-  ]);
+  const PodcastAnimationArtboard(this.name);
 }
