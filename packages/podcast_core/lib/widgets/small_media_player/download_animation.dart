@@ -18,7 +18,7 @@ class DownloadAnimation extends HookConsumerWidget {
     );
 
     return PodcastAnimation(
-      artboard: PodcastAnimationArtboard.download,
+      animationArtboard: PodcastAnimationArtboard.download,
       params: {'Progress': progress},
     );
   }

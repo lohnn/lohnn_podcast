@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podcast_core/extensions/map_extensions.dart';
-import 'package:podcast_core/hooks/use_rive_setup.dart';
 import 'package:podcast_core/hooks/use_state_machine_painter.dart';
 import 'package:rive_native/rive_native.dart';
 
 class PodcastAnimation extends HookWidget {
-  final PodcastAnimationArtboard artboard;
+  final PodcastAnimationArtboard animationArtboard;
   final Map<String, dynamic> params;
 
   const PodcastAnimation({
     super.key,
-    required this.artboard,
+    required this.animationArtboard,
     this.params = const {},
   });
 
@@ -22,6 +21,8 @@ class PodcastAnimation extends HookWidget {
           viewModel.number(key)?.value = value;
         case final bool value:
           viewModel.boolean(key)?.value = value;
+        case final Color value:
+          viewModel.color(key)?.value = value;
         default:
           continue;
       }
@@ -43,27 +44,35 @@ class PodcastAnimation extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final riveSetup = useRiveSetup(artboard);
-    if (riveSetup == null) return Container();
+    final response = useStateMachinePainter(animationArtboard);
 
-    final stateMachinePainter = useStateMachinePainter(riveSetup);
+    if (response == null) return Container();
 
-    useEffect(() {
-      if (riveSetup.viewModel case final viewModel?) {
-        updateControllerInputsViewModel(viewModel);
-      }
-      if (stateMachinePainter.stateMachine case final stateMachine?) {
-        updateControllerInputsStateMachine(stateMachine);
-      }
-      return null;
-    }, [stateMachinePainter.stateMachine, riveSetup, ...params.records]);
+    final (artboard, stateMachinePainter, viewModel) = response;
 
-    return RiveFileWidget(
-      key: Key(artboard.name),
-      file: riveSetup.file,
-      artboardName: artboard.name,
-      painter: stateMachinePainter,
+    // TODO: The widget is not rebuilt when the hook is disposed. (such as when the screen is wider/narrower)
+    useEffect(
+      () {
+        if (viewModel case final viewModel?) {
+          updateControllerInputsViewModel(viewModel);
+        }
+        if (stateMachinePainter.stateMachine case final stateMachine?) {
+          updateControllerInputsStateMachine(stateMachine);
+        }
+        // @TODO: Should this really be needed?
+        stateMachinePainter.scheduleRepaint();
+        return null;
+      },
+      [
+        artboard,
+        stateMachinePainter,
+        stateMachinePainter.stateMachine,
+        viewModel,
+        ...params.records,
+      ],
     );
+
+    return RiveArtboardWidget(artboard: artboard, painter: stateMachinePainter);
   }
 }
 

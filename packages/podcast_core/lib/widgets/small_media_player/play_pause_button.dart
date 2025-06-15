@@ -34,8 +34,11 @@ class PlayPauseButton extends ConsumerWidget {
               width:
                   theme.iconTheme.size ?? const IconThemeData.fallback().size,
               child: PodcastAnimation(
-                artboard: PodcastAnimationArtboard.playPause,
-                params: {'isPlaying': playing},
+                animationArtboard: PodcastAnimationArtboard.playPause,
+                params: {
+                  'IsPlaying': playing,
+                  'Color': theme.colorScheme.primary,
+                },
               ),
             ),
           ),
