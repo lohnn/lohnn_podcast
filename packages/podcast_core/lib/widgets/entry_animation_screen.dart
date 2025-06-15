@@ -23,7 +23,6 @@ class EntryAnimationScreen extends HookWidget {
           stateMachine.addEventListener((event) {
             if (event.name == 'Done') {
               hasShownAnimation.value = true;
-              file.dispose();
               stateMachine.dispose();
             }
           });
