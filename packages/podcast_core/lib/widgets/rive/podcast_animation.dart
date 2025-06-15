@@ -58,7 +58,8 @@ class PodcastAnimation extends HookWidget {
         if (stateMachinePainter.stateMachine case final stateMachine?) {
           updateControllerInputsStateMachine(stateMachine);
         }
-        // @TODO: Should this really be needed?
+        // This seems to be necessary to ensure the inputs are updated.
+        // Preferably, this should be done in the state machine's update method.
         stateMachinePainter.scheduleRepaint();
         return null;
       },
