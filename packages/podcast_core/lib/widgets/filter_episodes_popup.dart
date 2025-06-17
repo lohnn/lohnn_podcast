@@ -24,9 +24,12 @@ class FilterEpisodesPopup extends ConsumerWidget {
             trailing: IconButton(
               icon: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
-                child: Icon(
-                  key: ValueKey(filterState.isDefault),
-                  filterState.isDefault ? Icons.delete_outline : Icons.delete,
+                child: PodcastAnimation.icon(
+                  animationArtboard: PodcastAnimationArtboard.delete,
+                  params: {
+                    'Active': !filterState.isDefault,
+                    'Color': theme.colorScheme.primary,
+                  },
                 ),
               ),
               tooltip: 'Clear all filters',

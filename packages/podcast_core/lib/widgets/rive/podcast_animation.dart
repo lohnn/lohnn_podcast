@@ -97,9 +97,10 @@ class PodcastAnimation extends HookWidget {
 }
 
 enum PodcastAnimationArtboard {
+  delete('Delete'),
   download('Download'),
-  sortOrder('Sort order'),
   playPause('PlayPause'),
+  sortOrder('Sort order'),
   queue('Queue');
 
   final String name;
