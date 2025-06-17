@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/providers/playlist_pod_provider.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation.dart';
 
 class QueueButton extends ConsumerWidget {
   final Episode episode;
@@ -22,15 +23,12 @@ class QueueButton extends ConsumerWidget {
       },
     };
 
-    final icon = switch (queue.contains(episode)) {
-      true => const Icon(Icons.playlist_remove, key: Key('Remove icon')),
-      false => const Icon(Icons.playlist_add, key: Key('Add icon')),
-    };
-
     final tooltip = switch (queue.contains(episode)) {
       true => 'Remove from queue',
       false => 'Add to queue',
     };
+
+    final theme = Theme.of(context);
 
     return Tooltip(
       message: tooltip,
@@ -38,9 +36,12 @@ class QueueButton extends ConsumerWidget {
         onPressed: onPressed,
         child: Semantics(
           label: tooltip,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: icon,
+          child: PodcastAnimation.icon(
+            animationArtboard: PodcastAnimationArtboard.queue,
+            params: {
+              'Active': queue.contains(episode),
+              'Color': theme.colorScheme.primary,
+            },
           ),
         ),
       ),

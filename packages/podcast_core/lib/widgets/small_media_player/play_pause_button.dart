@@ -28,18 +28,9 @@ class PlayPauseButton extends ConsumerWidget {
                   .read(audioPlayerPodProvider.notifier)
                   .triggerMediaAction(MediaAction.playPause);
             },
-            icon: SizedBox(
-              height:
-                  theme.iconTheme.size ?? const IconThemeData.fallback().size,
-              width:
-                  theme.iconTheme.size ?? const IconThemeData.fallback().size,
-              child: PodcastAnimation(
-                animationArtboard: PodcastAnimationArtboard.playPause,
-                params: {
-                  'IsPlaying': playing,
-                  'Color': theme.colorScheme.primary,
-                },
-              ),
+            icon: PodcastAnimation.icon(
+              animationArtboard: PodcastAnimationArtboard.playPause,
+              params: {'Active': playing, 'Color': theme.colorScheme.primary},
             ),
           ),
         _ => IconButton(

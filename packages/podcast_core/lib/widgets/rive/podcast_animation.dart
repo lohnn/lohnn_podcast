@@ -7,12 +7,19 @@ import 'package:rive_native/rive_native.dart';
 class PodcastAnimation extends HookWidget {
   final PodcastAnimationArtboard animationArtboard;
   final Map<String, dynamic> params;
+  final bool isIcon;
 
   const PodcastAnimation({
     super.key,
     required this.animationArtboard,
     this.params = const {},
-  });
+  }) : isIcon = false;
+
+  const PodcastAnimation.icon({
+    super.key,
+    required this.animationArtboard,
+    this.params = const {},
+  }) : isIcon = true;
 
   void updateControllerInputsViewModel(ViewModelInstance viewModel) {
     for (final (key, value) in params.records) {
@@ -42,8 +49,7 @@ class PodcastAnimation extends HookWidget {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildWidget(BuildContext context) {
     final response = useStateMachinePainter(animationArtboard);
 
     if (response == null) return Container();
@@ -74,12 +80,27 @@ class PodcastAnimation extends HookWidget {
 
     return RiveArtboardWidget(artboard: artboard, painter: stateMachinePainter);
   }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isIcon) {
+      final theme = Theme.of(context);
+      return SizedBox(
+        height: theme.iconTheme.size ?? const IconThemeData.fallback().size,
+        width: theme.iconTheme.size ?? const IconThemeData.fallback().size,
+        child: _buildWidget(context),
+      );
+    } else {
+      return _buildWidget(context);
+    }
+  }
 }
 
 enum PodcastAnimationArtboard {
   download('Download'),
   sortOrder('Sort order'),
-  playPause('PlayPause');
+  playPause('PlayPause'),
+  queue('Queue');
 
   final String name;
 
