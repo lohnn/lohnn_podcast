@@ -24,7 +24,7 @@ melos:
     bootstrap:
       environment:
         sdk: '>=3.8.1 <4.0.0'
-        flutter: 3.32.1
+        flutter: 3.32.4
   
   scripts:
     generate:

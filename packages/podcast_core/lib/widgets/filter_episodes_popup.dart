@@ -24,9 +24,12 @@ class FilterEpisodesPopup extends ConsumerWidget {
             trailing: IconButton(
               icon: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
-                child: Icon(
-                  key: ValueKey(filterState.isDefault),
-                  filterState.isDefault ? Icons.delete_outline : Icons.delete,
+                child: PodcastAnimation.icon(
+                  animationArtboard: PodcastAnimationArtboard.delete,
+                  params: {
+                    'Active': !filterState.isDefault,
+                    'Color': theme.colorScheme.primary,
+                  },
                 ),
               ),
               tooltip: 'Clear all filters',
@@ -101,17 +104,13 @@ class FilterEpisodesPopup extends ConsumerWidget {
                         onTap: filterStateNotifier.reverseSortOrder,
                         child: Padding(
                           padding: const EdgeInsets.all(12),
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: PodcastAnimation(
-                              animationArtboard:
-                                  PodcastAnimationArtboard.sortOrder,
-                              params: {
-                                'IsReversed': filterState.sortAscending,
-                                'Color': theme.colorScheme.primary,
-                              },
-                            ),
+                          child: PodcastAnimation.icon(
+                            animationArtboard:
+                                PodcastAnimationArtboard.sortOrder,
+                            params: {
+                              'Active': filterState.sortAscending,
+                              'Color': theme.colorScheme.primary,
+                            },
                           ),
                         ),
                       ),
