@@ -30,7 +30,9 @@ class PlayPauseButton extends ConsumerWidget {
                   .triggerMediaAction(MediaAction.playPause);
             },
             icon: PodcastAnimation(
-              animationArtboard: PodcastAnimationConfig.playPause(isPlaying: playing),
+              animationArtboard: PodcastAnimationConfig.playPause(
+                isPlaying: playing,
+              ),
             ),
           ),
         _ => IconButton(
