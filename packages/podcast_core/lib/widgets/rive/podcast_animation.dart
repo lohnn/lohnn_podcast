@@ -2,26 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podcast_core/extensions/map_extensions.dart';
 import 'package:podcast_core/hooks/use_state_machine_painter.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation_config.dart';
 import 'package:rive_native/rive_native.dart';
 
 class PodcastAnimation extends HookWidget {
-  final PodcastAnimationArtboard animationArtboard;
-  final Map<String, dynamic> params;
-  final bool isIcon;
+  final PodcastAnimationConfig animationArtboard;
 
-  const PodcastAnimation({
-    super.key,
-    required this.animationArtboard,
-    this.params = const {},
-  }) : isIcon = false;
+  const PodcastAnimation({super.key, required this.animationArtboard});
 
-  const PodcastAnimation.icon({
-    super.key,
-    required this.animationArtboard,
-    this.params = const {},
-  }) : isIcon = true;
-
-  void updateControllerInputsViewModel(ViewModelInstance viewModel) {
+  static void updateControllerInputsViewModel(
+    ViewModelInstance viewModel,
+    Map<String, dynamic> params,
+  ) {
     for (final (key, value) in params.records) {
       switch (value) {
         case final double value:
@@ -36,7 +28,10 @@ class PodcastAnimation extends HookWidget {
     }
   }
 
-  void updateControllerInputsStateMachine(StateMachine stateMachine) {
+  static void updateControllerInputsStateMachine(
+    StateMachine stateMachine,
+    Map<String, dynamic> params,
+  ) {
     for (final (key, value) in params.records) {
       switch (value) {
         case final double value:
@@ -56,13 +51,14 @@ class PodcastAnimation extends HookWidget {
 
     final (artboard, stateMachinePainter, viewModel) = response;
 
+    final params = animationArtboard.params(context);
     useEffect(
       () {
         if (viewModel case final viewModel?) {
-          updateControllerInputsViewModel(viewModel);
+          updateControllerInputsViewModel(viewModel, params);
         }
         if (stateMachinePainter.stateMachine case final stateMachine?) {
-          updateControllerInputsStateMachine(stateMachine);
+          updateControllerInputsStateMachine(stateMachine, params);
         }
         // This seems to be necessary to ensure the inputs are updated.
         // Preferably, this should be done in the state machine's update method.
@@ -83,7 +79,7 @@ class PodcastAnimation extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isIcon) {
+    if (animationArtboard.isIcon) {
       final theme = Theme.of(context);
       return SizedBox(
         height: theme.iconTheme.size ?? const IconThemeData.fallback().size,
@@ -96,15 +92,15 @@ class PodcastAnimation extends HookWidget {
   }
 }
 
-enum PodcastAnimationArtboard {
-  delete('Delete'),
-  download('Download'),
-  idleLogo('Icon idle animation'),
-  playPause('PlayPause'),
-  sortOrder('Sort order'),
-  queue('Queue');
-
-  final String name;
-
-  const PodcastAnimationArtboard(this.name);
-}
+// enum PodcastAnimationArtboard {
+//   delete('Delete'),
+//   download('Download'),
+//   idleLogo('Icon idle animation'),
+//   playPause('PlayPause'),
+//   sortOrder('Sort order'),
+//   queue('Queue');
+//
+//   final String name;
+//
+//   const PodcastAnimationArtboard(this.name);
+// }
