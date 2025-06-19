@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:podcast_core/widgets/rive/podcast_animation.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation_config.dart';
 import 'package:rive_native/rive_native.dart';
 
 final class RiveHookException implements Exception {
@@ -17,16 +17,21 @@ final class RiveHookException implements Exception {
 }
 
 (Artboard, StateMachinePainter, ViewModelInstance?)? useStateMachinePainter(
-  PodcastAnimationArtboard artboard,
+  PodcastAnimationConfig config,
 ) {
-  return use(_RiveStateMachinePainterHook(artboard, keys: [artboard]));
+  return use(
+    _RiveStateMachinePainterHook(
+      config.artboardName,
+      keys: [config.artboardName],
+    ),
+  );
 }
 
 class _RiveStateMachinePainterHook
     extends Hook<(Artboard, StateMachinePainter, ViewModelInstance?)?> {
-  final PodcastAnimationArtboard artboard;
+  final String artboardName;
 
-  const _RiveStateMachinePainterHook(this.artboard, {required super.keys});
+  const _RiveStateMachinePainterHook(this.artboardName, {required super.keys});
 
   @override
   _RiveStateMachinePainterHookState createState() =>
@@ -56,9 +61,9 @@ class _RiveStateMachinePainterHookState
       throw const RiveHookException('Could not open Rive file');
     }
 
-    final artboard = this.artboard = riveFile.artboard(hook.artboard.name);
+    final artboard = this.artboard = riveFile.artboard(hook.artboardName);
     if (artboard == null) {
-      throw RiveHookException('Artboard not found: ${hook.artboard.name}');
+      throw RiveHookException('Artboard not found: ${hook.artboardName}');
     }
 
     stateMachinePainter = RivePainter.stateMachine(

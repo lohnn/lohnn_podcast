@@ -37,7 +37,10 @@ class TestEpisode implements Episode {
   String get localFilePath => '$id-${url.pathSegments.last}';
 
   @override
-  PodcastMediaItem mediaItem({Duration? actualDuration, bool? isPlayingFromDownloaded}) {
+  PodcastMediaItem mediaItem({
+    Duration? actualDuration,
+    bool? isPlayingFromDownloaded,
+  }) {
     return PodcastMediaItem(
       episode: this,
       id: id.safe,

@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/providers/playlist_pod_provider.dart';
 import 'package:podcast_core/widgets/rive/podcast_animation.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation_config.dart';
 
 class QueueButton extends ConsumerWidget {
   final Episode episode;
@@ -28,20 +29,16 @@ class QueueButton extends ConsumerWidget {
       false => 'Add to queue',
     };
 
-    final theme = Theme.of(context);
-
     return Tooltip(
       message: tooltip,
       child: FilledButton.tonal(
         onPressed: onPressed,
         child: Semantics(
           label: tooltip,
-          child: PodcastAnimation.icon(
-            animationArtboard: PodcastAnimationArtboard.queue,
-            params: {
-              'Active': queue.contains(episode),
-              'Color': theme.colorScheme.primary,
-            },
+          child: PodcastAnimation(
+            animationArtboard: PodcastAnimationConfig.queue(
+              isAlreadyInQueue: queue.contains(episode),
+            ),
           ),
         ),
       ),

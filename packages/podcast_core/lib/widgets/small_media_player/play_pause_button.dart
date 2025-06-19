@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
 import 'package:podcast_core/widgets/rive/podcast_animation.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation_config.dart';
 
 class PlayPauseButton extends ConsumerWidget {
   const PlayPauseButton({super.key});
@@ -28,9 +29,10 @@ class PlayPauseButton extends ConsumerWidget {
                   .read(audioPlayerPodProvider.notifier)
                   .triggerMediaAction(MediaAction.playPause);
             },
-            icon: PodcastAnimation.icon(
-              animationArtboard: PodcastAnimationArtboard.playPause,
-              params: {'Active': playing, 'Color': theme.colorScheme.primary},
+            icon: PodcastAnimation(
+              animationArtboard: PodcastAnimationConfig.playPause(
+                isPlaying: playing,
+              ),
             ),
           ),
         _ => IconButton(

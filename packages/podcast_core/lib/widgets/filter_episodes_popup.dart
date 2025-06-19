@@ -4,6 +4,7 @@ import 'package:podcast_core/data/episodes_filter_state.dart';
 import 'package:podcast_core/extensions/text_style_extensions.dart';
 import 'package:podcast_core/providers/episodes_filter_provider.dart';
 import 'package:podcast_core/widgets/rive/podcast_animation.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation_config.dart';
 
 class FilterEpisodesPopup extends ConsumerWidget {
   const FilterEpisodesPopup({super.key});
@@ -24,12 +25,10 @@ class FilterEpisodesPopup extends ConsumerWidget {
             trailing: IconButton(
               icon: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
-                child: PodcastAnimation.icon(
-                  animationArtboard: PodcastAnimationArtboard.delete,
-                  params: {
-                    'Active': !filterState.isDefault,
-                    'Color': theme.colorScheme.primary,
-                  },
+                child: PodcastAnimation(
+                  animationArtboard: PodcastAnimationConfig.delete(
+                    isDefaultFilterState: filterState.isDefault,
+                  ),
                 ),
               ),
               tooltip: 'Clear all filters',
@@ -104,13 +103,10 @@ class FilterEpisodesPopup extends ConsumerWidget {
                         onTap: filterStateNotifier.reverseSortOrder,
                         child: Padding(
                           padding: const EdgeInsets.all(12),
-                          child: PodcastAnimation.icon(
-                            animationArtboard:
-                                PodcastAnimationArtboard.sortOrder,
-                            params: {
-                              'Active': filterState.sortAscending,
-                              'Color': theme.colorScheme.primary,
-                            },
+                          child: PodcastAnimation(
+                            animationArtboard: PodcastAnimationConfig.sortOrder(
+                              isSortingAscending: filterState.sortAscending,
+                            ),
                           ),
                         ),
                       ),
