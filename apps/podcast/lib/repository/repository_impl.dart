@@ -21,17 +21,17 @@ import 'package:podcast_core/data/podcast_with_status.dart';
 import 'package:podcast_core/data/user_episode_status.model.dart';
 import 'package:podcast_core/repository.dart' as core;
 
-class RepositoryImpl implements core.Repository {
-  factory RepositoryImpl() {
+class HiveRepositoryImpl implements core.Repository {
+  factory HiveRepositoryImpl() {
     final podcastIndexDio = Dio(
       BaseOptions(baseUrl: 'https://api.podcastindex.org/api/1.0/'),
     );
     podcastIndexDio.interceptors.add(const SearchHeadersInterceptor());
-    return RepositoryImpl._(podcastIndexDio: podcastIndexDio, dio: Dio())
+    return HiveRepositoryImpl._(podcastIndexDio: podcastIndexDio, dio: Dio())
       ..init();
   }
 
-  RepositoryImpl._({required this.podcastIndexDio, required this.dio});
+  HiveRepositoryImpl._({required this.podcastIndexDio, required this.dio});
 
   final Dio dio;
   final Dio podcastIndexDio;
