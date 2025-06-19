@@ -99,6 +99,7 @@ class PodcastAnimation extends HookWidget {
 enum PodcastAnimationArtboard {
   delete('Delete'),
   download('Download'),
+  idleLogo('Icon idle animation'),
   playPause('PlayPause'),
   sortOrder('Sort order'),
   queue('Queue');
