@@ -182,6 +182,7 @@ class PodcastAudioHandler extends BaseAudioHandler
   Future<void> loadEpisode(
     Episode episode, {
     required Uri episodeUri,
+    required EpisodeWithStatus status,
     bool autoPlay = false,
   }) async {
     // If the player is already playing the same file, don't reload it.
@@ -193,9 +194,8 @@ class PodcastAudioHandler extends BaseAudioHandler
     }
 
     _stopPositionStream();
-    final status = await _getStatusForEpisode(episode);
 
-    final seekToPosition = status?.status?.currentPosition;
+    final seekToPosition = status.status?.currentPosition;
     log.fine('Loading episode: ${episode.title} - $seekToPosition');
 
     final duration = await _player.setAudioSource(
@@ -224,12 +224,6 @@ class PodcastAudioHandler extends BaseAudioHandler
     // continue playing this new episode.
     if (autoPlay || isPlaying) await play();
     _startPositionStream();
-  }
-
-  // @TODO: This is duplicated with [AudioPlayerPod._getStatusForEpisode]
-  Future<EpisodeWithStatus?> _getStatusForEpisode(Episode episode) async {
-    final status = await repository.getUserEpisodeStatus(episode);
-    return EpisodeWithStatus(episode: episode, status: status);
   }
 
   void clearPlaying() {

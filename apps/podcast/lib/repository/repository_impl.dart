@@ -157,7 +157,6 @@ class HiveRepositoryImpl implements core.Repository {
     ];
   }
 
-  @override
   Future<UserEpisodeStatusImpl> getUserEpisodeStatus(Episode episode) async {
     final box = await userEpisodeStatusBox;
     return box.get(episode.id) ??

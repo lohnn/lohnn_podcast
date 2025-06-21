@@ -139,6 +139,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
               episode,
               episodeUri: fileResponse.currentUri,
               autoPlay: autoPlay,
+              status: await _getStatusForEpisode(episode),
             );
 
             if (!completer.isCompleted) {
@@ -160,10 +161,8 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     return completer.future;
   }
 
-  Future<EpisodeWithStatus?> _getStatusForEpisode(Episode episode) async {
-    final status = await ref.read(
-      userEpisodeStatusProvider(episode.id).future,
-    );
+  Future<EpisodeWithStatus> _getStatusForEpisode(Episode episode) async {
+    final status = await ref.read(userEpisodeStatusProvider(episode.id).future);
     return EpisodeWithStatus(episode: episode, status: status);
   }
 
