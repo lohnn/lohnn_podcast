@@ -11,7 +11,11 @@ const colorSchemeFromRemoteImageProvider = ColorSchemeFromRemoteImageFamily._();
 
 final class ColorSchemeFromRemoteImageProvider
     extends
-        $FunctionalProvider<AsyncValue<ColorScheme?>, FutureOr<ColorScheme?>>
+        $FunctionalProvider<
+          AsyncValue<ColorScheme?>,
+          ColorScheme?,
+          FutureOr<ColorScheme?>
+        >
     with $FutureModifier<ColorScheme?>, $FutureProvider<ColorScheme?> {
   const ColorSchemeFromRemoteImageProvider._({
     required ColorSchemeFromRemoteImageFamily super.from,

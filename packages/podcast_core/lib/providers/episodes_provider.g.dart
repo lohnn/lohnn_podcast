@@ -40,17 +40,12 @@ final class EpisodePodProvider
   @override
   EpisodePod create() => EpisodePod();
 
-  @$internal
-  @override
-  $NotifierProviderElement<EpisodePod, AsyncValue<(Podcast, EpisodeWithStatus)>>
-  $createElement($ProviderPointer pointer) => $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<(Podcast, EpisodeWithStatus)> value) {
     return $ProviderOverride(
       origin: this,
       providerOverride:
-          $ValueProvider<AsyncValue<(Podcast, EpisodeWithStatus)>>(value),
+          $SyncValueProvider<AsyncValue<(Podcast, EpisodeWithStatus)>>(value),
     );
   }
 
@@ -114,11 +109,19 @@ abstract class _$EpisodePod
       podcastId: _$args.podcastId,
       episodeId: _$args.episodeId,
     );
-    final ref = this.ref as $Ref<AsyncValue<(Podcast, EpisodeWithStatus)>>;
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<(Podcast, EpisodeWithStatus)>,
+              AsyncValue<(Podcast, EpisodeWithStatus)>
+            >;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<(Podcast, EpisodeWithStatus)>>,
+              AnyNotifier<
+                AsyncValue<(Podcast, EpisodeWithStatus)>,
+                AsyncValue<(Podcast, EpisodeWithStatus)>
+              >,
               AsyncValue<(Podcast, EpisodeWithStatus)>,
               Object?,
               Object?
@@ -161,14 +164,6 @@ final class EpisodesProvider
   @override
   Episodes create() => Episodes();
 
-  @$internal
-  @override
-  $NotifierProviderElement<
-    Episodes,
-    AsyncValue<(Podcast, List<EpisodeWithStatus>)>
-  >
-  $createElement($ProviderPointer pointer) => $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(
     AsyncValue<(Podcast, List<EpisodeWithStatus>)> value,
@@ -176,7 +171,9 @@ final class EpisodesProvider
     return $ProviderOverride(
       origin: this,
       providerOverride:
-          $ValueProvider<AsyncValue<(Podcast, List<EpisodeWithStatus>)>>(value),
+          $SyncValueProvider<AsyncValue<(Podcast, List<EpisodeWithStatus>)>>(
+            value,
+          ),
     );
   }
 
@@ -231,11 +228,18 @@ abstract class _$Episodes
   void runBuild() {
     final created = build(podcastId: _$args);
     final ref =
-        this.ref as $Ref<AsyncValue<(Podcast, List<EpisodeWithStatus>)>>;
+        this.ref
+            as $Ref<
+              AsyncValue<(Podcast, List<EpisodeWithStatus>)>,
+              AsyncValue<(Podcast, List<EpisodeWithStatus>)>
+            >;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<(Podcast, List<EpisodeWithStatus>)>>,
+              AnyNotifier<
+                AsyncValue<(Podcast, List<EpisodeWithStatus>)>,
+                AsyncValue<(Podcast, List<EpisodeWithStatus>)>
+              >,
               AsyncValue<(Podcast, List<EpisodeWithStatus>)>,
               Object?,
               Object?
@@ -249,7 +253,11 @@ const _episodesImplProvider = _EpisodesImplFamily._();
 
 final class _EpisodesImplProvider
     extends
-        $FunctionalProvider<AsyncValue<List<Episode>>, Stream<List<Episode>>>
+        $FunctionalProvider<
+          AsyncValue<List<Episode>>,
+          List<Episode>,
+          Stream<List<Episode>>
+        >
     with $FutureModifier<List<Episode>>, $StreamProvider<List<Episode>> {
   const _EpisodesImplProvider._({
     required _EpisodesImplFamily super.from,

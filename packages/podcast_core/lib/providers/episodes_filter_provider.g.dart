@@ -29,17 +29,11 @@ final class EpisodesFilterProvider
   @override
   EpisodesFilter create() => EpisodesFilter();
 
-  @$internal
-  @override
-  $NotifierProviderElement<EpisodesFilter, EpisodesFilterState> $createElement(
-    $ProviderPointer pointer,
-  ) => $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(EpisodesFilterState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<EpisodesFilterState>(value),
+      providerOverride: $SyncValueProvider<EpisodesFilterState>(value),
     );
   }
 }
@@ -52,11 +46,11 @@ abstract class _$EpisodesFilter extends $Notifier<EpisodesFilterState> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<EpisodesFilterState>;
+    final ref = this.ref as $Ref<EpisodesFilterState, EpisodesFilterState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<EpisodesFilterState>,
+              AnyNotifier<EpisodesFilterState, EpisodesFilterState>,
               EpisodesFilterState,
               Object?,
               Object?
