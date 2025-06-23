@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/providers/playlist_pod_provider.dart';
@@ -17,9 +18,11 @@ class QueueButton extends ConsumerWidget {
 
     final onPressed = switch (queue.contains(episode)) {
       true => () {
+        HapticFeedback.vibrate();
         ref.read(playlistPodProvider.notifier).removeFromQueue(episode);
       },
       false => () {
+        HapticFeedback.mediumImpact();
         ref.read(playlistPodProvider.notifier).addToBottomOfQueue(episode);
       },
     };
