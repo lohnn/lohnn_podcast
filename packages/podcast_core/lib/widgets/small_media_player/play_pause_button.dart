@@ -1,6 +1,5 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
 import 'package:podcast_core/widgets/rive/podcast_animation.dart';
@@ -26,7 +25,6 @@ class PlayPauseButton extends ConsumerWidget {
               true => 'Pause',
             },
             onPressed: () {
-              HapticFeedback.lightImpact();
               ref
                   .read(audioPlayerPodProvider.notifier)
                   .triggerMediaAction(MediaAction.playPause);
