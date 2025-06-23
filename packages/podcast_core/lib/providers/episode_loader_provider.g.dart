@@ -36,12 +36,6 @@ final class EpisodeLoaderProvider
   @override
   EpisodeLoader create() => EpisodeLoader();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<EpisodeLoader, EpisodeFileResponse>
-  $createElement($ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is EpisodeLoaderProvider && other.argument == argument;
@@ -89,11 +83,12 @@ abstract class _$EpisodeLoader extends $AsyncNotifier<EpisodeFileResponse> {
   @override
   void runBuild() {
     final created = build(_$args);
-    final ref = this.ref as $Ref<AsyncValue<EpisodeFileResponse>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<EpisodeFileResponse>, EpisodeFileResponse>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<EpisodeFileResponse>>,
+              AnyNotifier<AsyncValue<EpisodeFileResponse>, EpisodeFileResponse>,
               AsyncValue<EpisodeFileResponse>,
               Object?,
               Object?

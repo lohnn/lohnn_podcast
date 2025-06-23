@@ -28,12 +28,6 @@ final class FindPodcastProvider
   @$internal
   @override
   FindPodcast create() => FindPodcast();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<FindPodcast, List<PodcastSearch>>
-  $createElement($ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$findPodcastHash() => r'e4475f029e5a14e7288cda507eb9faee2c404c37';
@@ -44,11 +38,12 @@ abstract class _$FindPodcast extends $AsyncNotifier<List<PodcastSearch>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<PodcastSearch>>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<List<PodcastSearch>>, List<PodcastSearch>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<PodcastSearch>>>,
+              AnyNotifier<AsyncValue<List<PodcastSearch>>, List<PodcastSearch>>,
               AsyncValue<List<PodcastSearch>>,
               Object?,
               Object?

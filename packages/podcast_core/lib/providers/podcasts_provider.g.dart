@@ -10,7 +10,7 @@ part of 'podcasts_provider.dart';
 const subscribedPodcastProvider = SubscribedPodcastFamily._();
 
 final class SubscribedPodcastProvider
-    extends $FunctionalProvider<AsyncValue<bool?>, FutureOr<bool?>>
+    extends $FunctionalProvider<AsyncValue<bool?>, bool?, FutureOr<bool?>>
     with $FutureModifier<bool?>, $FutureProvider<bool?> {
   const SubscribedPodcastProvider._({
     required SubscribedPodcastFamily super.from,
@@ -82,6 +82,7 @@ final class _SubscribedPodcastRssUrlsProvider
     extends
         $FunctionalProvider<
           AsyncValue<Iterable<PodcastRssUrl>?>,
+          Iterable<PodcastRssUrl>?,
           FutureOr<Iterable<PodcastRssUrl>?>
         >
     with
@@ -146,12 +147,6 @@ final class PodcastPodProvider
   @override
   PodcastPod create() => PodcastPod();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<PodcastPod, Podcast> $createElement(
-    $ProviderPointer pointer,
-  ) => $AsyncNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is PodcastPodProvider && other.argument == argument;
@@ -199,11 +194,11 @@ abstract class _$PodcastPod extends $AsyncNotifier<Podcast> {
   @override
   void runBuild() {
     final created = build(_$args);
-    final ref = this.ref as $Ref<AsyncValue<Podcast>>;
+    final ref = this.ref as $Ref<AsyncValue<Podcast>, Podcast>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<Podcast>>,
+              AnyNotifier<AsyncValue<Podcast>, Podcast>,
               AsyncValue<Podcast>,
               Object?,
               Object?
@@ -234,12 +229,6 @@ final class PodcastsProvider
   @$internal
   @override
   Podcasts create() => Podcasts();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<Podcasts, EquatableList<Podcast>>
-  $createElement($ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 }
 
 String _$podcastsHash() => r'5d4410738e357e7c7ad4f9b15fb1e3025dbe6fb3';
@@ -250,11 +239,16 @@ abstract class _$Podcasts extends $StreamNotifier<EquatableList<Podcast>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<EquatableList<Podcast>>>;
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<EquatableList<Podcast>>, EquatableList<Podcast>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<EquatableList<Podcast>>>,
+              AnyNotifier<
+                AsyncValue<EquatableList<Podcast>>,
+                EquatableList<Podcast>
+              >,
               AsyncValue<EquatableList<Podcast>>,
               Object?,
               Object?

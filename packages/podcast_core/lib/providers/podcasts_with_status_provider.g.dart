@@ -32,15 +32,6 @@ final class PodcastsWithStatusProvider
   @$internal
   @override
   PodcastsWithStatus create() => PodcastsWithStatus();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<
-    PodcastsWithStatus,
-    EquatableList<PodcastWithStatus>
-  >
-  $createElement($ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$podcastsWithStatusHash() =>
@@ -53,11 +44,19 @@ abstract class _$PodcastsWithStatus
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<EquatableList<PodcastWithStatus>>>;
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<EquatableList<PodcastWithStatus>>,
+              EquatableList<PodcastWithStatus>
+            >;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<EquatableList<PodcastWithStatus>>>,
+              AnyNotifier<
+                AsyncValue<EquatableList<PodcastWithStatus>>,
+                EquatableList<PodcastWithStatus>
+              >,
               AsyncValue<EquatableList<PodcastWithStatus>>,
               Object?,
               Object?

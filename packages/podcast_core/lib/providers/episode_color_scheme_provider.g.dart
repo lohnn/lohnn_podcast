@@ -12,7 +12,11 @@ const currentPlayingEpisodeColorSchemeProvider =
 
 final class CurrentPlayingEpisodeColorSchemeProvider
     extends
-        $FunctionalProvider<AsyncValue<ColorScheme?>, FutureOr<ColorScheme?>>
+        $FunctionalProvider<
+          AsyncValue<ColorScheme?>,
+          ColorScheme?,
+          FutureOr<ColorScheme?>
+        >
     with $FutureModifier<ColorScheme?>, $FutureProvider<ColorScheme?> {
   const CurrentPlayingEpisodeColorSchemeProvider._({
     required CurrentPlayingEpisodeColorSchemeFamily super.from,
