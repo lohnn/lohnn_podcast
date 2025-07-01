@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episodes_filter_state.dart';
 import 'package:podcast_core/extensions/text_style_extensions.dart';
@@ -34,7 +35,10 @@ class FilterEpisodesPopup extends ConsumerWidget {
               tooltip: 'Clear all filters',
               onPressed: filterState.isDefault
                   ? null
-                  : filterStateNotifier.clear,
+                  : () {
+                      HapticFeedback.lightImpact();
+                      filterStateNotifier.clear();
+                    },
             ),
           ),
           const Divider(),
@@ -44,6 +48,7 @@ class FilterEpisodesPopup extends ConsumerWidget {
             child: ListTile(
               title: const Text('Hide played episodes'),
               onTap: () {
+                HapticFeedback.lightImpact();
                 filterStateNotifier.setHideListened(
                   !filterState.hideListenedEpisodes,
                 );
@@ -100,7 +105,10 @@ class FilterEpisodesPopup extends ConsumerWidget {
                           ? 'Sort ascending'
                           : 'Sort descending',
                       child: InkResponse(
-                        onTap: filterStateNotifier.reverseSortOrder,
+                         onTap: () {
+                           HapticFeedback.lightImpact();
+                           filterStateNotifier.reverseSortOrder();
+                         },
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: PodcastAnimation(

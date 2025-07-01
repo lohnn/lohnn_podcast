@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
@@ -108,6 +109,7 @@ class PodcastDetailsScreen
                           ),
                         ),
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           if (filterMenuController.isOpen) {
                             filterMenuController.close();
                           } else {
