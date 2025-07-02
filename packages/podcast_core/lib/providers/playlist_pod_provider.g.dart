@@ -28,12 +28,6 @@ final class PlaylistPodProvider
   @$internal
   @override
   PlaylistPod create() => PlaylistPod();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<PlaylistPod, List<Episode>> $createElement(
-    $ProviderPointer pointer,
-  ) => $StreamNotifierProviderElement(pointer);
 }
 
 String _$playlistPodHash() => r'6587fd69f7617330f9eb2fef6381dc1fe579ec97';
@@ -44,11 +38,11 @@ abstract class _$PlaylistPod extends $StreamNotifier<List<Episode>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Episode>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Episode>>, List<Episode>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Episode>>>,
+              AnyNotifier<AsyncValue<List<Episode>>, List<Episode>>,
               AsyncValue<List<Episode>>,
               Object?,
               Object?

@@ -19,16 +19,10 @@ Future<bool?> subscribedPodcast(
 }
 
 @riverpod
-Future<Iterable<PodcastRssUrl>?> _subscribedPodcastRssUrls(Ref ref) async {
+Future<Iterable<PodcastRssUrl>?> _subscribedPodcastRssUrls(Ref ref) {
   return ref
-      .watch(
-        podcastsProvider.select(
-          (state) => state.whenData(
-            (podcasts) => podcasts.map((podcast) => podcast.url),
-          ),
-        ),
-      )
-      .value;
+      .watch(podcastsProvider.future)
+      .then((podcasts) => podcasts.map((podcast) => podcast.url));
 }
 
 @riverpod

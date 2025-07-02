@@ -10,7 +10,7 @@ part of 'repository.dart';
 const repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider
-    extends $FunctionalProvider<Repository, Repository>
+    extends $FunctionalProvider<Repository, Repository, Repository>
     with $Provider<Repository> {
   const RepositoryProvider._()
     : super(
@@ -40,7 +40,7 @@ final class RepositoryProvider
   Override overrideWithValue(Repository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Repository>(value),
+      providerOverride: $SyncValueProvider<Repository>(value),
     );
   }
 }

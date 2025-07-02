@@ -32,15 +32,6 @@ final class UserEpisodeStatusPodProvider
   @$internal
   @override
   UserEpisodeStatusPod create() => UserEpisodeStatusPod();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<
-    UserEpisodeStatusPod,
-    EquatableMap<EpisodeId, UserEpisodeStatus>
-  >
-  $createElement($ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 }
 
 String _$userEpisodeStatusPodHash() =>
@@ -55,12 +46,16 @@ abstract class _$UserEpisodeStatusPod
     final created = build();
     final ref =
         this.ref
-            as $Ref<AsyncValue<EquatableMap<EpisodeId, UserEpisodeStatus>>>;
+            as $Ref<
+              AsyncValue<EquatableMap<EpisodeId, UserEpisodeStatus>>,
+              EquatableMap<EpisodeId, UserEpisodeStatus>
+            >;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                AsyncValue<EquatableMap<EpisodeId, UserEpisodeStatus>>
+                AsyncValue<EquatableMap<EpisodeId, UserEpisodeStatus>>,
+                EquatableMap<EpisodeId, UserEpisodeStatus>
               >,
               AsyncValue<EquatableMap<EpisodeId, UserEpisodeStatus>>,
               Object?,

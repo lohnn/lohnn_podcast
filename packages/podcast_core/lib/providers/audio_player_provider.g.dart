@@ -13,6 +13,7 @@ final class _PodcastAudioHandlerProvider
     extends
         $FunctionalProvider<
           AsyncValue<PodcastAudioHandler>,
+          PodcastAudioHandler,
           FutureOr<PodcastAudioHandler>
         >
     with
@@ -69,12 +70,6 @@ final class _AudioServicePodProvider
   @$internal
   @override
   _AudioServicePod create() => _AudioServicePod();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<_AudioServicePod, PodcastAudioHandler>
-  $createElement($ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$audioServicePodHash() => r'166479c7bdc5b280527442922f716103fbf3c856';
@@ -85,11 +80,12 @@ abstract class _$AudioServicePod extends $AsyncNotifier<PodcastAudioHandler> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<PodcastAudioHandler>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<PodcastAudioHandler>, PodcastAudioHandler>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<PodcastAudioHandler>>,
+              AnyNotifier<AsyncValue<PodcastAudioHandler>, PodcastAudioHandler>,
               AsyncValue<PodcastAudioHandler>,
               Object?,
               Object?
@@ -120,12 +116,6 @@ final class AudioPlayerPodProvider
   @$internal
   @override
   AudioPlayerPod create() => AudioPlayerPod();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<AudioPlayerPod, EpisodeWithStatus?>
-  $createElement($ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$audioPlayerPodHash() => r'46df1739a28825d0a670a78b41d77d1936f2653f';
@@ -136,11 +126,12 @@ abstract class _$AudioPlayerPod extends $AsyncNotifier<EpisodeWithStatus?> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<EpisodeWithStatus?>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<EpisodeWithStatus?>, EpisodeWithStatus?>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<EpisodeWithStatus?>>,
+              AnyNotifier<AsyncValue<EpisodeWithStatus?>, EpisodeWithStatus?>,
               AsyncValue<EpisodeWithStatus?>,
               Object?,
               Object?
@@ -158,6 +149,7 @@ final class CurrentPositionProvider
           AsyncValue<
             ({Duration position, Duration buffered, Duration? duration})
           >,
+          ({Duration position, Duration buffered, Duration? duration}),
           Stream<({Duration position, Duration buffered, Duration? duration})>
         >
     with
@@ -203,7 +195,11 @@ const audioStateProvider = AudioStateProvider._();
 
 final class AudioStateProvider
     extends
-        $FunctionalProvider<AsyncValue<PlaybackState>, Stream<PlaybackState>>
+        $FunctionalProvider<
+          AsyncValue<PlaybackState>,
+          PlaybackState,
+          Stream<PlaybackState>
+        >
     with $FutureModifier<PlaybackState>, $StreamProvider<PlaybackState> {
   const AudioStateProvider._()
     : super(
