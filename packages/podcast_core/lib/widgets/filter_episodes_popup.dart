@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episodes_filter_state.dart';
 import 'package:podcast_core/extensions/text_style_extensions.dart';
 import 'package:podcast_core/providers/episodes_filter_provider.dart';
 import 'package:podcast_core/widgets/rive/podcast_animation.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation_config.dart';
 
 class FilterEpisodesPopup extends ConsumerWidget {
   const FilterEpisodesPopup({super.key});
@@ -24,15 +26,19 @@ class FilterEpisodesPopup extends ConsumerWidget {
             trailing: IconButton(
               icon: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
-                child: Icon(
-                  key: ValueKey(filterState.isDefault),
-                  filterState.isDefault ? Icons.delete_outline : Icons.delete,
+                child: PodcastAnimation(
+                  animationArtboard: PodcastAnimationConfig.delete(
+                    isDefaultFilterState: filterState.isDefault,
+                  ),
                 ),
               ),
               tooltip: 'Clear all filters',
               onPressed: filterState.isDefault
                   ? null
-                  : filterStateNotifier.clear,
+                  : () {
+                      HapticFeedback.lightImpact();
+                      filterStateNotifier.clear();
+                    },
             ),
           ),
           const Divider(),
@@ -42,6 +48,7 @@ class FilterEpisodesPopup extends ConsumerWidget {
             child: ListTile(
               title: const Text('Hide played episodes'),
               onTap: () {
+                HapticFeedback.lightImpact();
                 filterStateNotifier.setHideListened(
                   !filterState.hideListenedEpisodes,
                 );
@@ -98,19 +105,15 @@ class FilterEpisodesPopup extends ConsumerWidget {
                           ? 'Sort ascending'
                           : 'Sort descending',
                       child: InkResponse(
-                        onTap: filterStateNotifier.reverseSortOrder,
+                         onTap: () {
+                           HapticFeedback.lightImpact();
+                           filterStateNotifier.reverseSortOrder();
+                         },
                         child: Padding(
                           padding: const EdgeInsets.all(12),
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: PodcastAnimation(
-                              artboard: PodcastAnimationArtboard.sortOrder,
-                              params: {
-                                'Reversed': filterState.sortAscending,
-                                'Dark mode':
-                                    theme.brightness == Brightness.dark,
-                              },
+                          child: PodcastAnimation(
+                            animationArtboard: PodcastAnimationConfig.sortOrder(
+                              isSortingAscending: filterState.sortAscending,
                             ),
                           ),
                         ),

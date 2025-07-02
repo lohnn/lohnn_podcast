@@ -40,6 +40,7 @@ class PodcastApp extends HookConsumerWidget {
         debugShowCheckedModeBanner: false,
         builder: kDebugMode
             ? (_, child) => AccessibilityTools(
+                logLevel: LogLevel.none,
                 buttonsAlignment: ButtonsAlignment.bottomLeft,
                 child: child,
               )

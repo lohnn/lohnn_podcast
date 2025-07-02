@@ -1,6 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
 import 'package:podcast_core/widgets/long_press_swipe_menu.dart';
@@ -64,8 +64,10 @@ class MediaActionButton extends HookConsumerWidget {
     final theme = Theme.of(context);
     return IconButton(
       tooltip: tooltip,
-      onPressed: () =>
-          ref.read(audioPlayerPodProvider.notifier).triggerMediaAction(action),
+      onPressed: () {
+        HapticFeedback.selectionClick();
+        ref.read(audioPlayerPodProvider.notifier).triggerMediaAction(action);
+      },
       icon: Icon(icon, color: theme.colorScheme.primary),
     );
 

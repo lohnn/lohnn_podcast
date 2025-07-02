@@ -10,7 +10,6 @@ import 'package:podcast_core/intents/play_pause_intent.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
 import 'package:podcast_core/screens/modals/episode_player_modal.dart';
 import 'package:podcast_core/widgets/rounded_image.dart';
-import 'package:podcast_core/widgets/small_media_player/download_animation.dart';
 import 'package:podcast_core/widgets/small_media_player/episode_progress_bar.dart';
 import 'package:podcast_core/widgets/small_media_player/media_action_button.dart';
 import 'package:podcast_core/widgets/small_media_player/play_pause_button.dart';
@@ -79,13 +78,14 @@ class SmallMediaPlayerControls extends HookConsumerWidget {
                               imageSize: 60,
                             ),
                           ),
-                          if (episodeSnapshot.value case final episodeSnapshot?)
-                            SizedBox(
-                              width: 36,
-                              child: DownloadAnimation(
-                                episode: episodeSnapshot.episode,
-                              ),
-                            ),
+                          // @TODO: Add download animation when supported again
+                          // if (episodeSnapshot.value case final episodeSnapshot?)
+                          //   SizedBox(
+                          //     width: 36,
+                          //     child: DownloadAnimation(
+                          //       episode: episodeSnapshot.episode,
+                          //     ),
+                          //   ),
                           const SizedBox(width: 8),
                           Expanded(child: Text(episode.title)),
                           if (showSkipButtons) MediaActionButton.back(),

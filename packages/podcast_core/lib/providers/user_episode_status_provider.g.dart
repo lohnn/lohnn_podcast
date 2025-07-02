@@ -6,6 +6,83 @@ part of 'user_episode_status_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(userEpisodeStatus)
+const userEpisodeStatusProvider = UserEpisodeStatusFamily._();
+
+final class UserEpisodeStatusProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<UserEpisodeStatus>,
+          UserEpisodeStatus,
+          FutureOr<UserEpisodeStatus>
+        >
+    with
+        $FutureModifier<UserEpisodeStatus>,
+        $FutureProvider<UserEpisodeStatus> {
+  const UserEpisodeStatusProvider._({
+    required UserEpisodeStatusFamily super.from,
+    required EpisodeId super.argument,
+  }) : super(
+         retry: null,
+         name: r'userEpisodeStatusProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$userEpisodeStatusHash();
+
+  @override
+  String toString() {
+    return r'userEpisodeStatusProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<UserEpisodeStatus> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<UserEpisodeStatus> create(Ref ref) {
+    final argument = this.argument as EpisodeId;
+    return userEpisodeStatus(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UserEpisodeStatusProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$userEpisodeStatusHash() => r'79315401ee83eede4dfadba8defa4caaa97f3348';
+
+final class UserEpisodeStatusFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<UserEpisodeStatus>, EpisodeId> {
+  const UserEpisodeStatusFamily._()
+    : super(
+        retry: null,
+        name: r'userEpisodeStatusProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  UserEpisodeStatusProvider call(EpisodeId episodeId) =>
+      UserEpisodeStatusProvider._(argument: episodeId, from: this);
+
+  @override
+  String toString() => r'userEpisodeStatusProvider';
+}
+
 @ProviderFor(UserEpisodeStatusPod)
 const userEpisodeStatusPodProvider = UserEpisodeStatusPodProvider._();
 

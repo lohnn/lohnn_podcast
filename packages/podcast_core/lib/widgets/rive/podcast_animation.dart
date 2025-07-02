@@ -1,75 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podcast_core/extensions/map_extensions.dart';
-import 'package:rive/rive.dart';
+import 'package:podcast_core/hooks/use_state_machine_painter.dart';
+import 'package:podcast_core/widgets/rive/podcast_animation_config.dart';
+import 'package:rive_native/rive_native.dart';
 
 class PodcastAnimation extends HookWidget {
-  final PodcastAnimationArtboard artboard;
-  final Map<String, dynamic> params;
+  final PodcastAnimationConfig animationArtboard;
 
-  const PodcastAnimation({
-    super.key,
-    required this.artboard,
-    this.params = const {},
-  });
+  const PodcastAnimation({super.key, required this.animationArtboard});
 
-  void updateControllerInputs(
-    StateMachineController controller,
+  static void updateControllerInputsViewModel(
+    ViewModelInstance viewModel,
     Map<String, dynamic> params,
   ) {
     for (final (key, value) in params.records) {
       switch (value) {
         case final double value:
-          controller.getNumberInput(key)?.value = value;
+          viewModel.number(key)?.value = value;
         case final bool value:
-          controller.getBoolInput(key)?.value = value;
+          viewModel.boolean(key)?.value = value;
+        case final Color value:
+          viewModel.color(key)?.value = value;
         default:
           continue;
       }
     }
   }
 
+  static void updateControllerInputsStateMachine(
+    StateMachine stateMachine,
+    Map<String, dynamic> params,
+  ) {
+    for (final (key, value) in params.records) {
+      switch (value) {
+        case final double value:
+          stateMachine.number(key)?.value = value;
+        case final bool value:
+          stateMachine.boolean(key)?.value = value;
+        default:
+          continue;
+      }
+    }
+  }
+
+  Widget _buildWidget(BuildContext context) {
+    final response = useStateMachinePainter(animationArtboard);
+
+    if (response == null) return Container();
+
+    final (artboard, stateMachinePainter, viewModel) = response;
+
+    final params = animationArtboard.params(context);
+    useEffect(
+      () {
+        if (viewModel case final viewModel?) {
+          updateControllerInputsViewModel(viewModel, params);
+        }
+        if (stateMachinePainter.stateMachine case final stateMachine?) {
+          updateControllerInputsStateMachine(stateMachine, params);
+        }
+        // This seems to be necessary to ensure the inputs are updated.
+        // Preferably, this should be done in the state machine's update method.
+        stateMachinePainter.scheduleRepaint();
+        return null;
+      },
+      [
+        artboard,
+        stateMachinePainter,
+        stateMachinePainter.stateMachine,
+        viewModel,
+        ...params.records,
+      ],
+    );
+
+    return RiveArtboardWidget(artboard: artboard, painter: stateMachinePainter);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final riveAnimationController = useState<StateMachineController?>(null);
-    // Disposing the controller when the widget is disposed
-    useEffect(() => riveAnimationController.value?.dispose, [
-      riveAnimationController.value,
-    ]);
-
-    useEffect(() {
-      if (riveAnimationController.value case final controller?) {
-        updateControllerInputs(controller, params);
-      }
-      return null;
-    }, [riveAnimationController.value, ...params.records]);
-
-    return RiveAnimation.asset(
-      'packages/podcast_core/assets/animations/podcast.riv',
-      artboard: artboard.name,
-      onInit: (artboard) {
-        final controller = riveAnimationController.value =
-            StateMachineController.fromArtboard(
-              artboard,
-              this.artboard.stateMachineName,
-            );
-        artboard.addController(controller!);
-
-        updateControllerInputs(controller, params);
-      },
-    );
+    if (animationArtboard.isIcon) {
+      final theme = Theme.of(context);
+      return SizedBox(
+        height: theme.iconTheme.size ?? const IconThemeData.fallback().size,
+        width: theme.iconTheme.size ?? const IconThemeData.fallback().size,
+        child: _buildWidget(context),
+      );
+    } else {
+      return _buildWidget(context);
+    }
   }
 }
 
-enum PodcastAnimationArtboard {
-  download('Download', 'Download'),
-  sortOrder('Sort order');
-
-  final String name;
-  final String stateMachineName;
-
-  const PodcastAnimationArtboard(
-    this.name, [
-    this.stateMachineName = 'State Machine 1',
-  ]);
-}
+// enum PodcastAnimationArtboard {
+//   delete('Delete'),
+//   download('Download'),
+//   idleLogo('Icon idle animation'),
+//   playPause('PlayPause'),
+//   sortOrder('Sort order'),
+//   queue('Queue');
+//
+//   final String name;
+//
+//   const PodcastAnimationArtboard(this.name);
+// }

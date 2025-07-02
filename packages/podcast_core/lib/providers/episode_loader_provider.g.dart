@@ -47,7 +47,7 @@ final class EpisodeLoaderProvider
   }
 }
 
-String _$episodeLoaderHash() => r'2dbf4f608e0ef43d41b83e3da86423ab545a8c70';
+String _$episodeLoaderHash() => r'3bb058e6532c55469a37436ebb5bca4558bbf6bc';
 
 final class EpisodeLoaderFamily extends $Family
     with

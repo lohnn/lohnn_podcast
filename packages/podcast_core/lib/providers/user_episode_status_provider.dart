@@ -9,6 +9,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'user_episode_status_provider.g.dart';
 
 @riverpod
+Future<UserEpisodeStatus> userEpisodeStatus(Ref ref, EpisodeId episodeId) {
+  throw UnimplementedError(
+    'This provider should be overridden by the app to provide a concrete implementation',
+  );
+}
+
+@riverpod
 class UserEpisodeStatusPod extends _$UserEpisodeStatusPod {
   late Repository _repository;
 

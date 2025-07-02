@@ -9,6 +9,7 @@ import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast_core/providers/episode_loader_provider.dart';
 import 'package:podcast_core/providers/playlist_pod_provider.dart';
+import 'package:podcast_core/providers/user_episode_status_provider.dart';
 import 'package:podcast_core/repository.dart';
 import 'package:podcast_core/services/podcast_audio_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -138,6 +139,7 @@ class AudioPlayerPod extends _$AudioPlayerPod {
               episode,
               episodeUri: fileResponse.currentUri,
               autoPlay: autoPlay,
+              status: await _getStatusForEpisode(episode),
             );
 
             if (!completer.isCompleted) {
@@ -159,8 +161,8 @@ class AudioPlayerPod extends _$AudioPlayerPod {
     return completer.future;
   }
 
-  Future<EpisodeWithStatus?> _getStatusForEpisode(Episode episode) async {
-    final status = await _repository.getUserEpisodeStatus(episode);
+  Future<EpisodeWithStatus> _getStatusForEpisode(Episode episode) async {
+    final status = await ref.read(userEpisodeStatusProvider(episode.id).future);
     return EpisodeWithStatus(episode: episode, status: status);
   }
 

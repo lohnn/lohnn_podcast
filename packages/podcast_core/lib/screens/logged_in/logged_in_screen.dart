@@ -22,13 +22,19 @@ import 'package:podcast_core/widgets/small_media_player/small_media_player_contr
 
 class LoggedInScreen extends HookConsumerWidget {
   final WidgetBuilder? podcastListScreenBuilder;
+  final NavigatorObserver? navigatorObserver;
 
-  const LoggedInScreen({super.key, this.podcastListScreenBuilder});
+  const LoggedInScreen({
+    super.key,
+    this.podcastListScreenBuilder,
+    this.navigatorObserver,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = useMemoized(
       () => GoRouter(
+        observers: [?navigatorObserver],
         routes: [
           GoRoute(
             onExit: (context, _) async {
