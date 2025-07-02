@@ -3,18 +3,18 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
+import 'dart:async' as _i5;
 
 import 'package:flutter/foundation.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:podcast_core/data/episode.model.dart' as _i7;
-import 'package:podcast_core/data/episode_with_status.dart' as _i8;
-import 'package:podcast_core/data/play_queue_item.model.dart' as _i4;
+import 'package:podcast_core/data/episode.model.dart' as _i8;
+import 'package:podcast_core/data/episode_with_status.dart' as _i7;
+import 'package:podcast_core/data/play_queue_item.model.dart' as _i3;
 import 'package:podcast_core/data/podcast.model.dart' as _i9;
 import 'package:podcast_core/data/podcast_search.model.dart' as _i10;
 import 'package:podcast_core/data/podcast_with_status.dart' as _i11;
-import 'package:podcast_core/data/user_episode_status.model.dart' as _i3;
-import 'package:podcast_core/repository.dart' as _i5;
+import 'package:podcast_core/data/user_episode_status.model.dart' as _i6;
+import 'package:podcast_core/repository.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -35,21 +35,15 @@ class _FakeListenable_0 extends _i1.SmartFake implements _i2.Listenable {
     : super(parent, parentInvocation);
 }
 
-class _FakeUserEpisodeStatus_1 extends _i1.SmartFake
-    implements _i3.UserEpisodeStatus {
-  _FakeUserEpisodeStatus_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakePlayQueueItem_2 extends _i1.SmartFake implements _i4.PlayQueueItem {
-  _FakePlayQueueItem_2(Object parent, Invocation parentInvocation)
+class _FakePlayQueueItem_1 extends _i1.SmartFake implements _i3.PlayQueueItem {
+  _FakePlayQueueItem_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [Repository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRepository extends _i1.Mock implements _i5.Repository {
+class MockRepository extends _i1.Mock implements _i4.Repository {
   MockRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -77,31 +71,16 @@ class MockRepository extends _i1.Mock implements _i5.Repository {
           as _i2.Listenable);
 
   @override
-  _i6.Future<_i3.UserEpisodeStatus> getUserEpisodeStatus(
-    _i7.Episode? episode,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getUserEpisodeStatus, [episode]),
-            returnValue: _i6.Future<_i3.UserEpisodeStatus>.value(
-              _FakeUserEpisodeStatus_1(
-                this,
-                Invocation.method(#getUserEpisodeStatus, [episode]),
-              ),
-            ),
-          )
-          as _i6.Future<_i3.UserEpisodeStatus>);
-
-  @override
-  _i6.Stream<List<_i3.UserEpisodeStatus>> watchUserEpisodeStatuses() =>
+  _i5.Stream<List<_i6.UserEpisodeStatus>> watchUserEpisodeStatuses() =>
       (super.noSuchMethod(
             Invocation.method(#watchUserEpisodeStatuses, []),
-            returnValue: _i6.Stream<List<_i3.UserEpisodeStatus>>.empty(),
+            returnValue: _i5.Stream<List<_i6.UserEpisodeStatus>>.empty(),
           )
-          as _i6.Stream<List<_i3.UserEpisodeStatus>>);
+          as _i5.Stream<List<_i6.UserEpisodeStatus>>);
 
   @override
-  _i6.Future<void> markEpisodeListened(
-    _i8.EpisodeWithStatus? episodeWithStatus, {
+  _i5.Future<void> markEpisodeListened(
+    _i7.EpisodeWithStatus? episodeWithStatus, {
     bool? isPlayed = true,
   }) =>
       (super.noSuchMethod(
@@ -110,119 +89,119 @@ class MockRepository extends _i1.Mock implements _i5.Repository {
               [episodeWithStatus],
               {#isPlayed: isPlayed},
             ),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> updateEpisodePosition(
-    _i7.Episode? episode,
+  _i5.Future<void> updateEpisodePosition(
+    _i8.Episode? episode,
     Duration? position,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateEpisodePosition, [episode, position]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Stream<List<_i7.Episode>> watchEpisodesFor({
+  _i5.Stream<List<_i8.Episode>> watchEpisodesFor({
     required _i9.PodcastId? podcast,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#watchEpisodesFor, [], {#podcast: podcast}),
-            returnValue: _i6.Stream<List<_i7.Episode>>.empty(),
+            returnValue: _i5.Stream<List<_i8.Episode>>.empty(),
           )
-          as _i6.Stream<List<_i7.Episode>>);
+          as _i5.Stream<List<_i8.Episode>>);
 
   @override
-  _i6.Future<void> updateLastSeenPodcast(_i9.PodcastId? podcast) =>
+  _i5.Future<void> updateLastSeenPodcast(_i9.PodcastId? podcast) =>
       (super.noSuchMethod(
             Invocation.method(#updateLastSeenPodcast, [podcast]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<List<_i9.Podcast>> getPodcasts() =>
+  _i5.Future<List<_i9.Podcast>> getPodcasts() =>
       (super.noSuchMethod(
             Invocation.method(#getPodcasts, []),
-            returnValue: _i6.Future<List<_i9.Podcast>>.value(<_i9.Podcast>[]),
+            returnValue: _i5.Future<List<_i9.Podcast>>.value(<_i9.Podcast>[]),
           )
-          as _i6.Future<List<_i9.Podcast>>);
+          as _i5.Future<List<_i9.Podcast>>);
 
   @override
-  _i6.Stream<List<_i9.Podcast>> watchPodcasts() =>
+  _i5.Stream<List<_i9.Podcast>> watchPodcasts() =>
       (super.noSuchMethod(
             Invocation.method(#watchPodcasts, []),
-            returnValue: _i6.Stream<List<_i9.Podcast>>.empty(),
+            returnValue: _i5.Stream<List<_i9.Podcast>>.empty(),
           )
-          as _i6.Stream<List<_i9.Podcast>>);
+          as _i5.Stream<List<_i9.Podcast>>);
 
   @override
-  _i6.Future<void> subscribeToPodcast(_i9.PodcastRssUrl? podcast) =>
+  _i5.Future<void> subscribeToPodcast(_i9.PodcastRssUrl? podcast) =>
       (super.noSuchMethod(
             Invocation.method(#subscribeToPodcast, [podcast]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> unsubscribeFromPodcast(_i9.PodcastRssUrl? podcast) =>
+  _i5.Future<void> unsubscribeFromPodcast(_i9.PodcastRssUrl? podcast) =>
       (super.noSuchMethod(
             Invocation.method(#unsubscribeFromPodcast, [podcast]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> refreshPodcast(_i9.PodcastRssUrl? podcast) =>
+  _i5.Future<void> refreshPodcast(_i9.PodcastRssUrl? podcast) =>
       (super.noSuchMethod(
             Invocation.method(#refreshPodcast, [podcast]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<List<_i4.PlayQueueItem>> getPlayQueue() =>
+  _i5.Future<List<_i3.PlayQueueItem>> getPlayQueue() =>
       (super.noSuchMethod(
             Invocation.method(#getPlayQueue, []),
-            returnValue: _i6.Future<List<_i4.PlayQueueItem>>.value(
-              <_i4.PlayQueueItem>[],
+            returnValue: _i5.Future<List<_i3.PlayQueueItem>>.value(
+              <_i3.PlayQueueItem>[],
             ),
           )
-          as _i6.Future<List<_i4.PlayQueueItem>>);
+          as _i5.Future<List<_i3.PlayQueueItem>>);
 
   @override
-  _i6.Future<_i4.PlayQueueItem> getPlayQueueItem(_i7.Episode? episode) =>
+  _i5.Future<_i3.PlayQueueItem> getPlayQueueItem(_i8.Episode? episode) =>
       (super.noSuchMethod(
             Invocation.method(#getPlayQueueItem, [episode]),
-            returnValue: _i6.Future<_i4.PlayQueueItem>.value(
-              _FakePlayQueueItem_2(
+            returnValue: _i5.Future<_i3.PlayQueueItem>.value(
+              _FakePlayQueueItem_1(
                 this,
                 Invocation.method(#getPlayQueueItem, [episode]),
               ),
             ),
           )
-          as _i6.Future<_i4.PlayQueueItem>);
+          as _i5.Future<_i3.PlayQueueItem>);
 
   @override
-  _i6.Stream<List<_i4.PlayQueueItem>> watchPlayQueue() =>
+  _i5.Stream<List<_i3.PlayQueueItem>> watchPlayQueue() =>
       (super.noSuchMethod(
             Invocation.method(#watchPlayQueue, []),
-            returnValue: _i6.Stream<List<_i4.PlayQueueItem>>.empty(),
+            returnValue: _i5.Stream<List<_i3.PlayQueueItem>>.empty(),
           )
-          as _i6.Stream<List<_i4.PlayQueueItem>>);
+          as _i5.Stream<List<_i3.PlayQueueItem>>);
 
   @override
-  _i6.Future<void> updatePlayQueueItemPosition(
-    _i7.Episode? episode,
+  _i5.Future<void> updatePlayQueueItemPosition(
+    _i8.Episode? episode,
     int? position,
   ) =>
       (super.noSuchMethod(
@@ -230,37 +209,37 @@ class MockRepository extends _i1.Mock implements _i5.Repository {
               episode,
               position,
             ]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> deletePlayQueueItem(_i4.PlayQueueItem? item) =>
+  _i5.Future<void> deletePlayQueueItem(_i3.PlayQueueItem? item) =>
       (super.noSuchMethod(
             Invocation.method(#deletePlayQueueItem, [item]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<List<_i10.PodcastSearch>> findPodcasts([String? searchTerm]) =>
+  _i5.Future<List<_i10.PodcastSearch>> findPodcasts([String? searchTerm]) =>
       (super.noSuchMethod(
             Invocation.method(#findPodcasts, [searchTerm]),
-            returnValue: _i6.Future<List<_i10.PodcastSearch>>.value(
+            returnValue: _i5.Future<List<_i10.PodcastSearch>>.value(
               <_i10.PodcastSearch>[],
             ),
           )
-          as _i6.Future<List<_i10.PodcastSearch>>);
+          as _i5.Future<List<_i10.PodcastSearch>>);
 
   @override
-  _i6.Future<List<_i11.PodcastWithStatus>> getPodcastsWithCount() =>
+  _i5.Future<List<_i11.PodcastWithStatus>> getPodcastsWithCount() =>
       (super.noSuchMethod(
             Invocation.method(#getPodcastsWithCount, []),
-            returnValue: _i6.Future<List<_i11.PodcastWithStatus>>.value(
+            returnValue: _i5.Future<List<_i11.PodcastWithStatus>>.value(
               <_i11.PodcastWithStatus>[],
             ),
           )
-          as _i6.Future<List<_i11.PodcastWithStatus>>);
+          as _i5.Future<List<_i11.PodcastWithStatus>>);
 }

@@ -115,7 +115,7 @@ final class _SubscribedPodcastRssUrlsProvider
 }
 
 String _$subscribedPodcastRssUrlsHash() =>
-    r'5c45b5aa5f10dfdfbcedd7d02ca3b862f90691bc';
+    r'93888dbcb201b684d3f8db0c243122544a4cfa94';
 
 @ProviderFor(PodcastPod)
 const podcastPodProvider = PodcastPodFamily._();
