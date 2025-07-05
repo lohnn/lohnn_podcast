@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:podcast_core/gen/l10n.dart';
+import 'package:podcast_core/gen/strings.g.dart';
 
 class GetTextDialog extends HookWidget {
   final String title;
@@ -13,25 +13,22 @@ class GetTextDialog extends HookWidget {
   });
 
   factory GetTextDialog.addPodcastDialog(BuildContext context) {
-    final t = Translations.of(context);
     return GetTextDialog(
-      title: t.addPodcastDialog.title,
-      textFieldHint: t.addPodcastDialog.textFieldHint,
+      title: context.t.addPodcastDialog.title,
+      textFieldHint: context.t.addPodcastDialog.textFieldHint,
     );
   }
 
   factory GetTextDialog.importListenedEpisodesDialog(BuildContext context) {
-    final t = Translations.of(context);
     return GetTextDialog(
-      title: t.importListenedEpisodesDialog.title,
-      textFieldHint: t.importListenedEpisodesDialog.textFieldHint,
+      title: context.t.importListenedEpisodesDialog.title,
+      textFieldHint: context.t.importListenedEpisodesDialog.textFieldHint,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final textController = useTextEditingController();
-    final t = Translations.of(context);
 
     void finish(String text) {
       if (text.isEmpty) return;
@@ -49,7 +46,7 @@ class GetTextDialog extends HookWidget {
       actions: [
         TextButton(
           onPressed: () => finish(textController.text),
-          child: Text(t.ok),
+          child: Text(context.t.ok),
         ),
       ],
     );

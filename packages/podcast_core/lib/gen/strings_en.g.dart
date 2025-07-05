@@ -184,6 +184,7 @@ class TranslationsPodcastDetailsEn {
 	String get rssFeed => 'Rss feed';
 	String get expandDescription => 'Expand description';
 	String get showLess => 'Show less';
+	String get showMore => 'Show more';
 	String get loading => 'Loading...';
 	String get areYouSureToUnsubscribe => 'Are you sure you want to unsubscribe?';
 	String get yes => 'Yes';
@@ -252,6 +253,7 @@ extension on Translations {
 			case 'podcastDetails.rssFeed': return 'Rss feed';
 			case 'podcastDetails.expandDescription': return 'Expand description';
 			case 'podcastDetails.showLess': return 'Show less';
+			case 'podcastDetails.showMore': return 'Show more';
 			case 'podcastDetails.loading': return 'Loading...';
 			case 'podcastDetails.areYouSureToUnsubscribe': return 'Are you sure you want to unsubscribe?';
 			case 'podcastDetails.yes': return 'Yes';

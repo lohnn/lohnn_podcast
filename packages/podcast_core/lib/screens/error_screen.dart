@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:podcast_core/gen/l10n.dart';
+import 'package:podcast_core/gen/strings.g.dart';
 
 class ErrorScreen extends ConsumerWidget {
   final VoidCallback onRefresh;
@@ -10,7 +10,6 @@ class ErrorScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = Translations.of(context);
     debugPrint(state.toString());
     debugPrintStack(stackTrace: state.stackTrace);
     return Scaffold(
@@ -20,10 +19,10 @@ class ErrorScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(t.errorScreen.somethingWentWrong),
+            Text(context.t.errorScreen.somethingWentWrong),
             TextButton(
               onPressed: onRefresh,
-              child: Text(t.errorScreen.tryReloading),
+              child: Text(context.t.errorScreen.tryReloading),
             ),
           ],
         ),
@@ -37,22 +36,21 @@ class _LogOutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final t = Translations.of(context);
     return AlertDialog(
-      title: Text(t.logOutDialog.title),
-      content: Text(t.logOutDialog.content),
+      title: Text(context.t.logOutDialog.title),
+      content: Text(context.t.logOutDialog.content),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.pop(context, false);
           },
-          child: Text(t.logOutDialog.stayLoggedIn),
+          child: Text(context.t.logOutDialog.stayLoggedIn),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context, true);
           },
-          child: Text(t.logOutDialog.logOut),
+          child: Text(context.t.logOutDialog.logOut),
         ),
       ],
     );

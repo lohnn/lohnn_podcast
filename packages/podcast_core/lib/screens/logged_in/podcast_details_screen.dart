@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode_with_status.dart';
 import 'package:podcast_core/data/podcast.model.dart';
+import 'package:podcast_core/gen/strings.g.dart';
 import 'package:podcast_core/hooks/menu_controller_hook.dart';
 import 'package:podcast_core/providers/episodes_filter_provider.dart';
 import 'package:podcast_core/providers/episodes_provider.dart';
@@ -13,7 +14,6 @@ import 'package:podcast_core/screens/async_value_screen.dart';
 import 'package:podcast_core/widgets/episode_list_item.dart';
 import 'package:podcast_core/widgets/filter_episodes_popup.dart';
 import 'package:podcast_core/widgets/podcast_details.dart';
-import 'package:slang_flutter/slang_flutter.dart';
 
 class PodcastDetailsScreen
     extends AsyncValueWidget<(Podcast, List<EpisodeWithStatus>)> {

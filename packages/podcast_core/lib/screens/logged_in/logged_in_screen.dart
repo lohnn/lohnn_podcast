@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:podcast_core/data/episode.model.dart';
 import 'package:podcast_core/data/podcast.model.dart';
 import 'package:podcast_core/extensions/nullability_extensions.dart';
+import 'package:podcast_core/gen/strings.g.dart';
 import 'package:podcast_core/intents/play_pause_intent.dart';
 import 'package:podcast_core/providers/app_lifecycle_state_provider.dart';
 import 'package:podcast_core/providers/audio_player_provider.dart';
@@ -42,15 +43,15 @@ class LoggedInScreen extends HookConsumerWidget {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text(t.exitDialog.title),
+                    title: Text(context.t.exitDialog.title),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text(t.exitDialog.no),
+                        child: Text(context.t.exitDialog.no),
                       ),
                       TextButton(
                         onPressed: () => Navigator.pop(context, true),
-                        child: Text(t.exitDialog.yes),
+                        child: Text(context.t.exitDialog.yes),
                       ),
                     ],
                   );
