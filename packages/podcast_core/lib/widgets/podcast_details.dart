@@ -75,7 +75,7 @@ class PodcastDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RoundedImage(
-                semanticLabel: 'Podcast image',
+                semanticLabel: context.t.podcastDetails.podcastImage,
                 imageUri: podcast.artwork,
                 imageSize: 100,
               ),
@@ -106,7 +106,7 @@ class PodcastDetails extends StatelessWidget {
                           spacing: 6,
                           children: [
                             Text(
-                              'Rss feed',
+                              context.t.podcastDetails.rssFeed,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: theme.colorScheme.onSurface.withValues(
                                   alpha: 0.6,
@@ -175,9 +175,9 @@ class _ExpansibleHtmlWidget extends HookWidget {
               isExpanded.value = CrossFadeState.showSecond;
             },
             child: Semantics(
-              label: 'Show more',
+              label: context.t.podcastDetails.expandDescription,
               child: Text(
-                'Expand description',
+                context.t.podcastDetails.expandDescription,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ),
@@ -199,9 +199,9 @@ class _ExpansibleHtmlWidget extends HookWidget {
               isExpanded.value = CrossFadeState.showFirst;
             },
             child: Semantics(
-              label: 'Collapse description',
+              label: context.t.podcastDetails.showLess,
               child: Text(
-                'Show less',
+                context.t.podcastDetails.showLess,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ),

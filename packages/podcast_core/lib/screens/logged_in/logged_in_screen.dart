@@ -42,15 +42,15 @@ class LoggedInScreen extends HookConsumerWidget {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: const Text('Are you sure you want to exit?'),
+                    title: Text(t.exitDialog.title),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('No'),
+                        child: Text(t.exitDialog.no),
                       ),
                       TextButton(
                         onPressed: () => Navigator.pop(context, true),
-                        child: const Text('Yes'),
+                        child: Text(t.exitDialog.yes),
                       ),
                     ],
                   );

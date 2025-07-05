@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:podcast_core/gen/l10n.dart';
 
 class ErrorScreen extends ConsumerWidget {
   final VoidCallback onRefresh;
@@ -9,6 +10,7 @@ class ErrorScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = Translations.of(context);
     debugPrint(state.toString());
     debugPrintStack(stackTrace: state.stackTrace);
     return Scaffold(
@@ -18,10 +20,10 @@ class ErrorScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Something went wrong.'),
+            Text(t.errorScreen.somethingWentWrong),
             TextButton(
               onPressed: onRefresh,
-              child: const Text('Try reloading the page'),
+              child: Text(t.errorScreen.tryReloading),
             ),
           ],
         ),
@@ -35,21 +37,22 @@ class _LogOutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = Translations.of(context);
     return AlertDialog(
-      title: const Text('Log out?'),
-      content: const Text("If you log out, you'll need to log in again."),
+      title: Text(t.logOutDialog.title),
+      content: Text(t.logOutDialog.content),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.pop(context, false);
           },
-          child: const Text('Stay logged in'),
+          child: Text(t.logOutDialog.stayLoggedIn),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context, true);
           },
-          child: const Text('Log out'),
+          child: Text(t.logOutDialog.logOut),
         ),
       ],
     );

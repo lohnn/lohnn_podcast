@@ -22,7 +22,7 @@ class FilterEpisodesPopup extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            title: Text('Filter episodes', style: theme.textTheme.titleLarge),
+            title: Text(context.t.filterEpisodesPopup.filterEpisodes, style: theme.textTheme.titleLarge),
             trailing: IconButton(
               icon: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
@@ -32,7 +32,7 @@ class FilterEpisodesPopup extends ConsumerWidget {
                   ),
                 ),
               ),
-              tooltip: 'Clear all filters',
+              tooltip: context.t.filterEpisodesPopup.clearAllFilters,
               onPressed: filterState.isDefault
                   ? null
                   : () {
@@ -43,10 +43,10 @@ class FilterEpisodesPopup extends ConsumerWidget {
           ),
           const Divider(),
           Semantics(
-            label: 'Hide played episodes',
+            label: context.t.filterEpisodesPopup.hidePlayedEpisodes,
             toggled: filterState.hideListenedEpisodes,
             child: ListTile(
-              title: const Text('Hide played episodes'),
+              title: Text(context.t.filterEpisodesPopup.hidePlayedEpisodes),
               onTap: () {
                 HapticFeedback.lightImpact();
                 filterStateNotifier.setHideListened(
@@ -68,7 +68,7 @@ class FilterEpisodesPopup extends ConsumerWidget {
           ),
           ListTile(
             title: Text(
-              'Sort by',
+              context.t.filterEpisodesPopup.sortBy,
               style: theme.textTheme.bodySmall?.withOpacity(),
             ),
             subtitle: Padding(
@@ -98,9 +98,11 @@ class FilterEpisodesPopup extends ConsumerWidget {
                   ),
                   Tooltip(
                     excludeFromSemantics: true,
-                    message: 'Change sort order',
+                    message: context.t.filterEpisodesPopup.changeSortOrder,
                     child: Semantics(
-                      label: 'Reverse sort order',
+                      label: filterState.sortAscending
+                          ? context.t.filterEpisodesPopup.sortAscending
+                          : context.t.filterEpisodesPopup.sortDescending,
                       value: filterState.sortAscending
                           ? 'Sort ascending'
                           : 'Sort descending',

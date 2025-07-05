@@ -13,6 +13,7 @@ import 'package:podcast_core/screens/async_value_screen.dart';
 import 'package:podcast_core/widgets/episode_list_item.dart';
 import 'package:podcast_core/widgets/filter_episodes_popup.dart';
 import 'package:podcast_core/widgets/podcast_details.dart';
+import 'package:slang_flutter/slang_flutter.dart';
 
 class PodcastDetailsScreen
     extends AsyncValueWidget<(Podcast, List<EpisodeWithStatus>)> {
@@ -65,7 +66,7 @@ class PodcastDetailsScreen
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Episodes ',
+                            text: '${context.t.podcastDetailsScreen.episodes} ',
                             style: theme.textTheme.titleMedium,
                           ),
                           TextSpan(
@@ -133,14 +134,14 @@ class PodcastDetailsScreen
                   trailing: PopupMenuButton<_PopupActions>(
                     itemBuilder: (context) => [
                       if (episodeWithStatus.isPlayed)
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: _PopupActions.markUnlistened,
-                          child: Text('Mark unlistened'),
+                          child: Text(context.t.podcastDetailsScreen.markUnlistened),
                         )
                       else
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: _PopupActions.markListened,
-                          child: Text('Mark listened'),
+                          child: Text(context.t.podcastDetailsScreen.markListened),
                         ),
                     ],
                     icon: const Icon(Icons.more_vert),

@@ -46,7 +46,7 @@ class EpisodePlayerModal extends HookConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               RoundedImage(
-                semanticLabel: 'Episode image',
+                semanticLabel: context.t.episodePlayerModal.episodeImage,
                 imageUri: episode.imageUrl,
               ),
               Text(episode.title),

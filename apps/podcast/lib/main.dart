@@ -16,9 +16,12 @@ import 'package:podcast_core/widgets/entry_animation_screen.dart';
 import 'package:podcast_core/widgets/podcast_app.dart';
 import 'package:rive_native/rive_native.dart';
 
+import 'package:podcast_core/gen/strings.g.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await RiveNative.init();
+  LocaleSettings.useDeviceLocale();
 
   if (kDebugMode) {
     hierarchicalLoggingEnabled = true;
@@ -40,25 +43,27 @@ Future<void> main() async {
   MapperContainer.globals.use(const UriMapper());
 
   runApp(
-    ProviderScope(
-      overrides: [
-        repositoryProvider.overrideWith((ref) => HiveRepositoryImpl()),
-        userEpisodeStatusProvider.overrideWith((ref, episodeId) async {
-          final status = await ref.watch(
-            userEpisodeStatusPodProvider.selectAsync((statuses) {
-              return statuses[episodeId];
-            }),
-          );
-          return status ??
-              UserEpisodeStatusImpl(
-                backingEpisodeId: episodeId.id,
-                isPlayed: false,
-                currentPosition: Duration.zero,
-              );
-        }),
-      ],
-      child: const PodcastApp(
-        child: EntryAnimationScreen(child: LoggedInScreen()),
+    TranslationProvider(
+      child: ProviderScope(
+        overrides: [
+          repositoryProvider.overrideWith((ref) => HiveRepositoryImpl()),
+          userEpisodeStatusProvider.overrideWith((ref, episodeId) async {
+            final status = await ref.watch(
+              userEpisodeStatusPodProvider.selectAsync((statuses) {
+                return statuses[episodeId];
+              }),
+            );
+            return status ??
+                UserEpisodeStatusImpl(
+                  backingEpisodeId: episodeId.id,
+                  isPlayed: false,
+                  currentPosition: Duration.zero,
+                );
+          }),
+        ],
+        child: const PodcastApp(
+          child: EntryAnimationScreen(child: LoggedInScreen()),
+        ),
       ),
     ),
   );

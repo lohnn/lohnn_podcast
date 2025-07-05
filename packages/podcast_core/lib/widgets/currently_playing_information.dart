@@ -32,14 +32,14 @@ class CurrentlyPlayingInformation extends ConsumerWidget {
           Row(
             children: [
               IconButton(
-                tooltip: 'Show playlist',
+                tooltip: context.t.currentlyPlayingInformation.showPlaylist,
                 onPressed: () => onNavigate('/playlist'),
                 icon: Icon(
                   Icons.playlist_play,
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              Text('In your queue:', style: textTheme.titleLarge),
+              Text(context.t.currentlyPlayingInformation.inYourQueue, style: textTheme.titleLarge),
             ],
           ),
           Expanded(
@@ -113,7 +113,7 @@ class _CarouselInformation extends ConsumerWidget {
         spacing: 8,
         children: [
           RoundedImage(
-            semanticLabel: 'Episode image',
+            semanticLabel: context.t.episodePlayerModal.episodeImage,
             radius: 28,
             imageUri: episode.imageUrl,
             fit: BoxFit.cover,

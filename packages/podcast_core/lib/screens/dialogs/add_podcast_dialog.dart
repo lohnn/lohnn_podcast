@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podcast_core/gen/l10n.dart';
 
 class GetTextDialog extends HookWidget {
   final String title;
@@ -11,23 +12,26 @@ class GetTextDialog extends HookWidget {
     required this.textFieldHint,
   });
 
-  factory GetTextDialog.addPodcastDialog() {
-    return const GetTextDialog(
-      title: 'Add podcast by RSS',
-      textFieldHint: 'Rss url',
+  factory GetTextDialog.addPodcastDialog(BuildContext context) {
+    final t = Translations.of(context);
+    return GetTextDialog(
+      title: t.addPodcastDialog.title,
+      textFieldHint: t.addPodcastDialog.textFieldHint,
     );
   }
 
-  factory GetTextDialog.importListenedEpisodesDialog() {
-    return const GetTextDialog(
-      title: 'Import listened episodes',
-      textFieldHint: 'Listened episodes JSON url',
+  factory GetTextDialog.importListenedEpisodesDialog(BuildContext context) {
+    final t = Translations.of(context);
+    return GetTextDialog(
+      title: t.importListenedEpisodesDialog.title,
+      textFieldHint: t.importListenedEpisodesDialog.textFieldHint,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final textController = useTextEditingController();
+    final t = Translations.of(context);
 
     void finish(String text) {
       if (text.isEmpty) return;
@@ -45,7 +49,7 @@ class GetTextDialog extends HookWidget {
       actions: [
         TextButton(
           onPressed: () => finish(textController.text),
-          child: const Text('Ok'),
+          child: Text(t.ok),
         ),
       ],
     );
